@@ -55,9 +55,12 @@ final class LikeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = .white
         self.addViews()
         makeConstraints()
-        configurePageView()
+        configPageView()
+        configLogoBarItem()
+        configBarItem()
         tabSegmentedControl.addTarget(self, action: #selector(changeUnderLinePosition), for: .valueChanged)
     }
     
@@ -100,10 +103,26 @@ final class LikeViewController: UIViewController {
         }
     }
     
-    private func configurePageView() {
+    private func configPageView() {
         pageViewController.setViewControllers([viewControllers[tabSegmentedControl.selectedSegmentIndex]], direction: .reverse, animated: true)
         
         self.addChild(pageViewController)
+    }
+    
+    private func configLogoBarItem() {
+        var logoImage = UIImage(named: "logo")
+        logoImage = logoImage?.withRenderingMode(.alwaysOriginal)
+        
+        let logoButton = UIBarButtonItem(image: logoImage, style: .plain, target: nil, action: nil)
+        logoButton.isEnabled = false
+        navigationItem.leftBarButtonItem = logoButton
+    }
+    
+    private func configBarItem() {
+        // 알림 뷰 연결
+        let notiButton = UIBarButtonItem(image: UIImage(systemName: "bell.fill"), style: .done, target: self, action: nil)
+        notiButton.tintColor = .darkGray
+        navigationItem.rightBarButtonItem = notiButton
     }
     
     @objc private func changeUnderLinePosition() {
