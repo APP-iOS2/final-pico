@@ -23,7 +23,6 @@ final class RandomBoxBanner: UIButton {
         label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 24)
         label.text = "Random Box"
-        label.textColor = .black
         
         return label
     }()
@@ -33,7 +32,6 @@ final class RandomBoxBanner: UIButton {
         label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 12)
         label.text = "꽝은 절대 없다!\n랜덤박스를 열어 츄를 획득해보세요\n( 1일 1회 무료 )"
-        label.textColor = .black
         label.numberOfLines = 0
         
         return label
@@ -52,7 +50,6 @@ final class RandomBoxBanner: UIButton {
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 12)
         label.text = "10"
-        label.textColor = .black
         
         return label
     }()
@@ -61,17 +58,10 @@ final class RandomBoxBanner: UIButton {
         super.init(frame: frame)
         addViews()
         makeConstraints()
-        border()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func border() {
-        layer.borderWidth = 1.0
-        layer.cornerRadius = 10.0
-        layer.borderColor = UIColor.black.cgColor
     }
     
     private func addViews() {

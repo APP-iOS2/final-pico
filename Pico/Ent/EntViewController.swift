@@ -30,7 +30,7 @@ final class EntViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         collectionView.dataSource = self
         collectionView.delegate = self
         addViews()
