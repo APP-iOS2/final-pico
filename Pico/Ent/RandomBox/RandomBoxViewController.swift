@@ -51,7 +51,6 @@ final class RandomBoxViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 16)
         label.text = "랜덤박스를 열어 부족한 츄를 획득해보세요!\n꽝은 절대 없다!\n최대 100츄 획득의 기회를 놓치지 마세요!"
         label.numberOfLines = 0
-        label.textColor = .black
         
         return label
     }()
@@ -82,7 +81,7 @@ final class RandomBoxViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()
         self.openOneBoxButton.addTarget(self, action: #selector(openBoxButtonTapped), for: .touchUpInside)
