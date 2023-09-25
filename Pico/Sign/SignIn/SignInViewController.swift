@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 
 final class SignInViewController: UIViewController {
+    private var textCount: Int = 0
     
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -64,6 +65,7 @@ final class SignInViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        phoneNumberTextField.text = ""
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -73,23 +75,28 @@ final class SignInViewController: UIViewController {
     }
     
     private func configButton() {
-        phoneNumberCancleButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+        phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
     }
     
-    @objc private func tappedSignInButton() {
-        print(#function)
+    @objc private func tappedPhoneNumberCancleButton() {
         phoneNumberTextField.text = ""
     }
     
     @objc private func tappedNextButton() {
-        let viewController = LoginSuccessViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
+        guard let text = phoneNumberTextField.text else { return }
+        if text.count > 11 {
+            phoneNumberTextField.text = ""
+            let viewController = LoginSuccessViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
+        
     }
     
     @objc private func keyboardUp(notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-           let keyboardRectangle = keyboardFrame.cgRectValue
-       
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            
             UIView.animate(
                 withDuration: 0.5
                 , animations: {
@@ -143,19 +150,39 @@ extension SignInViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if Int(string) != nil || string.isEmpty {
-            if (textField.text?.count)! > 10 {
-                return false
-            } else if (textField.text?.count)! > 9 {
-                phoneNumberTextField.textColor = .picoBlue
-                nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
-                
-                return true
-            } else {
-                phoneNumberTextField.textColor = .gray
-                return true
-            }
+
+        let currentText = (textField.text ?? "") as NSString
+        let updatedText = currentText.replacingCharacters(in: range, with: string)
+        let digits = CharacterSet.decimalDigits
+        let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
+        
+        textField.textColor = .gray
+        if filteredText.count > 11 {
+            
+            textField.textColor = .picoBlue
+            return false
+        } else if filteredText.count > 10 {
+            textField.textColor = .picoBlue
+            return true
         }
+        let formattedText: String
+        
+        if filteredText.count <= 3 {
+            formattedText = filteredText
+        } else if filteredText.count <= 7 {
+            let firstPart = filteredText.prefix(3)
+            let secondPart = filteredText.dropFirst(3).prefix(4)
+            formattedText = "\(firstPart)-\(secondPart)"
+        } else {
+            let firstPart = filteredText.prefix(3)
+            let secondPart = filteredText.dropFirst(3).prefix(4)
+            let thirdPart = filteredText.dropFirst(7).prefix(4)
+            formattedText = "\(firstPart)-\(secondPart)-\(thirdPart)"
+        }
+        
+        textField.text = formattedText
+        
         return false
     }
+    
 }
