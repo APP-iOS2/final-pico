@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
+		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
+		4B157D3A2AC116B400EEDEC1 /* RandomBoxBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */; };
+		4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */; };
+		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
+		53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */; };
+		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
+		534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F92AC129830035E41A /* LikeMeViewController.swift */; };
+		54B4411D2AC1619200EC8846 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4411C2AC1619200EC8846 /* DetailViewController.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
 		B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CB2AC0A230009889DA /* SceneDelegate.swift */; };
 		B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CD2AC0A230009889DA /* HomeViewController.swift */; };
@@ -34,15 +43,18 @@
 		B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67A72AC0B5F7006F91DC /* UIColor+Extensions.swift */; };
 		B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67A92AC0B86A006F91DC /* UIFont+Extensions.swift */; };
 		B17D67B12AC0BF02006F91DC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B17D67B02AC0BF02006F91DC /* SnapKit */; };
-		B17D67B62AC0C09C006F91DC /* Screen+Constans.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen+Constans.swift */; };
-		B17D67B82AC0C0C5006F91DC /* ViewController+Constans.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B72AC0C0C5006F91DC /* ViewController+Constans.swift */; };
-		B17D67BA2AC0C3D9006F91DC /* TableView+Constans.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B92AC0C3D9006F91DC /* TableView+Constans.swift */; };
+		B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B72AC0C0C5006F91DC /* Identifier.swift */; };
 		B17D67C12AC0C4F3006F91DC /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B17D67C02AC0C4F3006F91DC /* RxCocoa */; };
 		B17D67C32AC0C4F8006F91DC /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B17D67C22AC0C4F8006F91DC /* RxSwift */; };
 		B1844F5C2AC0CD9B00ACFFED /* PicoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F5B2AC0CD9B00ACFFED /* PicoUITests.swift */; };
 		B1844F5E2AC0CD9B00ACFFED /* PicoUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F5D2AC0CD9B00ACFFED /* PicoUITestsLaunchTests.swift */; };
 		B1844F6B2AC0CDA500ACFFED /* PicoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */; };
 		B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = B1844F752AC0D78000ACFFED /* .swiftlint.yml */; };
+		B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F772AC0E3BF00ACFFED /* CommonButton.swift */; };
+		B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F7B2AC127A900ACFFED /* Constraint.swift */; };
+		BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB63A762AC1883C00389432 /* HomeTabImageViewController.swift */; };
+		B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */; };
+		B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +75,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
+		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
+		4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxBanner.swift; sourceTree = "<group>"; };
+		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
+		53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeEmptyView.swift; sourceTree = "<group>"; };
+		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
+		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
+		54B4411C2AC1619200EC8846 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14B58C92AC0A230009889DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B14B58CB2AC0A230009889DA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -91,15 +111,19 @@
 		B17D67A22AC0B21F006F91DC /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		B17D67A72AC0B5F7006F91DC /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		B17D67A92AC0B86A006F91DC /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
-		B17D67B52AC0C09C006F91DC /* Screen+Constans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Screen+Constans.swift"; sourceTree = "<group>"; };
-		B17D67B72AC0C0C5006F91DC /* ViewController+Constans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Constans.swift"; sourceTree = "<group>"; };
-		B17D67B92AC0C3D9006F91DC /* TableView+Constans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableView+Constans.swift"; sourceTree = "<group>"; };
+		B17D67B52AC0C09C006F91DC /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
+		B17D67B72AC0C0C5006F91DC /* Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		B1844F592AC0CD9B00ACFFED /* PicoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PicoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1844F5B2AC0CD9B00ACFFED /* PicoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoUITests.swift; sourceTree = "<group>"; };
 		B1844F5D2AC0CD9B00ACFFED /* PicoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		B1844F682AC0CDA500ACFFED /* PicoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PicoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoTests.swift; sourceTree = "<group>"; };
 		B1844F752AC0D78000ACFFED /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		B1844F772AC0E3BF00ACFFED /* CommonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonButton.swift; sourceTree = "<group>"; };
+		B1844F7B2AC127A900ACFFED /* Constraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constraint.swift; sourceTree = "<group>"; };
+		BCB63A762AC1883C00389432 /* HomeTabImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabImageViewController.swift; sourceTree = "<group>"; };
+		B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
+		B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +154,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		54B4411A2AC1616500EC8846 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				54B4411C2AC1619200EC8846 /* DetailViewController.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
 		B14B58BD2AC0A230009889DA = {
 			isa = PBXGroup;
 			children = (
@@ -187,6 +219,7 @@
 		B14B58FA2AC0A290009889DA /* Sign */ = {
 			isa = PBXGroup;
 			children = (
+				36F2BA002AC1682E00EF877A /* SignViewController.swift */,
 				B14B58FC2AC0A2BB009889DA /* SignIn */,
 				B14B58FB2AC0A2B5009889DA /* SignUp */,
 			);
@@ -205,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				B17D67832AC0A835006F91DC /* SignInViewController.swift */,
+				36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */,
 			);
 			path = SignIn;
 			sourceTree = "<group>";
@@ -212,7 +246,9 @@
 		B14B58FD2AC0A2C3009889DA /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				54B4411A2AC1616500EC8846 /* Detail */,
 				B14B58CD2AC0A230009889DA /* HomeViewController.swift */,
+				BCB63A762AC1883C00389432 /* HomeTabImageViewController.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -220,6 +256,7 @@
 		B14B58FE2AC0A2D4009889DA /* Mail */ = {
 			isa = PBXGroup;
 			children = (
+				B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */,
 				B14B59092AC0A644009889DA /* MailViewController.swift */,
 			);
 			path = Mail;
@@ -229,6 +266,9 @@
 			isa = PBXGroup;
 			children = (
 				B14B590B2AC0A64C009889DA /* LikeViewController.swift */,
+				534172F72AC129730035E41A /* LikeUViewController.swift */,
+				534172F92AC129830035E41A /* LikeMeViewController.swift */,
+				53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */,
 			);
 			path = Like;
 			sourceTree = "<group>";
@@ -237,6 +277,8 @@
 			isa = PBXGroup;
 			children = (
 				B14B590D2AC0A658009889DA /* EntViewController.swift */,
+				4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */,
+				4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */,
 			);
 			path = Ent;
 			sourceTree = "<group>";
@@ -244,6 +286,7 @@
 		B14B59012AC0A30F009889DA /* Mypage */ = {
 			isa = PBXGroup;
 			children = (
+				B1D98FA72AC1A9F600C95F03 /* SubComponents */,
 				B14B590F2AC0A666009889DA /* MypageViewController.swift */,
 			);
 			path = Mypage;
@@ -262,6 +305,7 @@
 		B14B59032AC0A39E009889DA /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B1844F772AC0E3BF00ACFFED /* CommonButton.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -373,9 +417,9 @@
 		B17D67B42AC0C043006F91DC /* Constant */ = {
 			isa = PBXGroup;
 			children = (
-				B17D67B52AC0C09C006F91DC /* Screen+Constans.swift */,
-				B17D67B72AC0C0C5006F91DC /* ViewController+Constans.swift */,
-				B17D67B92AC0C3D9006F91DC /* TableView+Constans.swift */,
+				B17D67B52AC0C09C006F91DC /* Screen.swift */,
+				B17D67B72AC0C0C5006F91DC /* Identifier.swift */,
+				B1844F7B2AC127A900ACFFED /* Constraint.swift */,
 			);
 			path = Constant;
 			sourceTree = "<group>";
@@ -427,6 +471,22 @@
 				B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */,
 			);
 			path = PicoTests;
+			sourceTree = "<group>";
+		};
+		B1D98FA72AC1A9F600C95F03 /* SubComponents */ = {
+			isa = PBXGroup;
+			children = (
+				B1D98FA82AC1A9F600C95F03 /* ProfilView */,
+			);
+			path = SubComponents;
+			sourceTree = "<group>";
+		};
+		B1D98FA82AC1A9F600C95F03 /* ProfilView */ = {
+			isa = PBXGroup;
+			children = (
+				B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */,
+			);
+			path = ProfilView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -592,32 +652,44 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
+				BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
+				53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
-				B17D67B62AC0C09C006F91DC /* Screen+Constans.swift in Sources */,
+				534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */,
+				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
 				B17D67942AC0AD45006F91DC /* Like.swift in Sources */,
-				B17D67B82AC0C0C5006F91DC /* ViewController+Constans.swift in Sources */,
+				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIViewController+Extensions.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,
 				B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */,
 				B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */,
+				36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */,
+				B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */,
 				B17D678C2AC0AB80006F91DC /* Location.swift in Sources */,
+				B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */,
 				B17D679F2AC0B116006F91DC /* UserDefaultsData.swift in Sources */,
 				B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */,
+				54B4411D2AC1619200EC8846 /* DetailViewController.swift in Sources */,
+				4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */,
 				B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */,
 				B17D678E2AC0ABFD006F91DC /* Report.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
+				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
+				B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */,
+				B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */,
 				B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
 				B17D67902AC0AC15006F91DC /* Block.swift in Sources */,
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
+				4B157D3A2AC116B400EEDEC1 /* RandomBoxBanner.swift in Sources */,
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
-				B17D67BA2AC0C3D9006F91DC /* TableView+Constans.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -799,8 +871,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "피코";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -828,8 +902,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "피코";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
