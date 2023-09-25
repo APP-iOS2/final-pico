@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LoginSuccessViewController: UIViewController {
+final class LoginSuccessViewController: UIViewController {
 
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -36,13 +36,23 @@ class LoginSuccessViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
+        configButton()
+    }
+    
+    private func configButton() {
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+    }
+    
+    @objc private func tappedNextButton() {
+        // 탭뷰로 가야함
+//        let viewController = LoginSuccessViewController()
+//        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func addSubViews() {
         view.addSubview(notifyLabel)
         view.addSubview(checkImageView)
         view.addSubview(nextButton)
-        
     }
     
     private func makeConstraints() {
@@ -57,19 +67,15 @@ class LoginSuccessViewController: UIViewController {
         checkImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(150)
             make.trailing.equalToSuperview().offset(-150)
-            
             make.centerY.equalTo(safeArea)
-            
         }
         
         nextButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.height.equalTo(50)
             make.leading.equalTo(20)
             make.trailing.equalTo(-20)
             make.bottom.equalTo(safeArea).offset(-30)
+            make.height.equalTo(50)
         }
-
     }
-
 }

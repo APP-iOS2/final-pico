@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 import SnapKit
 
-class SignViewController: UIViewController {
+final class SignViewController: UIViewController {
     
     private let picoLogoImageView: UIImageView = {
         let imageView = UIImageView()

@@ -24,7 +24,6 @@ final class SignInViewController: UIViewController {
         textField.font = .picoTitleFont
         textField.textColor = .gray
         textField.keyboardType = .numberPad
-        // tf.addTarget(self, action: #selector(textFieldEditingChanged(_:)), for: .editingChanged)
         return textField
     }()
     
@@ -137,10 +136,12 @@ final class SignInViewController: UIViewController {
 }
 
 extension SignInViewController: UITextFieldDelegate {
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         phoneNumberTextField.resignFirstResponder()
         self.view.endEditing(true)
     }
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if Int(string) != nil || string.isEmpty {
             if (textField.text?.count)! > 10 {
