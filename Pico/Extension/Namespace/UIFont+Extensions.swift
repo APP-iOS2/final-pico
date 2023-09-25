@@ -20,4 +20,8 @@ extension UIFont {
     static var picoDescriptionFont: UIFont {
         return UIFont.systemFont(ofSize: 13)
     }
+    /// 버튼 폰트 사이트
+    static var picoButtonFont: UIFont {
+        return UIFont.systemFont(ofSize: 15, weight: .bold)
+    }
 }

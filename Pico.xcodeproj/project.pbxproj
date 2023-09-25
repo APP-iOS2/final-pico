@@ -34,9 +34,8 @@
 		B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67A72AC0B5F7006F91DC /* UIColor+Extensions.swift */; };
 		B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67A92AC0B86A006F91DC /* UIFont+Extensions.swift */; };
 		B17D67B12AC0BF02006F91DC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B17D67B02AC0BF02006F91DC /* SnapKit */; };
-		B17D67B62AC0C09C006F91DC /* Screen+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen+Constants.swift */; };
-		B17D67B82AC0C0C5006F91DC /* ViewController+ Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B72AC0C0C5006F91DC /* ViewController+ Constants.swift */; };
-		B17D67BA2AC0C3D9006F91DC /* TableView+ Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B92AC0C3D9006F91DC /* TableView+ Constants.swift */; };
+		B17D67B62AC0C09C006F91DC /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
+		B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B72AC0C0C5006F91DC /* Identifier.swift */; };
 		B17D67C12AC0C4F3006F91DC /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B17D67C02AC0C4F3006F91DC /* RxCocoa */; };
 		B17D67C32AC0C4F8006F91DC /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B17D67C22AC0C4F8006F91DC /* RxSwift */; };
 		B1844F5C2AC0CD9B00ACFFED /* PicoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F5B2AC0CD9B00ACFFED /* PicoUITests.swift */; };
@@ -44,6 +43,7 @@
 		B1844F6B2AC0CDA500ACFFED /* PicoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */; };
 		B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = B1844F752AC0D78000ACFFED /* .swiftlint.yml */; };
 		B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F772AC0E3BF00ACFFED /* CommonButton.swift */; };
+		B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F7B2AC127A900ACFFED /* Constraint.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,9 +92,8 @@
 		B17D67A22AC0B21F006F91DC /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		B17D67A72AC0B5F7006F91DC /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		B17D67A92AC0B86A006F91DC /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
-		B17D67B52AC0C09C006F91DC /* Screen+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Screen+Constants.swift"; sourceTree = "<group>"; };
-		B17D67B72AC0C0C5006F91DC /* ViewController+ Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ Constants.swift"; sourceTree = "<group>"; };
-		B17D67B92AC0C3D9006F91DC /* TableView+ Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableView+ Constants.swift"; sourceTree = "<group>"; };
+		B17D67B52AC0C09C006F91DC /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
+		B17D67B72AC0C0C5006F91DC /* Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		B1844F592AC0CD9B00ACFFED /* PicoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PicoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1844F5B2AC0CD9B00ACFFED /* PicoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoUITests.swift; sourceTree = "<group>"; };
 		B1844F5D2AC0CD9B00ACFFED /* PicoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -102,6 +101,7 @@
 		B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoTests.swift; sourceTree = "<group>"; };
 		B1844F752AC0D78000ACFFED /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		B1844F772AC0E3BF00ACFFED /* CommonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonButton.swift; sourceTree = "<group>"; };
+		B1844F7B2AC127A900ACFFED /* Constraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constraint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -376,9 +376,9 @@
 		B17D67B42AC0C043006F91DC /* Constant */ = {
 			isa = PBXGroup;
 			children = (
-				B17D67B52AC0C09C006F91DC /* Screen+Constants.swift */,
-				B17D67B72AC0C0C5006F91DC /* ViewController+ Constants.swift */,
-				B17D67B92AC0C3D9006F91DC /* TableView+ Constants.swift */,
+				B17D67B52AC0C09C006F91DC /* Screen.swift */,
+				B17D67B72AC0C0C5006F91DC /* Identifier.swift */,
+				B1844F7B2AC127A900ACFFED /* Constraint.swift */,
 			);
 			path = Constant;
 			sourceTree = "<group>";
@@ -598,12 +598,12 @@
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
-				B17D67B62AC0C09C006F91DC /* Screen+Constants.swift in Sources */,
+				B17D67B62AC0C09C006F91DC /* Screen.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
 				B17D67942AC0AD45006F91DC /* Like.swift in Sources */,
-				B17D67B82AC0C0C5006F91DC /* ViewController+ Constants.swift in Sources */,
+				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIViewController+Extensions.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,
@@ -611,6 +611,7 @@
 				B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */,
 				B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */,
 				B17D678C2AC0AB80006F91DC /* Location.swift in Sources */,
+				B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */,
 				B17D679F2AC0B116006F91DC /* UserDefaultsData.swift in Sources */,
 				B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */,
 				B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */,
@@ -621,7 +622,6 @@
 				B17D67902AC0AC15006F91DC /* Block.swift in Sources */,
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
-				B17D67BA2AC0C3D9006F91DC /* TableView+ Constants.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
