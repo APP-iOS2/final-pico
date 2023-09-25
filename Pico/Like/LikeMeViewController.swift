@@ -8,17 +8,12 @@
 import UIKit
 
 final class LikeMeViewController: UIViewController {
-    let emptyView: LikeEmptyView = LikeEmptyView(frame: CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width), type: .uLikeMe)
+    let emptyView: UIView = LikeEmptyView(frame: CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width), type: .uLikeMe)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         addViews()
         makeConstraints()
-        configButtons()
-    }
-    
-    private func configButtons() {
-        emptyView.linkButton.addTarget(self, action: #selector(tappedLinkButton), for: .touchUpInside)
     }
     
     private func addViews() {
@@ -28,12 +23,6 @@ final class LikeMeViewController: UIViewController {
     private func makeConstraints() {
         emptyView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-        }
-    }
-    
-    @objc func tappedLinkButton(_ sender: UIButton) {
-        if let tabBarController = self.tabBarController as? TabBarController {
-            tabBarController.selectedIndex = 0
         }
     }
 }

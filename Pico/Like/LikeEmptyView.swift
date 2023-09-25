@@ -10,8 +10,8 @@ import SnapKit
 
 class LikeEmptyView: UIView {
     enum EmptyViewType: String {
-        case iLikeU = "받은 Like가 표시됩니다."
-        case uLikeMe = "누른 Like가 표시됩니다."
+        case iLikeU = "누른 Like가 표시됩니다."
+        case uLikeMe = "받은 Like가 표시됩니다."
     }
     
     private var viewType: EmptyViewType
@@ -59,7 +59,7 @@ class LikeEmptyView: UIView {
         [chuImage, infomationLabel].forEach { item in
             addSubview(item)
         }
-        if viewType == .uLikeMe {
+        if viewType == .iLikeU {
             addSubview(linkButton)
         }
     }
@@ -76,7 +76,7 @@ class LikeEmptyView: UIView {
             make.trailing.equalToSuperview().offset(-20)
         }
         
-        if viewType == .uLikeMe {
+        if viewType == .iLikeU {
             linkButton.snp.makeConstraints { make in
                 make.top.equalTo(infomationLabel.snp.bottom).offset(10)
                 make.centerX.equalTo(infomationLabel)
