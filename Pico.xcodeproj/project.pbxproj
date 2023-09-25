@@ -51,6 +51,7 @@
 		B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = B1844F752AC0D78000ACFFED /* .swiftlint.yml */; };
 		B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F772AC0E3BF00ACFFED /* CommonButton.swift */; };
 		B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F7B2AC127A900ACFFED /* Constraint.swift */; };
+		BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB63A762AC1883C00389432 /* HomeTabImageViewController.swift */; };
 		B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */; };
 		B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */; };
 /* End PBXBuildFile section */
@@ -118,6 +119,7 @@
 		B1844F752AC0D78000ACFFED /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		B1844F772AC0E3BF00ACFFED /* CommonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonButton.swift; sourceTree = "<group>"; };
 		B1844F7B2AC127A900ACFFED /* Constraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constraint.swift; sourceTree = "<group>"; };
+		BCB63A762AC1883C00389432 /* HomeTabImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabImageViewController.swift; sourceTree = "<group>"; };
 		B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
 		B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -244,6 +246,7 @@
 			children = (
 				54B4411A2AC1616500EC8846 /* Detail */,
 				B14B58CD2AC0A230009889DA /* HomeViewController.swift */,
+				BCB63A762AC1883C00389432 /* HomeTabImageViewController.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -648,6 +651,7 @@
 			files = (
 				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
+				BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
 				534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */,
