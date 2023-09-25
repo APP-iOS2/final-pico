@@ -9,31 +9,32 @@ import UIKit
 
 final class MailListTableViewCell: UITableViewCell {
     
-    let userImage: UIImageView = {
+    private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "chu")
         imageView.layer.cornerRadius = 35
         return imageView
     }()
     
     private let infoStackView = UIStackView()
     
-    let nameLabel: UILabel = {
+    private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoSubTitleFont
         label.textColor = .picoFontBlack
         return label
     }()
     
-    let message: UILabel = {
+    private let message: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontBlack
         return label
     }()
     
-    let mbtiLabel = UILabel()
+    private let mbtiLabel = UILabel()
     
     private let dateStackView = UIStackView()
     
@@ -44,7 +45,7 @@ final class MailListTableViewCell: UITableViewCell {
         return label
     }()
     
-    let newLabel: UILabel = {
+    private let newLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .red
@@ -54,12 +55,13 @@ final class MailListTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        addSubViews()
+        addViews()
         makeConstraints()
+        getData()
         
     }
     
-    func addSubViews() {
+    func addViews() {
         
         [userImage, infoStackView, dateStackView].forEach {
             contentView.addSubview($0)
@@ -86,36 +88,47 @@ final class MailListTableViewCell: UITableViewCell {
         infoStackView.snp.makeConstraints { make in
             make.top.bottom.equalTo(userImage).offset(10)
             make.leading.equalTo(userImage.snp.trailing).offset(10)
+            make.trailing.equalTo(contentView).inset(80)
         }
         
         nameLabel.snp.makeConstraints { make in
-            make.top.leading.equalTo(infoStackView)
+            make.top.leading.trailing.equalTo(infoStackView)
         }
         
         mbtiLabel.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.top)
             make.leading.equalTo(nameLabel.snp.trailing).offset(5)
+            make.trailing.equalTo(infoStackView.snp.trailing)
         }
         
         message.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(10)
             make.leading.equalTo(nameLabel.snp.leading)
+            make.trailing.equalTo(infoStackView.snp.trailing)
         }
         
         dateStackView.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.top)
+            make.top.equalTo(nameLabel)
+            make.leading.equalTo(infoStackView.snp.trailing)
             make.trailing.equalTo(contentView.snp.trailing)
         }
         
         dateLabel.snp.makeConstraints { make in
-            make.top.trailing.equalTo(dateStackView)
+            make.top.leading.trailing.equalTo(dateStackView)
         }
         
         newLabel.snp.makeConstraints { make in
             make.top.equalTo(message.snp.top)
-            make.trailing.equalTo(dateLabel.snp.trailing)
+            make.leading.trailing.equalTo(dateStackView)
         }
-        
+    }
+    
+    func getData() {
+        nameLabel.text = "강아지는왈왈, 29"
+        mbtiLabel.text = "istp"
+        message.text = "하이용"
+        dateLabel.text = "9/24"
+        newLabel.text = "new"
     }
     
     required init?(coder: NSCoder) {

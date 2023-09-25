@@ -388,7 +388,6 @@
 			isa = PBXGroup;
 			children = (
 				B17D67A22AC0B21F006F91DC /* UIViewController+Extensions.swift */,
-				695A86C52AC1640700789346 /* UIImageView+Extensions.swift */,
 			);
 			path = Function;
 			sourceTree = "<group>";

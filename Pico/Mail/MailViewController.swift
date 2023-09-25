@@ -28,18 +28,18 @@ final class MailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
-        configure()
-        addSubViews()
+        configTableView()
+        addViews()
         makeConstraints()
     }
     
-    private func configure() {
+    private func configTableView() {
         mailListTableView.dataSource = self
         mailListTableView.rowHeight = 100
         mailListTableView.delegate = self
     }
     
-    func addSubViews() {
+    func addViews() {
         view.addSubview(mailText)
         view.addSubview(mailListTableView)
     }
@@ -50,14 +50,13 @@ final class MailViewController: UIViewController {
         
         mailText.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(10)
-            make.leading.equalTo(safeArea).offset(20)
+            make.leading.trailing.equalTo(safeArea).offset(20)
         }
         
         mailListTableView.snp.makeConstraints { make in
             make.top.equalTo(mailText.snp.bottom).offset(10)
             make.leading.trailing.bottom.equalTo(safeArea).offset(20)
         }
-        
     }
 }
 
@@ -68,10 +67,6 @@ extension MailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "MailListTableViewCell", for: indexPath) as? MailListTableViewCell else { return UITableViewCell() }
-        cell.userImage.load(url: URL(string:"https://cdn.topstarnews.net/news/photo/201906/636333_333283_461.jpg")!)
-        cell.nameLabel.text = "강아지는왈왈, 29"
-        cell.mbtiLabel.text = "istp"
-        cell.message.text = "하이용"
         return cell
     }
     
