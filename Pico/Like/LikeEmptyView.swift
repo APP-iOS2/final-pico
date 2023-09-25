@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class LikeEmptyView: UIView {
+final class LikeEmptyView: UIView {
     enum EmptyViewType: String {
         case iLikeU = "누른 Like가 표시됩니다."
         case uLikeMe = "받은 Like가 표시됩니다."
@@ -16,13 +16,13 @@ class LikeEmptyView: UIView {
     
     private var viewType: EmptyViewType
     
-    let chuImage: UIImageView = {
+    private let chuImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "chu"))
         
         return imageView
     }()
     
-    lazy var infomationLabel: UILabel = {
+    private lazy var infomationLabel: UILabel = {
         let label = UILabel()
         label.text = viewType.rawValue
         label.textAlignment = .center
