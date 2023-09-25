@@ -97,6 +97,7 @@ final class RandomBoxViewController: UIViewController {
     
     private func makeConstraints() {
         let padding: CGFloat = 20
+        let buttonWidth: CGFloat = Screen.width / 2 - padding - 10
         
         backgroundImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -135,14 +136,14 @@ final class RandomBoxViewController: UIViewController {
             make.top.equalTo(randomBoxImage.snp.bottom).offset(padding)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(padding)
             make.trailing.equalTo(openTenBoxButton.snp.leading).offset(-padding)
-            make.width.equalTo(Screen.width / 2 - padding - 10)
+            make.width.equalTo(buttonWidth)
             make.height.equalTo(padding * 2)
         }
         
         openTenBoxButton.snp.makeConstraints { make in
             make.top.equalTo(randomBoxImage.snp.bottom).offset(padding)
             make.leading.equalTo(openOneBoxButton.snp.trailing).offset(padding)
-            make.width.equalTo(Screen.width / 2 - padding - 10)
+            make.width.equalTo(buttonWidth)
             make.height.equalTo(padding * 2)
         }
     }

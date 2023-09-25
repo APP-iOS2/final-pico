@@ -22,7 +22,6 @@ final class WorldCupViewController: UIViewController {
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 24)
         label.text = "당신의 친구에게 투표하세요"
-        label.textColor = .black
         
         return label
     }()
@@ -43,7 +42,6 @@ final class WorldCupViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 16)
         label.text = "마음에 드는 이성을 골라보세요!\n최종 선택 이성에게 채팅신청 시\n피코가 채팅 신청 피용의 50%를\n부담해 드릴게요!"
         label.numberOfLines = 0
-        label.textColor = .black
         
         return label
     }()
@@ -66,7 +64,7 @@ final class WorldCupViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()
     }
