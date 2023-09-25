@@ -12,7 +12,7 @@ final class ProfilView: UIView {
     private let percentView: UIView = {
         let view = UIView()
         view.layer.masksToBounds = true
-        view.layer.cornerRadius = 70
+        view.layer.cornerRadius = 80
         view.backgroundColor = .gray
         return view
     }()
@@ -65,13 +65,14 @@ final class ProfilView: UIView {
     }
     
     private func makeConstraints() {
-        userImage.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.height.width.equalTo(140)
-        }
         percentView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.height.width.equalTo(160)
+        }
+        userImage.snp.makeConstraints { make in
+            make.centerY.equalTo(percentView.snp.centerY)
+            make.centerX.equalToSuperview()
+            make.height.width.equalTo(140)
         }
         editImageView.snp.makeConstraints { make in
             make.top.equalTo(percentView.snp.top).offset(-10)
