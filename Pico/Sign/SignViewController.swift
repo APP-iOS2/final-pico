@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 import SnapKit
 
-class SignViewController: UIViewController {
+final class SignViewController: UIViewController {
     
     private let picoLogoImageView: UIImageView = {
         let imageView = UIImageView()
@@ -52,7 +52,7 @@ class SignViewController: UIViewController {
     }
    
     @objc func tappedSignInButton() {
-        let viewController = SignInViewController() // 이동할 화면을 설정해주세요
+        let viewController = SignInViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -61,7 +61,6 @@ class SignViewController: UIViewController {
         view.addSubview(picoChuImageView)
         view.addSubview(signInButton)
         view.addSubview(signUpButton)
-        
     }
     
     private func makeConstraints() {
@@ -83,18 +82,18 @@ class SignViewController: UIViewController {
         
         signInButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.height.equalTo(signUpButton.snp.height)
             make.leading.equalTo(20)
             make.trailing.equalTo(-20)
             make.bottom.equalTo(signUpButton.snp.top).offset(-20)
+            make.height.equalTo(signUpButton.snp.height)
         }
         
         signUpButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.height.equalTo(50)
             make.leading.equalTo(20)
             make.trailing.equalTo(-20)
             make.bottom.equalTo(safeArea).offset(-100)
+            make.height.equalTo(50)
         }
     }
     

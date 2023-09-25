@@ -16,15 +16,9 @@ final class CommonButton: UIButton {
         self.backgroundColor = .picoBlue
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
-        self.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    @objc func tappedButton() {
-        self.isSelected.toggle()
-        self.backgroundColor = self.isSelected ? .picoAlphaBlue : .picoBlue
     }
 }
