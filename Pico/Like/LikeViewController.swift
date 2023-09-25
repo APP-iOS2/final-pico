@@ -117,15 +117,15 @@ final class LikeViewController: UIViewController {
         }
         
         contentsView.snp.makeConstraints { make in
-            make.bottom.equalTo(safeArea)
-            make.leading.trailing.equalTo(segmentView)
             make.top.equalTo(segmentView.snp.bottom)
+            make.leading.trailing.equalTo(segmentView)
+            make.bottom.equalTo(safeArea)
         }
 
         underLineView.snp.makeConstraints { make in
-            make.height.equalTo(2)
-            make.bottom.leading.equalTo(tabSegmentedControl)
+            make.leading.bottom.equalTo(tabSegmentedControl)
             make.width.equalTo(tabSegmentedControl.snp.width).multipliedBy(1 / CGFloat(tabSegmentedControl.numberOfSegments))
+            make.height.equalTo(2)
         }
     }
 }
