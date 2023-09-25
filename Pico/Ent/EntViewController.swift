@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import SnapKit
 
 final class EntViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
 }
