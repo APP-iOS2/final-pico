@@ -126,7 +126,6 @@ final class SignInViewController: UIViewController {
         }
         
         nextButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
             make.leading.equalTo(20)
             make.trailing.equalTo(-20)
             make.bottom.equalTo(safeArea).offset(-30)
@@ -143,10 +142,12 @@ extension SignInViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
         guard Int(string) != nil || string.isEmpty else { return false }
-        if (textField.text?.count)! > 10 {
+        guard let textFieldText = textField.text else { return false }
+        if textFieldText.count > 10 {
             return false
-        } else if (textField.text?.count)! > 9 {
+        } else if textFieldText.count > 9 {
             phoneNumberTextField.textColor = .picoBlue
             nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
             return true
