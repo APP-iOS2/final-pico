@@ -12,6 +12,17 @@ class HomeTabImageViewController: UIViewController {
     private let paddingVertical = 25
     private let paddingBottom = 30
     private let buttonFrame = 65
+    var name: String
+    var age: String
+    init(name: String, age: String) {
+        self.name = name
+        self.age = age
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private let imageUrl: [String] = [
         "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg",
@@ -31,6 +42,7 @@ class HomeTabImageViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
+        
         return scrollView
     }()
     
@@ -38,6 +50,7 @@ class HomeTabImageViewController: UIViewController {
         let pageControl = UIPageControl()
         pageControl.currentPageIndicatorTintColor = UIColor.black
         pageControl.pageIndicatorTintColor = UIColor.lightGray
+        
         return pageControl
     }()
     
@@ -94,7 +107,7 @@ class HomeTabImageViewController: UIViewController {
     
     private let infoNameAgeLabel: UILabel = {
         let label = UILabel()
-        label.text = "에스파윈터, 25"
+        label.text = ""
         label.font = .picoTitleFont
         label.textColor = .white
         label.font = .systemFont(ofSize: 25, weight: .bold)
@@ -136,6 +149,7 @@ class HomeTabImageViewController: UIViewController {
         addSubView()
         makeConstraints()
         loadImages()
+        infoNameAgeLabel.text = "\(name), \(age)"
     }
     
     func addSubView() {
@@ -144,7 +158,6 @@ class HomeTabImageViewController: UIViewController {
         }
         infoHStack.addArrangedSubview(infoVStack)
         infoHStack.addArrangedSubview(infoButton)
-        
         infoVStack.addArrangedSubview(infoNameAgeLabel)
         infoVStack.addArrangedSubview(infoLocationLabel)
         infoVStack.addArrangedSubview(infoMBTILabel)
@@ -152,10 +165,10 @@ class HomeTabImageViewController: UIViewController {
     
     func makeConstraints() {
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-10)
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.equalTo(view.safeAreaLayoutGuide)
+            make.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
         pageControl.snp.makeConstraints { make in
@@ -188,7 +201,7 @@ class HomeTabImageViewController: UIViewController {
         infoHStack.snp.makeConstraints { make in
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(paddingVertical)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-paddingVertical)
-            make.bottom.equalTo(disLikeButton.snp.top).offset(-paddingBottom + 20)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-100)
             make.height.equalTo(100)
         }
         
@@ -198,11 +211,6 @@ class HomeTabImageViewController: UIViewController {
             make.height.equalTo(25)
         }
         
-        infoMBTILabel.snp.makeConstraints { make in
-            make.leading.equalTo(infoHStack.snp.leading)
-            make.trailing.equalTo(infoMBTILabel.snp.leading).offset(40)
-            make.width.equalTo(40)
-        }
     }
     private func loadImages() {
         for (index, urlStr) in imageUrl.enumerated() {
@@ -215,11 +223,10 @@ class HomeTabImageViewController: UIViewController {
                 scrollView.addSubview(imageView)
                 
                 imageView.snp.makeConstraints { make in
-                    make.leading.equalTo(scrollView).offset(CGFloat(index) * view.frame.width + 10)
-                    make.trailing.equalTo(scrollView).offset(-10)
-                    make.top.equalTo(scrollView)
+                    make.leading.equalTo(scrollView).offset(CGFloat(index) * view.frame.size.width + 10)
+                    make.top.equalTo(scrollView).offset(10)
                     make.width.equalTo(view).offset(-20)
-                    make.height.equalTo(scrollView)
+                    make.height.equalTo(scrollView).offset(-10)
                 }
                 
                 DispatchQueue.global().async {

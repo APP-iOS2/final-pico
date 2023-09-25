@@ -49,7 +49,7 @@ final class HomeViewController: UIViewController {
     }
     
     func addTabImageViewController() {
-        let tabImageViewController = HomeTabImageViewController()
+        let tabImageViewController = HomeTabImageViewController(name: "윈터", age: "24")
         addChild(tabImageViewController)
         view.addSubview(tabImageViewController.view)
         tabImageViewController.didMove(toParent: self)
