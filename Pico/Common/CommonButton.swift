@@ -7,14 +7,24 @@
 
 import UIKit
 
-final class CommonButton: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+final class CommonButton: UIButton {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.titleLabel?.font = .picoButtonFont
+        self.setTitleColor(.white, for: .normal)
+        self.backgroundColor = .picoBlue
+        self.layer.cornerRadius = 10
+        self.clipsToBounds = true
+        self.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
     }
-    */
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func tappedButton() {
+        self.isSelected.toggle()
+        self.backgroundColor = self.isSelected ? .picoAlphaBlue : .picoBlue
+    }
 }
