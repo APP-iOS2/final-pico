@@ -13,7 +13,6 @@ final class WorldCupViewController: UIViewController {
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "WorldCup"))
         imageView.contentMode = .scaleAspectFill
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()

@@ -14,7 +14,6 @@ final class RandomBoxBanner: UIButton {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
@@ -25,7 +24,6 @@ final class RandomBoxBanner: UIButton {
         label.font = UIFont.systemFont(ofSize: 24)
         label.text = "Random Box"
         label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -37,7 +35,6 @@ final class RandomBoxBanner: UIButton {
         label.text = "꽝은 절대 없다!\n랜덤박스를 열어 츄를 획득해보세요\n( 1일 1회 무료 )"
         label.textColor = .black
         label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -46,7 +43,6 @@ final class RandomBoxBanner: UIButton {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
@@ -57,7 +53,6 @@ final class RandomBoxBanner: UIButton {
         label.font = UIFont.systemFont(ofSize: 12)
         label.text = "10"
         label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()

@@ -13,7 +13,6 @@ final class EntCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
@@ -24,7 +23,6 @@ final class EntCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .center
         label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 17)
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -35,7 +33,6 @@ final class EntCollectionViewCell: UICollectionViewCell {
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 12)
         label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     

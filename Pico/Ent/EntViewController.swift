@@ -12,7 +12,6 @@ final class EntViewController: UIViewController {
 
     private let randomBoxButton: RandomBoxBanner = {
         let button = RandomBoxBanner()
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
@@ -24,7 +23,6 @@ final class EntViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.register(EntCollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
 
         return collectionView
     }()
