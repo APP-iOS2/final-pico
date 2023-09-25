@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
+		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
 		4B157D3A2AC116B400EEDEC1 /* RandomBoxBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */; };
 		4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
@@ -70,6 +71,7 @@
 
 /* Begin PBXFileReference section */
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
+		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
 		4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxBanner.swift; sourceTree = "<group>"; };
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				B17D67832AC0A835006F91DC /* SignInViewController.swift */,
+				36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */,
 			);
 			path = SignIn;
 			sourceTree = "<group>";
@@ -626,6 +629,7 @@
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,
 				B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */,
 				B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */,
+				36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */,
 				B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */,
 				B17D678C2AC0AB80006F91DC /* Location.swift in Sources */,
 				B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */,
