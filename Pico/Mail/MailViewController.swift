@@ -13,8 +13,8 @@ final class MailViewController: UIViewController {
     private let mailText: UILabel = {
         let label = UILabel()
         label.text = "쪽지"
-        label.font = UIFont.boldSystemFont(ofSize: 15)
-        label.textColor = .black
+        label.font = UIFont.picoSubTitleFont
+        label.textColor = .picoFontBlack
         return label
     }()
     

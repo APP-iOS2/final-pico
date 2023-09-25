@@ -21,15 +21,15 @@ final class MailListTableViewCell: UITableViewCell {
     
     let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.textColor = .black
+        label.font = UIFont.picoSubTitleFont
+        label.textColor = .picoFontBlack
         return label
     }()
     
     let message: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = .black
+        label.font = UIFont.picoDescriptionFont
+        label.textColor = .picoFontBlack
         return label
     }()
     
@@ -39,14 +39,14 @@ final class MailListTableViewCell: UITableViewCell {
     
     let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 10)
-        label.textColor = .black
+        label.font = UIFont.picoDescriptionFont
+        label.textColor = .picoFontBlack
         return label
     }()
     
     let newLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 5)
+        label.font = UIFont.picoDescriptionFont
         label.textColor = .red
         return label
     }()
