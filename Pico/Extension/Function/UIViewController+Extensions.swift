@@ -48,4 +48,15 @@ extension UIViewController {
         imageView.layer.borderColor = borderColor
         imageView.clipsToBounds = true
     }
+    
+    /// logo leftBarButton
+    /// -> viewDidLoad에서 호출
+    func configLogoBarItem() {
+        var logoImage = UIImage(named: "logo")
+        logoImage = logoImage?.withRenderingMode(.alwaysOriginal)
+        
+        let logoButton = UIBarButtonItem(image: logoImage, style: .plain, target: nil, action: nil)
+        logoButton.isEnabled = false
+        navigationItem.leftBarButtonItem = logoButton
+    }
 }
