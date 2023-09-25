@@ -16,7 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
                 
         let tabBarController = TabBarController()
-        window?.rootViewController = tabBarController
+        //window?.rootViewController = tabBarController
+        window?.rootViewController = MailViewController()
         window?.makeKeyAndVisible()
     }
     

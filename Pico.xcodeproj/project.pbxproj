@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		695A86C42AC1436400789346 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695A86C32AC1436400789346 /* MailListTableViewCell.swift */; };
+		695A86C62AC1640700789346 /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695A86C52AC1640700789346 /* UIImageView+Extensions.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
 		B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CB2AC0A230009889DA /* SceneDelegate.swift */; };
 		B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CD2AC0A230009889DA /* HomeViewController.swift */; };
@@ -63,6 +65,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		695A86C32AC1436400789346 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
+		695A86C52AC1640700789346 /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14B58C92AC0A230009889DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B14B58CB2AC0A230009889DA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -221,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				B14B59092AC0A644009889DA /* MailViewController.swift */,
+				695A86C32AC1436400789346 /* MailListTableViewCell.swift */,
 			);
 			path = Mail;
 			sourceTree = "<group>";
@@ -359,6 +364,7 @@
 			isa = PBXGroup;
 			children = (
 				B17D67A22AC0B21F006F91DC /* UIViewController+Extensions.swift */,
+				695A86C52AC1640700789346 /* UIImageView+Extensions.swift */,
 			);
 			path = Function;
 			sourceTree = "<group>";
@@ -592,6 +598,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				695A86C62AC1640700789346 /* UIImageView+Extensions.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
@@ -600,6 +607,7 @@
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
 				B17D67942AC0AD45006F91DC /* Like.swift in Sources */,
+				695A86C42AC1436400789346 /* MailListTableViewCell.swift in Sources */,
 				B17D67B82AC0C0C5006F91DC /* ViewController+Constans.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIViewController+Extensions.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
