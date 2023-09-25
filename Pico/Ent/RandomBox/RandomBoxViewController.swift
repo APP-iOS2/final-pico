@@ -115,35 +115,35 @@ final class RandomBoxViewController: UIViewController {
         }
         
         randomBoxTitleLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(Screen.width / 2)
+            make.centerX.equalToSuperview().offset(0.5)
             make.top.equalTo(infoButton.snp.bottom).offset(Screen.height / 12)
         }
         
         contentLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(Screen.width / 2)
+            make.centerX.equalToSuperview().offset(0.5)
             make.top.equalTo(randomBoxTitleLabel.snp.bottom).offset(padding)
         }
         
         randomBoxImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(contentLabel.snp.bottom).offset(padding)
-            make.height.equalTo(Screen.height / 3)
             make.width.equalTo(randomBoxImage.snp.height)
+            make.height.equalTo(Screen.height / 3)
         }
         
         openOneBoxButton.snp.makeConstraints { make in
             make.top.equalTo(randomBoxImage.snp.bottom).offset(padding)
-            make.width.equalTo(Screen.width / 2 - padding * 2)
-            make.height.equalTo(padding * 2)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(padding)
+            make.trailing.equalTo(openTenBoxButton.snp.leading).offset(-padding)
+            make.width.equalTo(Screen.width / 2 - padding - 10)
+            make.height.equalTo(padding * 2)
         }
         
         openTenBoxButton.snp.makeConstraints { make in
             make.top.equalTo(randomBoxImage.snp.bottom).offset(padding)
-            make.width.equalTo(Screen.width / 2 - padding * 2)
-            make.height.equalTo(padding * 2)
             make.leading.equalTo(openOneBoxButton.snp.trailing).offset(padding)
-            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-padding)
+            make.width.equalTo(Screen.width / 2 - padding - 10)
+            make.height.equalTo(padding * 2)
         }
     }
     
@@ -201,7 +201,7 @@ final class RandomBoxViewController: UIViewController {
 }
 
 extension UIView {
-    func shake(duration: CFTimeInterval = 0.3, repeatCount: Float = 3, completion: (() -> Void)? = nil) {
+    func shake(duration: CFTimeInterval = 0.5, repeatCount: Float = 3, completion: (() -> Void)? = nil) {
         let animation = CAKeyframeAnimation(keyPath: "transform.rotation")
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         animation.duration = duration

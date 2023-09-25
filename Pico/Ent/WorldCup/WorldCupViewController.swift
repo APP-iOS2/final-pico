@@ -85,26 +85,26 @@ final class WorldCupViewController: UIViewController {
         }
         
         worldCupTitleLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(Screen.width / 2)
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(Screen.height / 5)
+            make.centerX.equalToSuperview().offset(0.5)
+            make.top.equalToSuperview().offset(Screen.height / 5)
         }
         
         pickMeLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(Screen.width / 2)
+            make.centerX.equalToSuperview().offset(0.5)
             make.top.equalTo(worldCupTitleLabel.snp.bottom).offset(padding / 2)
         }
         
         contentLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(Screen.width / 2)
+            make.centerX.equalToSuperview().offset(0.5)
             make.top.equalTo(pickMeLabel.snp.bottom).offset(padding)
         }
         
         gameStartButton.snp.makeConstraints { make in
-            make.centerX.equalTo(Screen.width / 2)
-            make.height.equalTo(Screen.width / 10)
+            make.centerX.equalToSuperview().offset(0.5)
             make.top.equalTo(contentLabel.snp.bottom).offset(Screen.height / 10)
-            make.leading.equalTo(view.safeAreaLayoutGuide).offset(Screen.width / 4)
-            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-Screen.width / 4)
+            make.leading.equalToSuperview().offset(Screen.width / 4)
+            make.trailing.equalToSuperview().offset(-Screen.width / 4)
+            make.height.equalTo(Screen.width / 10)
         }
         
         guideLabel.snp.makeConstraints { make in
