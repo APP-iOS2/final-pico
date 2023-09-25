@@ -106,12 +106,11 @@ final class RandomBoxBanner: UIButton {
             make.centerY.equalTo(boxTitleLabel)
             make.trailing.equalToSuperview().offset(-padding * 3)
         }
-
+        
         boxChuLabel.snp.makeConstraints { make in
             make.centerY.equalTo(boxChuChuImage)
             make.leading.equalTo(boxChuChuImage.snp.trailing).offset(-padding / 2)
             make.trailing.equalToSuperview().offset(-padding)
         }
-
     }
 }

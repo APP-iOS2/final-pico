@@ -10,8 +10,9 @@ import SnapKit
 
 final class EntViewController: UIViewController {
 
-    private let randomBoxButton: RandomBoxBanner = {
+    private lazy var randomBoxButton: RandomBoxBanner = {
         let button = RandomBoxBanner()
+        button.addTarget(self, action: #selector(tappedRandomBoxButton), for: .touchUpInside)
         
         return button
     }()
@@ -62,6 +63,12 @@ final class EntViewController: UIViewController {
             make.trailing.equalTo(randomBoxButton.snp.trailing)
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-padding)
         }
+    }
+    
+    @objc func tappedRandomBoxButton() {
+        let randomBoxViewController = RandomBoxViewController()
+        self.navigationController?.pushViewController(randomBoxViewController, animated: true)
+        self.tabBarController?.tabBar.isHidden = true
     }
 }
 
