@@ -45,17 +45,19 @@ final class EntViewController: UIViewController {
     }
 
     func setLayoutConstraints() {
+        let padding: CGFloat = 20
+        
         randomBoxButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(100)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(padding)
+            make.leading.trailing.equalToSuperview().inset(padding)
+            make.height.equalTo(padding * 5)
         }
 
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(randomBoxButton.snp.bottom).offset(20)
+            make.top.equalTo(randomBoxButton.snp.bottom).offset(padding)
             make.leading.equalTo(randomBoxButton.snp.leading)
             make.trailing.equalTo(randomBoxButton.snp.trailing)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-padding)
         }
     }
 }
