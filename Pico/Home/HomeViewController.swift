@@ -9,9 +9,9 @@ import UIKit
 import SnapKit
 import SwiftUI
 
-class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController {
     
-    let imageUrl: [String] = [
+    private let imageUrl: [String] = [
         "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg",
         "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
         "https://i.namu.wiki/i/jUHcYJjORbNSurOw8cwl-g8jduAT01mhJJkF5oDbvyae_1hkSExnUQ0I5fDKgebUKzSFjSFhRheeSI9-rfpuDU8RJ9wqo5KwIodMVjuzKT2o6RK0IutUtsKWZrYxzT-cOvxKhbPm9c3PXo5H-OvBCA.webp"
@@ -43,103 +43,119 @@ class HomeViewController: UIViewController {
         return pageControl
     }()
     
-    private let logoButton: UIButton = {
+    private let pickBackButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
+        let image = UIImage(systemName: "arrow.uturn.backward", withConfiguration: imageConfig)
         let button = UIButton()
-        button.setImage(UIImage(named: "logo"), for: .normal)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .gray.withAlphaComponent(0.5)
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
         return button
     }()
     
     private let disLikeButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
+        let image = UIImage(systemName: "hand.thumbsdown.fill", withConfiguration: imageConfig)
         let button = UIButton()
-        button.setImage(UIImage(named: "hand.thumbsdown.fill"), for: .normal)
-        button.backgroundColor = .picoHomeBlue
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .picoBlue
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
         return button
     }()
     
     private let likeButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
+        let image = UIImage(systemName: "hand.thumbsup.fill", withConfiguration: imageConfig)
         let button = UIButton()
-        button.setImage(UIImage(named: "hand.thumbsup.fill"), for: .normal)
-        button.tintColor = . white
-//        button.backgroundColor = .picoHomeBlue
-        return button
-    }()
-    
-    private let pickBackButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "arrow.uturn.backward"), for: .normal)
+        button.setImage(image, for: .normal)
         button.tintColor = .white
+        button.backgroundColor = .picoBlue
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
         return button
     }()
-    
-    private let notificationButton: UIButton = {
+    private func createButton(imageName: String, backgroundColor: UIColor) -> UIButton {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
+        let image = UIImage(systemName: imageName, withConfiguration: imageConfig)
         let button = UIButton()
-        button.setImage(UIImage(systemName: "bell.fill"), for: .normal)
-        button.tintColor = .gray
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = backgroundColor
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
         return button
-    }()
-    
-    private let filterButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "slider.horizontal.3"), for: .normal)
-        button.tintColor = .gray
-        return button
-    }()
-    
+    }
+    // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         scrollView.delegate = self
+        configLogoBarItem()
+        confignavigationBarItem()
         addSubView()
         makeConstraints()
         loadImages()
     }
     
+    func confignavigationBarItem() {
+        let notificationImage = UIImage(systemName: "bell.fill")
+        let filterImage = UIImage(systemName: "slider.horizontal.3")
+        
+        let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: nil, action: nil)
+        let filterButton = UIBarButtonItem(image: filterImage, style: .plain, target: nil, action: nil)
+        
+        notificationButton.tintColor = .darkGray
+        filterButton.tintColor = .darkGray
+        navigationItem.rightBarButtonItems = [notificationButton, filterButton]
+    }
+    
     func addSubView() {
         view.addSubview(navigationBar)
-        view.addSubview(logoButton)
-        view.addSubview(notificationButton)
-        view.addSubview(filterButton)
         view.addSubview(scrollView)
         view.addSubview(pageControl)
         view.addSubview(pickBackButton)
         view.addSubview(disLikeButton)
         view.addSubview(likeButton)
+        
     }
     
     func makeConstraints() {
-        
-        logoButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-10)
-            make.leading.equalTo(view.safeAreaLayoutGuide)
-            make.width.equalTo(100)
-            make.height.equalTo(40)
-        }
-        
-        notificationButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.trailing.equalTo(filterButton.snp.leading).offset(-20)
-        }
-        
-        filterButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.trailing.equalTo(view.snp.trailing).offset(-20)
-        }
-        
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(logoButton.snp.bottom).offset(10)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-5)
         }
         
         pageControl.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
         }
         pageControl.numberOfPages = imageUrl.count
         
+        pickBackButton.snp.makeConstraints { make in
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(20)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-30)
+            make.width.equalTo(65)
+            make.height.equalTo(65)
+        }
+        
+        disLikeButton.snp.makeConstraints { make in
+            make.trailing.equalTo(likeButton.snp.leading).offset(-20)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-30)
+            make.width.equalTo(65)
+            make.height.equalTo(65)
+        }
+        
         likeButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-20)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-30)
+            make.width.equalTo(65)
+            make.height.equalTo(65)
         }
         
     }
@@ -149,7 +165,7 @@ class HomeViewController: UIViewController {
                 let imageView = UIImageView()
                 imageView.contentMode = .scaleAspectFill
                 imageView.clipsToBounds = true
-                imageView.layer.cornerRadius = 20
+                imageView.layer.cornerRadius = 10
                 
                 scrollView.addSubview(imageView)
                 
