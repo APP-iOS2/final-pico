@@ -35,7 +35,7 @@ final class LikeViewController: UIViewController {
     
     private let segmentView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         
         return view
     }()
@@ -55,66 +55,20 @@ final class LikeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
-        self.addViews()
+        view.backgroundColor = .systemBackground
+        addViews()
         makeConstraints()
-        configPageView()
+        configTabBar()
         configLogoBarItem()
         configBarItem()
-        tabSegmentedControl.addTarget(self, action: #selector(changeUnderLinePosition), for: .valueChanged)
     }
-    
-    private func addViews() {
-        [tabSegmentedControl, underLineView].forEach { item in
-            segmentView.addSubview(item)
-            item.translatesAutoresizingMaskIntoConstraints = false
-        }
-        
-        [segmentView, contentsView].forEach { item in
-            view.addSubview(item)
-            item.translatesAutoresizingMaskIntoConstraints = false
-        }
-        contentsView.addSubview(pageViewController.view)
-    }
-    
-    private func makeConstraints() {
-        let safeArea = view.safeAreaLayoutGuide
-        
-        segmentView.snp.makeConstraints { make in
-            make.leading.top.trailing.equalTo(safeArea)
-            make.height.equalTo(40)
-        }
-        
-        tabSegmentedControl.snp.makeConstraints { make in
-            make.top.leading.centerX.centerY.equalTo(segmentView)
-        }
-        
-        contentsView.snp.makeConstraints { make in
-            make.bottom.equalTo(safeArea)
-            make.leading.trailing.equalTo(segmentView)
-            make.top.equalTo(segmentView.snp.bottom)
-        }
 
-        underLineView.snp.makeConstraints { make in
-            make.height.equalTo(2)
-            make.bottom.leading.equalTo(tabSegmentedControl)
-            make.width.equalTo(tabSegmentedControl.snp.width).multipliedBy(1 / CGFloat(tabSegmentedControl.numberOfSegments))
-        }
-    }
-    
-    private func configPageView() {
+    private func configTabBar() {
+        tabSegmentedControl.addTarget(self, action: #selector(changeUnderLinePosition), for: .valueChanged)
+        
         pageViewController.setViewControllers([viewControllers[tabSegmentedControl.selectedSegmentIndex]], direction: .reverse, animated: true)
         
         self.addChild(pageViewController)
-    }
-    
-    private func configLogoBarItem() {
-        var logoImage = UIImage(named: "logo")
-        logoImage = logoImage?.withRenderingMode(.alwaysOriginal)
-        
-        let logoButton = UIBarButtonItem(image: logoImage, style: .plain, target: nil, action: nil)
-        logoButton.isEnabled = false
-        navigationItem.leftBarButtonItem = logoButton
     }
     
     private func configBarItem() {
@@ -137,5 +91,41 @@ final class LikeViewController: UIViewController {
         })
        pageViewController.setViewControllers([viewControllers[tabSegmentedControl.selectedSegmentIndex]], direction: segmentIndex == 1.0 ? .forward : .reverse, animated: true)
         
+    }
+    
+    private func addViews() {
+        [tabSegmentedControl, underLineView].forEach { item in
+            segmentView.addSubview(item)
+        }
+        
+        [segmentView, contentsView].forEach { item in
+            view.addSubview(item)
+        }
+        contentsView.addSubview(pageViewController.view)
+    }
+    
+    private func makeConstraints() {
+        let safeArea = view.safeAreaLayoutGuide
+        
+        segmentView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(safeArea)
+            make.height.equalTo(40)
+        }
+        
+        tabSegmentedControl.snp.makeConstraints { make in
+            make.top.leading.centerX.centerY.equalTo(segmentView)
+        }
+        
+        contentsView.snp.makeConstraints { make in
+            make.bottom.equalTo(safeArea)
+            make.leading.trailing.equalTo(segmentView)
+            make.top.equalTo(segmentView.snp.bottom)
+        }
+
+        underLineView.snp.makeConstraints { make in
+            make.height.equalTo(2)
+            make.bottom.leading.equalTo(tabSegmentedControl)
+            make.width.equalTo(tabSegmentedControl.snp.width).multipliedBy(1 / CGFloat(tabSegmentedControl.numberOfSegments))
+        }
     }
 }
