@@ -80,11 +80,9 @@ final class RandomBoxBanner: UIButton {
     }
     
     private func addViews() {
-        addSubview(boxChuImage)
-        addSubview(boxTitleLabel)
-        addSubview(boxContentLabel)
-        addSubview(boxChuChuImage)
-        addSubview(boxChuLabel)
+        [boxChuImage, boxTitleLabel, boxContentLabel, boxChuChuImage, boxChuLabel].forEach { item in
+            addSubview(item)
+        }
     }
     
     private func setLayoutConstraints() {
@@ -109,7 +107,7 @@ final class RandomBoxBanner: UIButton {
         }
         
         boxChuChuImage.snp.makeConstraints { make in
-            make.width.height.equalTo(30)
+            make.width.height.equalTo(padding * 3)
             make.centerY.equalTo(boxTitleLabel)
             make.trailing.equalToSuperview().offset(-padding * 3)
         }
