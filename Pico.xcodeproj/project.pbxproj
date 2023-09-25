@@ -52,6 +52,7 @@
 		B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F772AC0E3BF00ACFFED /* CommonButton.swift */; };
 		B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F7B2AC127A900ACFFED /* Constraint.swift */; };
 		B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */; };
+		B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +119,7 @@
 		B1844F772AC0E3BF00ACFFED /* CommonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonButton.swift; sourceTree = "<group>"; };
 		B1844F7B2AC127A900ACFFED /* Constraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constraint.swift; sourceTree = "<group>"; };
 		B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
+		B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,6 +280,7 @@
 		B14B59012AC0A30F009889DA /* Mypage */ = {
 			isa = PBXGroup;
 			children = (
+				B1D98FA72AC1A9F600C95F03 /* SubComponents */,
 				B14B590F2AC0A666009889DA /* MypageViewController.swift */,
 			);
 			path = Mypage;
@@ -462,6 +465,22 @@
 				B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */,
 			);
 			path = PicoTests;
+			sourceTree = "<group>";
+		};
+		B1D98FA72AC1A9F600C95F03 /* SubComponents */ = {
+			isa = PBXGroup;
+			children = (
+				B1D98FA82AC1A9F600C95F03 /* ProfilView */,
+			);
+			path = SubComponents;
+			sourceTree = "<group>";
+		};
+		B1D98FA82AC1A9F600C95F03 /* ProfilView */ = {
+			isa = PBXGroup;
+			children = (
+				B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */,
+			);
+			path = ProfilView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -655,6 +674,7 @@
 				B17D678E2AC0ABFD006F91DC /* Report.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
+				B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */,
 				B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */,
 				B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
