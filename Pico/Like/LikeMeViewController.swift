@@ -7,11 +7,22 @@
 
 import UIKit
 
-class LikeMeViewController: UIViewController {
-
+final class LikeMeViewController: UIViewController {
+    let emptyView: UIView = LikeEmptyView(frame: CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width), type: .uLikeMe)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .picoFontGray
+        addViews()
+        makeConstraints()
     }
-
+    
+    private func addViews() {
+        view.addSubview(emptyView)
+    }
+    
+    private func makeConstraints() {
+        emptyView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
 }
