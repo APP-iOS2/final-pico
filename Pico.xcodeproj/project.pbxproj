@@ -14,6 +14,7 @@
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
 		534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F92AC129830035E41A /* LikeMeViewController.swift */; };
+		695A86C42AC1436400789346 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695A86C32AC1436400789346 /* MailListTableViewCell.swift */; };
 		54B4411D2AC1619200EC8846 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4411C2AC1619200EC8846 /* DetailViewController.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
 		B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CB2AC0A230009889DA /* SceneDelegate.swift */; };
@@ -77,6 +78,8 @@
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
+		695A86C32AC1436400789346 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
+		695A86C52AC1640700789346 /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
 		54B4411C2AC1619200EC8846 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14B58C92AC0A230009889DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -146,6 +149,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		695A86C82AC17BF100789346 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				695A86C52AC1640700789346 /* UIImageView+Extensions.swift */,
+			);
+			name = "Recovered References";
 		54B4411A2AC1616500EC8846 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
@@ -163,6 +172,7 @@
 				B1844F5A2AC0CD9B00ACFFED /* PicoUITests */,
 				B14B58C72AC0A230009889DA /* Products */,
 				B17D67AF2AC0BF02006F91DC /* Frameworks */,
+				695A86C82AC17BF100789346 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -248,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				B14B59092AC0A644009889DA /* MailViewController.swift */,
+				695A86C32AC1436400789346 /* MailListTableViewCell.swift */,
 			);
 			path = Mail;
 			sourceTree = "<group>";
@@ -634,6 +645,8 @@
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
 				B17D67942AC0AD45006F91DC /* Like.swift in Sources */,
+				695A86C42AC1436400789346 /* MailListTableViewCell.swift in Sources */,
+				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIViewController+Extensions.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
