@@ -38,7 +38,7 @@ final class MailListTableViewCell: UITableViewCell {
     
     private let dateStackView = UIStackView()
     
-    let dateLabel: UILabel = {
+    private let dateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontBlack
@@ -57,7 +57,7 @@ final class MailListTableViewCell: UITableViewCell {
         
         addViews()
         makeConstraints()
-        getData()
+        getData(nameText: "강아지는월월", mbti: "ISTP", message: "하이용", date: "9/25", new: true)
         
     }
     
@@ -123,12 +123,14 @@ final class MailListTableViewCell: UITableViewCell {
         }
     }
     
-    func getData() {
-        nameLabel.text = "강아지는왈왈, 29"
-        mbtiLabel.text = "istp"
-        message.text = "하이용"
-        dateLabel.text = "9/24"
-        newLabel.text = "new"
+    func getData(nameText: String, mbti: String, message: String, date: String, new: Bool) {
+        nameLabel.text = nameText
+        mbtiLabel.text = mbti
+        self.message.text = message
+        dateLabel.text = date
+        if new {
+            newLabel.text = "new"
+        }
     }
     
     required init?(coder: NSCoder) {
