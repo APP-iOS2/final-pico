@@ -60,7 +60,7 @@ final class RandomBoxBanner: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
-        setLayoutConstraints()
+        makeConstraints()
         border()
     }
     
@@ -80,7 +80,7 @@ final class RandomBoxBanner: UIButton {
         }
     }
     
-    private func setLayoutConstraints() {
+    private func makeConstraints() {
         let padding: CGFloat = 10
         
         boxChuImage.snp.makeConstraints { make in

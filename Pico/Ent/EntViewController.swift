@@ -34,7 +34,7 @@ final class EntViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         addViews()
-        setLayoutConstraints()
+        makeConstraints()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,7 +48,7 @@ final class EntViewController: UIViewController {
         }
     }
 
-    func setLayoutConstraints() {
+    func makeConstraints() {
         let padding: CGFloat = 20
         
         randomBoxButton.snp.makeConstraints { make in

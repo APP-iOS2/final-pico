@@ -39,7 +39,7 @@ final class EntCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
-        setLayoutConstraints()
+        makeConstraints()
         border()
     }
     
@@ -59,7 +59,7 @@ final class EntCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(secondLabel)
     }
     
-    private func setLayoutConstraints() {
+    private func makeConstraints() {
         let padding: CGFloat = 10
         
         cellImage.snp.makeConstraints { make in

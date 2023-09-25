@@ -68,7 +68,7 @@ final class WorldCupViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         addViews()
-        setLayoutConstraints()
+        makeConstraints()
     }
     
     func addViews() {
@@ -77,7 +77,7 @@ final class WorldCupViewController: UIViewController {
         }
     }
     
-    func setLayoutConstraints() {
+    func makeConstraints() {
         let padding: CGFloat = 20
         
         backgroundImageView.snp.makeConstraints { make in
