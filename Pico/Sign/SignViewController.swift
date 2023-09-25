@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 import SnapKit
 
-class SignViewController: UIViewController {
+final class SignViewController: UIViewController {
     
     private let picoLogoImageView: UIImageView = {
         let imageView = UIImageView()
@@ -52,7 +52,7 @@ class SignViewController: UIViewController {
     }
    
     @objc func tappedSignInButton() {
-        let viewController = SignInViewController() // 이동할 화면을 설정해주세요
+        let viewController = SignInViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
