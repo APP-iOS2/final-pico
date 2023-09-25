@@ -50,13 +50,13 @@ final class MailListTableViewCell: UITableViewCell {
         label.textColor = .red
         return label
     }()
-
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-       
+        
         addSubViews()
         makeConstraints()
-       
+        
     }
     
     func addSubViews() {
@@ -103,8 +103,8 @@ final class MailListTableViewCell: UITableViewCell {
         }
         
         dateStackView.snp.makeConstraints { make in
-                make.top.equalTo(nameLabel.snp.top)
-                make.trailing.equalTo(contentView.snp.trailing)
+            make.top.equalTo(nameLabel.snp.top)
+            make.trailing.equalTo(contentView.snp.trailing)
         }
         
         dateLabel.snp.makeConstraints { make in
@@ -117,7 +117,7 @@ final class MailListTableViewCell: UITableViewCell {
         }
         
     }
-   
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

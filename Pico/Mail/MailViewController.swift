@@ -37,7 +37,7 @@ final class MailViewController: UIViewController {
         mailListTableView.dataSource = self
         mailListTableView.rowHeight = 100
         mailListTableView.delegate = self
-      }
+    }
     
     func addSubViews() {
         view.addSubview(mailText)
@@ -47,7 +47,7 @@ final class MailViewController: UIViewController {
     func makeConstraints() {
         
         let safeArea = view.safeAreaLayoutGuide
-       
+        
         mailText.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(10)
             make.leading.equalTo(safeArea).offset(20)
