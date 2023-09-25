@@ -37,7 +37,12 @@ final class EntViewController: UIViewController {
         addViews()
         setLayoutConstraints()
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
     func addViews() {
         [randomBoxButton, collectionView].forEach { item in
             view.addSubview(item)
@@ -86,5 +91,9 @@ extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSourc
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let worldCupViewController = WorldCupViewController()
+        self.navigationController?.pushViewController(worldCupViewController, animated: true)
+        self.tabBarController?.tabBar.isHidden = true
     }
+
 }
