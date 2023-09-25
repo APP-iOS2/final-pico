@@ -7,11 +7,31 @@
 
 import UIKit
 
-class LikeMeViewController: UIViewController {
-
+final class LikeMeViewController: UIViewController {
+    let emptyView: LikeEmptyView = LikeEmptyView(frame: CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width), type: .uLikeMe)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .picoFontGray
+        addViews()
+        makeConstraints()
+        configButtons()
     }
-
+    
+    private func configButtons() {
+        emptyView.linkButton.addTarget(self, action: #selector(tappedLinkButton), for: .touchUpInside)
+    }
+    
+    private func addViews() {
+        view.addSubview(emptyView)
+    }
+    
+    private func makeConstraints() {
+        emptyView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    @objc func tappedLinkButton(_ sender: UIButton) {
+       // TODO: - home뷰 연결
+    }
 }
