@@ -12,8 +12,8 @@ class HomeTabImageViewController: UIViewController {
     private let paddingVertical = 25
     private let paddingBottom = 30
     private let buttonFrame = 65
-    var name: String
-    var age: String
+    private let name: String
+    private let age: String
     init(name: String, age: String) {
         self.name = name
         self.age = age
@@ -27,7 +27,9 @@ class HomeTabImageViewController: UIViewController {
     private let imageUrl: [String] = [
         "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg",
         "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
-        "https://i.namu.wiki/i/jUHcYJjORbNSurOw8cwl-g8jduAT01mhJJkF5oDbvyae_1hkSExnUQ0I5fDKgebUKzSFjSFhRheeSI9-rfpuDU8RJ9wqo5KwIodMVjuzKT2o6RK0IutUtsKWZrYxzT-cOvxKhbPm9c3PXo5H-OvBCA.webp"
+        "https://i.namu.wiki/i/jUHcYJjORbNSurOw8cwl-g8jduAT01mhJJkF5oDbvyae_1hkSExnUQ0I5fDKgebUKzSFjSFhRheeSI9-rfpuDU8RJ9wqo5KwIodMVjuzKT2o6RK0IutUtsKWZrYxzT-cOvxKhbPm9c3PXo5H-OvBCA.webp",
+        "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
+        "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg"
     ]
     //    private var imageUrl: [String]
     //    init(imageUrl: [String]) {
@@ -42,15 +44,16 @@ class HomeTabImageViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
-        
         return scrollView
     }()
     
     private let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
-        pageControl.currentPageIndicatorTintColor = UIColor.black
-        pageControl.pageIndicatorTintColor = UIColor.lightGray
-        
+        pageControl.currentPageIndicatorTintColor = UIColor.white
+        pageControl.pageIndicatorTintColor = UIColor.gray
+        pageControl.preferredIndicatorImage = UIImage(named: "pageStick")
+        pageControl.layer.cornerRadius = 10
+        pageControl.isUserInteractionEnabled = false
         return pageControl
     }()
     
@@ -150,6 +153,12 @@ class HomeTabImageViewController: UIViewController {
         makeConstraints()
         loadImages()
         infoNameAgeLabel.text = "\(name), \(age)"
+        if let customImage = UIImage(named: "pageStick") {
+            let resizedImage = customImage.resized(toSize: CGSize(width: 40, height: 5))
+            pageControl.preferredIndicatorImage = resizedImage
+        }
+        pageControl.addTarget(self, action: #selector(pageControlValueChanged(_:)), for: .valueChanged)
+        
     }
     
     func addSubView() {
@@ -172,8 +181,9 @@ class HomeTabImageViewController: UIViewController {
         }
         
         pageControl.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
             make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(view.safeAreaLayoutGuide).offset(20)
         }
         pageControl.numberOfPages = imageUrl.count
         
@@ -212,6 +222,7 @@ class HomeTabImageViewController: UIViewController {
         }
         
     }
+    
     private func loadImages() {
         for (index, urlStr) in imageUrl.enumerated() {
             if let url = URL(string: urlStr) {
@@ -226,7 +237,7 @@ class HomeTabImageViewController: UIViewController {
                     make.leading.equalTo(scrollView).offset(CGFloat(index) * view.frame.size.width + 10)
                     make.top.equalTo(scrollView).offset(10)
                     make.width.equalTo(view).offset(-20)
-                    make.height.equalTo(scrollView).offset(-10)
+                    make.height.equalTo(scrollView).offset(-20)
                 }
                 
                 DispatchQueue.global().async {
@@ -244,11 +255,24 @@ class HomeTabImageViewController: UIViewController {
         }
     }
     
+    @objc func pageControlValueChanged(_ sender: UIPageControl) {
+        let offsetX = CGFloat(sender.currentPage) * scrollView.frame.size.width
+        scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+    }
 }
 
 extension HomeTabImageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageIndex = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
         pageControl.currentPage = pageIndex
+    }
+}
+extension UIImage {
+    func resized(toSize newSize: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        self.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage ?? self
     }
 }
