@@ -32,6 +32,8 @@ final class LikeMeViewController: UIViewController {
     }
     
     @objc func tappedLinkButton(_ sender: UIButton) {
-       // TODO: - home뷰 연결
+        if let tabBarController = self.tabBarController as? TabBarController {
+            tabBarController.selectedIndex = 0
+        }
     }
 }
