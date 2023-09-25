@@ -46,9 +46,11 @@ final class WorldCupViewController: UIViewController {
         return label
     }()
     
-    private let gameStartButton: CommonButton = {
+    private lazy var gameStartButton: CommonButton = {
         let button = CommonButton()
         button.setTitle("시작", for: .normal)
+        button.addTarget(self, action: #selector(tappedGameStartButton), for: .touchUpInside)
+        
         return button
     }()
     
@@ -69,13 +71,13 @@ final class WorldCupViewController: UIViewController {
         makeConstraints()
     }
     
-    func addViews() {
+    private func addViews() {
         [backgroundImageView, worldCupTitleLabel, pickMeLabel, contentLabel, gameStartButton, guideLabel].forEach { item in
             view.addSubview(item)
         }
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         let padding: CGFloat = 20
         
         backgroundImageView.snp.makeConstraints { make in
@@ -109,6 +111,11 @@ final class WorldCupViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-padding * 1.5)
         }
-
+    }
+    
+    @objc func tappedGameStartButton() {
+        let worldCupGameViewController = WorldCupGameViewController()
+        self.navigationController?.pushViewController(worldCupGameViewController, animated: true)
+        self.tabBarController?.tabBar.isHidden = true
     }
 }
