@@ -8,7 +8,7 @@
 import UIKit
 
 final class LikeUViewController: UIViewController {
-    lazy var emptyView: UIView = LikeEmptyView(frame: view.frame, type: .iLikeU)
+    let emptyView: UIView = LikeEmptyView(frame: CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width), type: .iLikeU)
     
     override func viewDidLoad() {
         super.viewDidLoad()
