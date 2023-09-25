@@ -188,6 +188,7 @@ final class DetailViewController: UIViewController {
             make.leading.equalTo(locationImageView.snp.trailing).offset(5)
             //  make.trailing.equalToSuperview().offset(-20) 왜 이미지가 늘어날까요
         }
+        
         heightImageView.snp.makeConstraints { make in
             make.top.equalTo(locationLabel.snp.bottom).offset(10)
             make.leading.equalTo(vStackView).offset(20)
