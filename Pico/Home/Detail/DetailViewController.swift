@@ -22,19 +22,20 @@ final class DetailViewController: UIViewController {
     
     private let leftBarButton: UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.left"), style: .plain, target: DetailViewController.self, action: #selector(tappedNavigationButton))
-        barButtonItem.tintColor = .picoFontBlack
+        barButtonItem.tintColor = .black
         return barButtonItem
     }()
     
     private let rightBarButton: UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: DetailViewController.self, action: #selector(tappedNavigationButton))
-        barButtonItem.tintColor = .picoFontBlack
+        barButtonItem.tintColor = .black
         return barButtonItem
     }()
     
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        return scrollView
+    private let vStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
     }()
     
     private var userImageView: UIImageView = {
@@ -57,7 +58,7 @@ final class DetailViewController: UIViewController {
         return label
     }()
     
-    private let mapImageView: UIImageView = {
+    private let locationImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "map")
         imageView.tintColor = .black
@@ -85,9 +86,10 @@ final class DetailViewController: UIViewController {
     
     private let introLabel: UILabel = {
         let label = UILabel()
-        label.text = "저랑 블랙맘바 잡으러 가실래요?"
+        label.text = "저랑 블랙맘바 잡으러 가실래요?저랑 블랙맘바 잡으러 가실래요?저랑 블랙맘바 잡으러 가실래요?저랑 블랙맘바 잡으러 가실래요?"
         label.textAlignment = .center
         label.backgroundColor = .picoGray
+        label.numberOfLines = 0
         return label
     }()
     
@@ -103,9 +105,10 @@ final class DetailViewController: UIViewController {
         label.text = "멋사대학교"
         return label
     }()
+    
     private let religionImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "graduationcap.fill")
+        imageView.image = UIImage(systemName: "hands.sparkles.fill")
         imageView.tintColor = .black
         return imageView
     }()
@@ -132,7 +135,7 @@ final class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        addsubViews()
+        addViews()
         makeConstraints()
         configureNavigationBar()
     }
@@ -147,14 +150,10 @@ final class DetailViewController: UIViewController {
         navigationBar.setItems([navItem], animated: true)
     }
     
-    final private func addsubViews() {
-        [scrollView, navigationBar].forEach {
-            view.addSubview($0)
-        }
-        let views = [userImageView, nameAgeLabel, mapImageView, locationLabel, heightImageView, heightLabel, introLabel]
-        views.forEach {
-            scrollView.addSubview($0)
-        }
+    final private func addViews() {
+        let views = [userImageView, nameAgeLabel, locationImageView, locationLabel, heightImageView, heightLabel, introLabel, educationImageView, educationLabel, religionImageView, religionLabel, smokeImageView, smokeLabel]
+        [vStackView, navigationBar].forEach { view.addSubview($0) }
+        views.forEach { vStackView.addSubview($0) }
     }
     
     final private func makeConstraints() {
@@ -162,37 +161,67 @@ final class DetailViewController: UIViewController {
         navigationBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(safeArea)
         }
-        scrollView.snp.makeConstraints { make in
-            make.top.equalTo(navigationBar.snp.bottom)
-            make.leading.trailing.bottom.equalTo(safeArea)
+        
+        vStackView.snp.makeConstraints { make in
+            make.edges.equalTo(safeArea)
         }
+        
         userImageView.snp.makeConstraints { make in
-            make.width.equalTo(scrollView)
+            make.top.equalTo(navigationBar.snp.bottom)
+            make.width.equalTo(vStackView)
             make.height.equalTo(250)
         }
+        
         nameAgeLabel.snp.makeConstraints { make in
             make.top.equalTo(userImageView.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
         }
-        mapImageView.snp.makeConstraints { make in
+        
+        locationImageView.snp.makeConstraints { make in
             make.top.equalTo(nameAgeLabel.snp.bottom).offset(10)
-            make.leading.equalTo(scrollView).offset(20)
+            make.leading.equalTo(vStackView).offset(20)
         }
+        
         locationLabel.snp.makeConstraints { make in
-            make.top.equalTo(nameAgeLabel.snp.bottom).offset(10)
-            make.leading.equalTo(mapImageView.snp.trailing).offset(5)
+            make.top.equalTo(locationImageView.snp.top)
+            make.leading.equalTo(locationImageView.snp.trailing).offset(5)
+            //  make.trailing.equalToSuperview().offset(-20) 왜 이미지가 늘어날까요
         }
         heightImageView.snp.makeConstraints { make in
             make.top.equalTo(locationLabel.snp.bottom).offset(10)
-            make.leading.equalTo(scrollView).offset(20)
+            make.leading.equalTo(vStackView).offset(20)
         }
+        
         heightLabel.snp.makeConstraints { make in
-            make.top.equalTo(locationLabel.snp.bottom).offset(10)
+            make.top.equalTo(heightImageView.snp.top)
             make.leading.equalTo(heightImageView.snp.trailing).offset(5)
         }
+        
         introLabel.snp.makeConstraints { make in
-            make.top.equalTo(heightLabel.snp.bottom).offset(50)
-            make.centerX.equalToSuperview()
+            make.top.equalTo(heightLabel.snp.bottom).offset(30)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+        }
+        
+        educationImageView.snp.makeConstraints { make in
+            make.top.equalTo(introLabel.snp.bottom).offset(30)
+            make.leading.equalTo(vStackView).offset(20)
+        }
+        
+        educationLabel.snp.makeConstraints { make in
+            make.top.equalTo(educationImageView.snp.top)
+            make.leading.equalTo(heightImageView.snp.trailing).offset(5)
+        }
+        
+        religionImageView.snp.makeConstraints { make in
+            make.top.equalTo(educationImageView.snp.bottom).offset(15)
+            make.leading.equalTo(vStackView).offset(20)
+        }
+        
+        religionLabel.snp.makeConstraints { make in
+            make.top.equalTo(religionImageView.snp.top)
+            make.leading.equalTo(heightImageView.snp.trailing).offset(5)
         }
     }
 }
