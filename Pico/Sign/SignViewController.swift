@@ -43,10 +43,10 @@ final class SignViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
-        configButtons()
+        configButton()
     }
     
-    private func configButtons() {
+    private func configButton() {
         signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
     }
@@ -62,10 +62,9 @@ final class SignViewController: UIViewController {
     }
     
     private func addSubViews() {
-        view.addSubview(picoLogoImageView)
-        view.addSubview(picoChuImageView)
-        view.addSubview(signInButton)
-        view.addSubview(signUpButton)
+        for viewItem in [picoLogoImageView, picoChuImageView, signInButton, signUpButton] {
+            view.addSubview(viewItem)
+        }
     }
     
     private func makeConstraints() {
