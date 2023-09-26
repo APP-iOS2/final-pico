@@ -56,6 +56,7 @@
 		B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */; };
 		B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */; };
 		BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB63A762AC1883C00389432 /* HomeTabImageViewController.swift */; };
+		BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +127,7 @@
 		B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
 		B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 		BCB63A762AC1883C00389432 /* HomeTabImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabImageViewController.swift; sourceTree = "<group>"; };
+		BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFilterViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,6 +253,7 @@
 				54B4411A2AC1616500EC8846 /* Detail */,
 				B14B58CD2AC0A230009889DA /* HomeViewController.swift */,
 				BCB63A762AC1883C00389432 /* HomeTabImageViewController.swift */,
+				BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -665,6 +668,7 @@
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
+				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
 				B17D67942AC0AD45006F91DC /* Like.swift in Sources */,
 				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,

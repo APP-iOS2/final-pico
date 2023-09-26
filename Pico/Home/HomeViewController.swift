@@ -11,11 +11,6 @@ import SwiftUI
 
 final class HomeViewController: UIViewController {
     
-    private let navigationBar: UINavigationBar = {
-        let navigationBar = UINavigationBar()
-        return navigationBar
-    }()
-    
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,13 +21,16 @@ final class HomeViewController: UIViewController {
         makeConstraints()
         addTabImageViewController()
     }
-    
+//    private func configButtons() {
+//        signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
+////        signUpButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+//    }
     func configNavigationBarItem() {
         let notificationImage = UIImage(systemName: "bell.fill")
         let filterImage = UIImage(systemName: "slider.horizontal.3")
         
         let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: nil, action: nil)
-        let filterButton = UIBarButtonItem(image: filterImage, style: .plain, target: nil, action: nil)
+        let filterButton = UIBarButtonItem(image: filterImage, style: .plain, target: self, action: #selector(tappedFilterButton))
         
         notificationButton.tintColor = .darkGray
         filterButton.tintColor = .darkGray
@@ -40,7 +38,6 @@ final class HomeViewController: UIViewController {
     }
     
     func addSubView() {
-        view.addSubview(navigationBar)
         
     }
     
@@ -54,4 +51,11 @@ final class HomeViewController: UIViewController {
         view.addSubview(tabImageViewController.view)
         tabImageViewController.didMove(toParent: self)
     }
+    
+    @objc func tappedFilterButton() {
+        
+        let viewController = HomeFilterViewController()
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
 }
