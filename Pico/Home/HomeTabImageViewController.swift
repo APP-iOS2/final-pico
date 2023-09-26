@@ -8,12 +8,14 @@
 import UIKit
 import SnapKit
 
-class HomeTabImageViewController: UIViewController {
+final class HomeTabImageViewController: UIViewController {
+    
     private let paddingVertical = 25
     private let paddingBottom = 30
     private let buttonFrame = 65
     private let name: String
     private let age: String
+    
     init(name: String, age: String) {
         self.name = name
         self.age = age
@@ -265,14 +267,5 @@ extension HomeTabImageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageIndex = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
         pageControl.currentPage = pageIndex
-    }
-}
-extension UIImage {
-    func resized(toSize newSize: CGSize) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
-        self.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage ?? self
     }
 }
