@@ -17,10 +17,10 @@
 		53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
 		534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F92AC129830035E41A /* LikeMeViewController.swift */; };
-		54B4411D2AC1619200EC8846 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4411C2AC1619200EC8846 /* DetailViewController.swift */; };
-		54B441232AC1B9ED00EC8846 /* TopUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B441222AC1B9ED00EC8846 /* TopUserDetailViewController.swift */; };
-		54B441252AC1BEE100EC8846 /* MiddleUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B441242AC1BEE100EC8846 /* MiddleUserDetailViewController.swift */; };
-		54B441272AC1FB8300EC8846 /* BottomUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B441262AC1FB8300EC8846 /* BottomUserDetailViewController.swift */; };
+		54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412A2AC2C36200EC8846 /* UserDetailViewController.swift */; };
+		54B441302AC2C36C00EC8846 /* TopUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412D2AC2C36C00EC8846 /* TopUserTableViewCell.swift */; };
+		54B441312AC2C36C00EC8846 /* MiddleUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412F2AC2C36C00EC8846 /* MiddleUserTableViewCell.swift */; };
+		54B441322AC2C36C00EC8846 /* BottomUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412E2AC2C36C00EC8846 /* BottomUserTableViewCell.swift */; };
 		6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */; };
 		6A73784D2AC26AD50047DE35 /* MyPageFirstTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */; };
 		6A73784F2AC26AEA0047DE35 /* MyPageSecondTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */; };
@@ -98,10 +98,10 @@
 		53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeEmptyView.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
-		54B4411C2AC1619200EC8846 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		54B441222AC1B9ED00EC8846 /* TopUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopUserDetailViewController.swift; sourceTree = "<group>"; };
-		54B441242AC1BEE100EC8846 /* MiddleUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiddleUserDetailViewController.swift; sourceTree = "<group>"; };
-		54B441262AC1FB8300EC8846 /* BottomUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomUserDetailViewController.swift; sourceTree = "<group>"; };
+		54B4412A2AC2C36200EC8846 /* UserDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
+		54B4412D2AC2C36C00EC8846 /* TopUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopUserTableViewCell.swift; sourceTree = "<group>"; };
+		54B4412E2AC2C36C00EC8846 /* BottomUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomUserTableViewCell.swift; sourceTree = "<group>"; };
+		54B4412F2AC2C36C00EC8846 /* MiddleUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiddleUserTableViewCell.swift; sourceTree = "<group>"; };
 		6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableView.swift; sourceTree = "<group>"; };
 		6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageFirstTableCell.swift; sourceTree = "<group>"; };
 		6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSecondTableCell.swift; sourceTree = "<group>"; };
@@ -185,10 +185,10 @@
 		54B4411A2AC1616500EC8846 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				54B4411C2AC1619200EC8846 /* DetailViewController.swift */,
-				54B441222AC1B9ED00EC8846 /* TopUserDetailViewController.swift */,
-				54B441242AC1BEE100EC8846 /* MiddleUserDetailViewController.swift */,
-				54B441262AC1FB8300EC8846 /* BottomUserDetailViewController.swift */,
+				54B4412E2AC2C36C00EC8846 /* BottomUserTableViewCell.swift */,
+				54B4412F2AC2C36C00EC8846 /* MiddleUserTableViewCell.swift */,
+				54B4412D2AC2C36C00EC8846 /* TopUserTableViewCell.swift */,
+				54B4412A2AC2C36200EC8846 /* UserDetailViewController.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -727,10 +727,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
+				54B441312AC2C36C00EC8846 /* MiddleUserTableViewCell.swift in Sources */,
 				6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
 				BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */,
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
+				54B441302AC2C36C00EC8846 /* TopUserTableViewCell.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
@@ -746,7 +748,6 @@
 				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIViewController+Extensions.swift in Sources */,
-				54B441272AC1FB8300EC8846 /* BottomUserDetailViewController.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
 				6A73784D2AC26AD50047DE35 /* MyPageFirstTableCell.swift in Sources */,
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,
@@ -760,8 +761,7 @@
 				B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */,
 				B17D679F2AC0B116006F91DC /* UserDefaultsData.swift in Sources */,
 				B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */,
-				54B441232AC1B9ED00EC8846 /* TopUserDetailViewController.swift in Sources */,
-				54B4411D2AC1619200EC8846 /* DetailViewController.swift in Sources */,
+				54B441322AC2C36C00EC8846 /* BottomUserTableViewCell.swift in Sources */,
 				4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */,
 				36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */,
 				B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */,
@@ -775,9 +775,9 @@
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
 				B17D67902AC0AC15006F91DC /* Block.swift in Sources */,
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
+				54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */,
 				4B157D3A2AC116B400EEDEC1 /* RandomBoxBanner.swift in Sources */,
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
-				54B441252AC1BEE100EC8846 /* MiddleUserDetailViewController.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
