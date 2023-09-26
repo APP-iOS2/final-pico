@@ -9,7 +9,6 @@ import UIKit
 
 final class SettingTableCell: UITableViewCell {
     
-    static let identifier = "SettingTableCell"
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
