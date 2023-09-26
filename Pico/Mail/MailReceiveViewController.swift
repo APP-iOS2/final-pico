@@ -12,5 +12,14 @@ final class MailReceiveViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+        addViews()
+        makeConstraints()
+    }
+    
+    private func addViews() {
+    }
+    
+    private func makeConstraints() {
     }
 }

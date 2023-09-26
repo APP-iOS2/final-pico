@@ -85,10 +85,14 @@ extension MailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "MailListTableViewCell", for: indexPath) as? MailListTableViewCell else { return UITableViewCell() }
         cell.getData(imageString: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", nameText: "강아지는월월", mbti: "ISTP", message: "하이룽", date: "9.26", new: true)
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("select \(indexPath.row)")
+        
+        let mailSendView = MailSendViewController()
+        mailSendView.modalPresentationStyle = .pageSheet
+        self.present(mailSendView, animated: true, completion: nil)
     }
 }
