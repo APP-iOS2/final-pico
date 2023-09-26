@@ -1,14 +1,14 @@
 //
-//  RandomBoxBanner.swift
+//  RandomBoxCell.swift
 //  Pico
 //
-//  Created by 오영석 on 2023/09/25.
+//  Created by 오영석 on 2023/09/26.
 //
 
 import UIKit
 import SnapKit
 
-final class RandomBoxBanner: UIButton {
+final class RandomBoxCell: UICollectionViewCell {
     
     private let boxChuImage: UIImageView = {
         let imageView = UIImageView()
@@ -56,12 +56,18 @@ final class RandomBoxBanner: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        style()
         addViews()
         makeConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func style() {
+        self.layer.borderWidth = 1.0
+        self.layer.cornerRadius = 10
     }
     
     private func addViews() {
