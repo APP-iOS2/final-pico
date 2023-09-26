@@ -118,6 +118,13 @@ extension SignInViewController: UITextFieldDelegate {
             textField.textColor = .picoBlue
             return true
         }
+        
+        textField.text = formattedTextFieldText(filteredText)
+        
+        return false
+    }
+    
+    func formattedTextFieldText(_ filteredText: String) -> String {
         let formattedText: String
         
         if filteredText.count <= 3 {
@@ -133,9 +140,7 @@ extension SignInViewController: UITextFieldDelegate {
             formattedText = "\(firstPart)-\(secondPart)-\(thirdPart)"
         }
         
-        textField.text = formattedText
-        
-        return false
+        return formattedText
     }
 }
 

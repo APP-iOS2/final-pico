@@ -16,7 +16,7 @@ class SignUpGenderViewController: UIViewController {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
-        view.progress = 0.284
+        view.progress = 0.426
         view.layer.cornerRadius = 5
         return view
     }()

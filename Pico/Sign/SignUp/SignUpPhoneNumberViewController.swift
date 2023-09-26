@@ -139,15 +139,14 @@ extension SignUpPhoneNumberViewController: UITextFieldDelegate {
         phoneNumberTextField.resignFirstResponder()
         self.view.endEditing(true)
     }
-    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+
         let currentText = (textField.text ?? "") as NSString
         let updatedText = currentText.replacingCharacters(in: range, with: string)
         let digits = CharacterSet.decimalDigits
         let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
         isFullPhoneNumber = false
-        textField.textColor = .picoFontBlack
-        nextButton.backgroundColor = .picoGray
+        textField.textColor = .gray
         if filteredText.count > 11 {
             isFullPhoneNumber = true
             textField.textColor = .picoBlue
@@ -160,6 +159,12 @@ extension SignUpPhoneNumberViewController: UITextFieldDelegate {
             return true
         }
         
+        textField.text = formattedTextFieldText(filteredText)
+        
+        return false
+    }
+    
+    func formattedTextFieldText(_ filteredText: String) -> String {
         let formattedText: String
         
         if filteredText.count <= 3 {
@@ -175,9 +180,7 @@ extension SignUpPhoneNumberViewController: UITextFieldDelegate {
             formattedText = "\(firstPart)-\(secondPart)-\(thirdPart)"
         }
         
-        textField.text = formattedText
-        
-        return false
+        return formattedText
     }
 }
 
