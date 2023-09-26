@@ -10,20 +10,13 @@ import SwiftUI
 
 final class SignUpViewController: UIViewController {
     
-    private var stss: [String] = ["", "", "", ""]
-    
-    private let picoLogoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
+    private var userMbti: [String] = ["", "", "", ""]
     
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
-        view.progress = 0.1
+        view.progress = 0.142
         view.layer.cornerRadius = 5
         return view
     }()
@@ -37,7 +30,7 @@ final class SignUpViewController: UIViewController {
         return label
     }()
     
-    private lazy var stackView: UIStackView = {
+    private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -52,7 +45,7 @@ final class SignUpViewController: UIViewController {
         button.setTitleColor(.picoFontBlack, for: .normal)
         button.layer.borderWidth = 2
         button.layer.cornerRadius = 10
-        button.tag = 1
+        button.tag = 0
         button.clipsToBounds = true
         return button
     }()
@@ -63,7 +56,7 @@ final class SignUpViewController: UIViewController {
         button.setTitleColor(.picoFontBlack, for: .normal)
         button.layer.borderWidth = 2
         button.layer.cornerRadius = 10
-        button.tag = 2
+        button.tag = 1
         button.clipsToBounds = true
         return button
     }()
@@ -74,7 +67,7 @@ final class SignUpViewController: UIViewController {
         button.setTitleColor(.picoFontBlack, for: .normal)
         button.layer.borderWidth = 2
         button.layer.cornerRadius = 10
-        button.tag = 3
+        button.tag = 2
         button.clipsToBounds = true
         return button
     }()
@@ -85,7 +78,7 @@ final class SignUpViewController: UIViewController {
         button.setTitleColor(.picoFontBlack, for: .normal)
         button.layer.borderWidth = 2
         button.layer.cornerRadius = 10
-        button.tag = 4
+        button.tag = 3
         button.clipsToBounds = true
         return button
     }()
@@ -109,6 +102,12 @@ final class SignUpViewController: UIViewController {
         mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         mbtiThirdButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         mbtiFourthButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+    }
+    
+    @objc private func tappedNextButton() {
+        let viewController = SignUpPhoneNumberViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     @objc private func tappedMbtiButton(_ sender: UIButton) {
@@ -120,35 +119,32 @@ final class SignUpViewController: UIViewController {
         }
         
         switch sender.tag {
-        case 1:
+        case 0:
             modalVC.firstWord = "E"
             modalVC.secondWord = "I"
+            modalVC.num = 0
+            modalVC.delegate = self
+            present(modalVC, animated: true)
+        case 1:
+            modalVC.firstWord = "S"
+            modalVC.secondWord = "N"
             modalVC.num = 1
             modalVC.delegate = self
             present(modalVC, animated: true)
-            
         case 2:
-            modalVC.firstWord = "S"
-            modalVC.secondWord = "N"
+            modalVC.firstWord = "T"
+            modalVC.secondWord = "F"
             modalVC.num = 2
             modalVC.delegate = self
             present(modalVC, animated: true)
-            
         case 3:
-            modalVC.firstWord = "T"
-            modalVC.secondWord = "F"
+            modalVC.firstWord = "J"
+            modalVC.secondWord = "P"
             modalVC.num = 3
             modalVC.delegate = self
             present(modalVC, animated: true)
-            
-        case 4:
-            modalVC.firstWord = "J"
-            modalVC.secondWord = "P"
-            modalVC.num = 4
-            modalVC.delegate = self
-            present(modalVC, animated: true)
-                
-        default: break
+        default: 
+            break
         }
     }
     
@@ -156,20 +152,17 @@ final class SignUpViewController: UIViewController {
         for stackViewItem in [mbtiFirstButton, mbtiSecondButton, mbtiThirdButton, mbtiFourthButton] {
             stackView.addArrangedSubview(stackViewItem)
         }
-        for viewItem in [picoLogoImageView, progressView, notifyLabel, stackView, nextButton] {
+        
+        for viewItem in [ progressView, notifyLabel, stackView, nextButton] {
             view.addSubview(viewItem)
         }
     }
     
     private func makeConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
-        picoLogoImageView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(-10)
-            make.leading.equalTo(10)
-            make.height.equalTo(100)
-        }
+        
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(picoLogoImageView.snp.bottom).offset(-10)
+            make.top.equalTo(safeArea).offset(10)
             make.leading.equalTo(25)
             make.trailing.equalTo(-25)
             make.height.equalTo(8)
@@ -201,21 +194,20 @@ final class SignUpViewController: UIViewController {
 extension SignUpViewController: SignViewControllerDelegate {
     func choiceMbti(mbti: String, num: Int) {
         switch num {
-        case 1:
-            stss[num - 1] = mbti
+        case 0:
+            userMbti[num] = mbti
             mbtiFirstButton.setTitle(mbti, for: .normal)
-        case 2:
-            stss[num - 1] = mbti
+        case 1:
+            userMbti[num] = mbti
             mbtiSecondButton.setTitle(mbti, for: .normal)
-        case 3:
-            stss[num - 1] = mbti
+        case 2:
+            userMbti[num] = mbti
             mbtiThirdButton.setTitle(mbti, for: .normal)
-        case 4:
-            stss[num - 1] = mbti
+        case 3:
+            userMbti[num] = mbti
             mbtiFourthButton.setTitle(mbti, for: .normal)
         default:
             return
         }
     }
-    
 }
