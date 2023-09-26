@@ -47,7 +47,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return textField
     }()
     
-    private lazy var phoneNumberCheckButton: UIButton = {
+    private let phoneNumberCheckButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("  인증  ", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
