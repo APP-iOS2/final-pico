@@ -76,21 +76,11 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     }
     
     func configData(imageUrl: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool) {
-        loadAsyncImage(imageView: userImageView, urlString: imageUrl)
+        guard let url = URL(string: imageUrl) else { return }
+        guard let image = userImageView.image else { return }
+        userImageView.load(url: url)
         messageButton.isHidden = isHiddenMessageButton
         deleteButton.isHidden = isHiddenDeleteButton
-    }
-    
-    private func loadAsyncImage(imageView: UIImageView, urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data,
-                  response != nil,
-                  error == nil else { return }
-            DispatchQueue.main.async {
-                imageView.image = UIImage(data: data) ?? UIImage()
-            }
-        }.resume()
     }
     
     private func configButtons() {
