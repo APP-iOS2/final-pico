@@ -12,8 +12,7 @@ final class MailListTableViewCell: UITableViewCell {
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "chu")
+        imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 35
         return imageView
     }()
@@ -57,8 +56,6 @@ final class MailListTableViewCell: UITableViewCell {
         
         addViews()
         makeConstraints()
-        getData(nameText: "강아지는월월", mbti: "ISTP", message: "하이용", date: "9/25", new: true)
-        
     }
     
     func addViews() {
@@ -74,13 +71,12 @@ final class MailListTableViewCell: UITableViewCell {
         [dateLabel, newLabel].forEach {
             dateStackView.addSubview($0)
         }
-        
     }
     
     func makeConstraints() {
         
         userImage.snp.makeConstraints { make in
-            make.leading.equalTo(contentView)
+            make.leading.equalTo(contentView).offset(10)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(70.0)
         }
@@ -108,7 +104,7 @@ final class MailListTableViewCell: UITableViewCell {
         }
         
         dateStackView.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel)
+            make.top.bottom.equalTo(nameLabel)
             make.leading.equalTo(infoStackView.snp.trailing)
             make.trailing.equalTo(contentView.snp.trailing)
         }
@@ -123,7 +119,10 @@ final class MailListTableViewCell: UITableViewCell {
         }
     }
     
-    func getData(nameText: String, mbti: String, message: String, date: String, new: Bool) {
+    func getData(imageString: String, nameText: String, mbti: String, message: String, date: String, new: Bool) {
+        if let imageURL = URL(string: imageString) {
+            userImage.load(url: imageURL)
+        }
         nameLabel.text = nameText
         mbtiLabel.text = mbti
         self.message.text = message

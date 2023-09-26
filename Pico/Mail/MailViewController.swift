@@ -28,6 +28,7 @@ final class MailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
+        configLogoBarItem()
         configTableView()
         addViews()
         makeConstraints()
@@ -50,7 +51,7 @@ final class MailViewController: UIViewController {
         
         mailText.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(10)
-            make.leading.trailing.equalTo(safeArea).offset(20)
+            make.leading.trailing.equalTo(safeArea).offset(30)
         }
         
         mailListTableView.snp.makeConstraints { make in
@@ -67,6 +68,7 @@ extension MailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "MailListTableViewCell", for: indexPath) as? MailListTableViewCell else { return UITableViewCell() }
+        cell.getData(imageString: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", nameText: "강아지는월월", mbti: "ISTP", message: "하이룽", date: "9.26", new: true)
         return cell
     }
     
