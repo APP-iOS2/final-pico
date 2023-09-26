@@ -15,4 +15,8 @@ struct Identifier {
         static let entVC = "EntViewController"
         static let mypageVC = "MypageViewController"
     }
+    
+    struct CollectionView {
+        static let likeCell = "LikeCollectionViewCell"
+    }
 }

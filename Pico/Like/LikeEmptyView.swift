@@ -39,7 +39,7 @@ final class LikeEmptyView: UIView {
         return button
     }()
     
-    convenience init(frame: CGRect, type: EmptyViewType) {
+    convenience init(frame: CGRect = CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width), type: EmptyViewType) {
         self.init(frame: frame)
         self.viewType = type
         addViews()

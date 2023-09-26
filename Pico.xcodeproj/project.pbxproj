@@ -14,6 +14,7 @@
 		4B157D3A2AC116B400EEDEC1 /* RandomBoxBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */; };
 		4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */; };
 		531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* MyTransition.swift */; };
+		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
@@ -94,6 +95,7 @@
 		4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxBanner.swift; sourceTree = "<group>"; };
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* MyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTransition.swift; sourceTree = "<group>"; };
+		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeEmptyView.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
@@ -313,9 +315,10 @@
 			isa = PBXGroup;
 			children = (
 				B14B590B2AC0A64C009889DA /* LikeViewController.swift */,
-				534172F72AC129730035E41A /* LikeUViewController.swift */,
 				534172F92AC129830035E41A /* LikeMeViewController.swift */,
+				534172F72AC129730035E41A /* LikeUViewController.swift */,
 				53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */,
+				531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */,
 			);
 			path = Like;
 			sourceTree = "<group>";
@@ -729,6 +732,7 @@
 				53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
 				534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */,
+				531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */,
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
@@ -737,6 +741,7 @@
 				6A73784F2AC26AEA0047DE35 /* MyPageSecondTableCell.swift in Sources */,
 				B15ABE282AC2721200529C29 /* MBTI.swift in Sources */,
 				531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */,
+				6A73784F2AC26AEA0047DE35 /* MyPageSecondTableCell.swift in Sources */,
 				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIViewController+Extensions.swift in Sources */,
