@@ -58,12 +58,24 @@ final class MbtiModalViewController: UIViewController {
         return button
     }()
     
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
         configButton()
+    }
+    
+    // MARK: - config
+    private func configButton() {
+        guard let firstWord else { return }
+        guard let secondWord else { return }
+        mbtiFirstButton.setTitle(firstWord, for: .normal)
+        mbtiSecondButton.setTitle(secondWord, for: .normal)
+        
+        mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
+        mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
     }
     
     @objc func tappedMbtiButton(_ sender: UIButton) {
@@ -85,16 +97,8 @@ final class MbtiModalViewController: UIViewController {
             self.dismiss(animated: false, completion: nil)
         })
     }
-        
-    private func configButton() {
-        guard let firstWord else { return }
-        guard let secondWord else { return }
-        mbtiFirstButton.setTitle(firstWord, for: .normal)
-        mbtiSecondButton.setTitle(secondWord, for: .normal)
-        mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
-        mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
-    }
     
+    // MARK: - UI 관련
     private func addSubViews() {
         for stackViewItem in [mbtiFirstButton, mbtiSecondButton] {
             stackView.addArrangedSubview(stackViewItem)
@@ -122,5 +126,4 @@ final class MbtiModalViewController: UIViewController {
             make.height.equalTo(130)
         }
     }
-    
 }

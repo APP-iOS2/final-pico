@@ -23,7 +23,6 @@ final class SignViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
         return imageView
-        
     }()
     
     private let signInButton: CommonButton = {
@@ -38,12 +37,18 @@ final class SignViewController: UIViewController {
         return button
     }()
     
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
         configButton()
+    }
+    
+    private func configButton() {
+        signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
+        signUpButton.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
     }
     
     @objc private func tappedSignInButton(_ sender: UIButton) {
@@ -58,11 +63,7 @@ final class SignViewController: UIViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func configButton() {
-        signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
-        signUpButton.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
-    }
-    
+    // MARK: - UI관련
     private func addSubViews() {
         for viewItem in [picoLogoImageView, picoChuImageView, signInButton, signUpButton] {
             view.addSubview(viewItem)
@@ -102,5 +103,4 @@ final class SignViewController: UIViewController {
             make.height.equalTo(50)
         }
     }
-    
 }

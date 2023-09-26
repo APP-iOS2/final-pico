@@ -38,7 +38,12 @@ final class LoginSuccessViewController: UIViewController {
         makeConstraints()
         configButton()
     }
-    
+
+    // MARK: - cofig
+    private func configButton() {
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+    }
+
     @objc private func tappedNextButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
 //        if isTappedNextButton {
@@ -47,10 +52,7 @@ final class LoginSuccessViewController: UIViewController {
 //        }
     }
     
-    private func configButton() {
-        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
-    }
-    
+    // MARK: - UI 관련
     private func addSubViews() {
         for viewItem in [notifyLabel, checkImageView, nextButton] {
             view.addSubview(viewItem)

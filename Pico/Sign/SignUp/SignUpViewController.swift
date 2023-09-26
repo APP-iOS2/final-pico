@@ -89,6 +89,7 @@ final class SignUpViewController: UIViewController {
         return button
     }()
     
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -97,6 +98,7 @@ final class SignUpViewController: UIViewController {
         configButton()
     }
     
+    // MARK: - config
     private func configButton() {
         mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
@@ -150,6 +152,32 @@ final class SignUpViewController: UIViewController {
             break
         }
     }
+}
+
+extension SignUpViewController: SignViewControllerDelegate {
+    
+    func choiceMbti(mbti: String, num: Int) {
+        switch num {
+        case 0:
+            userMbti[num] = mbti
+            mbtiFirstButton.setTitle(mbti, for: .normal)
+        case 1:
+            userMbti[num] = mbti
+            mbtiSecondButton.setTitle(mbti, for: .normal)
+        case 2:
+            userMbti[num] = mbti
+            mbtiThirdButton.setTitle(mbti, for: .normal)
+        case 3:
+            userMbti[num] = mbti
+            mbtiFourthButton.setTitle(mbti, for: .normal)
+        default:
+            return
+        }
+    }
+}
+
+// MARK: - UI 관련
+extension SignUpViewController {
     
     private func addSubViews() {
         for stackViewItem in [mbtiFirstButton, mbtiSecondButton, mbtiThirdButton, mbtiFourthButton] {
@@ -190,27 +218,6 @@ final class SignUpViewController: UIViewController {
             make.trailing.equalTo(-20)
             make.bottom.equalTo(safeArea).offset(-30)
             make.height.equalTo(50)
-        }
-    }
-}
-
-extension SignUpViewController: SignViewControllerDelegate {
-    func choiceMbti(mbti: String, num: Int) {
-        switch num {
-        case 0:
-            userMbti[num] = mbti
-            mbtiFirstButton.setTitle(mbti, for: .normal)
-        case 1:
-            userMbti[num] = mbti
-            mbtiSecondButton.setTitle(mbti, for: .normal)
-        case 2:
-            userMbti[num] = mbti
-            mbtiThirdButton.setTitle(mbti, for: .normal)
-        case 3:
-            userMbti[num] = mbti
-            mbtiFourthButton.setTitle(mbti, for: .normal)
-        default:
-            return
         }
     }
 }
