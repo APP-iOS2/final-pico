@@ -42,7 +42,7 @@ final class MbtiModalViewController: UIViewController {
         button.setTitleColor(.picoFontBlack, for: .normal)
         button.layer.borderWidth = 2
         button.layer.cornerRadius = 10
-        button.tag = 1
+        button.tag = 0
         button.clipsToBounds = true
         return button
     }()
@@ -53,7 +53,7 @@ final class MbtiModalViewController: UIViewController {
         button.setTitleColor(.picoFontBlack, for: .normal)
         button.layer.borderWidth = 2
         button.layer.cornerRadius = 10
-        button.tag = 2
+        button.tag = 1
         button.clipsToBounds = true
         return button
     }()
@@ -79,9 +79,9 @@ final class MbtiModalViewController: UIViewController {
         guard let text = sender.titleLabel?.text else { return }
         guard let number = num else { return }
         switch sender.tag {
-        case 1:
+        case 0:
             mbtiFirstButton.backgroundColor = .picoBetaBlue
-        case 2:
+        case 1:
             mbtiSecondButton.backgroundColor = .picoBetaBlue
         default:
             break
@@ -94,6 +94,7 @@ final class MbtiModalViewController: UIViewController {
         for stackViewItem in [mbtiFirstButton, mbtiSecondButton] {
             stackView.addArrangedSubview(stackViewItem)
         }
+        
         for viewItem in [notifyLabel, stackView] {
             view.addSubview(viewItem)
         }
