@@ -14,8 +14,10 @@
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
 		534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F92AC129830035E41A /* LikeMeViewController.swift */; };
-		695A86C42AC1436400789346 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695A86C32AC1436400789346 /* MailListTableViewCell.swift */; };
 		54B4411D2AC1619200EC8846 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4411C2AC1619200EC8846 /* DetailViewController.swift */; };
+		54B441232AC1B9ED00EC8846 /* TopUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B441222AC1B9ED00EC8846 /* TopUserDetailViewController.swift */; };
+		54B441252AC1BEE100EC8846 /* MiddleUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B441242AC1BEE100EC8846 /* MiddleUserDetailViewController.swift */; };
+		54B441272AC1FB8300EC8846 /* BottomUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B441262AC1FB8300EC8846 /* BottomUserDetailViewController.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
 		B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CB2AC0A230009889DA /* SceneDelegate.swift */; };
 		B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CD2AC0A230009889DA /* HomeViewController.swift */; };
@@ -80,9 +82,10 @@
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
-		695A86C32AC1436400789346 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
-		695A86C52AC1640700789346 /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
 		54B4411C2AC1619200EC8846 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		54B441222AC1B9ED00EC8846 /* TopUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopUserDetailViewController.swift; sourceTree = "<group>"; };
+		54B441242AC1BEE100EC8846 /* MiddleUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiddleUserDetailViewController.swift; sourceTree = "<group>"; };
+		54B441262AC1FB8300EC8846 /* BottomUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomUserDetailViewController.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14B58C92AC0A230009889DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B14B58CB2AC0A230009889DA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -153,16 +156,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		695A86C82AC17BF100789346 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				695A86C52AC1640700789346 /* UIImageView+Extensions.swift */,
-			);
-			name = "Recovered References";
 		54B4411A2AC1616500EC8846 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
 				54B4411C2AC1619200EC8846 /* DetailViewController.swift */,
+				54B441222AC1B9ED00EC8846 /* TopUserDetailViewController.swift */,
+				54B441242AC1BEE100EC8846 /* MiddleUserDetailViewController.swift */,
+				54B441262AC1FB8300EC8846 /* BottomUserDetailViewController.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -176,7 +176,6 @@
 				B1844F5A2AC0CD9B00ACFFED /* PicoUITests */,
 				B14B58C72AC0A230009889DA /* Products */,
 				B17D67AF2AC0BF02006F91DC /* Frameworks */,
-				695A86C82AC17BF100789346 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -263,7 +262,6 @@
 			children = (
 				B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */,
 				B14B59092AC0A644009889DA /* MailViewController.swift */,
-				695A86C32AC1436400789346 /* MailListTableViewCell.swift */,
 			);
 			path = Mail;
 			sourceTree = "<group>";
@@ -667,10 +665,9 @@
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
 				B17D67942AC0AD45006F91DC /* Like.swift in Sources */,
-				695A86C42AC1436400789346 /* MailListTableViewCell.swift in Sources */,
-				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIViewController+Extensions.swift in Sources */,
+				54B441272AC1FB8300EC8846 /* BottomUserDetailViewController.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,
 				B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */,
@@ -681,6 +678,7 @@
 				B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */,
 				B17D679F2AC0B116006F91DC /* UserDefaultsData.swift in Sources */,
 				B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */,
+				54B441232AC1B9ED00EC8846 /* TopUserDetailViewController.swift in Sources */,
 				54B4411D2AC1619200EC8846 /* DetailViewController.swift in Sources */,
 				4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */,
 				B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */,
@@ -695,6 +693,7 @@
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
 				4B157D3A2AC116B400EEDEC1 /* RandomBoxBanner.swift in Sources */,
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
+				54B441252AC1BEE100EC8846 /* MiddleUserDetailViewController.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
