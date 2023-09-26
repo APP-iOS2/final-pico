@@ -8,7 +8,7 @@
 import UIKit
 
 class TopUserTableViewCell: UITableViewCell {
-    static let id = "topCell"
+    
     private var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person")
@@ -16,40 +16,40 @@ class TopUserTableViewCell: UITableViewCell {
         return imageView
     }()
     
-     var mbtiImageView: UIImageView = {
+    private let mbtiImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "infp")
         return imageView
     }()
     
-     let nameAgeLabel: UILabel = {
+    private let nameAgeLabel: UILabel = {
         let label = UILabel()
         label.text = "카리나, 24"
         label.font = UIFont.picoTitleFont
         return label
     }()
     
-     private let locationImageView: UIImageView = {
+    private let locationImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "map")
         imageView.tintColor = .black
         return imageView
     }()
     
-     let locationLabel: UILabel = {
+    private let locationLabel: UILabel = {
         let label = UILabel()
         label.text = "서울시 강남구 1.1km"
         return label
     }()
     
-     private let heightImageView: UIImageView = {
+    private let heightImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "ruler.fill")
         imageView.tintColor = .black
         return imageView
     }()
     
-     let heightLabel: UILabel = {
+    private let heightLabel: UILabel = {
         let label = UILabel()
         label.text = "168cm"
         return label
@@ -62,9 +62,15 @@ class TopUserTableViewCell: UITableViewCell {
         makeConstraints()
     }
     
+    func config(mbti: MBTIType, nameAgeText: String, locationText: String, heightText: String) {
+        nameAgeLabel.text = nameAgeText
+        locationLabel.text = locationText
+        heightLabel.text = "\(heightText) cm"
+    }
+    
     final private func addViews() {
         let views = [userImageView, mbtiImageView, nameAgeLabel, locationLabel, locationImageView, heightLabel, heightImageView]
-    
+        
         views.forEach { self.addSubview($0) }
     }
     

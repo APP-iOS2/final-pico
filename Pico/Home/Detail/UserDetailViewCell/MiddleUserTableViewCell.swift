@@ -1,5 +1,5 @@
 //
-//  TopUserDetailViewController.swift
+//  MiddleUserDetailViewController.swift
 //  Pico
 //
 //  Created by 신희권 on 2023/09/25.
@@ -8,12 +8,12 @@
 import UIKit
 
 class MiddleUserTableViewCell: UITableViewCell {
-    static let id = "middleCell"
-    
     private let introLabel: UILabel = {
         let label = UILabel()
-        label.text = "저랑 블랙맘바 잡으러 가실래요??"
+        label.text = "저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??"
         label.textAlignment = .center
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 5
         label.backgroundColor = .picoGray
         label.numberOfLines = 0
         return label
@@ -88,6 +88,14 @@ class MiddleUserTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
         makeConstraints()
+    }
+    
+    func config(eduText: String, religionText: String, smokeText: String, jobText: String, drinkText: String) {
+        educationLabel.text = eduText
+        religionLabel.text = religionText
+        smokeLabel.text = smokeText
+        jobLabel.text = jobText
+        drinkLabel.text = jobText
     }
     
     final private func addViews() {

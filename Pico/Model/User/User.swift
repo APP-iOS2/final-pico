@@ -37,5 +37,7 @@ enum GenderType: Codable {
 
 extension User {
     // User MockUpData
-    static let userData = User(mbti: .infp, phoneNumber: "01046275953", gender: .male, birth: "0131", nickName: "희권", location: Location(address: "부천", latitude: 10, longitude: 10), imageURLs: [], createdDate: 10, subInfo: SubInfo(intro: "안녕하세요", height: 175, drinkStatus: .nomal, smokeStatus: .never, religion: .none, education: .university, job: "개발자", hobbies: ["산책", "개발"], personalities: ["말이많아요", "솔직해요"], favoriteMBTIs: [.enfj, .enfp]), reports: nil, blocks: nil, chuCount: 1000, isSubscribe: false)
+    static let userData = User(mbti: .infp, phoneNumber: "01046275953", gender: .male, birth: "0131", nickName: "희권", location: Location(address: "부천", latitude: 10, longitude: 10), imageURLs: [], createdDate: 10, subInfo: SubInfo(intro: "안녕하세요", height: 175, drinkStatus: .nomal, smokeStatus: .never, religion: .none, education: .university, job: "개발자", hobbies: ["산책", "개발", "게임하기", "집밖에서 술 마시기"], personalities: ["말이많아요", "솔직해요"], favoriteMBTIs: [.enfj, .enfp]), reports: nil, blocks: nil, chuCount: 1000, isSubscribe: false)
+    
+    static let userData2 = User(mbti: .infp, phoneNumber: "01046275953", gender: .male, birth: "0131", nickName: "희권", location: Location(address: "부천", latitude: 10, longitude: 10), imageURLs: [], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
 }

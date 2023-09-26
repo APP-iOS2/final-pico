@@ -9,9 +9,29 @@ import UIKit
 import SnapKit
 
 class BottomUserTableViewCell: UITableViewCell {
-    static let id = "bottomCell"
-    var hobbyArray: [String] = ["노래하기", "춤추기", "감사합니다", "감사합니다", "감사합니다", "감사합니다", "감사합니다"]
-    private var hobbylabelArray: [UILabel] = []
+    private let viewModel = UserDetailViewModel()
+    private var personalArray: [String] = []
+    
+    private let hobbyCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        return collectionView
+    }()
+    
+    private let personalCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        return collectionView
+    }()
+    
+    private let mbtiCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        return collectionView
+    }()
     
     private let hobbyLabel: UILabel = {
         let label = UILabel()
@@ -27,48 +47,38 @@ class BottomUserTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let hobbyStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.alignment = .fill
-        
-        return stack
+    private let likeMbtiLable: UILabel = {
+        let label = UILabel()
+        label.text = "선호하는 MBTI"
+        label.font = UIFont.picoSubTitleFont
+        return label
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
         makeConstraints()
-        configHobbyLabels()
+        configHobbyCollectionView()
         
     }
     
-    private func configHobbyLabels() {
-        for hobby in hobbyArray {
-            let label = UILabel()
-            label.text = hobby
-            label.layer.cornerRadius = 10
-            label.backgroundColor = .picoGray
-            label.sizeToFit()
-            self.addSubview(label)
-            hobbylabelArray.append(label)
-        }
+    func configHobbyCollectionView() {
+        hobbyCollectionView.register(HobbyCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.hobbyCollectionCell)
+        hobbyCollectionView.delegate = self
+        hobbyCollectionView.dataSource = self
         
-        for (index, label) in hobbylabelArray.enumerated() {
-            label.snp.makeConstraints { make in
-                make.top.equalTo(hobbyLabel.snp.bottom).offset(10)
-                make.leading.equalTo(hobbyLabel.snp.leading).offset(index * 60)
-                make.trailing.equalToSuperview()
-            }
-        }
+        personalCollectionView.register(HobbyCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.hobbyCollectionCell)
+        personalCollectionView.delegate = self
+        personalCollectionView.dataSource = self
+        
+        mbtiCollectionView.register(MbtiCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.mbtiCollectionCell)
+        mbtiCollectionView.delegate = self
+        mbtiCollectionView.dataSource = self
     }
     
     final private func addViews() {
-        [hobbyLabel, personalLabel, hobbyStack].forEach {
+        [hobbyLabel, personalLabel, hobbyCollectionView, personalCollectionView, likeMbtiLable, mbtiCollectionView].forEach {
             self.addSubview($0)
-        }
-        for label in hobbylabelArray {
-            hobbyStack.addSubview(label)
         }
     }
     
@@ -76,10 +86,122 @@ class BottomUserTableViewCell: UITableViewCell {
         hobbyLabel.snp.makeConstraints { make in
             make.leading.top.equalToSuperview().offset(10)
         }
+        
+        hobbyCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(hobbyLabel.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().offset(10)
+            make.height.equalTo(200)
+        }
+        
+        personalLabel.snp.makeConstraints { make in
+            make.top.equalTo(hobbyCollectionView.snp.bottom).offset(20)
+            make.leading.equalTo(hobbyLabel.snp.leading)
+            make.trailing.equalToSuperview()
+        }
+        
+        personalCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(personalLabel.snp.bottom).offset(20)
+            make.leading.equalTo(personalLabel.snp.leading)
+            make.trailing.equalToSuperview().offset(20)
+            make.height.equalTo(150)
+          
+        }
+        
+        likeMbtiLable.snp.makeConstraints { make in
+            make.top.equalTo(personalCollectionView.snp.bottom).offset(20)
+            make.leading.equalTo(hobbyLabel.snp.leading)
+            make.trailing.equalToSuperview()
+            
+        }
+        
+        mbtiCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(likeMbtiLable.snp.bottom).offset(20)
+            make.leading.equalTo(likeMbtiLable.snp.leading)
+            make.trailing.bottom.equalToSuperview()
+            make.height.equalTo(200)
+        }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+}
+
+extension BottomUserTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard let hobbys = viewModel.userData.subInfo?.hobbies else { return 0 }
+        guard let personal = viewModel.userData.subInfo?.personalities else { return 0 }
+        guard let mbtis = viewModel.userData.subInfo?.favoriteMBTIs else { return 0 }
+        
+        switch collectionView {
+        case hobbyCollectionView:
+            return hobbys.count
+            
+        case personalCollectionView:
+            return personal.count
+            
+        case mbtiCollectionView:
+            return mbtis.count
+        default:
+            return 0
+        }
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        switch collectionView {
+            
+        case hobbyCollectionView:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.hobbyCollectionCell, for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
+            guard let hobbys = viewModel.userData.subInfo?.hobbies else { return UICollectionViewCell() }
+            
+            cell.config(labelText: hobbys[indexPath.row])
+            return cell
+            
+        case personalCollectionView:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.hobbyCollectionCell, for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
+            guard let personal = viewModel.userData.subInfo?.personalities else { return UICollectionViewCell() }
+            cell.config(labelText: personal[indexPath.row])
+            return cell
+            
+        case mbtiCollectionView:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.mbtiCollectionCell, for: indexPath) as? MbtiCollectionViewCell else { return UICollectionViewCell() }
+            guard let mbtis = viewModel.userData.subInfo?.favoriteMBTIs else { return UICollectionViewCell() }
+            cell.config(mbtiType: mbtis[indexPath.row])
+            return cell
+            
+        default:
+            return UICollectionViewCell()
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let label = UILabel()
+        switch collectionView {
+            
+        case hobbyCollectionView:
+            let hobby = viewModel.userData.subInfo?.hobbies[indexPath.row]
+            label.text = hobby
+            label.sizeToFit()
+            let size = label.frame.size
+            return CGSize(width: size.width + 10, height: size.height + 8)
+            
+        case personalCollectionView:
+            let personal = viewModel.userData.subInfo?.personalities[indexPath.row]
+            label.text = personal
+            label.sizeToFit()
+            let size = label.frame.size
+            return CGSize(width: size.width + 10, height: size.height + 8)
+            
+        case mbtiCollectionView:
+            return CGSize(width: 70, height: 30)
+            
+        default:
+            return CGSize(width: 70, height: 70)
+        }
+        
+    }
 }

@@ -11,6 +11,7 @@ import SnapKit
 final class UserDetailViewController: UIViewController {
     private let userInfo = User.userData
     private let tableView = UITableView(frame: .zero, style: .plain)
+    private let viewModel = UserDetailViewModel()
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -63,9 +64,9 @@ final class UserDetailViewController: UIViewController {
     final private func configTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(TopUserTableViewCell.self, forCellReuseIdentifier: TopUserTableViewCell.id)
-        tableView.register(MiddleUserTableViewCell.self, forCellReuseIdentifier: MiddleUserTableViewCell.id)
-        tableView.register(BottomUserTableViewCell.self, forCellReuseIdentifier: BottomUserTableViewCell.id)
+        tableView.register(TopUserTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.topUserTableCell)
+        tableView.register(MiddleUserTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.middleUserTableCell)
+        tableView.register(BottomUserTableViewCell.self, forCellReuseIdentifier:Identifier.TableCell.bottomUserTableCell)
     }
     
     final private func addViews() {
@@ -90,24 +91,26 @@ final class UserDetailViewController: UIViewController {
 extension UserDetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     final func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        if viewModel.userData.subInfo != nil {
+            return 3
+        } else {
+            return 2
+        }
     }
     
     final func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
         case 0:
-
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: TopUserTableViewCell.id, for: indexPath) as? TopUserTableViewCell else { return UITableViewCell() }
-            cell.heightLabel.text = "\(userInfo.subInfo?.height ?? 0 ) cm"
-            cell.nameAgeLabel.text = "\(userInfo.nickName)"
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.topUserTableCell, for: indexPath) as? TopUserTableViewCell else { return UITableViewCell() }
+            cell.config(mbti: .infp, nameAgeText: viewModel.userData.nickName, locationText: viewModel.userData.location.address, heightText: "112")
             cell.selectionStyle = .none
             return cell
         case 1:
-            let cell = tableView.dequeueReusableCell(withIdentifier: MiddleUserTableViewCell.id, for: indexPath) as? MiddleUserTableViewCell ?? UITableViewCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.middleUserTableCell, for: indexPath) as? MiddleUserTableViewCell ?? UITableViewCell()
             cell.selectionStyle = .none
             return cell
         case 2:
-            let cell = tableView.dequeueReusableCell(withIdentifier: BottomUserTableViewCell.id, for: indexPath) as? BottomUserTableViewCell ?? UITableViewCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.bottomUserTableCell, for: indexPath) as? BottomUserTableViewCell ?? UITableViewCell()
             cell.selectionStyle = .none
             return cell
         default:
@@ -117,7 +120,17 @@ extension UserDetailViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.row {
+        case 0:
+            return CGFloat(400)
+        case 1:
+            return CGFloat(250)
+        case 2:
+            return CGFloat(1000)
+            
+        default:
+            return CGFloat(200)
+        }
         
-        return CGFloat(400)
     }
 }
