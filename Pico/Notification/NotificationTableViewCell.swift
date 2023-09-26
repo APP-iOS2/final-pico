@@ -57,11 +57,9 @@ class NotificationTableViewCell: UITableViewCell {
     }
     
     override func layoutSubviews() {
-        print("layout : \(profileImageView.frame.width)")
         super.layoutSubviews()
         profileImageView.layer.cornerRadius = profileImageView.frame.width / 2.0
         profileImageView.clipsToBounds = true
-        
         self.setNeedsUpdateConstraints()
     }
     
