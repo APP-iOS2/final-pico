@@ -17,7 +17,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     static let identifier = "LikeCollectionViewCell"
     weak var delegate: LikeCollectionViewCellDelegate?
     
-    let imageShadowView: UIView = {
+    private let imageShadowView: UIView = {
         let view = UIView()
         view.layer.shadowOffset = CGSize(width: 5, height: 5)
         view.layer.shadowOpacity = 0.7
@@ -27,7 +27,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    let userImageView: UIImageView = {
+    private let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 20
         imageView.layer.masksToBounds = true
@@ -36,7 +36,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    let nameLabel: UILabel = {
+    private let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "찐 윈터임, 21"
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
@@ -45,7 +45,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    let deleteButton: UIButton = {
+    private let deleteButton: UIButton = {
         let button = UIButton(configuration: .plain())
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .light)
         let image = UIImage(systemName: "xmark.circle.fill", withConfiguration: imageConfig)
@@ -55,7 +55,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
-   let messageButton: UIButton = {
+    private let messageButton: UIButton = {
         let button = UIButton(configuration: .plain())
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .light)
         let image = UIImage(systemName: "paperplane.circle", withConfiguration: imageConfig)
@@ -74,6 +74,24 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configData(imageUrl: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool) {
+        loadAsyncImage(imageView: userImageView, urlString: imageUrl)
+        messageButton.isHidden = isHiddenMessageButton
+        deleteButton.isHidden = isHiddenDeleteButton
+    }
+    
+    private func loadAsyncImage(imageView: UIImageView, urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data,
+                  response != nil,
+                  error == nil else { return }
+            DispatchQueue.main.async {
+                imageView.image = UIImage(data: data) ?? UIImage()
+            }
+        }.resume()
     }
     
     private func configButtons() {
