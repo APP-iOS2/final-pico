@@ -11,7 +11,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
 
     private var isTappedNextButton: Bool = false
     private var messageButtons: [UIButton] = []
-    
+    private var isTappedCheckButton: Bool = false
     private let notifyLabel: UILabel = {
         let label = UILabel()
         label.text = "가입하신 전화번호를 입력하세요."
@@ -47,7 +47,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return textField
     }()
     
-    private let phoneNumberCheckButton: UIButton = {
+    private lazy var phoneNumberCheckButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("  인증  ", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
@@ -94,7 +94,6 @@ final class SignUpPhoneNumberViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         followKeyboard()
     }
-    
     // MARK: - config
     private func configTextfield() {
         phoneNumberTextField.delegate = self
@@ -108,7 +107,6 @@ final class SignUpPhoneNumberViewController: UIViewController {
     
     @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
-        phoneNumberTextField.text = ""
     }
     
     @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
