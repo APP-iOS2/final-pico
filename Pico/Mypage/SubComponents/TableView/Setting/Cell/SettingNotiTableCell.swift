@@ -9,7 +9,6 @@ import UIKit
 
 final class SettingNotiTableCell: UITableViewCell {
     
-    static let identifier = "SettingNotiTableCell"
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
