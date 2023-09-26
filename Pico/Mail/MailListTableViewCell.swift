@@ -9,21 +9,25 @@ import UIKit
 
 final class MailListTableViewCell: UITableViewCell {
     
+    static let identifier = "MailListTableViewCell"
+    
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "chu")
-        imageView.layer.cornerRadius = 35
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
-    private let infoStackView = UIStackView()
+    private let infoStackView: UIStackView = {
+        let stackView = UIStackView()
+        return stackView
+    }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoSubTitleFont
         label.textColor = .picoFontBlack
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -52,20 +56,21 @@ final class MailListTableViewCell: UITableViewCell {
         return label
     }()
     
+    private
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+       
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         addViews()
         makeConstraints()
-        getData(nameText: "강아지는월월", mbti: "ISTP", message: "하이용", date: "9/25", new: true)
-        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func addViews() {
-        
-        [userImage, infoStackView, dateStackView].forEach {
-            contentView.addSubview($0)
-        }
         
         [nameLabel, message, mbtiLabel].forEach {
             infoStackView.addSubview($0)
@@ -75,24 +80,29 @@ final class MailListTableViewCell: UITableViewCell {
             dateStackView.addSubview($0)
         }
         
+        [userImage, infoStackView, dateStackView].forEach {
+            contentView.addSubview($0)
+        }
     }
     
     func makeConstraints() {
         
         userImage.snp.makeConstraints { make in
-            make.leading.equalTo(contentView)
+            make.top.bottom.equalTo(contentView).inset(5)
+            make.leading.equalTo(contentView).offset(10)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(70.0)
+            make.width.equalTo(contentView.snp.height).inset(5)
         }
         
         infoStackView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(userImage).offset(10)
+            make.top.bottom.equalTo(userImage)
             make.leading.equalTo(userImage.snp.trailing).offset(10)
             make.trailing.equalTo(contentView).inset(80)
         }
         
         nameLabel.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(infoStackView)
+            make.top.equalTo(infoStackView).offset(10)
+            make.leading.equalTo(infoStackView)
         }
         
         mbtiLabel.snp.makeConstraints { make in
@@ -103,14 +113,13 @@ final class MailListTableViewCell: UITableViewCell {
         
         message.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(10)
-            make.leading.equalTo(nameLabel.snp.leading)
-            make.trailing.equalTo(infoStackView.snp.trailing)
+            make.leading.trailing.equalTo(infoStackView)
         }
         
         dateStackView.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel)
-            make.leading.equalTo(infoStackView.snp.trailing)
-            make.trailing.equalTo(contentView.snp.trailing)
+            make.top.bottom.equalTo(nameLabel)
+            make.trailing.equalTo(contentView.snp.trailing).inset(10)
+            make.width.equalTo(50)
         }
         
         dateLabel.snp.makeConstraints { make in
@@ -123,8 +132,12 @@ final class MailListTableViewCell: UITableViewCell {
         }
     }
     
-    func getData(nameText: String, mbti: String, message: String, date: String, new: Bool) {
+    func getData(imageString: String, nameText: String, mbti: String, message: String, date: String, new: Bool) {
+        if let imageURL = URL(string: imageString) {
+            userImage.load(url: imageURL)
+        }
         nameLabel.text = nameText
+        nameLabel.sizeToFit()
         mbtiLabel.text = mbti
         self.message.text = message
         dateLabel.text = date
@@ -133,7 +146,4 @@ final class MailListTableViewCell: UITableViewCell {
         }
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

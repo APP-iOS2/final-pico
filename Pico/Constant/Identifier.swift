@@ -16,6 +16,9 @@ struct Identifier {
         static let mypageVC = "MypageViewController"
     }
     
+    struct TableCell {
+        static let mailTableCell = "MailListTableViewCell"
+      
     struct CollectionView {
         static let likeCell = "LikeCollectionViewCell"
     }
