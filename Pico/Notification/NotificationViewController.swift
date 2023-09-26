@@ -32,9 +32,15 @@ final class NotificationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configViewController()
         addViews()
         makeConstraints()
         configTableView()
+    }
+    
+    private func configViewController() {
+        view.backgroundColor = .systemBackground
+        title = "알림"
     }
     
     private func configTableView() {

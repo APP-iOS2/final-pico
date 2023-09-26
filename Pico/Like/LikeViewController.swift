@@ -72,10 +72,14 @@ final class LikeViewController: UIViewController {
     }
     
     private func configBarItem() {
-        // 알림 뷰 연결
-        let notiButton = UIBarButtonItem(image: UIImage(systemName: "bell.fill"), style: .done, target: self, action: nil)
+        let notiButton = UIBarButtonItem(image: UIImage(systemName: "bell.fill"), style: .done, target: self, action: #selector(tappedNotiButton))
         notiButton.tintColor = .darkGray
         navigationItem.rightBarButtonItem = notiButton
+    }
+    
+    @objc private func tappedNotiButton(_ sender: UIBarButtonItem) {
+        let notificationViewController = NotificationViewController()
+        navigationController?.pushViewController(notificationViewController, animated: true)
     }
     
     @objc private func changeUnderLinePosition() {
