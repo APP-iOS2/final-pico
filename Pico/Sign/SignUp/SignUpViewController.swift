@@ -86,6 +86,7 @@ final class SignUpViewController: UIViewController {
     private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
+        button.backgroundColor = .picoGray
         return button
     }()
     
@@ -97,7 +98,6 @@ final class SignUpViewController: UIViewController {
         makeConstraints()
         configButton()
     }
-    
     // MARK: - config
     private func configButton() {
         mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
@@ -109,10 +109,10 @@ final class SignUpViewController: UIViewController {
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
-//        if !userMbti.contains("") {
+        if !userMbti.contains("") {
             let viewController = SignUpPhoneNumberViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
-//        }
+        }
     }
     
     private func showMbtiModal(_ sender: UIButton) {
@@ -159,17 +159,21 @@ final class SignUpViewController: UIViewController {
             break
         }
         present(modalVC, animated: true, completion: nil)
+        
     }
     
     @objc private func tappedMbtiButton(_ sender: UIButton) {
+        
         tappedButtonAnimation(sender)
         showMbtiModal(sender)
+        
     }
 }
 
 extension SignUpViewController: SignViewControllerDelegate {
     
     func choiceMbti(mbti: String, num: Int) {
+        
         switch num {
         case 0:
             userMbti[num] = mbti
@@ -185,6 +189,12 @@ extension SignUpViewController: SignViewControllerDelegate {
             mbtiFourthButton.setTitle(mbti, for: .normal)
         default:
             return
+        }
+        if userMbti.contains("") {
+            nextButton.backgroundColor = .picoGray
+        } else {
+            
+            nextButton.backgroundColor = .picoBlue
         }
     }
 }

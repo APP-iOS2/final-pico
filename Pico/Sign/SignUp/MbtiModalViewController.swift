@@ -43,8 +43,8 @@ final class MbtiModalViewController: UIViewController {
         let view = UIView()
         view.addGestureRecognizer(tapGesture)
         view.backgroundColor = .picoAlphaWhite
-        view.layer.cornerRadius = 10
-        view.layer.borderWidth = 1
+        view.layer.cornerRadius = 8
+        view.addShadow(offset: CGSize(width: 1, height: 2), color: .picoAlphaBlue, opacity: 0.8)
         view.tag = 1
         return view
     }()
@@ -54,8 +54,8 @@ final class MbtiModalViewController: UIViewController {
         let view = UIView()
         view.addGestureRecognizer(tapGesture)
         view.backgroundColor = .picoAlphaWhite
-        view.layer.cornerRadius = 10
-        view.layer.borderWidth = 1
+        view.layer.cornerRadius = 8
+        view.addShadow(offset: CGSize(width: 1, height: 2), color: .picoAlphaBlue, opacity: 0.8)
         view.tag = 2
         return view
     }()
@@ -71,7 +71,7 @@ final class MbtiModalViewController: UIViewController {
     private let leftSubTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.textColor = .gray
+        label.textColor = .picoFontBlack
         label.tag = 1
         return label
     }()
@@ -87,7 +87,7 @@ final class MbtiModalViewController: UIViewController {
     private let rightSubTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.textColor = .gray
+        label.textColor = .picoFontBlack
         label.tag = 2
         return label
     }()
@@ -119,9 +119,12 @@ final class MbtiModalViewController: UIViewController {
         
         if sender.view?.tag == 1 {
             sender.view?.backgroundColor = .picoBetaBlue
+            
+            sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoAlphaBlue, opacity: 0.8)
             self.delegate?.choiceMbti(mbti: leftTitle, num: number)
         } else {
             sender.view?.backgroundColor = .picoBetaBlue
+            sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoAlphaBlue, opacity: 0.8)
             self.delegate?.choiceMbti(mbti: rightTitle, num: number)
         }
         slowDownModal()
