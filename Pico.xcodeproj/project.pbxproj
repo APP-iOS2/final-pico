@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
 		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
 		4B157D3A2AC116B400EEDEC1 /* RandomBoxBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */; };
@@ -77,6 +78,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
 		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
 		4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxBanner.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				B17D67852AC0A850006F91DC /* SignUpViewController.swift */,
+				36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */,
 			);
 			path = SignUp;
 			sourceTree = "<group>";
@@ -686,6 +689,7 @@
 				B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */,
 				54B4411D2AC1619200EC8846 /* DetailViewController.swift in Sources */,
 				4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */,
+				36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */,
 				B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */,
 				B17D678E2AC0ABFD006F91DC /* Report.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,

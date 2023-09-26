@@ -48,11 +48,16 @@ final class SignViewController: UIViewController {
     
     private func configButtons() {
         signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
-//        signUpButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        signUpButton.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
     }
    
     @objc func tappedSignInButton() {
         let viewController = SignInViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    @objc func tappedSignUpButton() {
+        let viewController = SignUpViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
