@@ -27,6 +27,7 @@
 		B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590B2AC0A64C009889DA /* LikeViewController.swift */; };
 		B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590D2AC0A658009889DA /* EntViewController.swift */; };
 		B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590F2AC0A666009889DA /* MypageViewController.swift */; };
+		B15ABE1B2AC2672300529C29 /* MbtiLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE1A2AC2672300529C29 /* MbtiLabel.swift */; };
 		B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67832AC0A835006F91DC /* SignInViewController.swift */; };
 		B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67852AC0A850006F91DC /* SignUpViewController.swift */; };
 		B17D67882AC0AAFF006F91DC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67872AC0AAFF006F91DC /* User.swift */; };
@@ -97,6 +98,7 @@
 		B14B590B2AC0A64C009889DA /* LikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeViewController.swift; sourceTree = "<group>"; };
 		B14B590D2AC0A658009889DA /* EntViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntViewController.swift; sourceTree = "<group>"; };
 		B14B590F2AC0A666009889DA /* MypageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageViewController.swift; sourceTree = "<group>"; };
+		B15ABE1A2AC2672300529C29 /* MbtiLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiLabel.swift; sourceTree = "<group>"; };
 		B17D67832AC0A835006F91DC /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		B17D67852AC0A850006F91DC /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		B17D67872AC0AAFF006F91DC /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 			isa = PBXGroup;
 			children = (
 				B1844F772AC0E3BF00ACFFED /* CommonButton.swift */,
+				B15ABE1A2AC2672300529C29 /* MbtiLabel.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -658,6 +661,7 @@
 				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
 				BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */,
+				B15ABE1B2AC2672300529C29 /* MbtiLabel.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
