@@ -27,7 +27,7 @@ final class MbtiModalViewController: UIViewController {
         return label
     }()
     
-    private lazy var stackView: UIStackView = {
+    private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -78,6 +78,14 @@ final class MbtiModalViewController: UIViewController {
     @objc func tappedMbtiButton(_ sender: UIButton) {
         guard let text = sender.titleLabel?.text else { return }
         guard let number = num else { return }
+        switch sender.tag {
+        case 1:
+            mbtiFirstButton.backgroundColor = .picoBetaBlue
+        case 2:
+            mbtiSecondButton.backgroundColor = .picoBetaBlue
+        default:
+            break
+        }
         self.delegate?.choiceMbti(mbti: text, num: number)
         dismiss(animated: true)
     }
