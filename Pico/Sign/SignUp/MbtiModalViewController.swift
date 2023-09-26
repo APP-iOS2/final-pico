@@ -66,16 +66,8 @@ final class MbtiModalViewController: UIViewController {
         configButton()
     }
     
-    private func configButton() {
-        guard let firstWord else { return }
-        guard let secondWord else { return }
-        mbtiFirstButton.setTitle(firstWord, for: .normal)
-        mbtiSecondButton.setTitle(secondWord, for: .normal)
-        mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
-        mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
-    }
-    
     @objc func tappedMbtiButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
         guard let text = sender.titleLabel?.text else { return }
         guard let number = num else { return }
         switch sender.tag {
@@ -87,9 +79,22 @@ final class MbtiModalViewController: UIViewController {
             break
         }
         self.delegate?.choiceMbti(mbti: text, num: number)
-        dismiss(animated: true)
+        UIView.animate(withDuration: 0.7, animations: {
+            self.view.frame.origin.y += self.view.frame.size.height
+        }, completion: { _ in
+            self.dismiss(animated: false, completion: nil)
+        })
     }
         
+    private func configButton() {
+        guard let firstWord else { return }
+        guard let secondWord else { return }
+        mbtiFirstButton.setTitle(firstWord, for: .normal)
+        mbtiSecondButton.setTitle(secondWord, for: .normal)
+        mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
+        mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
+    }
+    
     private func addSubViews() {
         for stackViewItem in [mbtiFirstButton, mbtiSecondButton] {
             stackView.addArrangedSubview(stackViewItem)

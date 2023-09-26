@@ -39,14 +39,16 @@ final class LoginSuccessViewController: UIViewController {
         configButton()
     }
     
-    private func configButton() {
-        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+//        if isTappedNextButton {
+//            let viewController = LoginSuccessViewController()
+//            self.navigationController?.pushViewController(viewController, animated: true)
+//        }
     }
     
-    @objc private func tappedNextButton() {
-        // 탭뷰로 가야함
-        // let viewController = LoginSuccessViewController()
-        // self.navigationController?.pushViewController(viewController, animated: true)
+    private func configButton() {
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
     private func addSubViews() {
