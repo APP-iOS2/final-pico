@@ -29,7 +29,7 @@ final class WorldCupGameViewController: UIViewController {
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.picoButtonFont
         label.text = "마음에 드는 이성을 골라보세요!"
         
         return label

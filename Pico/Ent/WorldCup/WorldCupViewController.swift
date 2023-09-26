@@ -39,7 +39,7 @@ final class WorldCupViewController: UIViewController {
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.picoButtonFont
         label.text = "마음에 드는 이성을 골라보세요!\n최종 선택 이성에게 채팅신청 시\n피코가 채팅 신청 피용의 50%를\n부담해 드릴게요!"
         label.numberOfLines = 0
         
@@ -57,7 +57,7 @@ final class WorldCupViewController: UIViewController {
     private let guideLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.picoButtonFont
         label.text = "24시간에 한 번만 진행 가능합니다"
         label.textColor = .gray
         

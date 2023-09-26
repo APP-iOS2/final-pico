@@ -22,6 +22,7 @@ final class EntCollectionViewCell: UICollectionViewCell {
         label.text = "이상형 월드컵"
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 17)
+        
         return label
     }()
     
@@ -29,8 +30,9 @@ final class EntCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "오늘 내가 선택한 이성은 누구?\n최종 선택 시 상품 증정!"
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.picoDescriptionFont
         label.numberOfLines = 0
+        
         return label
     }()
     

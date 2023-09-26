@@ -21,7 +21,7 @@ final class RandomBoxCell: UICollectionViewCell {
     private let boxTitleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 24)
+        label.font = UIFont.picoTitleFont
         label.text = "Random Box"
         
         return label
