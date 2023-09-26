@@ -22,6 +22,10 @@ extension UIFont {
     }
     /// 버튼 폰트 사이트
     static var picoButtonFont: UIFont {
-        return UIFont.systemFont(ofSize: 15, weight: .bold)
+        return UIFont.systemFont(ofSize: 18, weight: .bold)
+    }
+    /// mbti 라벨 폰트 사이트
+    static var picoMBTILabelFont: UIFont {
+        return UIFont.systemFont(ofSize: 22, weight: .bold)
     }
 }
