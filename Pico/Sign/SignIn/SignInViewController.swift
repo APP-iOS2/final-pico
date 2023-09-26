@@ -65,8 +65,20 @@ final class SignInViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
+        followKeyboard()
+    }
+    
+    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        phoneNumberTextField.text = ""
+    }
+    
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        if isTappedNextButton {
+            let viewController = LoginSuccessViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
     
     private func configTextfield() {
@@ -74,19 +86,13 @@ final class SignInViewController: UIViewController {
     }
     
     private func configButton() {
-        phoneNumberCancleButton.addTarget(self, action: #selector(tappedphoneNumberCancleButton), for: .touchUpInside)
+        phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
-    @objc private func tappedphoneNumberCancleButton() {
-        phoneNumberTextField.text = ""
-    }
-    
-    @objc private func tappedNextButton() {
-        if isTappedNextButton {
-            let viewController = LoginSuccessViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
+    private func followKeyboard() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     @objc private func keyboardUp(notification: NSNotification) {

@@ -91,9 +91,49 @@ final class SignUpPhoneNumberViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        followKeyboard()
+    }
+    
+    @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        phoneNumberTextField.text = ""
+    }
+    
+    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.25, animations: {
+            sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }, completion: { _ in
+            UIView.animate(withDuration: 0.255, animations: {
+                sender.transform = CGAffineTransform.identity
+            })
+        })
+        phoneNumberTextField.text = ""
+    }
+    
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        let viewController = SignUpGenderViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func followKeyboard() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+    
+    @objc private func keyboardUp(notification: NSNotification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            UIView.animate(
+                withDuration: 0.5
+                , animations: {
+                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
+                }
+            )
+        }
+    }
+    
+    @objc private func keyboardDown() { self.nextButton.transform = .identity }
     
     private func configTextfield() { phoneNumberTextField.delegate = self }
     
@@ -115,28 +155,6 @@ final class SignUpPhoneNumberViewController: UIViewController {
         phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
-    
-    @objc private func tappedPhoneNumberCheckButton() { phoneNumberTextField.text = "" }
-    @objc private func tappedPhoneNumberCancleButton() { phoneNumberTextField.text = "" }
-    
-    @objc private func tappedNextButton() {
-        let viewController = LoginSuccessViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    @objc private func keyboardUp(notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            UIView.animate(
-                withDuration: 0.5
-                , animations: {
-                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
-                }
-            )
-        }
-    }
-    
-    @objc private func keyboardDown() { self.nextButton.transform = .identity }
     
     private func addSubViews() {
         configMessageButtons()
