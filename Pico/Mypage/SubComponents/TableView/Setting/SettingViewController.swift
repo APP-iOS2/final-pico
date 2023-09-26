@@ -15,7 +15,7 @@ final class SettingViewController: UIViewController {
         view.register(SettingPrivateTableCell.self, forCellReuseIdentifier: Identifier.TableCell.SettingPrivateTableCell)
         view.register(SettingNotiTableCell.self, forCellReuseIdentifier: Identifier.TableCell.SettingNotiTableCell)
         view.register(SettingTableCell.self, forCellReuseIdentifier: Identifier.TableCell.SettingTableCell)
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.separatorStyle = .none
         return view
     }()
