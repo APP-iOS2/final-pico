@@ -22,7 +22,7 @@ final class MailViewController: UIViewController {
     
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(MailListTableViewCell.self, forCellReuseIdentifier: "MailListTableViewCell")
+        tableView.register(MailListTableViewCell.self, forCellReuseIdentifier: MailListTableViewCell.identifier)
         return tableView
     }()
     
@@ -83,7 +83,7 @@ extension MailViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "MailListTableViewCell", for: indexPath) as? MailListTableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MailListTableViewCell.identifier, for: indexPath) as? MailListTableViewCell else { return UITableViewCell() }
         cell.getData(imageString: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", nameText: "강아지는월월", mbti: "ISTP", message: "하이룽", date: "9.26", new: true)
         
         return cell

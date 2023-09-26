@@ -9,6 +9,8 @@ import UIKit
 
 final class MailListTableViewCell: UITableViewCell {
     
+    static let identifier = "MailListTableViewCell"
+    
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -21,7 +23,7 @@ final class MailListTableViewCell: UITableViewCell {
         return stackView
     }()
     
-    let nameLabel: UILabel = {
+    private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoSubTitleFont
         label.textColor = .picoFontBlack
