@@ -22,14 +22,14 @@ final class HomeViewController: UIViewController {
     }
     
     private func configNavigationBarItem() {
-        let notificationImage = UIImage(systemName: "bell.fill")
         let filterImage = UIImage(systemName: "slider.horizontal.3")
-        
-        let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: nil, action: nil)
         let filterButton = UIBarButtonItem(image: filterImage, style: .plain, target: self, action: #selector(tappedFilterButton))
-        
-        notificationButton.tintColor = .darkGray
         filterButton.tintColor = .darkGray
+        
+        let notificationImage = UIImage(systemName: "bell.fill")
+        let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: nil, action: nil)
+        notificationButton.tintColor = .darkGray
+        
         navigationItem.rightBarButtonItems = [filterButton, notificationButton]
     }
     

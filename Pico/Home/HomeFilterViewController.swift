@@ -10,61 +10,22 @@ import SnapKit
 
 final class HomeFilterViewController: UIViewController {
     
-    private let selectedGenderLabel: UILabel = {
+    private func createFilterLabel(text: String, font: UIFont) -> UILabel {
         let label = UILabel()
-        label.text = "만나고 싶은 성별"
-        label.font = .picoTitleFont
+        label.text = text
+        label.font = font
         return label
-    }()
+    }
     
-    private let selectedGenderSubLabel: UILabel = {
-        let label = UILabel()
-        label.text = "중복 선택 가능"
-        label.font = .picoDescriptionFont
-        return label
-    }()
+    private lazy var selectedGenderLabel: UILabel = createFilterLabel(text: "만나고 싶은 성별", font: .picoTitleFont)
+    private lazy var selectedGenderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
+    private lazy var selectedAge: UILabel = createFilterLabel(text: "나이", font: .picoSubTitleFont)
+    private lazy var selectedDistance: UILabel = createFilterLabel(text: "거리", font: .picoSubTitleFont)
+    private lazy var selectedMBTI: UILabel = createFilterLabel(text: "MBTI", font: .picoSubTitleFont)
     
-    private let selectedAge: UILabel = {
-        let label = UILabel()
-        label.text = "나이"
-        return label
-    }()
-    
-    private let selectedDistance: UILabel = {
-        let label = UILabel()
-        label.text = "거리"
-        return label
-    }()
-    
-    private let selectedMBTI: UILabel = {
-        let label = UILabel()
-        label.text = "MBTI"
-        return label
-    }()
-    
-    private let manButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("남자", for: .normal)
-        button.backgroundColor = .picoBlue
-        button.layer.cornerRadius = 10
-        return button
-    }()
-    
-    private let womanButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("여자", for: .normal)
-        button.backgroundColor = .picoBlue
-        button.layer.cornerRadius = 10
-        return button
-    }()
-    
-    private let etcButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("기타", for: .normal)
-        button.backgroundColor = .picoBlue
-        button.layer.cornerRadius = 10
-        return button
-    }()
+    private lazy var manButton: UIButton = createFilterButton(title: "남자")
+    private lazy var womanButton: UIButton = createFilterButton(title: "여자")
+    private lazy var etcButton: UIButton = createFilterButton(title: "기타")
     
     private let ageSlider: UISlider = {
         let slider = UISlider()
@@ -81,45 +42,13 @@ final class HomeFilterViewController: UIViewController {
     }()
     
     // MARK: - 스택
-    private let vStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 5
-        return stack
-    }()
+    private lazy var genderHStack: UIStackView = createFilterStack(axis: .horizontal, spacing: 5, distribution: .fillEqually)
+    private lazy var genderLabelVStack: UIStackView = createFilterStack(axis: .vertical, spacing: 0, distribution: nil)
+    private lazy var genderButtonHStack: UIStackView = createFilterStack(axis: .horizontal, spacing: 5, distribution: .fillEqually)
+    private lazy var ageVStack: UIStackView = createFilterStack(axis: .vertical, spacing: 0, distribution: nil)
+    private lazy var distanceVStack: UIStackView = createFilterStack(axis: .vertical, spacing: 0, distribution: nil)
     
-    private let genderHStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        return stack
-    }()
-    
-    private let genderLabelVStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        return stack
-    }()
-    
-    private let genderButtonHStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        return stack
-    }()
-    
-    private let ageVStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        return stack
-    }()
-    
-    private let distanceVStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        return stack
-    }()
-    
+    // MARK: - viewDidLoad
     override func viewDidLoad() {
         view.backgroundColor = .white
         self.navigationItem.title = "선호 설정"
@@ -152,13 +81,6 @@ final class HomeFilterViewController: UIViewController {
     
     func makeConstraints() {
         
-//        vStack.snp.makeConstraints { make in
-//            make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
-//            make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
-//            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
-//            make.bottom.equalTo(view.safeAreaLayoutGuide)
-//        }
-        
         genderHStack.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
@@ -180,4 +102,41 @@ final class HomeFilterViewController: UIViewController {
             make.bottom.equalTo(ageVStack.snp.bottom).offset(100)
         }
     }
+    
+    private func createFilterStack(axis: NSLayoutConstraint.Axis, spacing: CGFloat, distribution: UIStackView.Distribution?) -> UIStackView {
+        let stack = UIStackView()
+        stack.axis = axis
+        stack.spacing = spacing
+        if let distribution = distribution {
+            stack.distribution = distribution
+        }
+        return stack
+    }
+    
+    private func createFilterButton(title: String) -> UIButton {
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .picoBlue
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = UIColor.picoBlue.cgColor
+        button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
+        return button
+    }
+    
+    @objc func tappedButton(_ sender: UIButton) {
+        if sender.backgroundColor == .white {
+            sender.backgroundColor = .picoBlue
+            sender.setTitleColor(.white, for: .normal)
+        } else {
+            sender.backgroundColor = .white
+            sender.setTitleColor(.picoFontGray, for: .normal)
+        }
+        
+    }
 }
+
+
+
+
