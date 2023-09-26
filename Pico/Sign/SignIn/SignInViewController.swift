@@ -66,6 +66,7 @@ final class SignInViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         followKeyboard()
+        phoneNumberTextField.becomeFirstResponder()
     }
     
     // MARK: - config
@@ -189,7 +190,7 @@ extension SignInViewController {
         stackView.snp.makeConstraints { make in
             make.top.equalTo(notifyLabel.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-60)
+            make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(50)
         }
         

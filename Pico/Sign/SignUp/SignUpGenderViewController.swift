@@ -74,7 +74,7 @@ class SignUpGenderViewController: UIViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedGenderButton(sender)
+        tappedButtonAnimation(sender)
     }
     
     @objc func tappedGenderButton(_ sender: UIButton) {
