@@ -14,6 +14,9 @@ struct Identifier {
         static let likeVC = "LikeViewController"
         static let entVC = "EntViewController"
         static let mypageVC = "MypageViewController"
+    }
+    
+    struct TableCell {
         static let mailTableCell = "MailListTableViewCell"
     }
 }
