@@ -28,6 +28,9 @@
 		B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590B2AC0A64C009889DA /* LikeViewController.swift */; };
 		B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590D2AC0A658009889DA /* EntViewController.swift */; };
 		B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590F2AC0A666009889DA /* MypageViewController.swift */; };
+		B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE1A2AC2672300529C29 /* MBTILabelView.swift */; };
+		B15ABE282AC2721200529C29 /* MBTI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE272AC2721200529C29 /* MBTI.swift */; };
+		B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE2A2AC276A900529C29 /* BaseViewController.swift */; };
 		B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67832AC0A835006F91DC /* SignInViewController.swift */; };
 		B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67852AC0A850006F91DC /* SignUpViewController.swift */; };
 		B17D67882AC0AAFF006F91DC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67872AC0AAFF006F91DC /* User.swift */; };
@@ -99,6 +102,9 @@
 		B14B590B2AC0A64C009889DA /* LikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeViewController.swift; sourceTree = "<group>"; };
 		B14B590D2AC0A658009889DA /* EntViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntViewController.swift; sourceTree = "<group>"; };
 		B14B590F2AC0A666009889DA /* MypageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageViewController.swift; sourceTree = "<group>"; };
+		B15ABE1A2AC2672300529C29 /* MBTILabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTILabelView.swift; sourceTree = "<group>"; };
+		B15ABE272AC2721200529C29 /* MBTI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTI.swift; sourceTree = "<group>"; };
+		B15ABE2A2AC276A900529C29 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		B17D67832AC0A835006F91DC /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		B17D67852AC0A850006F91DC /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		B17D67872AC0AAFF006F91DC /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -191,6 +197,7 @@
 		B14B58C82AC0A230009889DA /* Pico */ = {
 			isa = PBXGroup;
 			children = (
+				B15ABE292AC2769700529C29 /* Base */,
 				B14B58F92AC0A243009889DA /* Config */,
 				B14B59052AC0A41B009889DA /* UserDefaults */,
 				B17D67B42AC0C043006F91DC /* Constant */,
@@ -310,6 +317,7 @@
 			isa = PBXGroup;
 			children = (
 				B1844F772AC0E3BF00ACFFED /* CommonButton.swift */,
+				B15ABE1A2AC2672300529C29 /* MBTILabelView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -317,6 +325,7 @@
 		B14B59042AC0A3F6009889DA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B15ABE262AC271FF00529C29 /* MBTI */,
 				B17D67992AC0B048006F91DC /* User */,
 				B17D67BB2AC0C41B006F91DC /* SubInfo */,
 				B17D67BC2AC0C423006F91DC /* Location */,
@@ -345,6 +354,22 @@
 				531C4ED72AC26BA300ADC614 /* MyTransition.swift */,
 			);
 			path = TabBar;
+			sourceTree = "<group>";
+		};
+		B15ABE262AC271FF00529C29 /* MBTI */ = {
+			isa = PBXGroup;
+			children = (
+				B15ABE272AC2721200529C29 /* MBTI.swift */,
+			);
+			path = MBTI;
+			sourceTree = "<group>";
+		};
+		B15ABE292AC2769700529C29 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				B15ABE2A2AC276A900529C29 /* BaseViewController.swift */,
+			);
+			path = Base;
 			sourceTree = "<group>";
 		};
 		B17D67992AC0B048006F91DC /* User */ = {
@@ -661,6 +686,7 @@
 				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
 				BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */,
+				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
@@ -670,8 +696,10 @@
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
 				B17D67942AC0AD45006F91DC /* Like.swift in Sources */,
+				B15ABE282AC2721200529C29 /* MBTI.swift in Sources */,
 				531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */,
 				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
+				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIViewController+Extensions.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,
