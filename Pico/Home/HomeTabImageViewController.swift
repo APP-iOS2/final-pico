@@ -53,7 +53,10 @@ final class HomeTabImageViewController: UIViewController {
         let pageControl = UIPageControl()
         pageControl.currentPageIndicatorTintColor = UIColor.white
         pageControl.pageIndicatorTintColor = UIColor.gray
-        pageControl.preferredIndicatorImage = UIImage(named: "pageStick")
+        if let customImage = UIImage(named: "pageStick") {
+            let resizedImage = customImage.resized(toSize: CGSize(width: 40, height: 5))
+            pageControl.preferredIndicatorImage = resizedImage
+        }
         pageControl.layer.cornerRadius = 10
         pageControl.isUserInteractionEnabled = false
         return pageControl
@@ -142,7 +145,7 @@ final class HomeTabImageViewController: UIViewController {
         let image = UIImage(systemName: "info.circle.fill", withConfiguration: imageConfig)
         let button = UIButton()
         button.setImage(image, for: .normal)
-        button.tintColor = .white.withAlphaComponent(0.8)
+        button.tintColor = .picoAlphaWhite
         return button
     }()
     
@@ -155,15 +158,10 @@ final class HomeTabImageViewController: UIViewController {
         makeConstraints()
         loadImages()
         infoNameAgeLabel.text = "\(name), \(age)"
-        if let customImage = UIImage(named: "pageStick") {
-            let resizedImage = customImage.resized(toSize: CGSize(width: 40, height: 5))
-            pageControl.preferredIndicatorImage = resizedImage
-        }
         pageControl.addTarget(self, action: #selector(pageControlValueChanged(_:)), for: .valueChanged)
-        
     }
     
-    func addSubView() {
+    private func addSubView() {
         for viewItem in [scrollView, pageControl, pickBackButton, disLikeButton, likeButton, infoHStack] {
             view.addSubview(viewItem)
         }
@@ -174,7 +172,7 @@ final class HomeTabImageViewController: UIViewController {
         infoVStack.addArrangedSubview(infoMBTILabel)
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.equalTo(view.safeAreaLayoutGuide)
@@ -256,15 +254,17 @@ final class HomeTabImageViewController: UIViewController {
             }
         }
     }
-    
+
     @objc func pageControlValueChanged(_ sender: UIPageControl) {
         let offsetX = CGFloat(sender.currentPage) * scrollView.frame.size.width
         scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
     }
 }
-
 extension HomeTabImageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView.frame.size.width != 0 else {
+            return
+        }
         let pageIndex = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
         pageControl.currentPage = pageIndex
     }

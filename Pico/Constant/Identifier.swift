@@ -15,4 +15,16 @@ struct Identifier {
         static let entVC = "EntViewController"
         static let mypageVC = "MypageViewController"
     }
+    
+    struct TableCell {
+        static let mailTableCell = "MailListTableViewCell"
+        static let SettingPrivateTableCell = "SettingPrivateTableCell"
+        static let SettingNotiTableCell = "MailListTableViewCell"
+        static let SettingTableCell = "SettingTableCell"
+        
+    }
+      
+    struct CollectionView {
+        static let likeCell = "LikeCollectionViewCell"
+    }
 }
