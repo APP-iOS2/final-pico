@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class MyTransition: NSObject, UIViewControllerAnimatedTransitioning {
+final class MyTransition: NSObject, UIViewControllerAnimatedTransitioning {
     
     let viewControllers: [UIViewController]?
     let transitionDuration: Double = 0.3
@@ -53,7 +53,7 @@ class MyTransition: NSObject, UIViewControllerAnimatedTransitioning {
         }
     }
     
-    func getIndex(forViewController viewController: UIViewController) -> Int? {
+    private func getIndex(forViewController viewController: UIViewController) -> Int? {
         guard let viewControllers = self.viewControllers else { return nil }
         for (index, thisVC) in viewControllers.enumerated() where thisVC == viewController {
             return index
