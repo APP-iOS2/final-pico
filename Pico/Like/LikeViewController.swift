@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class LikeViewController: UIViewController {
-    private let viewControllers = [LikeMeViewController(), LikeUViewController()]
+    private let viewControllers = [LikeUViewController(), LikeMeViewController()]
     
     private let tabSegmentedControl: UISegmentedControl = {
         let segment = UISegmentedControl()
@@ -18,8 +18,8 @@ final class LikeViewController: UIViewController {
         segment.setDividerImage(UIImage(), forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
         let font = UIFont.systemFont(ofSize: 16, weight: .bold)          // Compute the right size
         segment.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
-        segment.insertSegment(withTitle: "U Like Me?", at: 0, animated: true)
-        segment.insertSegment(withTitle: "I Like U !", at: 1, animated: true)
+        segment.insertSegment(withTitle: "I Like U !", at: 0, animated: true)
+        segment.insertSegment(withTitle: "U Like Me?", at: 1, animated: true)
         
         segment.selectedSegmentIndex = 0
         

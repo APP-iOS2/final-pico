@@ -18,13 +18,23 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="1vz-84-3wG">
-                                <rect key="frame" x="138.66666666666666" y="400" width="116" height="52"/>
+                                <rect key="frame" x="138.66666666666666" y="224" width="116" height="52"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chu" translatesAutoresizingMaskIntoConstraints="NO" id="VfQ-tL-ods">
+                                <rect key="frame" x="50" y="326" width="293" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="g0q-mF-9tw"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="1vz-84-3wG" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="16g-lm-H66"/>
+                            <constraint firstItem="VfQ-tL-ods" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="5OE-nH-NbV"/>
+                            <constraint firstItem="VfQ-tL-ods" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Ndp-rz-Kvw"/>
+                            <constraint firstAttribute="trailing" secondItem="VfQ-tL-ods" secondAttribute="trailing" constant="50" id="T0r-dz-2gM"/>
+                            <constraint firstItem="VfQ-tL-ods" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="50" id="ZLd-Xs-zC1"/>
+                            <constraint firstItem="VfQ-tL-ods" firstAttribute="top" secondItem="1vz-84-3wG" secondAttribute="bottom" constant="50" id="egH-V5-yQP"/>
                             <constraint firstItem="1vz-84-3wG" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="jnF-r2-ioz"/>
                         </constraints>
                     </view>
@@ -35,6 +45,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="chu" width="434" height="442"/>
         <image name="logo" width="116" height="52"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
