@@ -57,7 +57,6 @@ final class HomeFilterViewController: UIViewController {
     }
     
     func addSubView() {
-//        view.addSubview(vStack)
         view.addSubview(genderHStack)
         view.addSubview(ageVStack)
         view.addSubview(distanceVStack)
@@ -136,7 +135,3 @@ final class HomeFilterViewController: UIViewController {
         
     }
 }
-
-
-
-
