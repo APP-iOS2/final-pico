@@ -23,7 +23,7 @@ final class LikeUViewController: UIViewController {
     private func configCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: LikeCollectionViewCell.identifier)
+        collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.likeCell)
     }
     
     private func configButtons() {
@@ -64,7 +64,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LikeCollectionViewCell.identifier, for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.likeCell, for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
         cell.configData(imageUrl: imageUrls[indexPath.row], isHiddenDeleteButton: true, isHiddenMessageButton: false)
         return cell
     }

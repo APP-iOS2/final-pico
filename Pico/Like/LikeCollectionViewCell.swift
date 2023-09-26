@@ -14,7 +14,6 @@ protocol LikeCollectionViewCellDelegate: AnyObject {
 }
 
 final class LikeCollectionViewCell: UICollectionViewCell {
-    static let identifier = "LikeCollectionViewCell"
     weak var delegate: LikeCollectionViewCellDelegate?
     
     private let imageShadowView: UIView = {
