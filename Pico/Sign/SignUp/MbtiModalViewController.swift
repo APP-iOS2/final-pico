@@ -111,7 +111,7 @@ final class MbtiModalViewController: UIViewController {
         rightSubTitleLabel.text = secondSubTitleText
     }
     
-    @objc func tappedUiView(_ sender: UITapGestureRecognizer) {
+    @objc private func tappedUiView(_ sender: UITapGestureRecognizer) {
         guard let leftTitle = leftTitleLabel.text else { return }
         guard let rightTitle = rightTitleLabel.text else { return }
         
