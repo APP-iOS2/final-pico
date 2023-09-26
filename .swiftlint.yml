@@ -11,6 +11,8 @@ disabled_rules: # Default Rules에서 비활성화할 규칙
     
     - line_length
     
+    - function_body_length
+    
 
     
 opt_in_rules:  # 기본(default) 룰이 아닌 룰들을 활성화

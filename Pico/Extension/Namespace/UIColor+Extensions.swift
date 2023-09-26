@@ -26,6 +26,8 @@ extension UIColor {
     static let picoBlue: UIColor = UIColor(hex: "#727EED")
     /// 투명도 70% 적용된 메인 블루 색상
     static let picoAlphaBlue: UIColor = UIColor(hex: "#727EED", alpha: 0.7)
+    /// 투명도 24% 적용된 메인 블루 색상
+    static let picoBetaBlue: UIColor = UIColor(hex: "#727EED", alpha: 0.24)
     /// 메인 그레이 색상
     static let picoGray: UIColor = UIColor(hex: "#E3E3E3")
     
@@ -33,5 +35,7 @@ extension UIColor {
     static let picoFontBlack: UIColor = .label
     /// 폰트 그레이 색상
     static let picoFontGray: UIColor = .secondaryLabel
+    /// 투명도 80% 적용된 화이트 색상
+    static let picoAlphaWhite: UIColor = .white.withAlphaComponent(0.8)
     
 }

@@ -23,7 +23,6 @@ final class SignViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
         return imageView
-        
     }()
     
     private let signInButton: CommonButton = {
@@ -38,29 +37,37 @@ final class SignViewController: UIViewController {
         return button
     }()
     
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
-        configButtons()
+        configButton()
     }
     
-    private func configButtons() {
+    private func configButton() {
         signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
-//        signUpButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        signUpButton.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
     }
-   
-    @objc func tappedSignInButton() {
+    
+    @objc private func tappedSignInButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
         let viewController = SignInViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
+    @objc private func tappedSignUpButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        let viewController = SignUpViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    // MARK: - UI관련
     private func addSubViews() {
-        view.addSubview(picoLogoImageView)
-        view.addSubview(picoChuImageView)
-        view.addSubview(signInButton)
-        view.addSubview(signUpButton)
+        for viewItem in [picoLogoImageView, picoChuImageView, signInButton, signUpButton] {
+            view.addSubview(viewItem)
+        }
     }
     
     private func makeConstraints() {
@@ -96,5 +103,4 @@ final class SignViewController: UIViewController {
             make.height.equalTo(50)
         }
     }
-    
 }

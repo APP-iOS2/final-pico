@@ -38,21 +38,25 @@ final class LoginSuccessViewController: UIViewController {
         makeConstraints()
         configButton()
     }
-    
+
+    // MARK: - cofig
     private func configButton() {
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
-    
-    @objc private func tappedNextButton() {
-        // 탭뷰로 가야함
-//        let viewController = LoginSuccessViewController()
-//        self.navigationController?.pushViewController(viewController, animated: true)
+
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+//        if isTappedNextButton {
+//            let viewController = LoginSuccessViewController()
+//            self.navigationController?.pushViewController(viewController, animated: true)
+//        }
     }
     
+    // MARK: - UI 관련
     private func addSubViews() {
-        view.addSubview(notifyLabel)
-        view.addSubview(checkImageView)
-        view.addSubview(nextButton)
+        for viewItem in [notifyLabel, checkImageView, nextButton] {
+            view.addSubview(viewItem)
+        }
     }
     
     private func makeConstraints() {
