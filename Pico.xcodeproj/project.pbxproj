@@ -17,6 +17,8 @@
 		531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* MyTransition.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
 		531C4EDB2AC2D08900ADC614 /* MyPageSecondTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */; };
+		531C4EDF2AC2EEF400ADC614 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4EDE2AC2EEF400ADC614 /* NotificationViewController.swift */; };
+		531C4EE12AC2EFD400ADC614 /* NotificationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4EE02AC2EFD400ADC614 /* NotificationTableViewCell.swift */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
@@ -106,6 +108,8 @@
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* MyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTransition.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
+		531C4EDE2AC2EEF400ADC614 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		531C4EE02AC2EFD400ADC614 /* NotificationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTableViewCell.swift; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeEmptyView.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
@@ -198,6 +202,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		531C4EDD2AC2EEAA00ADC614 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				531C4EDE2AC2EEF400ADC614 /* NotificationViewController.swift */,
+				531C4EE02AC2EFD400ADC614 /* NotificationTableViewCell.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
 		54B4411A2AC1616500EC8846 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
@@ -275,6 +288,7 @@
 				B14B58FF2AC0A2E1009889DA /* Like */,
 				B14B59002AC0A2FE009889DA /* Ent */,
 				B14B59012AC0A30F009889DA /* Mypage */,
+				531C4EDD2AC2EEAA00ADC614 /* Notification */,
 			);
 			path = Pico;
 			sourceTree = "<group>";
@@ -779,7 +793,6 @@
 				B15ABE282AC2721200529C29 /* MBTI.swift in Sources */,
 				531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */,
 				6ADDE2DE2AC2D3B500CE4482 /* StoreViewController.swift in Sources */,
-				6A73784F2AC26AEA0047DE35 /* MyPageSecondTableCell.swift in Sources */,
 				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIViewController+Extensions.swift in Sources */,
@@ -790,6 +803,7 @@
 				6A7378532AC26D2E0047DE35 /* MyPageCollectionCell.swift in Sources */,
 				B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */,
 				367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */,
+				531C4EE12AC2EFD400ADC614 /* NotificationTableViewCell.swift in Sources */,
 				693778422AC2760200762165 /* MailEmptyView.swift in Sources */,
 				36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */,
 				B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */,
@@ -807,6 +821,7 @@
 				6A7378512AC26B1E0047DE35 /* MyPageDefaultTableCell.swift in Sources */,
 				B17D678E2AC0ABFD006F91DC /* Report.swift in Sources */,
 				B15ABE2D2AC2B22100529C29 /* CommonTextField.swift in Sources */,
+				531C4EDF2AC2EEF400ADC614 /* NotificationViewController.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
 				B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */,
