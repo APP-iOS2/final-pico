@@ -49,11 +49,13 @@ final class MyPageFirstTableCell: UITableViewCell {
         collectionView.dataSource = self
         collectionView.delegate = self
     }
+    
     private func addSubView() {
         [collectionView].forEach {
             contentView.addSubview($0)
         }
     }
+    
     private func makeConstraints() {
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
