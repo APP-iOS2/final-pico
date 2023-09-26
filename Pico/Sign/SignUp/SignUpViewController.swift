@@ -106,8 +106,10 @@ final class SignUpViewController: UIViewController {
     }
     
     @objc private func tappedNextButton() {
-        let viewController = SignUpPhoneNumberViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
+        if !userMbti.contains("") {
+            let viewController = SignUpPhoneNumberViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
     
     @objc private func tappedMbtiButton(_ sender: UIButton) {
