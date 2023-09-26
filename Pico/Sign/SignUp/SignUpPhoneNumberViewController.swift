@@ -9,9 +9,8 @@ import UIKit
 
 final class SignUpPhoneNumberViewController: UIViewController {
 
-    private var isTappedNextButton: Bool = false
+    private var isFullPhoneNumber: Bool = false
     private var messageButtons: [UIButton] = []
-    private var isTappedCheckButton: Bool = false
     private let notifyLabel: UILabel = {
         let label = UILabel()
         label.text = "가입하신 전화번호를 입력하세요."
@@ -72,12 +71,14 @@ final class SignUpPhoneNumberViewController: UIViewController {
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
         stackView.spacing = 8
+        stackView.isHidden = true
         return stackView
     }()
     
     private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
+        button.backgroundColor = .picoGray
         return button
     }()
     
@@ -92,7 +93,9 @@ final class SignUpPhoneNumberViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
         followKeyboard()
+        phoneNumberTextField.becomeFirstResponder()
     }
     // MARK: - config
     private func configTextfield() {
@@ -106,24 +109,26 @@ final class SignUpPhoneNumberViewController: UIViewController {
     }
     
     @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        if isFullPhoneNumber {
+            tappedButtonAnimation(sender)
+            phoneMessageStackView.isHidden = false
+            
+        }
     }
-    
     @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
-        UIView.animate(withDuration: 0.25, animations: {
-            sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-        }, completion: { _ in
-            UIView.animate(withDuration: 0.255, animations: {
-                sender.transform = CGAffineTransform.identity
-            })
-        })
+        tappedButtonAnimation(sender)
         phoneNumberTextField.text = ""
+        isFullPhoneNumber = false
+        phoneMessageStackView.isHidden = true
+        nextButton.backgroundColor = .picoGray
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        let viewController = SignUpGenderViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
+        if isFullPhoneNumber {
+            tappedButtonAnimation(sender)
+            let viewController = SignUpGenderViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
 }
 
@@ -140,16 +145,18 @@ extension SignUpPhoneNumberViewController: UITextFieldDelegate {
         let updatedText = currentText.replacingCharacters(in: range, with: string)
         let digits = CharacterSet.decimalDigits
         let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
-        isTappedNextButton = false
-        textField.textColor = .gray
-        
+        isFullPhoneNumber = false
+        textField.textColor = .picoFontBlack
+        nextButton.backgroundColor = .picoGray
         if filteredText.count > 11 {
-            isTappedNextButton = true
+            isFullPhoneNumber = true
             textField.textColor = .picoBlue
+            nextButton.backgroundColor = .picoBlue
             return false
         } else if filteredText.count > 10 {
-            isTappedNextButton = true
+            isFullPhoneNumber = true
             textField.textColor = .picoBlue
+            nextButton.backgroundColor = .picoBlue
             return true
         }
         
@@ -221,7 +228,7 @@ extension SignUpPhoneNumberViewController {
             let button = UIButton()
             button.titleLabel?.font = .systemFont(ofSize: 25, weight: .bold)
             button.setTitleColor(.picoFontBlack, for: .normal)
-            button.layer.borderWidth = 2
+            button.layer.borderWidth = 1
             button.layer.cornerRadius = 10
             button.tag = tag
             button.clipsToBounds = true
