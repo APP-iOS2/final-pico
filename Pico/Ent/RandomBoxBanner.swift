@@ -86,7 +86,7 @@ final class RandomBoxBanner: UIButton {
         }
         
         boxContentLabel.snp.makeConstraints { make in
-            make.top.equalTo(boxTitleLabel.snp.bottom).offset(padding)
+            make.top.equalTo(boxTitleLabel.snp.bottom).offset(padding / 2)
             make.leading.equalTo(boxTitleLabel)
             make.trailing.equalToSuperview().offset(-padding)
         }
