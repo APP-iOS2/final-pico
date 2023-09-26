@@ -55,7 +55,6 @@ final class MyPageCollectionCell: UICollectionViewCell {
             make.top.equalToSuperview().offset(3)
             make.centerX.equalToSuperview()
             make.height.width.equalTo(55)
-//            make.width.equalTo(40)
         }
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(image.snp.bottom).offset(-6)

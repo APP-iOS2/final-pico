@@ -66,7 +66,6 @@ final class MyPageSecondTableCell: UITableViewCell {
         tableImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(15)
             make.leading.equalToSuperview().offset(15)
-            
         }
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(tableImageView.snp.bottom).offset(15)
