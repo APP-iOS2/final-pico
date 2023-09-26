@@ -7,14 +7,8 @@
 
 import UIKit
 import SnapKit
-import SwiftUI
 
 final class HomeViewController: UIViewController {
-    
-    private let navigationBar: UINavigationBar = {
-        let navigationBar = UINavigationBar()
-        return navigationBar
-    }()
     
     // MARK: - override
     override func viewDidLoad() {
@@ -27,31 +21,36 @@ final class HomeViewController: UIViewController {
         addTabImageViewController()
     }
     
-    func configNavigationBarItem() {
+    private func configNavigationBarItem() {
         let notificationImage = UIImage(systemName: "bell.fill")
         let filterImage = UIImage(systemName: "slider.horizontal.3")
         
         let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: nil, action: nil)
-        let filterButton = UIBarButtonItem(image: filterImage, style: .plain, target: nil, action: nil)
+        let filterButton = UIBarButtonItem(image: filterImage, style: .plain, target: self, action: #selector(tappedFilterButton))
         
         notificationButton.tintColor = .darkGray
         filterButton.tintColor = .darkGray
         navigationItem.rightBarButtonItems = [filterButton, notificationButton]
     }
     
-    func addSubView() {
-        view.addSubview(navigationBar)
+    private func addSubView() {
         
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         
     }
     
-    func addTabImageViewController() {
+    private func addTabImageViewController() {
         let tabImageViewController = HomeTabImageViewController(name: "윈터", age: "24")
         addChild(tabImageViewController)
         view.addSubview(tabImageViewController.view)
         tabImageViewController.didMove(toParent: self)
     }
+    
+    @objc func tappedFilterButton() {
+        let viewController = HomeFilterViewController()
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
 }

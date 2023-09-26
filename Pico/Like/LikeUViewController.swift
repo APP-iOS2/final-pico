@@ -8,13 +8,22 @@
 import UIKit
 
 final class LikeUViewController: UIViewController {
-    let emptyView: LikeEmptyView = LikeEmptyView(frame: CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width), type: .iLikeU)
+    private let emptyView: LikeEmptyView = LikeEmptyView(type: .iLikeU)
+    private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private let imageUrls: [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         addViews()
         makeConstraints()
         configButtons()
+        configCollectionView()
+    }
+    
+    private func configCollectionView() {
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.likeCell)
     }
     
     private func configButtons() {
@@ -22,12 +31,23 @@ final class LikeUViewController: UIViewController {
     }
     
     private func addViews() {
-        view.addSubview(emptyView)
+        if imageUrls.isEmpty {
+            view.addSubview(emptyView)
+        } else {
+            view.addSubview(collectionView)
+        }
     }
     
     private func makeConstraints() {
-        emptyView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        if imageUrls.isEmpty {
+            emptyView.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
+        } else {
+            collectionView.snp.makeConstraints { make in
+                make.top.leading.equalToSuperview().offset(10)
+                make.trailing.bottom.equalToSuperview().offset(-10)
+            }
         }
     }
     
@@ -35,5 +55,22 @@ final class LikeUViewController: UIViewController {
         if let tabBarController = self.tabBarController as? TabBarController {
             tabBarController.selectedIndex = 0
         }
+    }
+}
+
+extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return imageUrls.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.likeCell, for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
+        cell.configData(imageUrl: imageUrls[indexPath.row], isHiddenDeleteButton: true, isHiddenMessageButton: false)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = view.frame.width / 2 - 20
+        return CGSize(width: width, height: width * 1.5)
     }
 }
