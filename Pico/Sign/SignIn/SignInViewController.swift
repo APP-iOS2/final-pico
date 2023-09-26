@@ -142,18 +142,38 @@ extension SignInViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+
+        let currentText = (textField.text ?? "") as NSString
+        let updatedText = currentText.replacingCharacters(in: range, with: string)
+        let digits = CharacterSet.decimalDigits
+        let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
         
-        guard Int(string) != nil || string.isEmpty else { return false }
-        guard let textFieldText = textField.text else { return false }
-        if textFieldText.count > 10 {
+        textField.textColor = .gray
+        if filteredText.count > 11 {
+            
+            textField.textColor = .picoBlue
             return false
-        } else if textFieldText.count > 9 {
-            phoneNumberTextField.textColor = .picoBlue
-            nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
-            return true
-        } else {
-            phoneNumberTextField.textColor = .gray
+        } else if filteredText.count > 10 {
+            textField.textColor = .picoBlue
             return true
         }
+        let formattedText: String
+        
+        if filteredText.count <= 3 {
+            formattedText = filteredText
+        } else if filteredText.count <= 7 {
+            let firstPart = filteredText.prefix(3)
+            let secondPart = filteredText.dropFirst(3).prefix(4)
+            formattedText = "\(firstPart)-\(secondPart)"
+        } else {
+            let firstPart = filteredText.prefix(3)
+            let secondPart = filteredText.dropFirst(3).prefix(4)
+            let thirdPart = filteredText.dropFirst(7).prefix(4)
+            formattedText = "\(firstPart)-\(secondPart)-\(thirdPart)"
+        }
+        
+        textField.text = formattedText
+        
+        return false
     }
 }

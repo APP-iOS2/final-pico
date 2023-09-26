@@ -29,25 +29,6 @@ struct User: Codable {
     let isSubscribe: Bool
 }
 
-enum MBTIType: Codable {
-    case enfj
-    case entj
-    case enfp
-    case entp
-    case esfp
-    case esfj
-    case estp
-    case estj
-    case infp
-    case infj
-    case intp
-    case istp
-    case isfp
-    case isfj
-    case istj
-    case intj
-}
-
 enum GenderType: Codable {
     case male
     case female
