@@ -13,8 +13,10 @@ protocol SignViewControllerDelegate: AnyObject {
 
 final class MbtiModalViewController: UIViewController {
     
-    var firstWord: String?
-    var secondWord: String?
+    var firstTitleText: String?
+    var firstSubTitleText: String?
+    var secondTitleText: String?
+    var secondSubTitleText: String?
     var num: Int?
     weak var delegate: SignViewControllerDelegate?
     
@@ -27,82 +29,124 @@ final class MbtiModalViewController: UIViewController {
         return label
     }()
     
-    private let stackView: UIStackView = {
+    private let buttonsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
-        stackView.spacing = 50
+        stackView.spacing = 20
         return stackView
     }()
     
-    private let mbtiFirstButton: UIButton = {
-        let button = UIButton()
-        button.titleLabel?.font = .systemFont(ofSize: 50, weight: .bold)
-        button.setTitleColor(.picoFontBlack, for: .normal)
-        button.layer.borderWidth = 2
-        button.layer.cornerRadius = 10
-        button.tag = 0
-        button.clipsToBounds = true
-        return button
+    private lazy var leftUiView: UIView = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
+        let view = UIView()
+        view.addGestureRecognizer(tapGesture)
+        view.backgroundColor = .picoAlphaWhite
+        view.layer.cornerRadius = 10
+        view.layer.borderWidth = 1
+        view.tag = 1
+        return view
     }()
     
-    private let mbtiSecondButton: UIButton = {
-        let button = UIButton()
-        button.titleLabel?.font = .systemFont(ofSize: 50, weight: .bold)
-        button.setTitleColor(.picoFontBlack, for: .normal)
-        button.layer.borderWidth = 2
-        button.layer.cornerRadius = 10
-        button.tag = 1
-        button.clipsToBounds = true
-        return button
+    private lazy var rightUiView: UIView = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
+        let view = UIView()
+        view.addGestureRecognizer(tapGesture)
+        view.backgroundColor = .picoAlphaWhite
+        view.layer.cornerRadius = 10
+        view.layer.borderWidth = 1
+        view.tag = 2
+        return view
     }()
     
+    private let leftTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.font = UIFont.systemFont(ofSize: 50, weight: .regular)
+        label.tag = 1
+        return label
+    }()
+    
+    private let leftSubTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.textColor = .gray
+        label.tag = 1
+        return label
+    }()
+    
+    private let rightTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.font = UIFont.systemFont(ofSize: 50, weight: .regular)
+        label.tag = 2
+        return label
+    }()
+    
+    private let rightSubTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = ""
+        label.textColor = .gray
+        label.tag = 2
+        return label
+    }()
+    
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
-        configButton()
+        configMbtiButton()
     }
     
-    @objc func tappedMbtiButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        guard let text = sender.titleLabel?.text else { return }
+    // MARK: - config
+    
+    private func configMbtiButton() {
+        
+        leftTitleLabel.text = firstTitleText
+        leftSubTitleLabel.text = firstSubTitleText
+        rightTitleLabel.text = secondTitleText
+        rightSubTitleLabel.text = secondSubTitleText
+    }
+    
+    @objc private func tappedUiView(_ sender: UITapGestureRecognizer) {
+        guard let leftTitle = leftTitleLabel.text else { return }
+        guard let rightTitle = rightTitleLabel.text else { return }
+        
         guard let number = num else { return }
-        switch sender.tag {
-        case 0:
-            mbtiFirstButton.backgroundColor = .picoBetaBlue
-        case 1:
-            mbtiSecondButton.backgroundColor = .picoBetaBlue
-        default:
-            break
+        
+        if sender.view?.tag == 1 {
+            sender.view?.backgroundColor = .picoBetaBlue
+            self.delegate?.choiceMbti(mbti: leftTitle, num: number)
+        } else {
+            sender.view?.backgroundColor = .picoBetaBlue
+            self.delegate?.choiceMbti(mbti: rightTitle, num: number)
         }
-        self.delegate?.choiceMbti(mbti: text, num: number)
-        UIView.animate(withDuration: 0.7, animations: {
+        slowDownModal()
+    }
+    
+    // MARK: - UI 관련
+    private func slowDownModal() {
+        UIView.animate(withDuration: 0.3, animations: {
             self.view.frame.origin.y += self.view.frame.size.height
         }, completion: { _ in
             self.dismiss(animated: false, completion: nil)
         })
     }
-        
-    private func configButton() {
-        guard let firstWord else { return }
-        guard let secondWord else { return }
-        mbtiFirstButton.setTitle(firstWord, for: .normal)
-        mbtiSecondButton.setTitle(secondWord, for: .normal)
-        mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
-        mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
-    }
     
     private func addSubViews() {
-        for stackViewItem in [mbtiFirstButton, mbtiSecondButton] {
-            stackView.addArrangedSubview(stackViewItem)
+        view.addSubview(notifyLabel)
+        view.addSubview(buttonsStackView)
+        for stackViewItem in [leftUiView, rightUiView] {
+            buttonsStackView.addArrangedSubview(stackViewItem)
         }
+        leftUiView.addSubview(leftTitleLabel)
+        leftUiView.addSubview(leftSubTitleLabel)
+        rightUiView.addSubview(rightTitleLabel)
+        rightUiView.addSubview(rightSubTitleLabel)
         
-        for viewItem in [notifyLabel, stackView] {
-            view.addSubview(viewItem)
-        }
     }
     
     private func makeConstraints() {
@@ -112,15 +156,33 @@ final class MbtiModalViewController: UIViewController {
             make.top.equalTo(safeArea.snp.top).offset(20)
             make.leading.equalTo(25)
             make.trailing.equalTo(-25)
-            make.height.equalTo(50)
         }
         
-        stackView.snp.makeConstraints { make in
-            make.centerY.equalTo(safeArea)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(130)
+        buttonsStackView.snp.makeConstraints { make in
+            make.top.equalTo(notifyLabel.snp.bottom).offset(20)
+            make.leading.equalTo(20)
+            make.trailing.equalTo(-20)
+            make.height.equalTo(150)
+        }
+        
+        leftTitleLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(leftUiView).offset(-15)
+            make.centerX.equalTo(leftUiView)
+        }
+        
+        leftSubTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(leftTitleLabel.snp.bottom).offset(5)
+            make.centerX.equalTo(leftUiView)
+        }
+        
+        rightTitleLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(rightUiView).offset(-15)
+            make.centerX.equalTo(rightUiView)
+        }
+        
+        rightSubTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(rightTitleLabel.snp.bottom).offset(5)
+            make.centerX.equalTo(rightUiView)
         }
     }
-    
 }

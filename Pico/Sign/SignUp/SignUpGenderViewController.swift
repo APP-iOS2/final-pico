@@ -59,6 +59,7 @@ class SignUpGenderViewController: UIViewController {
         return button
     }()
     
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -67,8 +68,13 @@ class SignUpGenderViewController: UIViewController {
         configButton()
     }
     
+    // MARK: - config
+    private func configButton() {
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+    }
+    
     @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedGenderButton(sender)
+        tappedButtonAnimation(sender)
     }
     
     @objc func tappedGenderButton(_ sender: UIButton) {
@@ -100,10 +106,7 @@ class SignUpGenderViewController: UIViewController {
         return button
     }
     
-    private func configButton() {
-        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
-    }
-
+    // MARK: - UI 관련
     private func addSubViews() {
         for gender in [manButton, girlButton, otherButton] {
             genderButtons.append(gender)
