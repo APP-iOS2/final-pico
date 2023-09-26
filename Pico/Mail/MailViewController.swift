@@ -10,6 +10,8 @@ import SnapKit
 
 final class MailViewController: UIViewController {
     
+    let emptyView: MailEmptyView = MailEmptyView(frame: CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width))
+    
     private let mailText: UILabel = {
         let label = UILabel()
         label.text = "쪽지"
@@ -23,6 +25,8 @@ final class MailViewController: UIViewController {
         tableView.register(MailListTableViewCell.self, forCellReuseIdentifier: "MailListTableViewCell")
         return tableView
     }()
+    
+    private let dataCount: Int = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +45,14 @@ final class MailViewController: UIViewController {
     }
     
     func addViews() {
+        
         view.addSubview(mailText)
-        view.addSubview(mailListTableView)
+        
+        if dataCount < 1 {
+            view.addSubview(emptyView)
+        } else {
+            view.addSubview(mailListTableView)
+        }
     }
     
     func makeConstraints() {
@@ -54,9 +64,15 @@ final class MailViewController: UIViewController {
             make.leading.trailing.equalTo(safeArea).offset(30)
         }
         
-        mailListTableView.snp.makeConstraints { make in
-            make.top.equalTo(mailText.snp.bottom).offset(10)
-            make.leading.trailing.bottom.equalTo(safeArea).offset(20)
+        if dataCount < 1 {
+            emptyView.snp.makeConstraints { make in
+                make.edges.equalTo(safeArea)
+            }
+        } else {
+            mailListTableView.snp.makeConstraints { make in
+                make.top.equalTo(mailText.snp.bottom).offset(10)
+                make.leading.trailing.bottom.equalTo(safeArea).offset(20)
+            }
         }
     }
 }
