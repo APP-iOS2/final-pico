@@ -63,17 +63,22 @@ final class WorldCupGameViewController: UIViewController {
         collectionView.delegate = self
         collectionView.register(WorldCupCollectionViewCell.self, forCellWithReuseIdentifier: "WorldCupCollectionViewCell")
         collectionView.backgroundColor = .clear
+        collectionView.layer.cornerRadius = 5
+        addShadow()
+        
         if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
             flowLayout.minimumInteritemSpacing = 20
         }
+    }
+    
+    func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
         collectionView.layer.masksToBounds = false
         collectionView.layer.shadowColor = UIColor.black.cgColor
-        collectionView.layer.shadowOpacity = 0.3
-        collectionView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        collectionView.layer.shadowRadius = 10
-        collectionView.layer.cornerRadius = 10
+        collectionView.layer.shadowOffset = CGSize(width: 10, height: 10)
+        collectionView.layer.shadowOpacity = opacity
+        collectionView.layer.shadowRadius = radius
     }
-
+    
     private func addViews() {
         [backgroundImageView, roundLabel, contentLabel, collectionView, vsImageView].forEach { item in
             view.addSubview(item)
