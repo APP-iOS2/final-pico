@@ -93,7 +93,7 @@ final class SignInViewController: UIViewController {
             UIView.animate(
                 withDuration: 0.5
                 , animations: {
-                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height)
+                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
                 }
             )
         }
@@ -126,11 +126,10 @@ final class SignInViewController: UIViewController {
         }
         
         nextButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.height.equalTo(50)
             make.leading.equalTo(20)
             make.trailing.equalTo(-20)
             make.bottom.equalTo(safeArea).offset(-30)
+            make.height.equalTo(50)
         }
     }
 }
@@ -143,19 +142,18 @@ extension SignInViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if Int(string) != nil || string.isEmpty {
-            if (textField.text?.count)! > 10 {
-                return false
-            } else if (textField.text?.count)! > 9 {
-                phoneNumberTextField.textColor = .picoBlue
-                nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
-                
-                return true
-            } else {
-                phoneNumberTextField.textColor = .gray
-                return true
-            }
+        
+        guard Int(string) != nil || string.isEmpty else { return false }
+        guard let textFieldText = textField.text else { return false }
+        if textFieldText.count > 10 {
+            return false
+        } else if textFieldText.count > 9 {
+            phoneNumberTextField.textColor = .picoBlue
+            nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+            return true
+        } else {
+            phoneNumberTextField.textColor = .gray
+            return true
         }
-        return false
     }
 }
