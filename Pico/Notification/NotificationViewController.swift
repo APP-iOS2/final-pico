@@ -23,6 +23,10 @@ class NotificationViewController: UIViewController {
         tableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
         tableView.delegate = self
         tableView.dataSource = self
+<<<<<<< HEAD
+=======
+
+>>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
     }
     
     private func addViews() {

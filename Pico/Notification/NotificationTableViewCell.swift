@@ -9,8 +9,12 @@ import UIKit
 import SnapKit
 
 class NotificationTableViewCell: UITableViewCell {
+<<<<<<< HEAD
     
     private let profileImageView: UIImageView = {
+=======
+    private lazy var profileImageView: UIImageView = {
+>>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
         let imageView = UIImageView()
         imageView.image = UIImage(named: "AppIcon")
         imageView.contentMode = .scaleAspectFit
@@ -41,16 +45,30 @@ class NotificationTableViewCell: UITableViewCell {
         return view
     }()
     
+<<<<<<< HEAD
+=======
+    override func layoutSubviews() {
+        print("layout : \(profileImageView.frame.width)")
+        profileImageView.layer.cornerRadius = profileImageView.frame.width / 2.0
+        profileImageView.clipsToBounds = true
+    }
+    
+>>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
         makeConstraints()
+<<<<<<< HEAD
+=======
+        configImage()
+>>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+<<<<<<< HEAD
     override func layoutSubviews() {
         print("layout : \(profileImageView.frame.width)")
         super.layoutSubviews()
@@ -58,6 +76,12 @@ class NotificationTableViewCell: UITableViewCell {
         profileImageView.clipsToBounds = true
         
         self.setNeedsUpdateConstraints()
+=======
+    private func configImage() {
+        print("config : \(profileImageView.frame.width)")
+        profileImageView.layer.cornerRadius = profileImageView.frame.width / 2.0
+        profileImageView.clipsToBounds = true
+>>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
     }
     
     private func addViews() {

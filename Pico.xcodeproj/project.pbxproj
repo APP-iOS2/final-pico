@@ -894,6 +894,7 @@
 				B15ABE2D2AC2B22100529C29 /* CommonTextField.swift in Sources */,
 				531C4EDF2AC2EEF400ADC614 /* NotificationViewController.swift in Sources */,
 				B15ABE332AC31D3900529C29 /* NavigationBackButton.swift in Sources */,
+				531C4EDF2AC2EEF400ADC614 /* NotificationViewController.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
 				B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */,
