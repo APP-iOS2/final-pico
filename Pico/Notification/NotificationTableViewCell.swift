@@ -9,7 +9,8 @@ import UIKit
 import SnapKit
 
 class NotificationTableViewCell: UITableViewCell {
-    private lazy var profileImageView: UIImageView = {
+    
+    private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "AppIcon")
         imageView.contentMode = .scaleAspectFit
@@ -40,27 +41,23 @@ class NotificationTableViewCell: UITableViewCell {
         return view
     }()
     
-    override func layoutSubviews() {
-        print("layout : \(profileImageView.frame.width)")
-        profileImageView.layer.cornerRadius = profileImageView.frame.width / 2.0
-        profileImageView.clipsToBounds = true
-    }
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
         makeConstraints()
-        configImage()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func configImage() {
-        print("config : \(profileImageView.frame.width)")
+    override func layoutSubviews() {
+        print("layout : \(profileImageView.frame.width)")
+        super.layoutSubviews()
         profileImageView.layer.cornerRadius = profileImageView.frame.width / 2.0
         profileImageView.clipsToBounds = true
+        
+        self.setNeedsUpdateConstraints()
     }
     
     private func addViews() {

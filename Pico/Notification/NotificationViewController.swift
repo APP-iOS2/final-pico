@@ -23,7 +23,6 @@ class NotificationViewController: UIViewController {
         tableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
         tableView.delegate = self
         tableView.dataSource = self
-
     }
     
     private func addViews() {
