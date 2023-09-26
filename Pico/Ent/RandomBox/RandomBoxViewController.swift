@@ -191,11 +191,13 @@ final class RandomBoxViewController: UIViewController {
     
     private func showAlert(with message: Int) {
         var messageSting: String = ""
+        
         if message > 0 {
             messageSting = "+\(message)"
         } else {
             messageSting = "\(message)"
         }
+        
         let alert = UIAlertController(title: nil, message: messageSting, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)

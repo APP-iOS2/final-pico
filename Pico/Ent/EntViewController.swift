@@ -44,7 +44,7 @@ final class EntViewController: UIViewController {
         let padding: CGFloat = 20
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(padding)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.equalToSuperview().offset(padding)
             make.trailing.equalToSuperview().offset(-padding)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-padding)
@@ -54,7 +54,7 @@ final class EntViewController: UIViewController {
     private func configCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(EntCollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
+        collectionView.register(EntCollectionViewCell.self, forCellWithReuseIdentifier: "GameCell")
         collectionView.register(RandomBoxCell.self, forCellWithReuseIdentifier: "RandomBoxCell")
     }
     
@@ -68,6 +68,7 @@ final class EntViewController: UIViewController {
 extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
+        
         return 2
     }
     
@@ -97,7 +98,7 @@ extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSourc
             
             return cell
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! EntCollectionViewCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GameCell", for: indexPath) as! EntCollectionViewCell
             
             return cell
         }
@@ -114,8 +115,14 @@ extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSourc
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let worldCupViewController = WorldCupViewController()
-        self.navigationController?.pushViewController(worldCupViewController, animated: true)
+        if indexPath.section == 0 {
+            let randomBoxViewController = RandomBoxViewController()
+            self.navigationController?.pushViewController(randomBoxViewController, animated: true)
+        } else {
+            let worldCupViewController = WorldCupViewController()
+            self.navigationController?.pushViewController(worldCupViewController, animated: true)
+        }
         self.tabBarController?.tabBar.isHidden = true
     }
+
 }
