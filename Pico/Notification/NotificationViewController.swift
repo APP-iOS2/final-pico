@@ -8,9 +8,27 @@
 import UIKit
 import SnapKit
 
-class NotificationViewController: UIViewController {
+final class NotificationViewController: UIViewController {
+    struct DummyNoti {
+        let name: String
+        let age: Int
+        let imageUrl: String
+        let notiType: NotiType
+        var title: String {
+            return "\(name), \(age)"
+        }
+    }
+    
     private let tableView = UITableView()
-    let name = ["AAA, 24", "BBB, 20", "CCC, 21"]
+    let notifications: [DummyNoti] = [
+        DummyNoti(name: "찐 윈터", age: 21, imageUrl: "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg", notiType: .like),
+        DummyNoti(name: "찐 윈터", age: 21, imageUrl: "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg", notiType: .message),
+        DummyNoti(name: "풍리나", age: 35, imageUrl: "https://flexible.img.hani.co.kr/flexible/normal/640/441/imgdb/original/2023/0525/20230525501996.jpg", notiType: .like)
+    ]
+    
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,10 +41,6 @@ class NotificationViewController: UIViewController {
         tableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
         tableView.delegate = self
         tableView.dataSource = self
-<<<<<<< HEAD
-=======
-
->>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
     }
     
     private func addViews() {
@@ -42,14 +56,14 @@ class NotificationViewController: UIViewController {
 
 extension NotificationViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return name.count
+        return notifications.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.notiTableCell, for: indexPath) as? NotificationTableViewCell else {
             return UITableViewCell()
         }
-        
+        cell.configData(imageUrl: notifications[indexPath.row].imageUrl, title: notifications[indexPath.row].title, type: notifications[indexPath.row].notiType)
         return cell
     }
     

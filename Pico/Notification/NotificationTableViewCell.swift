@@ -8,16 +8,16 @@
 import UIKit
 import SnapKit
 
+enum NotiType {
+    case like
+    case message
+}
 class NotificationTableViewCell: UITableViewCell {
-<<<<<<< HEAD
-    
+    private var notiType: NotiType = .like
     private let profileImageView: UIImageView = {
-=======
-    private lazy var profileImageView: UIImageView = {
->>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
         let imageView = UIImageView()
         imageView.image = UIImage(named: "AppIcon")
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -31,6 +31,7 @@ class NotificationTableViewCell: UITableViewCell {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "찐 윈터임, 21"
+        label.font = .picoSubTitleFont
         return label
     }()
     
@@ -45,30 +46,16 @@ class NotificationTableViewCell: UITableViewCell {
         return view
     }()
     
-<<<<<<< HEAD
-=======
-    override func layoutSubviews() {
-        print("layout : \(profileImageView.frame.width)")
-        profileImageView.layer.cornerRadius = profileImageView.frame.width / 2.0
-        profileImageView.clipsToBounds = true
-    }
-    
->>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
         makeConstraints()
-<<<<<<< HEAD
-=======
-        configImage()
->>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-<<<<<<< HEAD
     override func layoutSubviews() {
         print("layout : \(profileImageView.frame.width)")
         super.layoutSubviews()
@@ -76,12 +63,15 @@ class NotificationTableViewCell: UITableViewCell {
         profileImageView.clipsToBounds = true
         
         self.setNeedsUpdateConstraints()
-=======
-    private func configImage() {
-        print("config : \(profileImageView.frame.width)")
-        profileImageView.layer.cornerRadius = profileImageView.frame.width / 2.0
-        profileImageView.clipsToBounds = true
->>>>>>> a2f6174 (feat: 알림 테이블뷰 디자인(진행중))
+    }
+    
+    func configData(imageUrl: String, title: String, type: NotiType) {
+        guard let url = URL(string: imageUrl) else { return }
+        notiType = type
+        profileImageView.load(url: url)
+        iconImageView.image = notiType == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
+        nameLabel.text = title
+        contentLabel.text = notiType == .like ? "님이 좋아요를 누르셨습니다." : "님이 쪽지를 보냈습니다."
     }
     
     private func addViews() {
@@ -101,20 +91,26 @@ class NotificationTableViewCell: UITableViewCell {
             make.width.equalTo(profileImageView.snp.height)
         }
         
+        iconImageView.snp.makeConstraints { make in
+            make.bottom.equalTo(profileImageView)
+            make.trailing.equalTo(profileImageView).offset(3)
+        }
+        
         labelView.snp.makeConstraints { make in
-            make.top.trailing.bottom.equalToSuperview()
+            make.trailing.equalToSuperview()
             make.leading.equalTo(profileImageView.snp.trailing).offset(10)
+            make.centerY.equalTo(profileImageView)
         }
         
         nameLabel.snp.makeConstraints { make in
-            make.top.equalTo(labelView).offset(10)
+            make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
         }
         
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(5)
             make.leading.trailing.equalTo(nameLabel)
-            make.bottom.equalToSuperview().offset(-10)
+            make.bottom.equalToSuperview()
         }
     }
 }
