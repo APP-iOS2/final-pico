@@ -38,28 +38,10 @@ final class MbtiModalViewController: UIViewController {
         return stackView
     }()
     
-    @objc func tappedUiView(_ sender: UITapGestureRecognizer) {
-        guard let leftTitle = leftTitleLabel.text else { return }
-        guard let rightTitle = rightTitleLabel.text else { return }
-        
-        guard let number = num else { return }
-        
-        if sender.view?.tag == 1 {
-            sender.view?.backgroundColor = .picoBetaBlue
-            self.delegate?.choiceMbti(mbti: leftTitle, num: number)
-        } else {
-            sender.view?.backgroundColor = .picoBetaBlue
-            self.delegate?.choiceMbti(mbti: rightTitle, num: number)
-        }
-        slowDownModal()
-    }
-    
     private lazy var leftUiView: UIView = {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
-
         let view = UIView()
         view.addGestureRecognizer(tapGesture)
-
         view.backgroundColor = .picoAlphaWhite
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 1
@@ -69,10 +51,8 @@ final class MbtiModalViewController: UIViewController {
     
     private lazy var rightUiView: UIView = {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
-
         let view = UIView()
         view.addGestureRecognizer(tapGesture)
-
         view.backgroundColor = .picoAlphaWhite
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 1
@@ -129,6 +109,22 @@ final class MbtiModalViewController: UIViewController {
         leftSubTitleLabel.text = firstSubTitleText
         rightTitleLabel.text = secondTitleText
         rightSubTitleLabel.text = secondSubTitleText
+    }
+    
+    @objc func tappedUiView(_ sender: UITapGestureRecognizer) {
+        guard let leftTitle = leftTitleLabel.text else { return }
+        guard let rightTitle = rightTitleLabel.text else { return }
+        
+        guard let number = num else { return }
+        
+        if sender.view?.tag == 1 {
+            sender.view?.backgroundColor = .picoBetaBlue
+            self.delegate?.choiceMbti(mbti: leftTitle, num: number)
+        } else {
+            sender.view?.backgroundColor = .picoBetaBlue
+            self.delegate?.choiceMbti(mbti: rightTitle, num: number)
+        }
+        slowDownModal()
     }
     
     // MARK: - UI 관련
