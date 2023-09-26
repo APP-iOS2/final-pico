@@ -14,12 +14,14 @@ final class HomeFilterViewController: UIViewController {
     private let selectedGenderLabel: UILabel = {
         let label = UILabel()
         label.text = "만나고 싶은 성별"
+        label.font = .boldSystemFont(ofSize: 25)
         return label
     }()
     
     private let selectedGenderSubLabel: UILabel = {
         let label = UILabel()
         label.text = "중복 선택 가능"
+        label.font = .systemFont(ofSize: 10)
         return label
     }()
     
@@ -44,18 +46,27 @@ final class HomeFilterViewController: UIViewController {
     private let manButton: UIButton = {
         let button = UIButton()
         button.setTitle("남자", for: .normal)
+        button.backgroundColor = .picoBlue
+        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
         return button
     }()
     
     private let womanButton: UIButton = {
         let button = UIButton()
         button.setTitle("여자", for: .normal)
+        button.backgroundColor = .picoBlue
+        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
         return button
     }()
     
     private let etcButton: UIButton = {
         let button = UIButton()
         button.setTitle("기타", for: .normal)
+        button.backgroundColor = .picoBlue
+        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
         return button
     }()
     
@@ -71,6 +82,14 @@ final class HomeFilterViewController: UIViewController {
         slider.minimumValue = 0
         slider.maximumValue = 100
         return slider
+    }()
+    
+    // MARK: - 스택
+    private let vStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 5
+        return stack
     }()
     
     private let genderHStack: UIStackView = {
@@ -89,14 +108,19 @@ final class HomeFilterViewController: UIViewController {
     private let genderButtonHStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.backgroundColor = .gray.withAlphaComponent(0.5)
         stack.distribution = .fillEqually
         return stack
     }()
-    private let vStack: UIStackView = {
+    
+    private let ageVStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = 5
+        return stack
+    }()
+    
+    private let distanceVStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
         return stack
     }()
     
@@ -108,36 +132,56 @@ final class HomeFilterViewController: UIViewController {
     }
     
     func addSubView() {
-        view.addSubview(vStack)
-        vStack.addArrangedSubview(genderHStack)
+//        view.addSubview(vStack)
+        view.addSubview(genderHStack)
+        view.addSubview(ageVStack)
+        view.addSubview(distanceVStack)
         
         genderHStack.addArrangedSubview(genderLabelVStack)
         genderHStack.addArrangedSubview(genderButtonHStack)
         
-        genderLabelVStack.addArrangedSubview(selectedGenderSubLabel)
         genderLabelVStack.addArrangedSubview(selectedGenderLabel)
+        genderLabelVStack.addArrangedSubview(selectedGenderSubLabel)
         
         genderButtonHStack.addArrangedSubview(manButton)
         genderButtonHStack.addArrangedSubview(womanButton)
         genderButtonHStack.addArrangedSubview(etcButton)
         
-        vStack.addArrangedSubview(selectedAge)
-        vStack.addArrangedSubview(ageSlider)
-        vStack.addArrangedSubview(selectedDistance)
-        vStack.addArrangedSubview(distanceSlider)
+        ageVStack.addArrangedSubview(selectedAge)
+        ageVStack.addArrangedSubview(ageSlider)
+        
+        distanceVStack.addArrangedSubview(selectedDistance)
+        distanceVStack.addArrangedSubview(distanceSlider)
     }
     
     func makeConstraints() {
         
-        vStack.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
-            make.leading.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-10)
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
-        }
+//        vStack.snp.makeConstraints { make in
+//            make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
+//            make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+//            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
+//            make.bottom.equalTo(view.safeAreaLayoutGuide)
+//        }
         
         genderHStack.snp.makeConstraints { make in
-            make.top.equalTo(vStack.snp.top)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
+            make.height.equalTo(40)
+        }
+        
+        ageVStack.snp.makeConstraints { make in
+            make.top.equalTo(genderHStack.snp.bottom).offset(5)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
+            make.bottom.equalTo(genderHStack.snp.bottom).offset(100)
+        }
+        
+        distanceVStack.snp.makeConstraints { make in
+            make.top.equalTo(ageVStack.snp.bottom).offset(5)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
+            make.bottom.equalTo(ageVStack.snp.bottom).offset(100)
         }
     }
 }

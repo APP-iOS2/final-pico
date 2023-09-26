@@ -145,7 +145,7 @@ final class HomeTabImageViewController: UIViewController, UIScrollViewDelegate {
         let image = UIImage(systemName: "info.circle.fill", withConfiguration: imageConfig)
         let button = UIButton()
         button.setImage(image, for: .normal)
-        button.tintColor = .white.withAlphaComponent(0.8)
+        button.tintColor = .picoInfoWhite
         return button
     }()
     

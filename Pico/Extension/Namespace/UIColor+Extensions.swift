@@ -33,5 +33,7 @@ extension UIColor {
     static let picoFontBlack: UIColor = .label
     /// 폰트 그레이 색상
     static let picoFontGray: UIColor = .secondaryLabel
+    /// 인포 화이트 색상
+    static let picoInfoWhite: UIColor = .white.withAlphaComponent(0.8)
     
 }
