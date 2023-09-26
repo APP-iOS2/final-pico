@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class EntCollectionViewCell: UICollectionViewCell {
     
@@ -54,9 +55,9 @@ final class EntCollectionViewCell: UICollectionViewCell {
     }
     
     private func addViews() {
-        contentView.addSubview(cellImage)
-        contentView.addSubview(firstLabel)
-        contentView.addSubview(secondLabel)
+        [cellImage, firstLabel, secondLabel].forEach { item in
+            contentView.addSubview(item)
+        }
     }
     
     private func makeConstraints() {
