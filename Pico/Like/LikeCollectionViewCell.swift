@@ -26,7 +26,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    private let userImageView: UIImageView = {
+    private lazy var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 20
         imageView.layer.masksToBounds = true
@@ -77,7 +77,6 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     
     func configData(imageUrl: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool) {
         guard let url = URL(string: imageUrl) else { return }
-        guard let image = userImageView.image else { return }
         userImageView.load(url: url)
         messageButton.isHidden = isHiddenMessageButton
         deleteButton.isHidden = isHiddenDeleteButton

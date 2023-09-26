@@ -72,18 +72,6 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDataSo
         return CGSize(width: width, height: width * 1.5)
     }
     
-    private func loadAsyncImage(imageView: UIImageView, urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data,
-                  response != nil,
-                  error == nil else { return }
-            DispatchQueue.main.async {
-                imageView.image = UIImage(data: data) ?? UIImage()
-            }
-        }.resume()
-    }
-    
     func tappedDeleteButton(_ cell: LikeCollectionViewCell) {
         if let indexPath = collectionView.indexPath(for: cell) {
             imageUrls.remove(at: indexPath.item)
