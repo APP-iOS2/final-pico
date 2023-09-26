@@ -10,7 +10,7 @@ import SnapKit
 
 final class MailViewController: UIViewController {
     
-    let emptyView: MailEmptyView = MailEmptyView(frame: CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width))
+    private let emptyView: UIView = LikeEmptyView(type: .uLikeMe)
     
     private let mailText: UILabel = {
         let label = UILabel()
