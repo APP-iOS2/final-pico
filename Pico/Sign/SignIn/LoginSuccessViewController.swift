@@ -45,14 +45,14 @@ final class LoginSuccessViewController: UIViewController {
     
     @objc private func tappedNextButton() {
         // 탭뷰로 가야함
-//        let viewController = LoginSuccessViewController()
-//        self.navigationController?.pushViewController(viewController, animated: true)
+        // let viewController = LoginSuccessViewController()
+        // self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func addSubViews() {
-        view.addSubview(notifyLabel)
-        view.addSubview(checkImageView)
-        view.addSubview(nextButton)
+        for viewItem in [notifyLabel, checkImageView, nextButton] {
+            view.addSubview(viewItem)
+        }
     }
     
     private func makeConstraints() {

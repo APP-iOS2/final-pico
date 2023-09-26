@@ -11,7 +11,7 @@ import SnapKit
 final class MypageViewController: UIViewController {
 
     private let profilView = ProfilView()
-//    private let myPageTableView = MyPageTableView()
+    private let myPageTableView = MyPageTableView()
     private let stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
@@ -48,7 +48,7 @@ final class MypageViewController: UIViewController {
     }
     
     private func addViews() {
-        [profilView, stackView].forEach {
+        [profilView, stackView, myPageTableView].forEach {
             view.addSubview($0)
         }
         [userNameLabel, userAgeLabel].forEach {
@@ -58,17 +58,21 @@ final class MypageViewController: UIViewController {
     
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
-        
+    
         profilView.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(30)
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(150)
         }
-        
         stackView.snp.makeConstraints { make in
             make.top.equalTo(profilView.snp.bottom).offset(40)
             make.centerX.equalToSuperview()
+        }
+        myPageTableView.snp.makeConstraints { make in
+            make.top.equalTo(stackView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
 }

@@ -1,16 +1,16 @@
 //
-//  SignInViewController.swift
+//  SingUpPhoneNumberViewController.swift
 //  Pico
 //
-//  Created by 최하늘 on 2023/09/25.
+//  Created by LJh on 2023/09/26.
 //
 
 import UIKit
-import SnapKit
 
-final class SignInViewController: UIViewController {
-    
+final class SignUpPhoneNumberViewController: UIViewController {
+
     private var isTappedNextButton: Bool = false
+    private var messageButtons: [UIButton] = []
     
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -21,12 +21,39 @@ final class SignInViewController: UIViewController {
         return label
     }()
     
+    private let progressView: UIProgressView = {
+        let view = UIProgressView()
+        view.trackTintColor = .picoBetaBlue
+        view.progressTintColor = .picoBlue
+        view.progress = 0.284
+        view.layer.cornerRadius = 5
+        return view
+    }()
+    
+    private let phoneTextFieldstackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.spacing = 8
+        return stackView
+    }()
+    
     private let phoneNumberTextField: UITextField = {
         let textField = UITextField()
         textField.font = .picoTitleFont
         textField.textColor = .gray
         textField.keyboardType = .numberPad
         return textField
+    }()
+    
+    private let phoneNumberCheckButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("  인증  ", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
+        button.layer.cornerRadius = 13
+        button.setTitleColor(.picoFontBlack, for: .normal)
+        return button
     }()
     
     private let phoneNumberCancleButton: UIButton = {
@@ -39,13 +66,12 @@ final class SignInViewController: UIViewController {
         return button
     }()
     
-    private let stackView: UIStackView = {
+    private let phoneMessageStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
-        stackView.distribution = .fill
+        stackView.distribution = .fillEqually
         stackView.spacing = 8
-        
         return stackView
     }()
     
@@ -69,30 +95,38 @@ final class SignInViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    private func configTextfield() {
-        phoneNumberTextField.delegate = self
+    private func configTextfield() { phoneNumberTextField.delegate = self }
+    
+    private func configMessageButtons() {
+        for tag in 0...5 {
+            let button = UIButton()
+            button.titleLabel?.font = .systemFont(ofSize: 25, weight: .bold)
+            button.setTitleColor(.picoFontBlack, for: .normal)
+            button.layer.borderWidth = 2
+            button.layer.cornerRadius = 10
+            button.tag = tag
+            button.clipsToBounds = true
+            messageButtons.append(button)
+        }
     }
     
     private func configButton() {
-        phoneNumberCancleButton.addTarget(self, action: #selector(tappedphoneNumberCancleButton), for: .touchUpInside)
+        phoneNumberCheckButton.addTarget(self, action: #selector(tappedPhoneNumberCheckButton), for: .touchUpInside)
+        phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
-    @objc private func tappedphoneNumberCancleButton() {
-        phoneNumberTextField.text = ""
-    }
+    @objc private func tappedPhoneNumberCheckButton() { phoneNumberTextField.text = "" }
+    @objc private func tappedPhoneNumberCancleButton() { phoneNumberTextField.text = "" }
     
     @objc private func tappedNextButton() {
-        if isTappedNextButton {
-            let viewController = LoginSuccessViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
+        let viewController = LoginSuccessViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     @objc private func keyboardUp(notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-           let keyboardRectangle = keyboardFrame.cgRectValue
-       
+            let keyboardRectangle = keyboardFrame.cgRectValue
             UIView.animate(
                 withDuration: 0.5
                 , animations: {
@@ -102,16 +136,18 @@ final class SignInViewController: UIViewController {
         }
     }
     
-    @objc private func keyboardDown() {
-        self.nextButton.transform = .identity
-    }
+    @objc private func keyboardDown() { self.nextButton.transform = .identity }
     
     private func addSubViews() {
-        for stackViewItem in [phoneNumberTextField, phoneNumberCancleButton] {
-            stackView.addArrangedSubview(stackViewItem)
+        configMessageButtons()
+        for pmStkItem in messageButtons {
+            phoneMessageStackView.addArrangedSubview(pmStkItem)
         }
         
-        for viewItem in [notifyLabel, stackView, nextButton] {
+        for stackViewItem in [phoneNumberTextField, phoneNumberCheckButton, phoneNumberCancleButton] {
+            phoneTextFieldstackView.addArrangedSubview(stackViewItem)
+        }
+        for viewItem in [notifyLabel, progressView, phoneTextFieldstackView, nextButton, phoneMessageStackView] {
             view.addSubview(viewItem)
         }
     }
@@ -119,16 +155,31 @@ final class SignInViewController: UIViewController {
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
-        notifyLabel.snp.makeConstraints { make in
+        progressView.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(10)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
+            make.leading.equalTo(25)
+            make.trailing.equalTo(-25)
+            make.height.equalTo(8)
         }
         
-        stackView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-60)
+        notifyLabel.snp.makeConstraints { make in
+            make.top.equalTo(progressView.snp.bottom).offset(10)
+            make.leading.equalTo(25)
+            make.trailing.equalTo(-25)
+            make.height.equalTo(50)
+        }
+        
+        phoneTextFieldstackView.snp.makeConstraints { make in
+            make.top.equalTo(notifyLabel.snp.bottom).offset(10)
+            make.leading.equalTo(25)
+            make.trailing.equalTo(-25)
+            make.height.equalTo(50)
+        }
+        
+        phoneMessageStackView.snp.makeConstraints { make in
+            make.top.equalTo(phoneTextFieldstackView.snp.bottom).offset(20)
+            make.leading.equalTo(25)
+            make.trailing.equalTo(-25)
             make.height.equalTo(50)
         }
         
@@ -139,9 +190,10 @@ final class SignInViewController: UIViewController {
             make.height.equalTo(50)
         }
     }
+    
 }
 
-extension SignInViewController: UITextFieldDelegate {
+extension SignUpPhoneNumberViewController: UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         phoneNumberTextField.resignFirstResponder()
@@ -149,13 +201,13 @@ extension SignInViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
         let currentText = (textField.text ?? "") as NSString
         let updatedText = currentText.replacingCharacters(in: range, with: string)
         let digits = CharacterSet.decimalDigits
         let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
         isTappedNextButton = false
         textField.textColor = .gray
+        
         if filteredText.count > 11 {
             isTappedNextButton = true
             textField.textColor = .picoBlue
@@ -165,6 +217,7 @@ extension SignInViewController: UITextFieldDelegate {
             textField.textColor = .picoBlue
             return true
         }
+        
         let formattedText: String
         
         if filteredText.count <= 3 {
