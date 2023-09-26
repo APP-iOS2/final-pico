@@ -105,15 +105,16 @@ final class SignUpViewController: UIViewController {
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
-    @objc private func tappedNextButton() {
-        if !userMbti.contains("") {
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+//        if !userMbti.contains("") {
             let viewController = SignUpPhoneNumberViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
-        }
+//        }
     }
     
     @objc private func tappedMbtiButton(_ sender: UIButton) {
-        
+        tappedButtonAnimation(sender)
         let modalVC = MbtiModalViewController()
         
         if let sheet = modalVC.sheetPresentationController {

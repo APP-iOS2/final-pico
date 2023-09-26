@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
+		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
 		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
 		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
@@ -88,6 +89,7 @@
 
 /* Begin PBXFileReference section */
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
+		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
 		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
 		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				B17D67852AC0A850006F91DC /* SignUpViewController.swift */,
 				36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */,
 				367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */,
+				367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */,
 			);
 			path = SignUp;
 			sourceTree = "<group>";
@@ -746,6 +749,7 @@
 				B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */,
 				6A7378532AC26D2E0047DE35 /* MyPageCollectionCell.swift in Sources */,
 				B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */,
+				367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */,
 				36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */,
 				B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */,
 				B10241CD2AC21A6500BAE1C6 /* UIImage+Extensions.swift in Sources */,
