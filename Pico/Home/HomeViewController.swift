@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import SwiftUI
 
 final class HomeViewController: UIViewController {
     
@@ -21,11 +20,8 @@ final class HomeViewController: UIViewController {
         makeConstraints()
         addTabImageViewController()
     }
-//    private func configButtons() {
-//        signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
-////        signUpButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
-//    }
-    func configNavigationBarItem() {
+    
+    private func configNavigationBarItem() {
         let notificationImage = UIImage(systemName: "bell.fill")
         let filterImage = UIImage(systemName: "slider.horizontal.3")
         
@@ -37,15 +33,15 @@ final class HomeViewController: UIViewController {
         navigationItem.rightBarButtonItems = [filterButton, notificationButton]
     }
     
-    func addSubView() {
+    private func addSubView() {
         
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         
     }
     
-    func addTabImageViewController() {
+    private func addTabImageViewController() {
         let tabImageViewController = HomeTabImageViewController(name: "윈터", age: "24")
         addChild(tabImageViewController)
         view.addSubview(tabImageViewController.view)
@@ -53,7 +49,6 @@ final class HomeViewController: UIViewController {
     }
     
     @objc func tappedFilterButton() {
-        
         let viewController = HomeFilterViewController()
         navigationController?.pushViewController(viewController, animated: true)
     }

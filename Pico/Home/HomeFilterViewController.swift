@@ -9,19 +9,18 @@ import UIKit
 import SnapKit
 
 final class HomeFilterViewController: UIViewController {
-    private let genderButtonLabel = ["남자", "여자", "기타"]
     
     private let selectedGenderLabel: UILabel = {
         let label = UILabel()
         label.text = "만나고 싶은 성별"
-        label.font = .boldSystemFont(ofSize: 25)
+        label.font = .picoTitleFont
         return label
     }()
     
     private let selectedGenderSubLabel: UILabel = {
         let label = UILabel()
         label.text = "중복 선택 가능"
-        label.font = .systemFont(ofSize: 10)
+        label.font = .picoDescriptionFont
         return label
     }()
     
@@ -47,8 +46,7 @@ final class HomeFilterViewController: UIViewController {
         let button = UIButton()
         button.setTitle("남자", for: .normal)
         button.backgroundColor = .picoBlue
-        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.layer.cornerRadius = 10
         return button
     }()
     
@@ -56,8 +54,7 @@ final class HomeFilterViewController: UIViewController {
         let button = UIButton()
         button.setTitle("여자", for: .normal)
         button.backgroundColor = .picoBlue
-        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.layer.cornerRadius = 10
         return button
     }()
     
@@ -65,8 +62,7 @@ final class HomeFilterViewController: UIViewController {
         let button = UIButton()
         button.setTitle("기타", for: .normal)
         button.backgroundColor = .picoBlue
-        button.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.layer.cornerRadius = 10
         return button
     }()
     

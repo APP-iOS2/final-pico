@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class HomeTabImageViewController: UIViewController, UIScrollViewDelegate {
+final class HomeTabImageViewController: UIViewController {
     
     private let paddingVertical = 25
     private let paddingBottom = 30
@@ -145,7 +145,7 @@ final class HomeTabImageViewController: UIViewController, UIScrollViewDelegate {
         let image = UIImage(systemName: "info.circle.fill", withConfiguration: imageConfig)
         let button = UIButton()
         button.setImage(image, for: .normal)
-        button.tintColor = .picoInfoWhite
+        button.tintColor = .picoAlphaWhite
         return button
     }()
     
@@ -161,7 +161,7 @@ final class HomeTabImageViewController: UIViewController, UIScrollViewDelegate {
         pageControl.addTarget(self, action: #selector(pageControlValueChanged(_:)), for: .valueChanged)
     }
     
-    func addSubView() {
+    private func addSubView() {
         for viewItem in [scrollView, pageControl, pickBackButton, disLikeButton, likeButton, infoHStack] {
             view.addSubview(viewItem)
         }
@@ -172,7 +172,7 @@ final class HomeTabImageViewController: UIViewController, UIScrollViewDelegate {
         infoVStack.addArrangedSubview(infoMBTILabel)
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.equalTo(view.safeAreaLayoutGuide)
@@ -254,16 +254,18 @@ final class HomeTabImageViewController: UIViewController, UIScrollViewDelegate {
             }
         }
     }
+
+    @objc func pageControlValueChanged(_ sender: UIPageControl) {
+        let offsetX = CGFloat(sender.currentPage) * scrollView.frame.size.width
+        scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+    }
+}
+extension HomeTabImageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard scrollView.frame.size.width != 0 else {
             return
         }
         let pageIndex = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
         pageControl.currentPage = pageIndex
-    }
-
-    @objc func pageControlValueChanged(_ sender: UIPageControl) {
-        let offsetX = CGFloat(sender.currentPage) * scrollView.frame.size.width
-        scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
     }
 }
