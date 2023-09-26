@@ -7,8 +7,8 @@
 
 import UIKit
 
-class TopUserDetailViewController: UIViewController {
-    
+class TopUserTableViewCell: UITableViewCell {
+    static let id = "topCell"
     private var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person")
@@ -16,48 +16,48 @@ class TopUserDetailViewController: UIViewController {
         return imageView
     }()
     
-    private var mbtiImageView: UIImageView = {
+     var mbtiImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "infp")
         return imageView
     }()
     
-    private let nameAgeLabel: UILabel = {
+     let nameAgeLabel: UILabel = {
         let label = UILabel()
         label.text = "카리나, 24"
         label.font = UIFont.picoTitleFont
         return label
     }()
     
-    private let locationImageView: UIImageView = {
+     private let locationImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "map")
         imageView.tintColor = .black
         return imageView
     }()
     
-    private let locationLabel: UILabel = {
+     let locationLabel: UILabel = {
         let label = UILabel()
         label.text = "서울시 강남구 1.1km"
         return label
     }()
     
-    private let heightImageView: UIImageView = {
+     private let heightImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "ruler.fill")
         imageView.tintColor = .black
         return imageView
     }()
     
-    private let heightLabel: UILabel = {
+     let heightLabel: UILabel = {
         let label = UILabel()
         label.text = "168cm"
         return label
     }()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         addViews()
         makeConstraints()
     }
@@ -65,11 +65,11 @@ class TopUserDetailViewController: UIViewController {
     final private func addViews() {
         let views = [userImageView, mbtiImageView, nameAgeLabel, locationLabel, locationImageView, heightLabel, heightImageView]
     
-        views.forEach { view.addSubview($0) }
+        views.forEach { self.addSubview($0) }
     }
     
     final private func makeConstraints() {
-        let safeArea = view.safeAreaLayoutGuide
+        let safeArea = self.safeAreaLayoutGuide
         
         userImageView.snp.makeConstraints { make in
             make.top.equalToSuperview()
@@ -108,5 +108,9 @@ class TopUserDetailViewController: UIViewController {
             make.top.equalTo(heightImageView.snp.top)
             make.leading.equalTo(heightImageView.snp.trailing).offset(5)
         }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

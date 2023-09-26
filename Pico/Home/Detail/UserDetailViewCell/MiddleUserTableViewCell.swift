@@ -7,7 +7,8 @@
 
 import UIKit
 
-class MiddleUserDetailViewController: UIViewController {
+class MiddleUserTableViewCell: UITableViewCell {
+    static let id = "middleCell"
     
     private let introLabel: UILabel = {
         let label = UILabel()
@@ -83,16 +84,15 @@ class MiddleUserDetailViewController: UIViewController {
         return label
     }()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
         makeConstraints()
     }
     
     final private func addViews() {
         let views = [introLabel, educationImageView, educationLabel, religionImageView, religionLabel, smokeImageView, smokeLabel, jobImageView, jobLabel, drinkImageView, drinkLabel]
-        views.forEach { view.addSubview($0) }
+        views.forEach { self.addSubview($0) }
     }
     
     final private func makeConstraints() {
@@ -152,5 +152,9 @@ class MiddleUserDetailViewController: UIViewController {
             make.top.equalTo(drinkImageView.snp.top)
             make.leading.equalTo(drinkImageView.snp.trailing).offset(5)
         }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

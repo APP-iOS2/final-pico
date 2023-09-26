@@ -185,12 +185,20 @@
 		54B4411A2AC1616500EC8846 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				54B4412E2AC2C36C00EC8846 /* BottomUserTableViewCell.swift */,
-				54B4412F2AC2C36C00EC8846 /* MiddleUserTableViewCell.swift */,
-				54B4412D2AC2C36C00EC8846 /* TopUserTableViewCell.swift */,
+				54B441332AC2C4CC00EC8846 /* UserDetailViewCell */,
 				54B4412A2AC2C36200EC8846 /* UserDetailViewController.swift */,
 			);
 			path = Detail;
+			sourceTree = "<group>";
+		};
+		54B441332AC2C4CC00EC8846 /* UserDetailViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				54B4412E2AC2C36C00EC8846 /* BottomUserTableViewCell.swift */,
+				54B4412F2AC2C36C00EC8846 /* MiddleUserTableViewCell.swift */,
+				54B4412D2AC2C36C00EC8846 /* TopUserTableViewCell.swift */,
+			);
+			path = UserDetailViewCell;
 			sourceTree = "<group>";
 		};
 		6A7378492AC26A970047DE35 /* TableView */ = {
