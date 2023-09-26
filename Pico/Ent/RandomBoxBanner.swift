@@ -14,7 +14,6 @@ final class RandomBoxBanner: UIButton {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
@@ -24,8 +23,6 @@ final class RandomBoxBanner: UIButton {
         label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 24)
         label.text = "Random Box"
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -33,11 +30,9 @@ final class RandomBoxBanner: UIButton {
     private let boxContentLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.picoDescriptionFont
         label.text = "꽝은 절대 없다!\n랜덤박스를 열어 츄를 획득해보세요\n( 1일 1회 무료 )"
-        label.textColor = .black
         label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -46,7 +41,6 @@ final class RandomBoxBanner: UIButton {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
@@ -54,10 +48,8 @@ final class RandomBoxBanner: UIButton {
     private let boxChuLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.picoDescriptionFont
         label.text = "10"
-        label.textColor = .black
-        label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
     }()
@@ -65,18 +57,11 @@ final class RandomBoxBanner: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
-        setLayoutConstraints()
-        border()
+        makeConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func border() {
-        layer.borderWidth = 1.0
-        layer.cornerRadius = 10.0
-        layer.borderColor = UIColor.black.cgColor
     }
     
     private func addViews() {
@@ -85,7 +70,7 @@ final class RandomBoxBanner: UIButton {
         }
     }
     
-    private func setLayoutConstraints() {
+    private func makeConstraints() {
         let padding: CGFloat = 10
         
         boxChuImage.snp.makeConstraints { make in
@@ -107,16 +92,15 @@ final class RandomBoxBanner: UIButton {
         }
         
         boxChuChuImage.snp.makeConstraints { make in
-            make.width.height.equalTo(padding * 3)
-            make.centerY.equalTo(boxTitleLabel)
             make.trailing.equalToSuperview().offset(-padding * 3)
+            make.centerY.equalTo(boxTitleLabel)
+            make.width.height.equalTo(padding * 3)
         }
-
+        
         boxChuLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(boxChuChuImage)
             make.leading.equalTo(boxChuChuImage.snp.trailing).offset(-padding / 2)
             make.trailing.equalToSuperview().offset(-padding)
+            make.centerY.equalTo(boxChuChuImage)
         }
-
     }
 }
