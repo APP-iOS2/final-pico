@@ -10,13 +10,6 @@ import SnapKit
 
 final class HomeFilterViewController: UIViewController {
     
-    private func createFilterLabel(text: String, font: UIFont) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        return label
-    }
-    
     private lazy var selectedGenderLabel: UILabel = createFilterLabel(text: "만나고 싶은 성별", font: .picoTitleFont)
     private lazy var selectedGenderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
     private lazy var selectedAge: UILabel = createFilterLabel(text: "나이", font: .picoSubTitleFont)
@@ -100,6 +93,13 @@ final class HomeFilterViewController: UIViewController {
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
             make.bottom.equalTo(ageVStack.snp.bottom).offset(100)
         }
+    }
+    
+    private func createFilterLabel(text: String, font: UIFont) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = font
+        return label
     }
     
     private func createFilterStack(axis: NSLayoutConstraint.Axis, spacing: CGFloat, distribution: UIStackView.Distribution?) -> UIStackView {
