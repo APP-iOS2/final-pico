@@ -10,6 +10,8 @@ import SnapKit
 
 final class SignInViewController: UIViewController {
     
+    private var isCanTappedNextButton: Bool = false
+    
     private let notifyLabel: UILabel = {
         let label = UILabel()
         label.text = "가입하신 전화번호를 입력하세요."
@@ -74,6 +76,7 @@ final class SignInViewController: UIViewController {
     
     private func configButton() {
         phoneNumberCancleButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
     @objc private func tappedSignInButton() {
@@ -82,8 +85,10 @@ final class SignInViewController: UIViewController {
     }
     
     @objc private func tappedNextButton() {
-        let viewController = LoginSuccessViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
+        if isCanTappedNextButton {
+            let viewController = LoginSuccessViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
     
     @objc private func keyboardUp(notification: NSNotification) {
@@ -147,13 +152,14 @@ extension SignInViewController: UITextFieldDelegate {
         let updatedText = currentText.replacingCharacters(in: range, with: string)
         let digits = CharacterSet.decimalDigits
         let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
-        
+        isCanTappedNextButton = false
         textField.textColor = .gray
         if filteredText.count > 11 {
-            
+            isCanTappedNextButton = true
             textField.textColor = .picoBlue
             return false
         } else if filteredText.count > 10 {
+            isCanTappedNextButton = true
             textField.textColor = .picoBlue
             return true
         }
