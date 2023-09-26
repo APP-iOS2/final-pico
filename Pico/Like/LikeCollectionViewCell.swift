@@ -16,22 +16,10 @@ protocol LikeCollectionViewCellDelegate: AnyObject {
 final class LikeCollectionViewCell: UICollectionViewCell {
     weak var delegate: LikeCollectionViewCellDelegate?
     
-    private let imageShadowView: UIView = {
-        let view = UIView()
-        view.layer.shadowOffset = CGSize(width: 5, height: 5)
-        view.layer.shadowOpacity = 0.7
-        view.layer.shadowRadius = 5
-        view.layer.shadowColor = UIColor.gray.cgColor
-        
-        return view
-    }()
-    
     private lazy var userImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.layer.cornerRadius = 20
+        imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        
         return imageView
     }()
     
@@ -40,7 +28,6 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         label.text = "찐 윈터임, 21"
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         label.textColor = .white
-        
         return label
     }()
     
@@ -50,7 +37,6 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         let image = UIImage(systemName: "xmark.circle.fill", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
         button.tintColor = .white.withAlphaComponent(0.8)
-        
         return button
     }()
     
@@ -60,7 +46,6 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         let image = UIImage(systemName: "paperplane.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
         button.tintColor = .white
-       
         return button
     }()
     
@@ -88,18 +73,12 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     }
     
     private func addViews() {
-        [imageShadowView].forEach { item in
-            addSubview(item)
-        }
         [userImageView, nameLabel, deleteButton, messageButton].forEach { item in
-            imageShadowView.addSubview(item)
+            addSubview(item)
         }
     }
     
     private func makeConstraints() {
-        imageShadowView.snp.makeConstraints { make in
-            make.edges.equalTo(self)
-        }
         userImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

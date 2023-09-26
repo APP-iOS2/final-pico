@@ -68,8 +68,12 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = view.frame.width / 2 - 20
+        let width = view.frame.width / 2 - 17.5
         return CGSize(width: width, height: width * 1.5)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 15
     }
     
     func tappedDeleteButton(_ cell: LikeCollectionViewCell) {
