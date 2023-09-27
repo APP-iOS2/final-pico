@@ -24,6 +24,7 @@ struct Identifier {
         static let topUserTableCell = "TopUserTableViewCell"
         static let middleUserTableCell = "MiddleUserTableViewCell"
         static let bottomUserTableCell = "BottomUserTableViewCell"
+        static let notiTableCell = "NotificationTabelViewCell"
     }
       
     struct CollectionView {
