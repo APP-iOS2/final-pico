@@ -36,4 +36,10 @@ extension UIFont {
     static var picoMBTILabelFont: UIFont {
         return UIFont.systemFont(ofSize: 22, weight: .bold)
     }
+    /// mbti small 라벨 폰트 사이즈
+    static var picoMBTISmallLabelFont: UIFont {
+        return UIFont.systemFont(ofSize: 14, weight: .bold)
+    }
 }
+
+

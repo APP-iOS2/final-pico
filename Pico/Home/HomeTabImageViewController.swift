@@ -61,7 +61,7 @@ final class HomeTabImageViewController: UIViewController {
     private lazy var infoNameAgeLabel: UILabel = createHomeLabel(text: "", font: .picoTitleFont, textColor: .white)
     private lazy var infoLocationLabel: UILabel = createHomeLabel(text: "서울특별시 강남구, 12.5km", font: .picoSubTitleFont, textColor: .white)
     private let infoMBTILabel: MBTILabelView = {
-        let label = MBTILabelView(mbti: .entp)
+        let label = MBTILabelView(mbti: .entp, scale: .large)
         label.layer.opacity = 0.9
         return label
     }()
