@@ -60,6 +60,7 @@ class SignUpAgeViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configDatePicker()
+        configBackButton()
     }
 }
 

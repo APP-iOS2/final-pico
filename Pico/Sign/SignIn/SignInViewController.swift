@@ -51,6 +51,7 @@ final class SignInViewController: UIViewController {
     private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
+        button.backgroundColor = .picoGray
         return button
     }()
     
@@ -62,6 +63,7 @@ final class SignInViewController: UIViewController {
         makeConstraints()
         configTextfield()
         configButton()
+        configBackButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -89,12 +91,16 @@ final class SignInViewController: UIViewController {
         if isFullPhoneNumber {
             let viewController = LoginSuccessViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
+            isFullPhoneNumber = false
         }
+        
     }
     
     private func changeViewState(isFull: Bool) {
         if isFull {
             phoneNumberTextField.textColor = .picoBlue
+            
+            nextButton.backgroundColor = .picoBlue
         } else {
             phoneNumberTextField.textColor = .picoFontBlack
             nextButton.backgroundColor = .picoGray
@@ -117,6 +123,7 @@ extension SignInViewController: UITextFieldDelegate {
         let updatedText = currentText.replacingCharacters(in: range, with: string)
         let digits = CharacterSet.decimalDigits
         let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
+        
         isFullPhoneNumber = false
         changeViewState(isFull: isFullPhoneNumber)
         textField.textColor = .gray
@@ -126,7 +133,7 @@ extension SignInViewController: UITextFieldDelegate {
             return false
         } else if filteredText.count > 10 {
             isFullPhoneNumber = true
-            textField.textColor = .picoBlue
+            changeViewState(isFull: isFullPhoneNumber)
             return true
         }
         
