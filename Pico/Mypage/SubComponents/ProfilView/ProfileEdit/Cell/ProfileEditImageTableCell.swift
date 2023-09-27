@@ -16,6 +16,7 @@ final class ProfileEditImageTableCell: UITableViewCell {
         layout.minimumInteritemSpacing = 0
         return layout
     }()
+    
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: self.collectionViewFlowLayout)
         view.showsHorizontalScrollIndicator = false
@@ -61,7 +62,6 @@ final class ProfileEditImageTableCell: UITableViewCell {
             make.top.bottom.equalToSuperview()
         }
     }
-    
 }
 
 extension ProfileEditImageTableCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -76,7 +76,6 @@ extension ProfileEditImageTableCell: UICollectionViewDataSource, UICollectionVie
         cell.backgroundColor = .lightGray
         cell.layer.masksToBounds = true
         cell.layer.cornerRadius = 10
-        
         return cell
     }
     

@@ -16,6 +16,7 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
         label.text = "닉네임 변경"
         return label
     }()
+    
     private lazy var nicknameChangeButton: UIButton = {
         let button = UIButton()
         let image = UIImage(named: "chu")?.resized(toSize: CGSize(width: 30, height: 30))
@@ -55,14 +56,15 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
     
     private func makeConstraints() {
         titleLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(15)
-        }
-        nicknameChangeButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
+        }
+        
+        nicknameChangeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-15)
-            make.height.equalTo(30)
+            make.centerY.equalToSuperview()
             make.width.equalTo(100)
+            make.height.equalTo(30)
         }
     }
 }

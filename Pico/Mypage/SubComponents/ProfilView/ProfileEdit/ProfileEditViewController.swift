@@ -75,7 +75,6 @@ extension ProfileEditViewController: UITableViewDataSource, UITableViewDelegate 
         default:
             return UITableViewCell()
         }
-        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -106,7 +105,6 @@ extension ProfileEditViewController: UITableViewDataSource, UITableViewDelegate 
         default:
             return 10
         }
-            
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
