@@ -48,7 +48,7 @@ final class MailListTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj)
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj, scale: .small)
     
     private let dateStackView: UIStackView = {
         let stackView = UIStackView()

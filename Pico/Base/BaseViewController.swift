@@ -18,11 +18,16 @@ class BaseViewController: UIViewController {
         super.viewDidLoad()
         configUI()
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configLogoBarItem()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationItem.leftBarButtonItem = nil
+    }
     private func configUI() {
         view.backgroundColor = .systemBackground
         configBackButton()
-        configLogoBarItem()
         tappedDismissKeyboard()
     }
 }

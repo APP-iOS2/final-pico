@@ -35,9 +35,11 @@ class NotificationTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
+    
     private let contentLabel: UILabel = {
         let label = UILabel()
-        label.text = "님이 좋아요를 누르셨습니다."
+        label.text = "좋아요를 누르셨습니다."
         return label
     }()
     
@@ -68,8 +70,9 @@ class NotificationTableViewCell: UITableViewCell {
         notiType = type
         profileImageView.load(url: url)
         iconImageView.image = notiType == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
+        iconImageView.tintColor = notiType == .like ? .systemPink : .picoBlue
         nameLabel.text = title
-        contentLabel.text = notiType == .like ? "님이 좋아요를 누르셨습니다." : "님이 쪽지를 보냈습니다."
+        contentLabel.text = notiType == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
     }
     
     private func addViews() {
@@ -77,7 +80,7 @@ class NotificationTableViewCell: UITableViewCell {
             addSubview(item)
         }
         
-        [nameLabel, contentLabel].forEach { item in
+        [nameLabel, mbitLabel, contentLabel].forEach { item in
             labelView.addSubview(item)
         }
     }
@@ -102,12 +105,20 @@ class NotificationTableViewCell: UITableViewCell {
         
         nameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview()
+            make.leading.equalToSuperview()
+        }
+        
+        mbitLabel.snp.makeConstraints { make in
+            make.leading.equalTo(nameLabel.snp.trailing).offset(10)
+            make.centerY.equalTo(nameLabel)
+            make.height.equalTo(mbitLabel.frame.size.height)
+            make.width.equalTo(mbitLabel.frame.size.width)
         }
         
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(5)
-            make.leading.trailing.equalTo(nameLabel)
+            make.leading.equalTo(nameLabel)
+            make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
     }
