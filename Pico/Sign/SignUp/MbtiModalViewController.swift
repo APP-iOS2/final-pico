@@ -44,7 +44,7 @@ final class MbtiModalViewController: UIViewController {
         view.addGestureRecognizer(tapGesture)
         view.backgroundColor = .picoAlphaWhite
         view.layer.cornerRadius = 8
-        view.addShadow(offset: CGSize(width: 1, height: 2), color: .picoAlphaBlue, opacity: 0.8)
+        view.addShadow(offset: CGSize(width: 1, height: 2), opacity: 0.5)
         view.tag = 1
         return view
     }()
@@ -55,7 +55,7 @@ final class MbtiModalViewController: UIViewController {
         view.addGestureRecognizer(tapGesture)
         view.backgroundColor = .picoAlphaWhite
         view.layer.cornerRadius = 8
-        view.addShadow(offset: CGSize(width: 1, height: 2), color: .picoAlphaBlue, opacity: 0.8)
+        view.addShadow(offset: CGSize(width: 1, height: 2), opacity: 0.5)
         view.tag = 2
         return view
     }()
@@ -120,11 +120,11 @@ final class MbtiModalViewController: UIViewController {
         if sender.view?.tag == 1 {
             sender.view?.backgroundColor = .picoBetaBlue
             
-            sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoAlphaBlue, opacity: 0.8)
+            sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoBetaBlue, opacity: 0.8)
             self.delegate?.choiceMbti(mbti: leftTitle, num: number)
         } else {
             sender.view?.backgroundColor = .picoBetaBlue
-            sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoAlphaBlue, opacity: 0.8)
+            sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoBetaBlue, opacity: 0.8)
             self.delegate?.choiceMbti(mbti: rightTitle, num: number)
         }
         slowDownModal()

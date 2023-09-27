@@ -10,6 +10,7 @@ import UIKit
 final class SignUpPhoneNumberViewController: UIViewController {
 
     private var isFullPhoneNumber: Bool = false
+    private var isTappedCheckButton: Bool = false
     private var messageButtons: [UIButton] = []
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -111,24 +112,40 @@ final class SignUpPhoneNumberViewController: UIViewController {
     @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
         if isFullPhoneNumber {
             tappedButtonAnimation(sender)
-            phoneMessageStackView.isHidden = false
-            
+            isTappedCheckButton = true
+            changeViewState(isFull: isFullPhoneNumber, isCheck: isTappedCheckButton)
         }
     }
     @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
-        phoneNumberTextField.text = ""
         isFullPhoneNumber = false
-        phoneMessageStackView.isHidden = true
-        nextButton.backgroundColor = .picoGray
+        phoneNumberTextField.text = ""
+        changeViewState(isFull: isFullPhoneNumber)
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        if isFullPhoneNumber {
+        if isFullPhoneNumber && isTappedCheckButton {
             tappedButtonAnimation(sender)
             let viewController = SignUpGenderViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }
+    }
+    
+    private func changeViewState(isFull: Bool, isCheck: Bool = false) {
+        if isFull {
+            phoneNumberTextField.textColor = .picoBlue
+        } else {
+            phoneNumberTextField.textColor = .picoFontBlack
+            nextButton.backgroundColor = .picoGray
+        }
+        if isCheck {
+            phoneMessageStackView.isHidden = false
+            phoneNumberTextField.textColor = .picoBlue
+            nextButton.backgroundColor = .picoBlue
+        } else {
+            phoneMessageStackView.isHidden = true
+        }
+        
     }
 }
 
@@ -140,27 +157,31 @@ extension SignUpPhoneNumberViewController: UITextFieldDelegate {
         self.view.endEditing(true)
     }
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
+        
+        if string.isEmpty {
+            isFullPhoneNumber = false
+            changeViewState(isFull: isFullPhoneNumber)
+        }
+        
         let currentText = (textField.text ?? "") as NSString
         let updatedText = currentText.replacingCharacters(in: range, with: string)
         let digits = CharacterSet.decimalDigits
         let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
+        
         isFullPhoneNumber = false
-        textField.textColor = .gray
+        changeViewState(isFull: isFullPhoneNumber)
+        
         if filteredText.count > 11 {
             isFullPhoneNumber = true
-            textField.textColor = .picoBlue
-            nextButton.backgroundColor = .picoBlue
+            changeViewState(isFull: isFullPhoneNumber)
             return false
         } else if filteredText.count > 10 {
             isFullPhoneNumber = true
-            textField.textColor = .picoBlue
-            nextButton.backgroundColor = .picoBlue
+            changeViewState(isFull: isFullPhoneNumber)
             return true
         }
         
         textField.text = formattedTextFieldText(filteredText)
-        
         return false
     }
     
