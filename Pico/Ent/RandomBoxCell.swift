@@ -14,7 +14,6 @@ final class RandomBoxCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
-        
         return imageView
     }()
     
@@ -23,7 +22,6 @@ final class RandomBoxCell: UICollectionViewCell {
         label.textAlignment = .left
         label.font = UIFont.picoTitleFont
         label.text = "Random Box"
-        
         return label
     }()
     
@@ -33,7 +31,6 @@ final class RandomBoxCell: UICollectionViewCell {
         label.font = UIFont.picoDescriptionFont
         label.text = "꽝은 절대 없다!\n랜덤박스를 열어 츄를 획득해보세요\n( 1일 1회 무료 )"
         label.numberOfLines = 0
-        
         return label
     }()
     
@@ -41,7 +38,6 @@ final class RandomBoxCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
-        
         return imageView
     }()
     
@@ -50,13 +46,12 @@ final class RandomBoxCell: UICollectionViewCell {
         label.textAlignment = .center
         label.font = UIFont.picoDescriptionFont
         label.text = "10"
-        
         return label
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        style()
+        configStyle()
         addViews()
         makeConstraints()
     }
@@ -65,7 +60,7 @@ final class RandomBoxCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func style() {
+    private func configStyle() {
         self.layer.borderWidth = 1.0
         self.layer.cornerRadius = 10
     }

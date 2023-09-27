@@ -12,7 +12,6 @@ final class WorldCupViewController: UIViewController {
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
         imageView.contentMode = .scaleAspectFill
-
         return imageView
     }()
 
@@ -21,7 +20,6 @@ final class WorldCupViewController: UIViewController {
         label.textAlignment = .center
         label.font = UIFont.picoTitleFont
         label.text = "당신의 친구에게 투표하세요"
-
         return label
     }()
 
@@ -31,7 +29,6 @@ final class WorldCupViewController: UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 36)
         label.text = "Pick Me"
         label.textColor = .picoBlue
-
         return label
     }()
 
@@ -41,7 +38,6 @@ final class WorldCupViewController: UIViewController {
         label.font = UIFont.picoButtonFont
         label.text = "마음에 드는 이성을 골라보세요!\n최종 선택 이성에게 채팅신청 시\n피코가 채팅 신청 피용의 50%를\n부담해 드릴게요!"
         label.numberOfLines = 0
-
         return label
     }()
 
@@ -49,7 +45,6 @@ final class WorldCupViewController: UIViewController {
         let button = CommonButton()
         button.setTitle("시작", for: .normal)
         button.addTarget(self, action: #selector(tappedGameStartButton), for: .touchUpInside)
-
         return button
     }()
 
@@ -59,7 +54,6 @@ final class WorldCupViewController: UIViewController {
         label.font = UIFont.picoButtonFont
         label.text = "24시간에 한 번만 진행 가능합니다"
         label.textColor = .gray
-
         return label
     }()
 

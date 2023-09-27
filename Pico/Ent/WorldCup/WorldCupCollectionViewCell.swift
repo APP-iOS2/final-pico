@@ -10,42 +10,37 @@ import SnapKit
 
 final class WorldCupCollectionViewCell: UICollectionViewCell {
     
-    let mbtiLabel: UILabel = {
+    lazy var mbtiLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoTitleFont
-        
         return label
     }()
     
-    let userImage: UIImageView = {
+    lazy var userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "woman1")
-        
         return imageView
     }()
     
-    let userNickname: UILabel = {
+    lazy var userNickname: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoSubTitleFont
         label.numberOfLines = 0
-        
         return label
     }()
     
-    let userAge: UILabel = {
+    lazy var userAge: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoButtonFont
-        
         return label
     }()
     
     let userInfoStackView: WorldCupUserInfoStackView = {
         let stackView = WorldCupUserInfoStackView()
-        
         return stackView
     }()
     

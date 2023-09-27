@@ -14,7 +14,6 @@ final class EntCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
-        
         return imageView
     }()
     
@@ -23,7 +22,6 @@ final class EntCollectionViewCell: UICollectionViewCell {
         label.text = "이상형 월드컵"
         label.textAlignment = .center
         label.font = UIFont.picoButtonFont
-
         return label
     }()
     
@@ -33,7 +31,6 @@ final class EntCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .left
         label.font = UIFont.picoDescriptionFont
         label.numberOfLines = 0
-        
         return label
     }()
     

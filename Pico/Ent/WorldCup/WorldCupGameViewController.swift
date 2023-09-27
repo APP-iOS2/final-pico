@@ -9,7 +9,7 @@ import SnapKit
 
 final class WorldCupGameViewController: UIViewController {
     
-    private var items: [User] = MockUserData.users
+    private var items: [User] = DummyUserData.users
     private var strong8: [User] = []
     private var strong4: [User] = []
     private var strong2: [User] = []
@@ -19,7 +19,6 @@ final class WorldCupGameViewController: UIViewController {
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
         imageView.contentMode = .scaleAspectFill
-        
         return imageView
     }()
     
@@ -27,7 +26,6 @@ final class WorldCupGameViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoTitleFont
-        
         return label
     }()
     
@@ -36,7 +34,6 @@ final class WorldCupGameViewController: UIViewController {
         label.textAlignment = .center
         label.font = UIFont.picoButtonFont
         label.text = "마음에 드는 이성을 골라보세요!"
-        
         return label
     }()
     
@@ -44,14 +41,12 @@ final class WorldCupGameViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        
         return collectionView
     }()
     
     private let vsImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "vsImage"))
         imageView.contentMode = .scaleAspectFill
-        
         return imageView
     }()
     
@@ -76,7 +71,7 @@ final class WorldCupGameViewController: UIViewController {
         }
     }
     
-    func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
+    private func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
         collectionView.layer.masksToBounds = false
         collectionView.layer.shadowColor = UIColor.black.cgColor
         collectionView.layer.shadowOffset = CGSize(width: 10, height: 10)
@@ -135,7 +130,6 @@ final class WorldCupGameViewController: UIViewController {
         }
         
         dataLabelTexts.append("\(currentItem.location.address)")
-        
         return dataLabelTexts
     }
     
@@ -178,7 +172,6 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
         cell.userNickname.text = currentItem.nickName
 //        cell.userAge.text = "\(currentItem.age)"
         cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
-        
         return cell
     }
     

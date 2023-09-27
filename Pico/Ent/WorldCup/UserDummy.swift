@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MockUserData {
+struct DummyUserData {
     static let users: [User] = {
         let user1 = User(
             mbti: .enfp,
@@ -18,7 +18,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 100,
@@ -34,7 +34,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -49,7 +49,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -65,7 +65,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -81,7 +81,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -97,7 +97,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -113,7 +113,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -129,7 +129,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -145,7 +145,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 100,
@@ -161,7 +161,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -176,7 +176,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -192,7 +192,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -208,7 +208,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -224,7 +224,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -240,7 +240,7 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
@@ -256,18 +256,17 @@ struct MockUserData {
             location: Location(address: "주소", latitude: 0.0, longitude: 0.0),
             imageURLs: [],
             createdDate: Date().timeIntervalSince1970,
-            subInfo: MockSubInfo.subInfo,
+            subInfo: DummySubInfo.subInfo,
             reports: nil,
             blocks: nil,
             chuCount: 150,
             isSubscribe: false
         )
-        
         return [user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11, user12, user13, user14, user15, user16]
     }()
 }
 
-struct MockSubInfo {
+struct DummySubInfo {
     static let subInfo: SubInfo = {
         return SubInfo(
             intro: "유저다",

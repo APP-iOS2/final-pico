@@ -14,7 +14,6 @@ final class RandomBoxViewController: UIViewController {
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
         imageView.contentMode = .scaleAspectFill
-
         return imageView
     }()
 
@@ -23,7 +22,6 @@ final class RandomBoxViewController: UIViewController {
         button.setImage(UIImage(named: "chu"), for: .normal)
         button.contentMode = .scaleAspectFit
         //        button.addTarget(self, action: #selector(chuButtonTapped), for: .touchUpInside)
-        
         return button
     }()
 
@@ -32,7 +30,6 @@ final class RandomBoxViewController: UIViewController {
         button.setImage(UIImage(systemName: "info.circle"), for: .normal)
         button.contentMode = .scaleAspectFill
         //        button.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
-        
         return button
     }()
 
@@ -42,7 +39,6 @@ final class RandomBoxViewController: UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 36)
         label.text = "Random Box"
         label.textColor = .picoBlue
-
         return label
     }()
 
@@ -52,7 +48,6 @@ final class RandomBoxViewController: UIViewController {
         label.font = UIFont.picoSubTitleFont
         label.text = "랜덤박스를 열어 부족한 츄를 획득해보세요!\n꽝은 절대 없다!\n최대 100츄 획득의 기회를 놓치지 마세요!"
         label.numberOfLines = 0
-
         return label
     }()
 
@@ -62,21 +57,18 @@ final class RandomBoxViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         imageView.setContentHuggingPriority(.defaultLow, for: .vertical)
-
         return imageView
     }()
 
     private let openOneBoxButton: CommonButton = {
         let button = CommonButton()
         button.setTitle("1개 열기", for: .normal)
-
         return button
     }()
 
     private let openTenBoxButton: CommonButton = {
         let button = CommonButton()
         button.setTitle("10개 열기", for: .normal)
-
         return button
     }()
 
@@ -85,8 +77,7 @@ final class RandomBoxViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()
-        self.openOneBoxButton.addTarget(self, action: #selector(openBoxButtonTapped), for: .touchUpInside)
-        self.openTenBoxButton.addTarget(self, action: #selector(openTenBoxButtonTapped), for: .touchUpInside)
+        configButton()
     }
 
     private func addViews() {
@@ -149,6 +140,11 @@ final class RandomBoxViewController: UIViewController {
         }
     }
 
+    private func configButton() {
+        self.openOneBoxButton.addTarget(self, action: #selector(openBoxButtonTapped), for: .touchUpInside)
+        self.openTenBoxButton.addTarget(self, action: #selector(openTenBoxButtonTapped), for: .touchUpInside)
+    }
+    
     @objc func openBoxButtonTapped() {
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
