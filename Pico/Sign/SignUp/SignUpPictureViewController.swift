@@ -88,18 +88,9 @@ class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
+        print(userImages)
         let viewController = SignUpTermsOfServiceViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    @objc private func openPhotoLibrary() {
-        
-        var configuration = PHPickerConfiguration()
-        configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
-
-        let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = self
-        present(picker, animated: true, completion: nil)
     }
     // MARK: - UI 관련
     
@@ -150,6 +141,17 @@ class SignUpPictureViewController: UIViewController {
 // MARK: - 사진 받아오는곳
 
 extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    @objc private func openPhotoLibrary() {
+        
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
+
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        present(picker, animated: true, completion: nil)
+    }
+    
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         
         picker.dismiss(animated: true, completion: nil)
