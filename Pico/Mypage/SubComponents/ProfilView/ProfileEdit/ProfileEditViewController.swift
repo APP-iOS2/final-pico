@@ -66,7 +66,6 @@ extension ProfileEditViewController: UITableViewDataSource, UITableViewDelegate 
         switch indexPath.section {
         case 0:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.profileEditImageTableCell, for: indexPath) as? ProfileEditImageTableCell else { return UITableViewCell() }
-            
             return cell
         case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.profileEditNicknameTabelCell, for: indexPath) as? ProfileEditNicknameTabelCell else { return UITableViewCell() }
