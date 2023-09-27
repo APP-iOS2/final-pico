@@ -10,7 +10,6 @@ import SnapKit
 
 final class BottomUserTableViewCell: UITableViewCell {
     private let viewModel = UserDetailViewModel()
-    private var personalArray: [String] = []
     
     private let hobbyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -76,13 +75,13 @@ final class BottomUserTableViewCell: UITableViewCell {
         mbtiCollectionView.dataSource = self
     }
     
-    final private func addViews() {
+    private func addViews() {
         [hobbyLabel, personalLabel, hobbyCollectionView, personalCollectionView, likeMbtiLable, mbtiCollectionView].forEach {
             self.addSubview($0)
         }
     }
     
-    final private func makeConstraints() {
+    private func makeConstraints() {
         hobbyLabel.snp.makeConstraints { make in
             make.leading.top.equalToSuperview().offset(10)
         }

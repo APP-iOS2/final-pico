@@ -98,12 +98,12 @@ final class MiddleUserTableViewCell: UITableViewCell {
         drinkLabel.text = jobText
     }
     
-    final private func addViews() {
+    private func addViews() {
         let views = [introLabel, educationImageView, educationLabel, religionImageView, religionLabel, smokeImageView, smokeLabel, jobImageView, jobLabel, drinkImageView, drinkLabel]
         views.forEach { self.addSubview($0) }
     }
     
-    final private func makeConstraints() {
+    private func makeConstraints() {
         
         introLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(30)

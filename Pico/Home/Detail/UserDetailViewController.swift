@@ -22,7 +22,7 @@ final class UserDetailViewController: UIViewController {
     private let disLikeButton: UIButton = {
         let button = UIButton(configuration: .plain())
         button.setImage(UIImage(systemName: "hand.thumbsdown.circle.fill"), for: .normal)
-       
+        
         return button
     }()
     
@@ -58,7 +58,6 @@ final class UserDetailViewController: UIViewController {
         self.navigationItem.title = "윈터, 24"
         let rightBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(tappedNavigationButton))
         self.navigationItem.rightBarButtonItem = rightBarButton
-        changeNavigationBackButton()
         self.navigationController?.navigationBar.tintColor = .black
     }
     
@@ -130,7 +129,7 @@ extension UserDetailViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    final func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
             return CGFloat(Screen.height * 0.8)

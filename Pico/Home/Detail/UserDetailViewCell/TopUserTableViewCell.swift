@@ -35,7 +35,7 @@ final class TopUserTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    private var mbtiLabelView = MBTILabelView(mbti: .infp)
+    private var mbtiLabelView = MBTILabelView(mbti: .infp, scale: .large)
     
     private let nameAgeLabel: UILabel = {
         let label = UILabel()
@@ -79,18 +79,18 @@ final class TopUserTableViewCell: UITableViewCell {
     }
     
     func config(mbti: MBTIType, nameAgeText: String, locationText: String, heightText: String) {
-        mbtiLabelView = MBTILabelView(mbti: mbti)
+        mbtiLabelView = MBTILabelView(mbti: mbti, scale: .large)
         nameAgeLabel.text = nameAgeText
         locationLabel.text = locationText
         heightLabel.text = "\(heightText) cm"
     }
     
-    final private func addViews() {
+    private func addViews() {
         [mbtiLabelView, nameAgeLabel, locationLabel, locationImageView, heightLabel, heightImageView, pageControl].forEach { self.addSubview($0) }
         pageControl.addSubview(userImageView)
     }
     
-    final private func makeConstraints() {
+    private func makeConstraints() {
         let safeArea = self.safeAreaLayoutGuide
         
         pageControl.snp.makeConstraints { make in
