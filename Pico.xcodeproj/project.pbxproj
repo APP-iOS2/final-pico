@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */; };
+		362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */; };
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
 		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
@@ -118,6 +119,7 @@
 
 /* Begin PBXFileReference section */
 		362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpAgeViewController.swift; sourceTree = "<group>"; };
+		362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpNickNameViewController.swift; sourceTree = "<group>"; };
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
 		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
@@ -402,6 +404,7 @@
 				367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */,
 				367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */,
 				362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */,
+				362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */,
 			);
 			path = SignUp;
 			sourceTree = "<group>";
@@ -864,6 +867,7 @@
 				54B441312AC2C36C00EC8846 /* MiddleUserTableViewCell.swift in Sources */,
 				6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
+				362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */,
 				362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */,
 				5471384C2AC3621000CFE88D /* MbtiCollectionViewCell.swift in Sources */,
 				B15ABE312AC31CF000529C29 /* ShowAlert.swift in Sources */,
