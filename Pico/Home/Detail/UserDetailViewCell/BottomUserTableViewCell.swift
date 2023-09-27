@@ -8,9 +8,8 @@
 import UIKit
 import SnapKit
 
-class BottomUserTableViewCell: UITableViewCell {
+final class BottomUserTableViewCell: UITableViewCell {
     private let viewModel = UserDetailViewModel()
-    private var personalArray: [String] = []
     
     private let hobbyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -58,11 +57,11 @@ class BottomUserTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
         makeConstraints()
-        configHobbyCollectionView()
+        configCollectionView()
         
     }
     
-    func configHobbyCollectionView() {
+    private func configCollectionView() {
         hobbyCollectionView.register(HobbyCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.hobbyCollectionCell)
         hobbyCollectionView.delegate = self
         hobbyCollectionView.dataSource = self
@@ -76,13 +75,13 @@ class BottomUserTableViewCell: UITableViewCell {
         mbtiCollectionView.dataSource = self
     }
     
-    final private func addViews() {
+    private func addViews() {
         [hobbyLabel, personalLabel, hobbyCollectionView, personalCollectionView, likeMbtiLable, mbtiCollectionView].forEach {
             self.addSubview($0)
         }
     }
     
-    final private func makeConstraints() {
+    private func makeConstraints() {
         hobbyLabel.snp.makeConstraints { make in
             make.leading.top.equalToSuperview().offset(10)
         }
@@ -90,7 +89,7 @@ class BottomUserTableViewCell: UITableViewCell {
         hobbyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(hobbyLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().offset(10)
-            make.height.equalTo(200)
+            make.height.equalTo(Screen.height * 0.1)
         }
         
         personalLabel.snp.makeConstraints { make in
@@ -103,8 +102,7 @@ class BottomUserTableViewCell: UITableViewCell {
             make.top.equalTo(personalLabel.snp.bottom).offset(20)
             make.leading.equalTo(personalLabel.snp.leading)
             make.trailing.equalToSuperview().offset(20)
-            make.height.equalTo(150)
-          
+            make.height.equalTo(Screen.height * 0.1)
         }
         
         likeMbtiLable.snp.makeConstraints { make in
@@ -118,7 +116,7 @@ class BottomUserTableViewCell: UITableViewCell {
             make.top.equalTo(likeMbtiLable.snp.bottom).offset(20)
             make.leading.equalTo(likeMbtiLable.snp.leading)
             make.trailing.bottom.equalToSuperview()
-            make.height.equalTo(200)
+            
         }
     }
     
@@ -187,14 +185,14 @@ extension BottomUserTableViewCell: UICollectionViewDelegate, UICollectionViewDat
             label.text = hobby
             label.sizeToFit()
             let size = label.frame.size
-            return CGSize(width: size.width + 10, height: size.height + 8)
+            return CGSize(width: size.width + 5, height: size.height + 8)
             
         case personalCollectionView:
             let personal = viewModel.userData.subInfo?.personalities[indexPath.row]
             label.text = personal
             label.sizeToFit()
             let size = label.frame.size
-            return CGSize(width: size.width + 10, height: size.height + 8)
+            return CGSize(width: size.width + 8, height: size.height + 8)
             
         case mbtiCollectionView:
             return CGSize(width: 70, height: 30)
