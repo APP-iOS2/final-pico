@@ -85,8 +85,11 @@ extension SignUpAgeViewController {
     }
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
+        
         if isChoiceAge {
-            print("\(selectedYear)년 \(selectedMonth)년 \(selectedDay)일")
+            tappedButtonAnimation(sender)
+            let viewController = SignUpNickNameViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
     
