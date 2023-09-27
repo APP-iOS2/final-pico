@@ -3,6 +3,7 @@ import SnapKit
 
 class SignUpAgeViewController: UIViewController {
     
+    private var isChoiceAge: Bool = false
     private var selectedYear: Int = 2000
     private var selectedMonth: Int = 1
     private var selectedDay: Int = 1
@@ -44,6 +45,14 @@ class SignUpAgeViewController: UIViewController {
         return picker
     }()
 
+    private lazy var nextButton: UIButton = {
+        let button = CommonButton(type: .custom)
+        button.setTitle("다음", for: .normal)
+        button.backgroundColor = .picoGray
+        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+        return button
+    }()
+    
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,7 +64,7 @@ class SignUpAgeViewController: UIViewController {
     
     // MARK: - UI 관련
     private func addSubViews() {
-        for viewItem in [progressView, notifyLabel, subNotifyLabel, datePicker] {
+        for viewItem in [progressView, notifyLabel, subNotifyLabel, datePicker, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -90,6 +99,13 @@ class SignUpAgeViewController: UIViewController {
             make.trailing.equalTo(-25)
             make.height.equalTo(150)
         }
+        
+        nextButton.snp.makeConstraints { make in
+            make.leading.equalTo(20)
+            make.trailing.equalTo(-20)
+            make.bottom.equalTo(safeArea).offset(-30)
+            make.height.equalTo(50)
+        }
     }
     
     // MARK: - Config
@@ -105,6 +121,17 @@ class SignUpAgeViewController: UIViewController {
         datePicker.selectRow(initialYearIndex, inComponent: 0, animated: false)
         datePicker.selectRow(initialMonthIndex, inComponent: 1, animated: false)
         datePicker.selectRow(initialDayIndex, inComponent: 2, animated: false)
+    }
+    
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        if isChoiceAge {
+            print("\(selectedYear)년 \(selectedMonth)년 \(selectedDay)일")
+        }
+        
+    }
+    private func enableNextButton() {
+        isChoiceAge = true
+        nextButton.backgroundColor = .picoBlue
     }
     
 }
@@ -157,11 +184,14 @@ extension SignUpAgeViewController: UIPickerViewDelegate, UIPickerViewDataSource 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch component {
         case 0:
+            enableNextButton()
             selectedYear = years[row]
         case 1:
+            enableNextButton()
             selectedMonth = months[row]
             updateDaysForSelectedMonth()
         case 2:
+            enableNextButton()
             selectedDay = days[row]
         default:
             break
