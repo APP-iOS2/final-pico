@@ -68,20 +68,12 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = view.frame.width / 2 - 20
+        let width = view.frame.width / 2 - 17.5
         return CGSize(width: width, height: width * 1.5)
     }
     
-    private func loadAsyncImage(imageView: UIImageView, urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data,
-                  response != nil,
-                  error == nil else { return }
-            DispatchQueue.main.async {
-                imageView.image = UIImage(data: data) ?? UIImage()
-            }
-        }.resume()
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 15
     }
     
     func tappedDeleteButton(_ cell: LikeCollectionViewCell) {
