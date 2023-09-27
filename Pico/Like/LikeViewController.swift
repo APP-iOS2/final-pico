@@ -42,7 +42,7 @@ final class LikeViewController: UIViewController {
         return view
     }()
     
-    lazy var pageViewController: UIPageViewController = {
+    private lazy var pageViewController: UIPageViewController = {
         let pageController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
         pageController.view.frame = contentsView.frame
         return pageController

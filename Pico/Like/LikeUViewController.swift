@@ -79,11 +79,9 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSou
         return 15
     }
     
-    func tappedDeleteButton(_ cell: LikeCollectionViewCell) {
-        if let indexPath = collectionView.indexPath(for: cell) { }
-    }
+    func tappedDeleteButton(_ cell: LikeCollectionViewCell) { }
     
     func tappedMessageButton(_ cell: LikeCollectionViewCell) { 
-        //메시지 연결 작성
+        // 메시지 연결 작성
     }
 }

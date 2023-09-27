@@ -19,7 +19,6 @@ final class LikeEmptyView: UIView {
     
     private let chuImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "chu"))
-        
         return imageView
     }()
     
@@ -27,7 +26,6 @@ final class LikeEmptyView: UIView {
         let label = UILabel()
         label.text = viewType.rawValue
         label.textAlignment = .center
-        
         return label
     }()
     
@@ -36,14 +34,12 @@ final class LikeEmptyView: UIView {
         button.setTitle("둘러보기 >", for: .normal)
         button.setTitleColor(.darkGray, for: .normal)
         button.tintColor = .clear
-        
         return button
     }()
     
     private var messageSubLabel: UILabel = {
         let label = UILabel()
         label.text = "서로 좋아요가 연결되는 순간 채팅 가능~"
-        
         return label
     }()
     
