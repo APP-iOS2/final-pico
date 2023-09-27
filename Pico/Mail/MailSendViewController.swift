@@ -62,7 +62,7 @@ final class MailSendViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
-        picoVcSetCircleImageView(imageView: receiverImageView)
+        setCircleImageView(imageView: receiverImageView)
     }
     
     func configNavigationBarItem() {
