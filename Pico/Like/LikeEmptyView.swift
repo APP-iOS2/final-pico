@@ -12,13 +12,13 @@ final class LikeEmptyView: UIView {
     enum EmptyViewType: String {
         case iLikeU = "누른 Like가 표시됩니다."
         case uLikeMe = "받은 Like가 표시됩니다."
+        case message = "마음의 드는 분과 대화를 나눠보세요."
     }
     
     private var viewType: EmptyViewType
     
     private let chuImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "chu"))
-        
         return imageView
     }()
     
@@ -26,7 +26,6 @@ final class LikeEmptyView: UIView {
         let label = UILabel()
         label.text = viewType.rawValue
         label.textAlignment = .center
-        
         return label
     }()
     
@@ -35,8 +34,13 @@ final class LikeEmptyView: UIView {
         button.setTitle("둘러보기 >", for: .normal)
         button.setTitleColor(.darkGray, for: .normal)
         button.tintColor = .clear
-        
         return button
+    }()
+    
+    private var messageSubLabel: UILabel = {
+        let label = UILabel()
+        label.text = "서로 좋아요가 연결되는 순간 채팅 가능~"
+        return label
     }()
     
     convenience init(frame: CGRect = CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width), type: EmptyViewType) {
@@ -62,6 +66,9 @@ final class LikeEmptyView: UIView {
         if viewType == .iLikeU {
             addSubview(linkButton)
         }
+        if viewType == .message {
+            addSubview(messageSubLabel)
+        }
     }
     
     private func makeConstraints() {
@@ -78,6 +85,13 @@ final class LikeEmptyView: UIView {
         
         if viewType == .iLikeU {
             linkButton.snp.makeConstraints { make in
+                make.top.equalTo(infomationLabel.snp.bottom).offset(10)
+                make.centerX.equalTo(infomationLabel)
+            }
+        }
+        
+        if viewType == .message {
+            messageSubLabel.snp.makeConstraints { make in
                 make.top.equalTo(infomationLabel.snp.bottom).offset(10)
                 make.centerX.equalTo(infomationLabel)
             }

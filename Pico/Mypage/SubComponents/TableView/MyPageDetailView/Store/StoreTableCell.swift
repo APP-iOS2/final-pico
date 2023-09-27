@@ -1,5 +1,5 @@
 //
-//  MyPageDefaultTableCell.swift
+//  StoreTableCell.swift
 //  Pico
 //
 //  Created by 김민기 on 2023/09/26.
@@ -7,17 +7,29 @@
 
 import UIKit
 
-final class MyPageDefaultTableCell: UITableViewCell {
-
+final class StoreTableCell: UITableViewCell {
+    
     private let tableImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = .darkGray
+        imageView.image = UIImage(named: "chu")
         return imageView
     }()
-    private let tableLabel: UILabel = {
+    private let countLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .picoFontBlack
+        label.font = UIFont.picoTitleFont
+        return label
+    }()
+    private let priceLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
         label.font = UIFont.picoSubTitleFont
+        return label
+    }()
+    private let discountLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .red
+        label.font = UIFont.picoDescriptionFont
         return label
     }()
     
@@ -30,20 +42,22 @@ final class MyPageDefaultTableCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
     
-    func configure(imageName: String, title: String) {
-        tableImageView.image = UIImage(systemName: imageName)
-        tableLabel.text = title
+    func configure(count: String, price: String, discount: String?) {
+        countLabel.text = "X \(count)"
+        priceLabel.text = "\(price) 원"
+        guard let discount else { return }
+        discountLabel.text = "- \(discount)%"
     }
     
     private func addSubView() {
-        [tableImageView, tableLabel].forEach {
+        [tableImageView, countLabel, priceLabel, discountLabel].forEach {
             contentView.addSubview($0)
         }
     }
@@ -52,12 +66,20 @@ final class MyPageDefaultTableCell: UITableViewCell {
         tableImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(10)
-            make.height.width.equalTo(25)
+            make.height.width.equalTo(80)
         }
-        tableLabel.snp.makeConstraints { make in
+        countLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(tableImageView.snp.trailing).offset(10)
             make.trailing.equalToSuperview().offset(-10)
+        }
+        priceLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-10)
+            make.bottom.equalToSuperview().offset(-15)
+        }
+        discountLabel.snp.makeConstraints { make in
+            make.trailing.equalTo(priceLabel.snp.trailing)
+            make.bottom.equalTo(priceLabel.snp.top).offset(-10)
         }
     }
 }

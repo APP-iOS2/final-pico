@@ -45,7 +45,6 @@ final class SignInViewController: UIViewController {
         stackView.alignment = .fill
         stackView.distribution = .fill
         stackView.spacing = 8
-        
         return stackView
     }()
     
@@ -55,6 +54,7 @@ final class SignInViewController: UIViewController {
         return button
     }()
     
+    // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -65,82 +65,35 @@ final class SignInViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
+        followKeyboard()
+        phoneNumberTextField.becomeFirstResponder()
     }
     
+    // MARK: - config
     private func configTextfield() {
         phoneNumberTextField.delegate = self
     }
     
     private func configButton() {
-        phoneNumberCancleButton.addTarget(self, action: #selector(tappedphoneNumberCancleButton), for: .touchUpInside)
+        phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
-    @objc private func tappedphoneNumberCancleButton() {
+    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
         phoneNumberTextField.text = ""
     }
     
-    @objc private func tappedNextButton() {
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
         if isTappedNextButton {
             let viewController = LoginSuccessViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
-    
-    @objc private func keyboardUp(notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-           let keyboardRectangle = keyboardFrame.cgRectValue
-       
-            UIView.animate(
-                withDuration: 0.5
-                , animations: {
-                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
-                }
-            )
-        }
-    }
-    
-    @objc private func keyboardDown() {
-        self.nextButton.transform = .identity
-    }
-    
-    private func addSubViews() {
-        for stackViewItem in [phoneNumberTextField, phoneNumberCancleButton] {
-            stackView.addArrangedSubview(stackViewItem)
-        }
-        
-        for viewItem in [notifyLabel, stackView, nextButton] {
-            view.addSubview(viewItem)
-        }
-    }
-    
-    private func makeConstraints() {
-        let safeArea = view.safeAreaLayoutGuide
-        
-        notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        stackView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-60)
-            make.height.equalTo(50)
-        }
-        
-        nextButton.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
-        }
-    }
 }
 
+// MARK: - 텍스트필드 관련
 extension SignInViewController: UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -165,6 +118,13 @@ extension SignInViewController: UITextFieldDelegate {
             textField.textColor = .picoBlue
             return true
         }
+        
+        textField.text = formattedTextFieldText(filteredText)
+        
+        return false
+    }
+    
+    func formattedTextFieldText(_ filteredText: String) -> String {
         let formattedText: String
         
         if filteredText.count <= 3 {
@@ -180,8 +140,70 @@ extension SignInViewController: UITextFieldDelegate {
             formattedText = "\(firstPart)-\(secondPart)-\(thirdPart)"
         }
         
-        textField.text = formattedText
+        return formattedText
+    }
+}
+
+// MARK: - 키보드 관련
+extension SignInViewController {
+    
+    private func followKeyboard() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc private func keyboardUp(notification: NSNotification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+           let keyboardRectangle = keyboardFrame.cgRectValue
+       
+            UIView.animate(
+                withDuration: 0.5
+                , animations: {
+                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
+                }
+            )
+        }
+    }
+    
+    @objc private func keyboardDown() {
+        self.nextButton.transform = .identity
+    }
+}
+
+// MARK: - UI 관련
+extension SignInViewController {
+    
+    private func addSubViews() {
+        for stackViewItem in [phoneNumberTextField, phoneNumberCancleButton] {
+            stackView.addArrangedSubview(stackViewItem)
+        }
         
-        return false
+        for viewItem in [notifyLabel, stackView, nextButton] {
+            view.addSubview(viewItem)
+        }
+    }
+    
+    private func makeConstraints() {
+        let safeArea = view.safeAreaLayoutGuide
+        
+        notifyLabel.snp.makeConstraints { make in
+            make.top.equalTo(safeArea).offset(10)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(notifyLabel.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(50)
+        }
+        
+        nextButton.snp.makeConstraints { make in
+            make.leading.equalTo(20)
+            make.trailing.equalTo(-20)
+            make.bottom.equalTo(safeArea).offset(-30)
+            make.height.equalTo(50)
+        }
     }
 }
