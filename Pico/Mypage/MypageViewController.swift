@@ -37,14 +37,31 @@ final class MypageViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         configBarItem()
+        configTapGesture()
         addViews()
         makeConstraints()
     }
     
     private func configBarItem() {
-        let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .done, target: self, action: nil)
+        let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .done, target: self, action: #selector(tappedBarButton))
         setButton.tintColor = .darkGray
+    
         navigationItem.rightBarButtonItem = setButton
+    }
+    
+    private func configTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedProfileView))
+        profilView.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func tappedProfileView(_ sender: UIBarButtonItem) {
+        let viewController = ProfileEditViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    @objc private func tappedBarButton(_ sender: UIBarButtonItem) {
+        let viewController = SettingViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func addViews() {
