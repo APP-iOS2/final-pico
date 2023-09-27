@@ -86,6 +86,7 @@
 		B15ABE352AC31D7F00529C29 /* CircleImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE342AC31D7F00529C29 /* CircleImageView.swift */; };
 		B15ABE372AC31DD200529C29 /* NavigationLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE362AC31DD200529C29 /* NavigationLogo.swift */; };
 		B15ABE392AC31E0800529C29 /* TappedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE382AC31E0800529C29 /* TappedAnimation.swift */; };
+		B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B161B8712AC414DD00257A9C /* PopupViewController.swift */; };
 		B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67832AC0A835006F91DC /* SignInViewController.swift */; };
 		B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67852AC0A850006F91DC /* SignUpViewController.swift */; };
 		B17D67882AC0AAFF006F91DC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67872AC0AAFF006F91DC /* User.swift */; };
@@ -218,6 +219,7 @@
 		B15ABE342AC31D7F00529C29 /* CircleImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleImageView.swift; sourceTree = "<group>"; };
 		B15ABE362AC31DD200529C29 /* NavigationLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLogo.swift; sourceTree = "<group>"; };
 		B15ABE382AC31E0800529C29 /* TappedAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappedAnimation.swift; sourceTree = "<group>"; };
+		B161B8712AC414DD00257A9C /* PopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
 		B17D67832AC0A835006F91DC /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		B17D67852AC0A850006F91DC /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		B17D67872AC0AAFF006F91DC /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -579,6 +581,7 @@
 				B1844F772AC0E3BF00ACFFED /* CommonButton.swift */,
 				B15ABE1A2AC2672300529C29 /* MBTILabelView.swift */,
 				B15ABE2C2AC2B22100529C29 /* CommonTextField.swift */,
+				B161B8712AC414DD00257A9C /* PopupViewController.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1036,6 +1039,7 @@
 				4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */,
 				4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
+				B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */,
 				B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */,
 				B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */,
 				B15ABE372AC31DD200529C29 /* NavigationLogo.swift in Sources */,
