@@ -10,16 +10,15 @@ import SnapKit
 
 final class WorldCupCollectionViewCell: UICollectionViewCell {
     
-    private let mbtiLabel: UILabel = {
+    let mbtiLabel: UILabel = {
         let label = UILabel()
-        label.text = "ENFP"
         label.textAlignment = .center
         label.font = UIFont.picoTitleFont
         
         return label
     }()
     
-    private let userImage: UIImageView = {
+    let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "woman1")
@@ -27,25 +26,24 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    private let userNickname: UILabel = {
+    let userNickname: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoSubTitleFont
-        label.text = "냥냥펀치"
+        label.numberOfLines = 0
         
         return label
     }()
     
-    private let userAge: UILabel = {
+    let userAge: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoButtonFont
-        label.text = "22"
         
         return label
     }()
     
-    private let userInfoStackView: WorldCupUserInfoStackView = {
+    let userInfoStackView: WorldCupUserInfoStackView = {
         let stackView = WorldCupUserInfoStackView()
         
         return stackView

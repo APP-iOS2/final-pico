@@ -62,11 +62,11 @@ final class WorldCupUserInfoStackView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func addViews() {
+    private func addViews() {
         addSubview(dataStackView)
     }
 
-    func makeConstraints() {
+    private func makeConstraints() {
         let padding: CGFloat = 10
 
         dataStackView.snp.makeConstraints { make in
@@ -76,4 +76,14 @@ final class WorldCupUserInfoStackView: UIView {
             make.bottom.equalToSuperview().offset(-padding)
         }
     }
+    
+    func setDataLabelTexts(_ texts: [String]) {
+            guard texts.count == dataLabels.count else {
+                return
+            }
+            
+            for (index, text) in texts.enumerated() {
+                dataLabels[index].text = text
+            }
+        }
 }

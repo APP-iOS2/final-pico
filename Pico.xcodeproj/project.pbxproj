@@ -20,6 +20,7 @@
 		4B26653B2AC3E3250074D4E2 /* WorldCupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */; };
 		4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */; };
 		4B26653F2AC3E33D0074D4E2 /* RandomBoxModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653E2AC3E33D0074D4E2 /* RandomBoxModel.swift */; };
+		4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665402AC3F4830074D4E2 /* UserDummy.swift */; };
 		531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* MyTransition.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
 		531C4EDB2AC2D08900ADC614 /* MyPageSecondTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */; };
@@ -134,6 +135,7 @@
 		4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupViewController.swift; sourceTree = "<group>"; };
 		4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewController.swift; sourceTree = "<group>"; };
 		4B26653E2AC3E33D0074D4E2 /* RandomBoxModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxModel.swift; sourceTree = "<group>"; };
+		4B2665402AC3F4830074D4E2 /* UserDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummy.swift; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* MyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTransition.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeEmptyView.swift; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */,
 				4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */,
 				4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */,
+				4B2665402AC3F4830074D4E2 /* UserDummy.swift */,
 			);
 			path = WorldCup;
 			sourceTree = "<group>";
@@ -971,6 +974,7 @@
 				6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */,
 				5471384A2AC361A300CFE88D /* HobbyCollectionViewCell.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
+				4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
