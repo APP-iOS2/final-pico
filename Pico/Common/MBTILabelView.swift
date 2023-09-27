@@ -35,6 +35,9 @@ final class MBTILabelView: UIView {
     
     convenience init(frame: CGRect = CGRect(x: 0, y: 0, width: 80, height: 40), mbti: MBTIType) {
         self.init(frame: frame)
+        self.backgroundColor = UIColor(hex: mbti.colorName)
+        self.layer.cornerRadius = 10
+        textLabel.text = mbti.nameString
     }
     
     // !!! 질문: init에 디폴트 값을 주면 왜 안되는가.. (convenience 없을때)
