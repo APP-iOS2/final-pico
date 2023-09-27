@@ -16,6 +16,7 @@
 		4B2665292AC26C870074D4E2 /* RandomBoxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665282AC26C870074D4E2 /* RandomBoxViewController.swift */; };
 		4B26652D2AC277A90074D4E2 /* RandomBoxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26652C2AC277A90074D4E2 /* RandomBoxCell.swift */; };
 		4B26652F2AC293E70074D4E2 /* WorldCupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26652E2AC293E70074D4E2 /* WorldCupTableViewCell.swift */; };
+		4B2665312AC2D4C70074D4E2 /* WorldCupUserInfoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665302AC2D4C70074D4E2 /* WorldCupUserInfoStackView.swift */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
@@ -90,6 +91,7 @@
 		4B2665282AC26C870074D4E2 /* RandomBoxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewController.swift; sourceTree = "<group>"; };
 		4B26652C2AC277A90074D4E2 /* RandomBoxCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxCell.swift; sourceTree = "<group>"; };
 		4B26652E2AC293E70074D4E2 /* WorldCupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupTableViewCell.swift; sourceTree = "<group>"; };
+		4B2665302AC2D4C70074D4E2 /* WorldCupUserInfoStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupUserInfoStackView.swift; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeEmptyView.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 				4B2665202AC26C590074D4E2 /* WorldCupGameViewController.swift */,
 				4B2665242AC26C720074D4E2 /* WorldCupViewController.swift */,
 				4B26652E2AC293E70074D4E2 /* WorldCupTableViewCell.swift */,
+				4B2665302AC2D4C70074D4E2 /* WorldCupUserInfoStackView.swift */,
 			);
 			path = WorldCup;
 			sourceTree = "<group>";
@@ -706,6 +709,7 @@
 				4B2665212AC26C590074D4E2 /* WorldCupGameViewController.swift in Sources */,
 				B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */,
 				B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */,
+				4B2665312AC2D4C70074D4E2 /* WorldCupUserInfoStackView.swift in Sources */,
 				36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */,
 				B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */,
 				B10241CD2AC21A6500BAE1C6 /* UIImage+Extensions.swift in Sources */,

@@ -87,6 +87,7 @@ final class WorldCupGameViewController: UIViewController {
     
     private func makeConstraints() {
         let padding: CGFloat = 20
+        let half: CGFloat = 0.5
         
         backgroundImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -94,19 +95,19 @@ final class WorldCupGameViewController: UIViewController {
         
         roundLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(Screen.height / 5)
-            make.centerX.equalToSuperview().offset(0.5)
+            make.centerX.equalToSuperview().offset(half)
         }
         
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(roundLabel.snp.bottom).offset(padding)
-            make.centerX.equalToSuperview().offset(0.5)
+            make.centerX.equalToSuperview().offset(half)
         }
         
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(padding)
             make.leading.equalToSuperview().offset(padding)
             make.trailing.equalToSuperview().offset(-padding)
-            make.height.equalTo(view.snp.height).multipliedBy(0.5)
+            make.height.equalTo(view.snp.height).multipliedBy(half)
         }
         
         vsImageView.snp.makeConstraints { make in
@@ -136,6 +137,6 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
         let collectionViewWidth = collectionView.frame.width
         let itemWidth = (collectionViewWidth - (padding * 2)) / 2
         
-        return CGSize(width: itemWidth, height: Screen.height / 2)
+        return CGSize(width: itemWidth, height: Screen.height * 2 / 5)
     }
 }

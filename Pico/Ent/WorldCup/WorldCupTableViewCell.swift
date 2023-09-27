@@ -29,8 +29,8 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
 
     private let userNickname: UILabel = {
         let label = UILabel()
-        label.textAlignment = .left
-        label.font = UIFont.boldSystemFont(ofSize: 17)
+        label.textAlignment = .center
+        label.font = UIFont.picoSubTitleFont
         label.text = "냥냥펀치"
 
         return label
@@ -38,13 +38,19 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
 
     private let userAge: UILabel = {
         let label = UILabel()
-        label.textAlignment = .right
-        label.font = UIFont.boldSystemFont(ofSize: 17)
+        label.textAlignment = .center
+        label.font = UIFont.picoButtonFont
         label.text = "22"
 
         return label
     }()
-
+    
+    private let userInfoStackView: WorldCupUserInfoStackView = {
+        let stackView = WorldCupUserInfoStackView()
+        
+        return stackView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
@@ -57,22 +63,27 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
     }
 
     private func addViews() {
-        [mbtiLabel, userImage, userNickname, userAge].forEach { item in
+        [mbtiLabel, userImage, userNickname, userAge, userInfoStackView].forEach { item in
             contentView.addSubview(item)
         }
     }
 
     private func makeConstraints() {
         let padding: CGFloat = 10
-
+        let half: CGFloat = 0.5
+        
         mbtiLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView.snp.top).offset(padding)
             make.leading.equalTo(contentView.snp.leading).offset(padding)
             make.trailing.equalTo(contentView.snp.trailing).offset(-padding)
         }
-
+        userInfoStackView.snp.makeConstraints { make in
+            make.top.equalTo(userNickname.snp.bottom).offset(padding)
+            make.leading.equalTo(contentView.snp.leading).offset(padding)
+            make.trailing.equalTo(contentView.snp.trailing).offset(-padding)
+        }
         userImage.snp.makeConstraints { make in
-            make.top.equalTo(mbtiLabel.snp.bottom).offset(padding * 0.5)
+            make.top.equalTo(mbtiLabel.snp.bottom).offset(padding * half)
             make.leading.equalTo(contentView.snp.leading).offset(padding)
             make.trailing.equalTo(contentView.snp.trailing).offset(padding)
             make.width.equalTo(contentView.snp.width).offset(-padding * 2)
@@ -80,15 +91,14 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
         }
 
         userNickname.snp.makeConstraints { make in
-            make.top.equalTo(userImage.snp.bottom).offset(padding * 0.5)
-            make.leading.equalTo(contentView.snp.leading).offset(padding)
-            make.trailing.equalTo(userAge.snp.leading).offset(-padding * 0.5)
+            make.top.equalTo(userImage.snp.bottom).offset(padding * half)
+            make.centerX.equalTo(contentView.snp.centerX)
         }
 
         userAge.snp.makeConstraints { make in
-            make.top.equalTo(userImage.snp.bottom).offset(padding * 0.5)
-            make.leading.equalTo(userNickname.snp.trailing).offset(padding * 0.5)
+            make.leading.equalTo(userNickname.snp.trailing).offset(padding * half)
             make.trailing.equalTo(contentView.snp.trailing).offset(-padding)
+            make.centerY.equalTo(userNickname.snp.centerY)
         }
     }
 }

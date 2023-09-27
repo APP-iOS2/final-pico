@@ -85,23 +85,23 @@ final class WorldCupViewController: UIViewController {
         }
         
         worldCupTitleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview().offset(0.5)
             make.top.equalToSuperview().offset(Screen.height / 5)
+            make.centerX.equalToSuperview().offset(0.5)
         }
         
         pickMeLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview().offset(0.5)
             make.top.equalTo(worldCupTitleLabel.snp.bottom).offset(padding / 2)
+            make.centerX.equalToSuperview().offset(0.5)
         }
         
         contentLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview().offset(0.5)
             make.top.equalTo(pickMeLabel.snp.bottom).offset(padding)
+            make.centerX.equalToSuperview().offset(0.5)
         }
         
         gameStartButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview().offset(0.5)
             make.top.equalTo(contentLabel.snp.bottom).offset(Screen.height / 10)
+            make.centerX.equalToSuperview().offset(0.5)
             make.leading.equalToSuperview().offset(Screen.width / 4)
             make.trailing.equalToSuperview().offset(-Screen.width / 4)
             make.height.equalTo(Screen.width / 10)
