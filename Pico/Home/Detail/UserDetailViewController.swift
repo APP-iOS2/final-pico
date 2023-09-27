@@ -66,7 +66,7 @@ final class UserDetailViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(TopUserTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.topUserTableCell)
         tableView.register(MiddleUserTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.middleUserTableCell)
-        tableView.register(BottomUserTableViewCell.self, forCellReuseIdentifier:Identifier.TableCell.bottomUserTableCell)
+        tableView.register(BottomUserTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.bottomUserTableCell)
     }
     
     final private func addViews() {
