@@ -102,10 +102,12 @@ extension SignUpNickNameViewController {
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         nickNameTextField.text = ""
+        configNextButton(isCheck: false)
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        
+        let viewController = SignUpPictureViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
     
 }
@@ -121,7 +123,7 @@ extension SignUpNickNameViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let textCount = textField.text?.count else { return false }
-        print(range.length)
+    
         if textCount >= minNickNameWordCount && textCount < maxNickNameWordCount {
             configNextButton(isCheck: true)
             return true
