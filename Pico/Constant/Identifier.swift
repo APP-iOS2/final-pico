@@ -34,6 +34,7 @@ struct Identifier {
         static let likeCell = "LikeCollectionViewCell"
         static let hobbyCollectionCell = "HobbyCollectionCell"
         static let mbtiCollectionCell = "mbtiCollectionCell"
+        static let filterMbtiCollectionCell = "filterMbtiCollectionCell"
         static let profileEditCollectionCell = "ProfileEditCollectionCell"
     }
 }

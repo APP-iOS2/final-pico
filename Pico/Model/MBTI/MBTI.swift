@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MBTIType: String, Codable {
+enum MBTIType: String, Codable, CaseIterable {
     case enfj
     case entj
     case enfp
