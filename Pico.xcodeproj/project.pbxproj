@@ -599,11 +599,11 @@
 		B17D67AD2AC0BD82006F91DC /* Function */ = {
 			isa = PBXGroup;
 			children = (
-				B17D67A22AC0B21F006F91DC /* DismissKeyboard.swift */,
-				B15ABE382AC31E0800529C29 /* TappedAnimation.swift */,
 				B15ABE362AC31DD200529C29 /* NavigationLogo.swift */,
-				B15ABE342AC31D7F00529C29 /* CircleImageView.swift */,
 				B15ABE322AC31D3900529C29 /* NavigationBackButton.swift */,
+				B17D67A22AC0B21F006F91DC /* DismissKeyboard.swift */,
+				B15ABE342AC31D7F00529C29 /* CircleImageView.swift */,
+				B15ABE382AC31E0800529C29 /* TappedAnimation.swift */,
 				B15ABE302AC31CF000529C29 /* ShowAlert.swift */,
 				B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */,
 				6937783B2AC26B4300762165 /* LoadImageView.swift */,
