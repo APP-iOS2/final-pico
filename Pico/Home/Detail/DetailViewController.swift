@@ -9,7 +9,6 @@ import UIKit
 import SnapKit
 
 final class DetailViewController: UIViewController {
-    
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
         navigationBar.barTintColor = .systemBackground

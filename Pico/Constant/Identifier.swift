@@ -20,7 +20,7 @@ struct Identifier {
         static let mailTableCell = "MailListTableViewCell"
     }
     
-    struct CollectionCell {
+    struct CollectionView {
         static let likeCell = "LikeCollectionViewCell"
     }
 }
