@@ -25,12 +25,16 @@ struct Identifier {
         static let middleUserTableCell = "MiddleUserTableViewCell"
         static let bottomUserTableCell = "BottomUserTableViewCell"
         static let notiTableCell = "NotificationTabelViewCell"
+        static let profileEditImageTableCell = "ProfileEditImageTableCell"
+        static let profileEditNicknameTabelCell = "ProfileEditNicknameTabelCell"
+        
     }
-      
+    
     struct CollectionView {
         static let likeCell = "LikeCollectionViewCell"
         static let hobbyCollectionCell = "HobbyCollectionCell"
         static let mbtiCollectionCell = "mbtiCollectionCell"
         static let filterMbtiCollectionCell = "filterMbtiCollectionCell"
+        static let profileEditCollectionCell = "ProfileEditCollectionCell"
     }
 }

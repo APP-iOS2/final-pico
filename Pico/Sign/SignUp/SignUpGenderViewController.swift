@@ -11,7 +11,7 @@ class SignUpGenderViewController: UIViewController {
     
     private var gender: String = ""
     private var genderButtons: [UIButton] = []
-   
+    private var isTappedGenderButton = false
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -56,6 +56,7 @@ class SignUpGenderViewController: UIViewController {
     private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
+        button.backgroundColor = .picoGray
         return button
     }()
     
@@ -74,11 +75,17 @@ class SignUpGenderViewController: UIViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        
+        if isTappedGenderButton {
+            tappedButtonAnimation(sender)
+            let viewController = SignUpAgeViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
-    
     @objc func tappedGenderButton(_ sender: UIButton) {
+        
         tappedButtonAnimation(sender)
+        enableNextButton()
         
         for button in genderButtons {
             button.isSelected = (button == sender)
@@ -93,7 +100,12 @@ class SignUpGenderViewController: UIViewController {
             }
         }
     }
-      
+    
+    private func enableNextButton() {
+        isTappedGenderButton = true
+        nextButton.backgroundColor = .picoBlue
+    }
+    
     private func configGenderButtons(title: String) -> UIButton {
         let button = UIButton()
         button.backgroundColor = .picoGray

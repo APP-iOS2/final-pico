@@ -9,12 +9,11 @@ import UIKit
 
 final class MailListTableViewCell: UITableViewCell {
     
-    static let identifier = "MailListTableViewCell"
-    
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 40
         return imageView
     }()
     
@@ -38,7 +37,7 @@ final class MailListTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let mbtiLabel = UILabel()
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj)
     
     private let dateStackView = UIStackView()
     
@@ -56,8 +55,6 @@ final class MailListTableViewCell: UITableViewCell {
         return label
     }()
     
-    private
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -72,7 +69,7 @@ final class MailListTableViewCell: UITableViewCell {
     
     func addViews() {
         
-        [nameLabel, message, mbtiLabel].forEach {
+        [nameLabel, message, mbtiLabelView].forEach {
             infoStackView.addSubview($0)
         }
         
@@ -88,10 +85,10 @@ final class MailListTableViewCell: UITableViewCell {
     func makeConstraints() {
         
         userImage.snp.makeConstraints { make in
-            make.top.bottom.equalTo(contentView).inset(5)
+            make.top.bottom.equalTo(contentView).inset(10)
             make.leading.equalTo(contentView).offset(10)
             make.centerY.equalToSuperview()
-            make.width.equalTo(contentView.snp.height).inset(5)
+            make.width.height.equalTo(contentView.snp.height).inset(10)
         }
         
         infoStackView.snp.makeConstraints { make in
@@ -105,7 +102,7 @@ final class MailListTableViewCell: UITableViewCell {
             make.leading.equalTo(infoStackView)
         }
         
-        mbtiLabel.snp.makeConstraints { make in
+        mbtiLabelView.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.top)
             make.leading.equalTo(nameLabel.snp.trailing).offset(5)
             make.trailing.equalTo(infoStackView.snp.trailing)
@@ -138,7 +135,6 @@ final class MailListTableViewCell: UITableViewCell {
         }
         nameLabel.text = nameText
         nameLabel.sizeToFit()
-        mbtiLabel.text = mbti
         self.message.text = message
         dateLabel.text = date
         if new {

@@ -10,7 +10,7 @@ import SnapKit
 
 final class SignInViewController: UIViewController {
     
-    private var isTappedNextButton: Bool = false
+    private var isFullPhoneNumber: Bool = false
     
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -86,11 +86,21 @@ final class SignInViewController: UIViewController {
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
-        if isTappedNextButton {
+        if isFullPhoneNumber {
             let viewController = LoginSuccessViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
+    
+    private func changeViewState(isFull: Bool) {
+        if isFull {
+            phoneNumberTextField.textColor = .picoBlue
+        } else {
+            phoneNumberTextField.textColor = .picoFontBlack
+            nextButton.backgroundColor = .picoGray
+        }
+    }
+
 }
 
 // MARK: - 텍스트필드 관련
@@ -107,14 +117,15 @@ extension SignInViewController: UITextFieldDelegate {
         let updatedText = currentText.replacingCharacters(in: range, with: string)
         let digits = CharacterSet.decimalDigits
         let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
-        isTappedNextButton = false
+        isFullPhoneNumber = false
+        changeViewState(isFull: isFullPhoneNumber)
         textField.textColor = .gray
         if filteredText.count > 11 {
-            isTappedNextButton = true
-            textField.textColor = .picoBlue
+            isFullPhoneNumber = true
+            changeViewState(isFull: isFullPhoneNumber)
             return false
         } else if filteredText.count > 10 {
-            isTappedNextButton = true
+            isFullPhoneNumber = true
             textField.textColor = .picoBlue
             return true
         }
