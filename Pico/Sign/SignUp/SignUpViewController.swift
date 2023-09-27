@@ -98,7 +98,10 @@ final class SignUpViewController: UIViewController {
         makeConstraints()
         configButton()
     }
-    // MARK: - config
+}
+
+extension SignUpViewController: SignViewControllerDelegate {
+    // MARK: - Config
     private func configButton() {
         mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
@@ -107,15 +110,7 @@ final class SignUpViewController: UIViewController {
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        if !userMbti.contains("") {
-            let viewController = SignUpPhoneNumberViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-    }
-    
-    private func showMbtiModal(_ sender: UIButton) {
+    private func configMbtiModal(_ sender: UIButton) {
         let modalVC = MbtiModalViewController()
        
         if let sheet = modalVC.sheetPresentationController {
@@ -159,21 +154,23 @@ final class SignUpViewController: UIViewController {
             break
         }
         present(modalVC, animated: true, completion: nil)
-        
+    }
+    // MARK: - Tapped
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        if !userMbti.contains("") {
+            let viewController = SignUpPhoneNumberViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
     
     @objc private func tappedMbtiButton(_ sender: UIButton) {
-        
         tappedButtonAnimation(sender)
-        showMbtiModal(sender)
+        configMbtiModal(sender)
         
     }
-}
-
-extension SignUpViewController: SignViewControllerDelegate {
-    
-    func choiceMbti(mbti: String, num: Int) {
-        
+    // MARK: - MBTI
+    func getUserMbti(mbti: String, num: Int) {
         switch num {
         case 0:
             userMbti[num] = mbti
@@ -193,7 +190,6 @@ extension SignUpViewController: SignViewControllerDelegate {
         if userMbti.contains("") {
             nextButton.backgroundColor = .picoGray
         } else {
-            
             nextButton.backgroundColor = .picoBlue
         }
     }

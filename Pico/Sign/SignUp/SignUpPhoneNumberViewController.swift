@@ -47,22 +47,25 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return textField
     }()
     
-    private let phoneNumberCheckButton: UIButton = {
+    private lazy var phoneNumberCheckButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("  인증  ", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
         button.layer.cornerRadius = 13
         button.setTitleColor(.picoFontBlack, for: .normal)
+        button.addTarget(self, action: #selector(tappedPhoneNumberCheckButton), for: .touchUpInside)
         return button
     }()
     
-    private let phoneNumberCancleButton: UIButton = {
+    private lazy var phoneNumberCancleButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "x.circle"), for: .normal)
         button.tintColor = .black
         button.imageView?.contentMode = .scaleAspectFit
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        button.titleLabel?.font = .systemFont(ofSize: 20, weight:
+                .bold)
+        button.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
         return button
     }()
     
@@ -76,10 +79,11 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return stackView
     }()
     
-    private let nextButton: UIButton = {
+    private lazy var nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
         button.backgroundColor = .picoGray
+        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
     
@@ -89,49 +93,16 @@ final class SignUpPhoneNumberViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
-        configTextfield()
-        configButton()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        
-        followKeyboard()
-        phoneNumberTextField.becomeFirstResponder()
-    }
-    // MARK: - config
-    private func configTextfield() {
         phoneNumberTextField.delegate = self
     }
     
-    private func configButton() {
-        phoneNumberCheckButton.addTarget(self, action: #selector(tappedPhoneNumberCheckButton), for: .touchUpInside)
-        phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
-        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+    override func viewWillAppear(_ animated: Bool) {
+        followKeyboard()
+        phoneNumberTextField.becomeFirstResponder()
     }
     
-    @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
-        if isFullPhoneNumber {
-            tappedButtonAnimation(sender)
-            isTappedCheckButton = true
-            changeViewState(isFull: isFullPhoneNumber, isCheck: isTappedCheckButton)
-        }
-    }
-    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        isFullPhoneNumber = false
-        phoneNumberTextField.text = ""
-        changeViewState(isFull: isFullPhoneNumber)
-    }
-    
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        if isFullPhoneNumber && isTappedCheckButton {
-            tappedButtonAnimation(sender)
-            let viewController = SignUpGenderViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-    }
-    
-    private func changeViewState(isFull: Bool, isCheck: Bool = false) {
+    // MARK: - Config
+    private func configPhonetextFieldAndNextButton(isFull: Bool, isCheck: Bool = false) {
         if isFull {
             phoneNumberTextField.textColor = .picoBlue
         } else {
@@ -145,8 +116,31 @@ final class SignUpPhoneNumberViewController: UIViewController {
         } else {
             phoneMessageStackView.isHidden = true
         }
-        
     }
+    
+    // MARK: - Tapped
+    @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
+        if isFullPhoneNumber {
+            tappedButtonAnimation(sender)
+            isTappedCheckButton = true
+            configPhonetextFieldAndNextButton(isFull: isFullPhoneNumber, isCheck: isTappedCheckButton)
+        }
+    }
+    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        isFullPhoneNumber = false
+        phoneNumberTextField.text = ""
+        configPhonetextFieldAndNextButton(isFull: isFullPhoneNumber)
+    }
+    
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        if isFullPhoneNumber && isTappedCheckButton {
+            tappedButtonAnimation(sender)
+            let viewController = SignUpGenderViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+    
 }
 
 // MARK: - 텍스트필드 관련
@@ -160,7 +154,7 @@ extension SignUpPhoneNumberViewController: UITextFieldDelegate {
         
         if string.isEmpty {
             isFullPhoneNumber = false
-            changeViewState(isFull: isFullPhoneNumber)
+            configPhonetextFieldAndNextButton(isFull: isFullPhoneNumber)
         }
         
         let currentText = (textField.text ?? "") as NSString
@@ -169,15 +163,15 @@ extension SignUpPhoneNumberViewController: UITextFieldDelegate {
         let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
         
         isFullPhoneNumber = false
-        changeViewState(isFull: isFullPhoneNumber)
+        configPhonetextFieldAndNextButton(isFull: isFullPhoneNumber)
         
         if filteredText.count > 11 {
             isFullPhoneNumber = true
-            changeViewState(isFull: isFullPhoneNumber)
+            configPhonetextFieldAndNextButton(isFull: isFullPhoneNumber)
             return false
         } else if filteredText.count > 10 {
             isFullPhoneNumber = true
-            changeViewState(isFull: isFullPhoneNumber)
+            configPhonetextFieldAndNextButton(isFull: isFullPhoneNumber)
             return true
         }
         

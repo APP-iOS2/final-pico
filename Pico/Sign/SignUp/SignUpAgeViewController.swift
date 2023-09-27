@@ -61,54 +61,15 @@ class SignUpAgeViewController: UIViewController {
         makeConstraints()
         configDatePicker()
     }
-    
-    // MARK: - UI 관련
-    private func addSubViews() {
-        for viewItem in [progressView, notifyLabel, subNotifyLabel, datePicker, nextButton] {
-            view.addSubview(viewItem)
-        }
-    }
-    
-    private func makeConstraints() {
-        let safeArea = view.safeAreaLayoutGuide
-        
-        progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(8)
-        }
-        
-        notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
-        }
-        
-        subNotifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(-15)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
-        }
-        
-        datePicker.snp.makeConstraints { make in
-            make.top.equalTo(subNotifyLabel.snp.bottom).offset(20)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(150)
-        }
-        
-        nextButton.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
-        }
-    }
+}
+
+extension SignUpAgeViewController {
     
     // MARK: - Config
+    private func configNextButton() {
+        isChoiceAge = true
+        nextButton.backgroundColor = .picoBlue
+    }
     private func configDatePicker() {
         datePicker.delegate = self
         datePicker.dataSource = self
@@ -122,21 +83,19 @@ class SignUpAgeViewController: UIViewController {
         datePicker.selectRow(initialMonthIndex, inComponent: 1, animated: false)
         datePicker.selectRow(initialDayIndex, inComponent: 2, animated: false)
     }
-    
+    // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
+        
         if isChoiceAge {
-            print("\(selectedYear)년 \(selectedMonth)년 \(selectedDay)일")
+            tappedButtonAnimation(sender)
+            let viewController = SignUpNickNameViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
-    }
-    
-    private func enableNextButton() {
-        isChoiceAge = true
-        nextButton.backgroundColor = .picoBlue
     }
     
 }
 
-// MARK: - UIPickerViewDataSource & UIPickerViewDelegate
+// MARK: - 피커 관련
 extension SignUpAgeViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     private func updateDaysForSelectedMonth() {
@@ -182,7 +141,7 @@ extension SignUpAgeViewController: UIPickerViewDelegate, UIPickerViewDataSource 
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        enableNextButton()
+        configNextButton()
         switch component {
         case 0:
             selectedYear = years[row]
@@ -193,6 +152,54 @@ extension SignUpAgeViewController: UIPickerViewDelegate, UIPickerViewDataSource 
             selectedDay = days[row]
         default:
             break
+        }
+    }
+}
+// MARK: - UI 관련
+extension SignUpAgeViewController {
+
+    private func addSubViews() {
+        for viewItem in [progressView, notifyLabel, subNotifyLabel, datePicker, nextButton] {
+            view.addSubview(viewItem)
+        }
+    }
+    
+    private func makeConstraints() {
+        let safeArea = view.safeAreaLayoutGuide
+        
+        progressView.snp.makeConstraints { make in
+            make.top.equalTo(safeArea).offset(10)
+            make.leading.equalTo(25)
+            make.trailing.equalTo(-25)
+            make.height.equalTo(8)
+        }
+        
+        notifyLabel.snp.makeConstraints { make in
+            make.top.equalTo(progressView.snp.bottom).offset(10)
+            make.leading.equalTo(25)
+            make.trailing.equalTo(-25)
+            make.height.equalTo(50)
+        }
+        
+        subNotifyLabel.snp.makeConstraints { make in
+            make.top.equalTo(notifyLabel.snp.bottom).offset(-15)
+            make.leading.equalTo(25)
+            make.trailing.equalTo(-25)
+            make.height.equalTo(50)
+        }
+        
+        datePicker.snp.makeConstraints { make in
+            make.top.equalTo(subNotifyLabel.snp.bottom).offset(20)
+            make.leading.equalTo(25)
+            make.trailing.equalTo(-25)
+            make.height.equalTo(150)
+        }
+        
+        nextButton.snp.makeConstraints { make in
+            make.leading.equalTo(20)
+            make.trailing.equalTo(-20)
+            make.bottom.equalTo(safeArea).offset(-30)
+            make.height.equalTo(50)
         }
     }
 }
