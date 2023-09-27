@@ -8,38 +8,36 @@
 import UIKit
 
 extension UIFont {
-    /// 제목 폰트사이즈
+    /// 제목 폰트사이즈 (24, bold)
     static var picoTitleFont: UIFont {
         return UIFont.systemFont(ofSize: 24, weight: .bold)
     }
-    /// 부제목 폰트사이즈
+    /// 부제목 폰트사이즈 (18, semibold)
     static var picoSubTitleFont: UIFont {
         return UIFont.systemFont(ofSize: 18, weight: .semibold)
     }
-    /// 제목에 대한 설명 폰트사이즈
+    /// 제목에 대한 설명 폰트사이즈 (13, regular)
     static var picoDescriptionFont: UIFont {
         return UIFont.systemFont(ofSize: 13)
     }
-    /// 내용 폰트 사이즈
+    /// 내용 폰트 사이즈 (15, regular)
     static var picoContentFont: UIFont {
         return UIFont.systemFont(ofSize: 15)
     }
-    /// 내용 굵은 폰트 사이즈
+    /// 내용 굵은 폰트 사이즈 (15, semibold)
     static var picoContentBoldFont: UIFont {
         return UIFont.systemFont(ofSize: 15, weight: .semibold)
     }
-    /// 버튼 폰트 사이즈
+    /// 버튼 폰트 사이즈 (18, bold)
     static var picoButtonFont: UIFont {
         return UIFont.systemFont(ofSize: 18, weight: .bold)
     }
-    /// mbti 라벨 폰트 사이트
+    /// mbti 라벨 폰트 사이트 (22, bold)
     static var picoMBTILabelFont: UIFont {
         return UIFont.systemFont(ofSize: 22, weight: .bold)
     }
-    /// mbti small 라벨 폰트 사이즈
+    /// mbti small 라벨 폰트 사이즈 (14, bold)
     static var picoMBTISmallLabelFont: UIFont {
         return UIFont.systemFont(ofSize: 14, weight: .bold)
     }
 }
-
-
