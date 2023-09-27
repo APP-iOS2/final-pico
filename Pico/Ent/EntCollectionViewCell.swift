@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class EntCollectionViewCell: UICollectionViewCell {
     
@@ -13,8 +14,6 @@ final class EntCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        
         return imageView
     }()
     
@@ -22,9 +21,7 @@ final class EntCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "이상형 월드컵"
         label.textAlignment = .center
-        label.textColor = .black
-        label.font = UIFont.boldSystemFont(ofSize: 17)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.picoButtonFont
         return label
     }()
     
@@ -32,17 +29,15 @@ final class EntCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "오늘 내가 선택한 이성은 누구?\n최종 선택 시 상품 증정!"
         label.textAlignment = .left
-        label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.picoDescriptionFont
         label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
-        setLayoutConstraints()
+        makeConstraints()
         border()
     }
     
@@ -57,12 +52,12 @@ final class EntCollectionViewCell: UICollectionViewCell {
     }
     
     private func addViews() {
-        contentView.addSubview(cellImage)
-        contentView.addSubview(firstLabel)
-        contentView.addSubview(secondLabel)
+        [cellImage, firstLabel, secondLabel].forEach { item in
+            contentView.addSubview(item)
+        }
     }
     
-    private func setLayoutConstraints() {
+    private func makeConstraints() {
         let padding: CGFloat = 10
         
         cellImage.snp.makeConstraints { make in
@@ -81,5 +76,4 @@ final class EntCollectionViewCell: UICollectionViewCell {
             make.bottom.equalTo(contentView).offset(-padding * 0.5)
         }
     }
-    
 }
