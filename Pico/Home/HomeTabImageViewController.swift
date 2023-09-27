@@ -30,19 +30,11 @@ final class HomeTabImageViewController: UIViewController {
         "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
         "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg"
     ]
-    //    private var imageUrl: [String]
-    //    init(imageUrl: [String]) {
-    //            self.imageUrl = imageUrl
-    //            super.init(nibName: nil, bundle: nil)
-    //        }
-    //
-    //    required init?(coder: NSCoder) {
-    //        fatalError("init(coder:) has not been implemented")
-    //    }
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
+        scrollView.showsHorizontalScrollIndicator = false
         return scrollView
     }()
     
@@ -84,10 +76,9 @@ final class HomeTabImageViewController: UIViewController {
         return button
     }()
     
-    // MARK: - override
+    // MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         scrollView.delegate = self
         addSubView()
         makeConstraints()

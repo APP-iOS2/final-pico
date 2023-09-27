@@ -14,11 +14,13 @@ final class HomeFilterViewController: UIViewController {
     private lazy var selectedGenderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
     private lazy var selectedAge: UILabel = createFilterLabel(text: "나이", font: .picoSubTitleFont)
     private lazy var selectedDistance: UILabel = createFilterLabel(text: "거리", font: .picoSubTitleFont)
-    private lazy var selectedMBTI: UILabel = createFilterLabel(text: "MBTI", font: .picoSubTitleFont)
+    private lazy var selectedMBTI: UILabel = createFilterLabel(text: "성격 유형", font: .picoSubTitleFont)
     
     private lazy var manButton: UIButton = createFilterButton(title: "남자")
     private lazy var womanButton: UIButton = createFilterButton(title: "여자")
     private lazy var etcButton: UIButton = createFilterButton(title: "기타")
+    
+    private let mbtiCollectionViewController = MBTICollectionViewController()
     
     private let ageSlider: UISlider = {
         let slider = UISlider()
@@ -26,7 +28,7 @@ final class HomeFilterViewController: UIViewController {
         slider.maximumValue = 40
         return slider
     }()
-    
+
     private let distanceSlider: UISlider = {
         let slider = UISlider()
         slider.minimumValue = 0
@@ -43,23 +45,22 @@ final class HomeFilterViewController: UIViewController {
     
     // MARK: - viewDidLoad
     override func viewDidLoad() {
-        view.backgroundColor = .white
         self.navigationItem.title = "선호 설정"
         addSubView()
         makeConstraints()
+
     }
-    
     func addSubView() {
+        
         view.addSubview(genderHStack)
         view.addSubview(ageVStack)
         view.addSubview(distanceVStack)
+        view.addSubview(selectedMBTI)
         
         genderHStack.addArrangedSubview(genderLabelVStack)
         genderHStack.addArrangedSubview(genderButtonHStack)
-        
         genderLabelVStack.addArrangedSubview(selectedGenderLabel)
         genderLabelVStack.addArrangedSubview(selectedGenderSubLabel)
-        
         genderButtonHStack.addArrangedSubview(manButton)
         genderButtonHStack.addArrangedSubview(womanButton)
         genderButtonHStack.addArrangedSubview(etcButton)
@@ -69,6 +70,11 @@ final class HomeFilterViewController: UIViewController {
         
         distanceVStack.addArrangedSubview(selectedDistance)
         distanceVStack.addArrangedSubview(distanceSlider)
+        
+        addChild(mbtiCollectionViewController)
+        view.addSubview(mbtiCollectionViewController.view)
+        mbtiCollectionViewController.didMove(toParent: self)
+
     }
     
     func makeConstraints() {
@@ -92,6 +98,20 @@ final class HomeFilterViewController: UIViewController {
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
             make.bottom.equalTo(ageVStack.snp.bottom).offset(100)
+        }
+        
+        selectedMBTI.snp.makeConstraints { make in
+            make.top.equalTo(distanceVStack.snp.bottom).offset(10)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
+            make.height.equalTo(50)
+        }
+        
+        mbtiCollectionViewController.view.snp.makeConstraints { make in
+            make.top.equalTo(selectedMBTI.snp.bottom).offset(5)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
+            make.height.equalTo(mbtiCollectionViewController.view.frame.size.height)
         }
     }
     
@@ -117,6 +137,7 @@ final class HomeFilterViewController: UIViewController {
         button.setTitle(title, for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .picoBlue
+        button.isSelected = true
         button.layer.borderWidth = 1.0
         button.layer.borderColor = UIColor.picoBlue.cgColor
         button.layer.cornerRadius = 10
@@ -125,13 +146,14 @@ final class HomeFilterViewController: UIViewController {
     }
     
     @objc func tappedButton(_ sender: UIButton) {
-        if sender.backgroundColor == .white {
+        sender.isSelected.toggle()
+        
+        if sender.isSelected {
             sender.backgroundColor = .picoBlue
             sender.setTitleColor(.white, for: .normal)
         } else {
             sender.backgroundColor = .white
             sender.setTitleColor(.picoFontGray, for: .normal)
         }
-        
     }
 }

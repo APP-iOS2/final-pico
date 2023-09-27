@@ -8,13 +8,11 @@
 import UIKit
 import SnapKit
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: BaseViewController {
     
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        configLogoBarItem()
         configNavigationBarItem()
         addSubView()
         makeConstraints()
@@ -27,7 +25,7 @@ final class HomeViewController: UIViewController {
         filterButton.tintColor = .darkGray
         
         let notificationImage = UIImage(systemName: "bell.fill")
-        let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: nil, action: nil)
+        let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: self, action: #selector(tappedNotificationButton))
         notificationButton.tintColor = .darkGray
         
         navigationItem.rightBarButtonItems = [filterButton, notificationButton]
@@ -50,6 +48,11 @@ final class HomeViewController: UIViewController {
     
     @objc func tappedFilterButton() {
         let viewController = HomeFilterViewController()
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    @objc func tappedNotificationButton() {
+        let viewController = NotificationViewController()
         navigationController?.pushViewController(viewController, animated: true)
     }
 
