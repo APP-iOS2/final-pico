@@ -18,6 +18,9 @@ struct Identifier {
     
     struct TableCell {
         static let mailTableCell = "MailListTableViewCell"
+    }
+    
+    struct CollectionCell {
         static let likeCell = "LikeCollectionViewCell"
     }
 }

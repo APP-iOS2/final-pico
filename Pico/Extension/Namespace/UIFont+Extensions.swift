@@ -20,7 +20,15 @@ extension UIFont {
     static var picoDescriptionFont: UIFont {
         return UIFont.systemFont(ofSize: 13)
     }
-    /// 버튼 폰트 사이트
+    /// 내용 폰트 사이즈
+    static var picoContentFont: UIFont {
+        return UIFont.systemFont(ofSize: 15)
+    }
+    /// 내용 굵은 폰트 사이즈
+    static var picoContentBoldFont: UIFont {
+        return UIFont.systemFont(ofSize: 15, weight: .semibold)
+    }
+    /// 버튼 폰트 사이즈
     static var picoButtonFont: UIFont {
         return UIFont.systemFont(ofSize: 18, weight: .bold)
     }

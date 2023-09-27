@@ -29,7 +29,7 @@ final class LikeMeViewController: UIViewController {
     private func configCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.likeCell)
+        collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionCell.likeCell)
     }
     
     private func addViews() {
@@ -61,7 +61,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.likeCell, for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionCell.likeCell, for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
         cell.configData(imageUrl: imageUrls[indexPath.row], isHiddenDeleteButton: false, isHiddenMessageButton: true)
         cell.delegate = self
         return cell
