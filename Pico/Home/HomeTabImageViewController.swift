@@ -227,7 +227,7 @@ final class HomeTabImageViewController: UIViewController {
     }
     
     @objc func tappedInfoButton() {
-        let viewController = DetailViewController()
+        let viewController = UserDetailViewController()
         navigationController?.pushViewController(viewController, animated: true)
     }
 
