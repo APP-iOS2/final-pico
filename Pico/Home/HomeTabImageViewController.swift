@@ -10,9 +10,6 @@ import SnapKit
 
 final class HomeTabImageViewController: UIViewController {
     
-    private let paddingVertical = 25
-    private let paddingBottom = 30
-    private let buttonFrame = 65
     private let name: String
     private let age: String
     
@@ -62,90 +59,28 @@ final class HomeTabImageViewController: UIViewController {
         return pageControl
     }()
     
-    private let pickBackButton: UIButton = {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
-        let image = UIImage(systemName: "arrow.uturn.backward", withConfiguration: imageConfig)
-        let button = UIButton()
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = .gray.withAlphaComponent(0.5)
-        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
-        return button
-    }()
+    private lazy var pickBackButton: UIButton = createHomeButton(iconName: "arrow.uturn.backward", backgroundColor: .lightGray.withAlphaComponent(0.5))
+    private lazy var disLikeButton: UIButton = createHomeButton(iconName: "hand.thumbsdown.fill", backgroundColor: .picoBlue.withAlphaComponent(0.8))
+    private lazy var likeButton: UIButton = createHomeButton(iconName: "hand.thumbsup.fill", backgroundColor: .picoBlue.withAlphaComponent(0.8))
     
-    private let disLikeButton: UIButton = {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
-        let image = UIImage(systemName: "hand.thumbsdown.fill", withConfiguration: imageConfig)
-        let button = UIButton()
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = .picoBlue
-        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
-        return button
-    }()
+    private lazy var infoHStack: UIStackView = createHomeStack(axis: .horizontal, alignment: .top, spacing: 0)
+    private lazy var infoVStack: UIStackView = createHomeStack(axis: .vertical, alignment: nil, spacing: 5)
     
-    private let likeButton: UIButton = {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
-        let image = UIImage(systemName: "hand.thumbsup.fill", withConfiguration: imageConfig)
-        let button = UIButton()
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = .picoBlue
-        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
-        return button
-    }()
-    
-    private let infoHStack: UIStackView = {
-        let infoHStack = UIStackView()
-        infoHStack.axis = .horizontal
-        infoHStack.alignment = .top
-//        infoHStack.backgroundColor = .gray.withAlphaComponent(0.5)
-        return infoHStack
-    }()
-    
-    private let infoVStack: UIStackView = {
-        let infoVStack = UIStackView()
-        infoVStack.axis = .vertical
-        infoVStack.spacing = 5
-        return infoVStack
-    }()
-    
-    private let infoNameAgeLabel: UILabel = {
-        let label = UILabel()
-        label.text = ""
-        label.font = .picoTitleFont
-        label.textColor = .white
-        label.font = .systemFont(ofSize: 25, weight: .bold)
+    private lazy var infoNameAgeLabel: UILabel = createHomeLabel(text: "", font: .picoTitleFont, textColor: .white)
+    private lazy var infoLocationLabel: UILabel = createHomeLabel(text: "서울특별시 강남구, 12.5km", font: .picoSubTitleFont, textColor: .white)
+    private let infoMBTILabel: MBTILabelView = {
+        let label = MBTILabelView(mbti: .entp)
+        label.layer.opacity = 0.9
         return label
     }()
     
-    private let infoLocationLabel: UILabel = {
-        let label = UILabel()
-        label.text = "서울특별시 강남구, 12.5km"
-        label.font = .picoTitleFont
-        label.textColor = .white
-        label.font = .systemFont(ofSize: 20, weight: .semibold)
-        return label
-    }()
-    
-    private let infoMBTILabel: UILabel = {
-        let label = UILabel()
-        label.text = "ENTP"
-        label.textColor = .white
-        label.frame = CGRect(x: 0, y: 0, width: 45, height: 25)
-//        label.backgroundColor = .picoAlphaBlue
-        return label
-    }()
-    
-    private let infoButton: UIButton = {
+    private lazy var infoButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
         let image = UIImage(systemName: "info.circle.fill", withConfiguration: imageConfig)
         let button = UIButton()
         button.setImage(image, for: .normal)
         button.tintColor = .picoAlphaWhite
+        button.addTarget(self, action: #selector(tappedInfoButton), for: .touchUpInside)
         return button
     }()
     
@@ -169,15 +104,16 @@ final class HomeTabImageViewController: UIViewController {
         infoHStack.addArrangedSubview(infoButton)
         infoVStack.addArrangedSubview(infoNameAgeLabel)
         infoVStack.addArrangedSubview(infoLocationLabel)
-        infoVStack.addArrangedSubview(infoMBTILabel)
+        view.addSubview(infoMBTILabel)
     }
-    
     private func makeConstraints() {
+        
+        let paddingVertical = 25
+        let paddingBottom = 30
+        let buttonFrame = 65
+        
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.leading.equalTo(view.safeAreaLayoutGuide)
-            make.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
         pageControl.snp.makeConstraints { make in
@@ -217,10 +153,45 @@ final class HomeTabImageViewController: UIViewController {
         
         infoButton.snp.makeConstraints { make in
             make.trailing.equalTo(infoHStack.snp.trailing)
-            make.width.equalTo(25)
-            make.height.equalTo(25)
+            make.width.height.equalTo(25)
         }
         
+        infoMBTILabel.snp.makeConstraints { make in
+            make.top.equalTo(infoButton.snp.bottom).offset(40)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(paddingVertical)
+            make.bottom.equalTo(infoLocationLabel.snp.bottom).offset(40)
+            make.width.equalTo(infoMBTILabel.frame.size.width)
+        }
+    }
+    
+    private func createHomeStack(axis: NSLayoutConstraint.Axis, alignment: UIStackView.Alignment?, spacing: CGFloat) -> UIStackView {
+        let stack = UIStackView()
+        stack.axis = axis
+        if let alignment = alignment {
+            stack.alignment = alignment
+        }
+        stack.spacing = spacing
+        return stack
+    }
+    
+    private func createHomeLabel(text: String, font: UIFont, textColor: UIColor) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = font
+        label.textColor = textColor
+        return label
+    }
+    
+    private func createHomeButton(iconName: String, backgroundColor: UIColor) -> UIButton {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
+        let image = UIImage(systemName: iconName, withConfiguration: imageConfig)
+        let button = UIButton()
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = backgroundColor
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        return button
     }
     
     private func loadImages() {
@@ -253,6 +224,11 @@ final class HomeTabImageViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    @objc func tappedInfoButton() {
+        let viewController = DetailViewController()
+        navigationController?.pushViewController(viewController, animated: true)
     }
 
     @objc func pageControlValueChanged(_ sender: UIPageControl) {
