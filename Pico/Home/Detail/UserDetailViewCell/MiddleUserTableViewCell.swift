@@ -7,13 +7,13 @@
 
 import UIKit
 
-class MiddleUserTableViewCell: UITableViewCell {
+final class MiddleUserTableViewCell: UITableViewCell {
     private let introLabel: UILabel = {
         let label = UILabel()
-        label.text = "저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??"
+        label.text = "저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??가실래요??래요??가실래요??래요??가실래요??"
         label.textAlignment = .center
-        label.clipsToBounds = true
-        label.layer.cornerRadius = 5
+        label.layer.masksToBounds = true
+        label.layer.cornerRadius = 10
         label.backgroundColor = .picoGray
         label.numberOfLines = 0
         return label
@@ -122,7 +122,7 @@ class MiddleUserTableViewCell: UITableViewCell {
         }
         
         religionImageView.snp.makeConstraints { make in
-            make.top.equalTo(educationImageView.snp.bottom).offset(15)
+            make.top.equalTo(educationImageView.snp.bottom).offset(30)
             make.leading.equalToSuperview().offset(20)
         }
         
@@ -132,7 +132,7 @@ class MiddleUserTableViewCell: UITableViewCell {
         }
         
         smokeImageView.snp.makeConstraints { make in
-            make.top.equalTo(religionImageView.snp.bottom).offset(15)
+            make.top.equalTo(religionImageView.snp.bottom).offset(30)
             make.leading.equalToSuperview().offset(20)
         }
         
