@@ -50,8 +50,11 @@ class SignUpNickNameViewController: UIViewController {
     }
 }
 
-// MARK: - config
+
 extension SignUpNickNameViewController {
+    // MARK: - Config
+    
+    // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
         
     }
@@ -66,4 +69,3 @@ extension SignUpNickNameViewController {
         let safeArea = view.safeAreaLayoutGuide
     }
 }
-

@@ -69,7 +69,7 @@ final class SignInViewController: UIViewController {
         phoneNumberTextField.becomeFirstResponder()
     }
     
-    // MARK: - config
+    // MARK: - Config
     private func configTextfield() {
         phoneNumberTextField.delegate = self
     }

@@ -53,10 +53,11 @@ class SignUpGenderViewController: UIViewController {
     private lazy var girlButton: UIButton = configGenderButtons(title: "여자")
     private lazy var otherButton: UIButton = configGenderButtons(title: "기타")
     
-    private let nextButton: UIButton = {
+    private lazy var nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
         button.backgroundColor = .picoGray
+        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
     
@@ -66,42 +67,10 @@ class SignUpGenderViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
-        configButton()
     }
-    
-    // MARK: - config
-    private func configButton() {
-        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
-    }
-    
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        
-        if isTappedGenderButton {
-            tappedButtonAnimation(sender)
-            let viewController = SignUpAgeViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-    }
-    @objc func tappedGenderButton(_ sender: UIButton) {
-        
-        tappedButtonAnimation(sender)
-        enableNextButton()
-        
-        for button in genderButtons {
-            button.isSelected = (button == sender)
-            guard let text = sender.titleLabel?.text else { return }
-            if button.isSelected {
-                sender.backgroundColor = .picoAlphaBlue
-                sender.setTitleColor(.white, for: .normal)
-                gender = text
-            } else {
-                button.backgroundColor = .picoGray
-                button.setTitleColor(.black, for: .normal)
-            }
-        }
-    }
-    
-    private func enableNextButton() {
+   
+    // MARK: - Config
+    private func configNextButton() {
         isTappedGenderButton = true
         nextButton.backgroundColor = .picoBlue
     }
@@ -118,7 +87,37 @@ class SignUpGenderViewController: UIViewController {
         return button
     }
     
-    // MARK: - UI 관련
+    // MARK: - Tapped
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        if isTappedGenderButton {
+            tappedButtonAnimation(sender)
+            let viewController = SignUpAgeViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+    @objc func tappedGenderButton(_ sender: UIButton) {
+        
+        tappedButtonAnimation(sender)
+        configNextButton()
+        
+        for button in genderButtons {
+            button.isSelected = (button == sender)
+            guard let text = sender.titleLabel?.text else { return }
+            if button.isSelected {
+                sender.backgroundColor = .picoAlphaBlue
+                sender.setTitleColor(.white, for: .normal)
+                gender = text
+            } else {
+                button.backgroundColor = .picoGray
+                button.setTitleColor(.black, for: .normal)
+            }
+        }
+    }
+    
+}
+
+// MARK: - UI 관련
+extension SignUpGenderViewController {
     private func addSubViews() {
         for gender in [manButton, girlButton, otherButton] {
             genderButtons.append(gender)

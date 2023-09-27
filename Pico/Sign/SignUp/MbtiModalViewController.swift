@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SignViewControllerDelegate: AnyObject {
-    func choiceMbti(mbti: String, num: Int)
+    func getUserMbti(mbti: String, num: Int)
 }
 
 final class MbtiModalViewController: UIViewController {
@@ -101,16 +101,15 @@ final class MbtiModalViewController: UIViewController {
         configMbtiButton()
     }
     
-    // MARK: - config
-    
+    // MARK: - Config
     private func configMbtiButton() {
-        
         leftTitleLabel.text = firstTitleText
         leftSubTitleLabel.text = firstSubTitleText
         rightTitleLabel.text = secondTitleText
         rightSubTitleLabel.text = secondSubTitleText
     }
     
+    // MARK: - Tapped
     @objc private func tappedUiView(_ sender: UITapGestureRecognizer) {
         guard let leftTitle = leftTitleLabel.text else { return }
         guard let rightTitle = rightTitleLabel.text else { return }
@@ -121,16 +120,20 @@ final class MbtiModalViewController: UIViewController {
             sender.view?.backgroundColor = .picoBetaBlue
             
             sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoBetaBlue, opacity: 0.8)
-            self.delegate?.choiceMbti(mbti: leftTitle, num: number)
+            self.delegate?.getUserMbti(mbti: leftTitle, num: number)
         } else {
             sender.view?.backgroundColor = .picoBetaBlue
             sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoBetaBlue, opacity: 0.8)
-            self.delegate?.choiceMbti(mbti: rightTitle, num: number)
+            self.delegate?.getUserMbti(mbti: rightTitle, num: number)
         }
         slowDownModal()
     }
     
-    // MARK: - UI 관련
+}
+
+// MARK: - UI 관련
+extension MbtiModalViewController {
+    
     private func slowDownModal() {
         UIView.animate(withDuration: 0.3, animations: {
             self.view.frame.origin.y += self.view.frame.size.height

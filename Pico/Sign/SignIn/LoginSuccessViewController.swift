@@ -31,6 +31,7 @@ final class LoginSuccessViewController: UIViewController {
         return button
     }()
     
+    // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -39,11 +40,11 @@ final class LoginSuccessViewController: UIViewController {
         configButton()
     }
 
-    // MARK: - cofig
+    // MARK: - Config
     private func configButton() {
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
-
+    // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
 //        if isTappedNextButton {
@@ -52,7 +53,10 @@ final class LoginSuccessViewController: UIViewController {
 //        }
     }
     
-    // MARK: - UI 관련
+}
+// MARK: - UI 관련
+extension LoginSuccessViewController {
+
     private func addSubViews() {
         for viewItem in [notifyLabel, checkImageView, nextButton] {
             view.addSubview(viewItem)
