@@ -16,12 +16,12 @@ final class LikeViewController: UIViewController {
         segment.selectedSegmentTintColor = .clear
         segment.setBackgroundImage(UIImage(), for: .normal, barMetrics: .default)
         segment.setDividerImage(UIImage(), forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
-        let font = UIFont.systemFont(ofSize: 16, weight: .bold)          // Compute the right size
-        segment.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
         segment.insertSegment(withTitle: "U Like Me?", at: 0, animated: true)
         segment.insertSegment(withTitle: "I Like U !", at: 1, animated: true)
-        
         segment.selectedSegmentIndex = 0
+        let font = UIFont.systemFont(ofSize: 20, weight: .heavy)
+        segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.gray], for: .normal)
+        segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.black], for: .selected)
         
         return segment
     }()
