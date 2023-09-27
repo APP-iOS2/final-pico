@@ -32,7 +32,6 @@ final class MBTICollectionViewController: UIViewController {
             collectionView.snp.makeConstraints { make in
                 make.top.leading.equalToSuperview()
                 make.trailing.bottom.equalToSuperview()
-            
         }
     }
 }
@@ -57,5 +56,4 @@ extension MBTICollectionViewController: UICollectionViewDelegate, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 10
     }
-    
 }
