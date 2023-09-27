@@ -13,12 +13,23 @@ final class MailListTableViewCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 40
+        imageView.layer.cornerRadius = 35
         return imageView
+    }()
+    
+    private let nameStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        stackView.alignment = .center
+        return stackView
     }()
     
     private let infoStackView: UIStackView = {
         let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        stackView.alignment = .leading
         return stackView
     }()
     
@@ -39,7 +50,13 @@ final class MailListTableViewCell: UITableViewCell {
     
     private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj)
     
-    private let dateStackView = UIStackView()
+    private let dateStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        stackView.alignment = .fill
+        return stackView
+    }()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
@@ -69,12 +86,16 @@ final class MailListTableViewCell: UITableViewCell {
     
     func addViews() {
         
-        [nameLabel, message, mbtiLabelView].forEach {
-            infoStackView.addSubview($0)
+        [nameLabel, mbtiLabelView].forEach {
+            nameStackView.addArrangedSubview($0)
+        }
+        
+        [nameStackView, message].forEach {
+            infoStackView.addArrangedSubview($0)
         }
         
         [dateLabel, newLabel].forEach {
-            dateStackView.addSubview($0)
+            dateStackView.addArrangedSubview($0)
         }
         
         [userImage, infoStackView, dateStackView].forEach {
@@ -85,47 +106,27 @@ final class MailListTableViewCell: UITableViewCell {
     func makeConstraints() {
         
         userImage.snp.makeConstraints { make in
-            make.top.bottom.equalTo(contentView).inset(10)
+            make.top.equalTo(contentView).inset(15)
             make.leading.equalTo(contentView).offset(10)
-            make.centerY.equalToSuperview()
-            make.width.height.equalTo(contentView.snp.height).inset(10)
+            make.width.height.equalTo(contentView.snp.height).inset(15)
+        }
+        
+        nameStackView.snp.makeConstraints { make in
+            make.top.equalTo(infoStackView)
+            make.leading.equalTo(userImage.snp.trailing).offset(15)
         }
         
         infoStackView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(userImage)
-            make.leading.equalTo(userImage.snp.trailing).offset(10)
-            make.trailing.equalTo(contentView).inset(80)
-        }
-        
-        nameLabel.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView).offset(10)
-            make.leading.equalTo(infoStackView)
-        }
-        
-        mbtiLabelView.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.top)
-            make.leading.equalTo(nameLabel.snp.trailing).offset(5)
-            make.trailing.equalTo(infoStackView.snp.trailing)
-        }
-        
-        message.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(10)
-            make.leading.trailing.equalTo(infoStackView)
+            make.top.equalTo(userImage).offset(10)
+            make.leading.equalTo(nameStackView)
+            make.trailing.equalTo(contentView).inset(70)
+            make.bottom.equalTo(userImage).offset(-10)
         }
         
         dateStackView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(nameLabel)
-            make.trailing.equalTo(contentView.snp.trailing).inset(10)
+            make.top.bottom.equalTo(infoStackView)
+            make.trailing.equalTo(contentView.snp.trailing).offset(-20)
             make.width.equalTo(50)
-        }
-        
-        dateLabel.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(dateStackView)
-        }
-        
-        newLabel.snp.makeConstraints { make in
-            make.top.equalTo(message.snp.top)
-            make.leading.trailing.equalTo(dateStackView)
         }
     }
     
