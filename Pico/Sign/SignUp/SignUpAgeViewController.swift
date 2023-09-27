@@ -127,8 +127,8 @@ class SignUpAgeViewController: UIViewController {
         if isChoiceAge {
             print("\(selectedYear)년 \(selectedMonth)년 \(selectedDay)일")
         }
-        
     }
+    
     private func enableNextButton() {
         isChoiceAge = true
         nextButton.backgroundColor = .picoBlue
@@ -182,16 +182,14 @@ extension SignUpAgeViewController: UIPickerViewDelegate, UIPickerViewDataSource 
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        enableNextButton()
         switch component {
         case 0:
-            enableNextButton()
             selectedYear = years[row]
         case 1:
-            enableNextButton()
             selectedMonth = months[row]
             updateDaysForSelectedMonth()
         case 2:
-            enableNextButton()
             selectedDay = days[row]
         default:
             break
