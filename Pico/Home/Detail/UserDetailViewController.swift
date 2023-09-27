@@ -13,34 +13,20 @@ final class UserDetailViewController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let viewModel = UserDetailViewModel()
     
-    private let navigationBar: UINavigationBar = {
-        let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = .systemBackground
-        return navigationBar
+    private let likeButton: UIButton = {
+        let button = UIButton(configuration: .plain())
+        button.setImage(UIImage(systemName: "hand.thumbsup.circle.fill"), for: .normal)
+        return button
     }()
     
-    private let navItem: UINavigationItem = {
-        let navigationItem = UINavigationItem(title: "카리나, 24")
-        return navigationItem
+    private let disLikeButton: UIButton = {
+        let button = UIButton(configuration: .plain())
+        button.setImage(UIImage(systemName: "hand.thumbsdown.circle.fill"), for: .normal)
+       
+        return button
     }()
     
-    private let leftBarButton: UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.left"), style: .plain, target: UserDetailViewController.self, action: #selector(tappedNavigationButton))
-        barButtonItem.tintColor = .black
-        return barButtonItem
-    }()
-    
-    private let rightBarButton: UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: UserDetailViewController.self, action: #selector(tappedNavigationButton))
-        barButtonItem.tintColor = .black
-        return barButtonItem
-    }()
-    
-    private let separatorView: UIView = {
-        let uiView = UIView()
-        uiView.backgroundColor = .systemGray5
-        return uiView
-    }()
+    private let actionSheetController = UIAlertController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,16 +35,31 @@ final class UserDetailViewController: UIViewController {
         configTableView()
         makeConstraints()
         configureNavigationBar()
+        configActionSheet()
+    }
+    
+    func configActionSheet() {
+        let actionReport = UIAlertAction(title: "신고", style: .default, handler: nil)
+        let actionBlock = UIAlertAction(title: "차단", style: .default, handler: nil)
+        let actionDrink = UIAlertAction(title: "취한거같아요", style: .destructive, handler: nil)
+        let actionCancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        actionSheetController.addAction(actionReport)
+        actionSheetController.addAction(actionBlock)
+        actionSheetController.addAction(actionDrink)
+        actionSheetController.addAction(actionCancel)
     }
     
     @objc func tappedNavigationButton() {
-        // Action
+        self.present(actionSheetController, animated: true)
     }
     
     private func configureNavigationBar() {
-        navItem.leftBarButtonItem = leftBarButton
-        navItem.rightBarButtonItem = rightBarButton
-        navigationBar.setItems([navItem], animated: true)
+        self.navigationItem.title = "윈터, 24"
+        let rightBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(tappedNavigationButton))
+        self.navigationItem.rightBarButtonItem = rightBarButton
+        changeNavigationBackButton()
+        self.navigationController?.navigationBar.tintColor = .black
     }
     
     final private func configTableView() {
@@ -70,21 +71,31 @@ final class UserDetailViewController: UIViewController {
     }
     
     final private func addViews() {
-        [navigationBar, tableView].forEach {
+        [tableView, likeButton, disLikeButton].forEach {
             view.addSubview($0)
         }
     }
     
     final private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
-        navigationBar.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(safeArea)
-        }
         
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(navigationBar.snp.bottom)
-            make.leading.trailing.bottom.equalTo(safeArea)
+            make.top.equalTo(safeArea)
+            make.leading.bottom.trailing.equalTo(safeArea)
         }
+        
+        disLikeButton.snp.makeConstraints { make in
+            make.bottom.trailing.equalToSuperview().offset(-80)
+            make.width.height.equalTo(50)
+        }
+        
+        likeButton.snp.makeConstraints { make in
+            make.bottom.equalTo(disLikeButton.snp.bottom)
+            make.leading.equalTo(disLikeButton.snp.trailing).offset(10)
+            make.trailing.equalToSuperview()
+            make.width.height.equalTo(50)
+        }
+        
     }
 }
 
@@ -122,12 +133,11 @@ extension UserDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-            return CGFloat(400)
+            return CGFloat(Screen.height * 0.8)
         case 1:
-            return CGFloat(250)
+            return CGFloat(Screen.height * 0.3)
         case 2:
-            return CGFloat(1000)
-            
+            return CGFloat(Screen.height * 0.6)
         default:
             return CGFloat(200)
         }
