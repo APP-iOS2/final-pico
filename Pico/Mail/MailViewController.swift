@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class MailViewController: UIViewController {
+final class MailViewController: BaseViewController {
     
     private let emptyView: UIView = LikeEmptyView(type: .uLikeMe)
     
@@ -27,12 +27,10 @@ final class MailViewController: UIViewController {
     }()
     
     private let dataCount: Int = 1
+    private let mailCheck: Bool = true // 받은 상태일경우
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        
-        configLogoBarItem()
         configTableView()
         addViews()
         makeConstraints()
@@ -91,9 +89,16 @@ extension MailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let mailSendView = MailSendViewController()
-        mailSendView.modalPresentationStyle = .formSheet
-        mailSendView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월")
-        self.present(mailSendView, animated: true, completion: nil)
+        if mailCheck {
+            let mailReceiveView = MailReceiveViewController()
+            mailReceiveView.modalPresentationStyle = .formSheet
+            mailReceiveView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월", message: "하이룽 방가룽", date: "9/25")
+            self.present(mailReceiveView, animated: true, completion: nil)
+        } else {
+            let mailSendView = MailSendViewController()
+            mailSendView.modalPresentationStyle = .formSheet
+            mailSendView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월")
+            self.present(mailSendView, animated: true, completion: nil)
+        }
     }
 }
