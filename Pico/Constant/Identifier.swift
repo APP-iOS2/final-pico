@@ -27,7 +27,10 @@ struct Identifier {
         static let notiTableCell = "NotificationTabelViewCell"
         static let profileEditImageTableCell = "ProfileEditImageTableCell"
         static let profileEditNicknameTabelCell = "ProfileEditNicknameTabelCell"
-        
+        static let profileEditBirthTableCell = "ProfileEditBirthTableCell"
+        static let profileEditLoactionTabelCell = "ProfileEditLoactionTabelCell"
+        static let profileEditIntroTabelCell = "ProfileEditIntroTabelCell"
+        static let profileEditTextTabelCell = "ProfileEditTextTabelCell"
     }
     
     struct CollectionView {

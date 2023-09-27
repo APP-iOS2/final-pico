@@ -30,7 +30,7 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
         button.layer.cornerRadius = 15
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.picoBlue.cgColor
-        button.addTarget(self, action: #selector(tappedbutton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
         return button
     }()
     
@@ -44,7 +44,7 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc private func tappedbutton() {
+    @objc private func tappedButton() {
         print("tap")
     }
     
