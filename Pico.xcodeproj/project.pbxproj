@@ -34,7 +34,6 @@
 		6937783C2AC26B4300762165 /* LoadImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783B2AC26B4300762165 /* LoadImageView.swift */; };
 		6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783D2AC2742400762165 /* MailSendViewController.swift */; };
 		693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783F2AC2745C00762165 /* MailReceiveViewController.swift */; };
-		693778422AC2760200762165 /* MailEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 693778412AC2760200762165 /* MailEmptyView.swift */; };
 		6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */; };
 		6A73784D2AC26AD50047DE35 /* MyPageFirstTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */; };
 		6A7378512AC26B1E0047DE35 /* MyPageDefaultTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7378502AC26B1E0047DE35 /* MyPageDefaultTableCell.swift */; };
@@ -142,7 +141,6 @@
 		6937783B2AC26B4300762165 /* LoadImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadImageView.swift; sourceTree = "<group>"; };
 		6937783D2AC2742400762165 /* MailSendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendViewController.swift; sourceTree = "<group>"; };
 		6937783F2AC2745C00762165 /* MailReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveViewController.swift; sourceTree = "<group>"; };
-		693778412AC2760200762165 /* MailEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailEmptyView.swift; sourceTree = "<group>"; };
 		6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableView.swift; sourceTree = "<group>"; };
 		6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageFirstTableCell.swift; sourceTree = "<group>"; };
 		6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSecondTableCell.swift; sourceTree = "<group>"; };
@@ -432,7 +430,6 @@
 				B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */,
 				6937783D2AC2742400762165 /* MailSendViewController.swift */,
 				6937783F2AC2745C00762165 /* MailReceiveViewController.swift */,
-				693778412AC2760200762165 /* MailEmptyView.swift */,
 			);
 			path = Mail;
 			sourceTree = "<group>";

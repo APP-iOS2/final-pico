@@ -26,7 +26,7 @@ struct Identifier {
         static let bottomUserTableCell = "BottomUserTableViewCell"
         static let notiTableCell = "NotificationTabelViewCell"
     }
-      
+    
     struct CollectionView {
         static let likeCell = "LikeCollectionViewCell"
         static let hobbyCollectionCell = "HobbyCollectionCell"
