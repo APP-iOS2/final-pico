@@ -21,10 +21,14 @@ struct Identifier {
         static let SettingPrivateTableCell = "SettingPrivateTableCell"
         static let SettingNotiTableCell = "MailListTableViewCell"
         static let SettingTableCell = "SettingTableCell"
-        
+        static let topUserTableCell = "TopUserTableViewCell"
+        static let middleUserTableCell = "MiddleUserTableViewCell"
+        static let bottomUserTableCell = "BottomUserTableViewCell"
     }
       
     struct CollectionView {
         static let likeCell = "LikeCollectionViewCell"
+        static let hobbyCollectionCell = "HobbyCollectionCell"
+        static let mbtiCollectionCell = "mbtiCollectionCell"
     }
 }
