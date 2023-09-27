@@ -22,7 +22,6 @@ final class UserDetailViewController: UIViewController {
     private let disLikeButton: UIButton = {
         let button = UIButton(configuration: .plain())
         button.setImage(UIImage(systemName: "hand.thumbsdown.circle.fill"), for: .normal)
-        
         return button
     }()
     
