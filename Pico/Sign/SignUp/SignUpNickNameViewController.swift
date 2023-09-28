@@ -51,6 +51,7 @@ class SignUpNickNameViewController: UIViewController {
     
     private lazy var nickNameTextField: UITextField = {
         let textField = UITextField()
+        textField.placeholder = "3자리 부터 8자리 까지"
         return textField
     }()
     
@@ -68,7 +69,7 @@ class SignUpNickNameViewController: UIViewController {
     private lazy var nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
-        button.backgroundColor = .picoGray
+        button.isEnabled = false
         button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
@@ -82,6 +83,7 @@ class SignUpNickNameViewController: UIViewController {
         nickNameTextField.delegate = self
         nickNameTextField.becomeFirstResponder()
         configBackButton()
+        configNextButton(isCheck: false)
     }
     override func viewWillAppear(_ animated: Bool) {
         followKeyboard()
@@ -93,9 +95,11 @@ extension SignUpNickNameViewController {
     private func configNextButton(isCheck: Bool) {
         if isCheck {
             nextButton.backgroundColor = .picoBlue
+            nextButton.isEnabled = true
             isCheckNickName = true
         } else {
             nextButton.backgroundColor = .picoGray
+            nextButton.isEnabled = false
             isCheckNickName = false
         }
     }
@@ -109,6 +113,9 @@ extension SignUpNickNameViewController {
     @objc private func tappedNextButton(_ sender: UIButton) {
         let viewController = SignUpPictureViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
+        
+        nickNameTextField.text = ""
+        configNextButton(isCheck: false)
     }
 }
 
@@ -122,22 +129,26 @@ extension SignUpNickNameViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let textCount = textField.text?.count else { return false }
-    
-        if textCount >= minNickNameWordCount && textCount < maxNickNameWordCount {
-            configNextButton(isCheck: true)
-            return true
-        } else if textCount >= maxNickNameWordCount {
-            if string.isEmpty {
-                return true
-            }
+        guard let currentText = textField.text else { return true }
+        
+        let newText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        
+        let hasNonAlphanumericCharacters = newText.rangeOfCharacter(from: CharacterSet.alphanumerics.inverted)
+        
+        if hasNonAlphanumericCharacters != nil {
             return false
-        } else {
-            configNextButton(isCheck: false)
-            return true
         }
         
+        let textCount = newText.count
+        if textCount >= 3 && textCount <= 8 {
+            configNextButton(isCheck: true)
+        } else {
+            configNextButton(isCheck: false)
+        }
+        
+        return textCount <= 8
     }
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

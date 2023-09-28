@@ -91,9 +91,6 @@ final class SignInViewController: UIViewController {
         if isFullPhoneNumber {
             let viewController = LoginSuccessViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
-            isFullPhoneNumber = false
-            phoneNumberTextField.text = ""
-            changeViewState(isFull: isFullPhoneNumber)
             
         }
     }

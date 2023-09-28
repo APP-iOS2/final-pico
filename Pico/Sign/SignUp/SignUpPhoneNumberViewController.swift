@@ -107,7 +107,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         if isFull {
             phoneNumberTextField.textColor = .picoBlue
         } else {
-            phoneNumberTextField.textColor = .picoFontBlack
+            phoneNumberTextField.textColor = .gray
             nextButton.backgroundColor = .picoGray
         }
         if isCheck {
@@ -139,6 +139,10 @@ final class SignUpPhoneNumberViewController: UIViewController {
             tappedButtonAnimation(sender)
             let viewController = SignUpGenderViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
+            isFullPhoneNumber = false
+            phoneNumberTextField.text = ""
+            configPhonetextFieldAndNextButton(isFull: isFullPhoneNumber)
+
         }
     }
     
