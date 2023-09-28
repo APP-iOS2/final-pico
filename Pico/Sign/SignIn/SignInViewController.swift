@@ -62,13 +62,18 @@ final class SignInViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configTextfield()
-        configButton()
-        configBackButton()
+        configButtons()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        followKeyboard()
+        super.viewWillAppear(animated)
+        registerKeyboard()
         phoneNumberTextField.becomeFirstResponder()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterKeyboard()
     }
     
     // MARK: - Config
@@ -76,7 +81,7 @@ final class SignInViewController: UIViewController {
         phoneNumberTextField.delegate = self
     }
     
-    private func configButton() {
+    private func configButtons() {
         phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
@@ -84,6 +89,7 @@ final class SignInViewController: UIViewController {
     @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         phoneNumberTextField.text = ""
+        changeViewState(isFull: false)
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
@@ -91,22 +97,20 @@ final class SignInViewController: UIViewController {
         if isFullPhoneNumber {
             let viewController = LoginSuccessViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
-            isFullPhoneNumber = false
         }
-        
     }
     
     private func changeViewState(isFull: Bool) {
         if isFull {
             phoneNumberTextField.textColor = .picoBlue
-            
             nextButton.backgroundColor = .picoBlue
+            isFullPhoneNumber = true
         } else {
-            phoneNumberTextField.textColor = .picoFontBlack
+            phoneNumberTextField.textColor = .gray
             nextButton.backgroundColor = .picoGray
+            isFullPhoneNumber = false
         }
     }
-
 }
 
 // MARK: - 텍스트필드 관련
@@ -118,31 +122,22 @@ extension SignInViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
         let currentText = (textField.text ?? "") as NSString
         let updatedText = currentText.replacingCharacters(in: range, with: string)
         let digits = CharacterSet.decimalDigits
         let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
         
-        isFullPhoneNumber = false
-        changeViewState(isFull: isFullPhoneNumber)
-        textField.textColor = .gray
-        if filteredText.count > 11 {
-            isFullPhoneNumber = true
-            changeViewState(isFull: isFullPhoneNumber)
-            return false
-        } else if filteredText.count > 10 {
-            isFullPhoneNumber = true
-            changeViewState(isFull: isFullPhoneNumber)
-            return true
+        if filteredText.count < 11 {
+            changeViewState(isFull: false)
+        } else {
+            changeViewState(isFull: true)
         }
         
         textField.text = formattedTextFieldText(filteredText)
-        
-        return false
+        return filteredText.count < 12
     }
     
-    func formattedTextFieldText(_ filteredText: String) -> String {
+    private func formattedTextFieldText(_ filteredText: String) -> String {
         let formattedText: String
         
         if filteredText.count <= 3 {
@@ -165,18 +160,23 @@ extension SignInViewController: UITextFieldDelegate {
 // MARK: - 키보드 관련
 extension SignInViewController {
     
-    private func followKeyboard() {
+    private func registerKeyboard() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    private func unregisterKeyboard() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     @objc private func keyboardUp(notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-           let keyboardRectangle = keyboardFrame.cgRectValue
-       
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            
             UIView.animate(
-                withDuration: 0.5
-                , animations: {
+                withDuration: 0.5,
+                animations: {
                     self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
                 }
             )
@@ -206,22 +206,22 @@ extension SignInViewController {
         
         notifyLabel.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(10)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
+            make.leading.equalToSuperview().offset(Constraint.SignView.padding)
+            make.trailing.equalToSuperview().offset(-Constraint.SignView.padding)
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
+            make.leading.equalToSuperview().offset(Constraint.SignView.contentPadding)
+            make.trailing.equalToSuperview().offset(-Constraint.SignView.contentPadding)
             make.height.equalTo(50)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
+            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
+            make.height.equalTo(Constraint.Button.commonHeight)
         }
     }
 }

@@ -18,13 +18,17 @@ class BaseViewController: UIViewController {
         super.viewDidLoad()
         configUI()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configLogoBarItem()
     }
+    
     override func viewWillDisappear(_ animated: Bool) {
-        navigationItem.leftBarButtonItem = nil
+        super.viewWillDisappear(animated)
+        navigationItem.hidesBackButton = true
     }
+    
     private func configUI() {
         view.backgroundColor = .systemBackground
         configBackButton()

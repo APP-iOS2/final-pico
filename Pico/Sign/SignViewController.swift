@@ -44,11 +44,11 @@ final class SignViewController: UIViewController {
         configBackButton()
         addSubViews()
         makeConstraints()
-        configButton()
+        configButtons()
         configBackButton()
     }
     
-    private func configButton() {
+    private func configButtons() {
         signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
     }

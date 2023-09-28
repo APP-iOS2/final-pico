@@ -6,18 +6,21 @@
 //
 
 import UIKit
+import SnapKit
 
-class SignUpNickNameViewController: UIViewController {
+final class SignUpNickNameViewController: UIViewController {
     
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false
+    
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
         view.progress = 0.142 * 5
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = Constraint.SignView.progressViewCornerRadius
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -43,15 +46,27 @@ class SignUpNickNameViewController: UIViewController {
     private let nickNameStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.distribution = .fill
         stackView.spacing = 8
         return stackView
     }()
     
     private lazy var nickNameTextField: UITextField = {
         let textField = UITextField()
+        textField.placeholder = "3자리 부터 8자리 까지"
+        textField.font = .picoTitleFont
+        textField.textColor = .gray
         return textField
+    }()
+    
+    private let nickNameCheckButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("  중복확인  ", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 13
+        button.backgroundColor = .picoBlue
+        button.isHidden = true
+        return button
     }()
     
     private lazy var nickNameCancleButton: UIButton = {
@@ -61,15 +76,13 @@ class SignUpNickNameViewController: UIViewController {
         button.imageView?.contentMode = .scaleAspectFit
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
-        button.addTarget(self, action: #selector(tappedNickNameCancleButton), for: .touchUpInside)
         return button
     }()
     
-    private lazy var nextButton: UIButton = {
+    private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
         button.backgroundColor = .picoGray
-        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
     
@@ -77,43 +90,95 @@ class SignUpNickNameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        configBackButton()
         addSubViews()
         makeConstraints()
-        nickNameTextField.delegate = self
-        nickNameTextField.becomeFirstResponder()
-        configBackButton()
+        configButtons()
+        configTextField()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
-        followKeyboard()
+        super.viewWillAppear(animated)
+        registerKeyboard()
+        nickNameTextField.becomeFirstResponder()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterKeyboard()
     }
 }
 
 extension SignUpNickNameViewController {
     // MARK: - Config
-    private func configNextButton(isCheck: Bool) {
-        if isCheck {
-            nextButton.backgroundColor = .picoBlue
-            isCheckNickName = true
-        } else {
-            nextButton.backgroundColor = .picoGray
-            isCheckNickName = false
+    private func configButtons() {
+        nickNameCheckButton.addTarget(self, action: #selector(tappedNickNameCheckButton), for: .touchUpInside)
+        nickNameCancleButton.addTarget(self, action: #selector(tappedNickNameCancleButton), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+    }
+    
+    private func configTextField() {
+        nickNameTextField.delegate = self
+        nickNameTextField.becomeFirstResponder()
+    }
+    
+    private func reset() {
+        nickNameTextField.text = ""
+        nickNameTextField.isEnabled = true
+        nickNameCancleButton.isHidden = false
+        nickNameCheckButton.backgroundColor = .picoBlue
+        
+        updateNickNameTextField(isFull: false)
+        updateNextButton(isCheck: false)
+    }
+    
+    // MARK: - Tapped
+    @objc private func tappedNickNameCheckButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        showAlert(message: "\(nickNameTextField.text ?? "") 이름으로 설정합니다.", isCancelButton: true) {
+            self.nickNameCheckButton.isEnabled = false
+            self.nickNameCheckButton.backgroundColor = .picoGray
+            self.nickNameCancleButton.isHidden = true
+            self.nickNameTextField.textColor = .picoBlue
+            self.nickNameTextField.isEnabled = false
+            
+            self.updateNextButton(isCheck: true)
         }
     }
-    // MARK: - Tapped
+    
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         nickNameTextField.text = ""
-        configNextButton(isCheck: false)
+        updateNickNameTextField(isFull: false)
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         let viewController = SignUpPictureViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
+    
+    private func updateNickNameTextField(isFull: Bool) {
+        if isFull {
+            nickNameCheckButton.isHidden = false
+        } else {
+            nickNameCheckButton.isHidden = true
+        }
+    }
+    
+    private func updateNextButton(isCheck: Bool) {
+        if isCheck {
+            nextButton.backgroundColor = .picoBlue
+            nextButton.isEnabled = true
+            isCheckNickName = true
+        } else {
+            nextButton.backgroundColor = .picoGray
+            nextButton.isEnabled = false
+            isCheckNickName = false
+        }
+    }
 }
 
 // MARK: - 텍스트 필드 관련
-
 extension SignUpNickNameViewController: UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -122,42 +187,46 @@ extension SignUpNickNameViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let textCount = textField.text?.count else { return false }
-    
-        if textCount >= minNickNameWordCount && textCount < maxNickNameWordCount {
-            configNextButton(isCheck: true)
-            return true
-        } else if textCount >= maxNickNameWordCount {
-            if string.isEmpty {
-                return true
-            }
-            return false
-        } else {
-            configNextButton(isCheck: false)
-            return true
+        
+        let currentText = textField.text ?? ""
+        var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        newText = newText.replacingOccurrences(of: " ", with: "")
+        
+        updateNickNameTextField(isFull: false)
+        
+        if newText.count > minNickNameWordCount {
+            updateNickNameTextField(isFull: true)
         }
         
+        return newText.count < maxNickNameWordCount + 1
     }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
 }
+
 // MARK: - 키보드 관련
 extension SignUpNickNameViewController {
     
-    private func followKeyboard() {
+    private func registerKeyboard() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    private func unregisterKeyboard() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     @objc private func keyboardUp(notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-           let keyboardRectangle = keyboardFrame.cgRectValue
-       
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            
             UIView.animate(
-                withDuration: 0.5
-                , animations: {
+                withDuration: 0.5,
+                animations: {
                     self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
                 }
             )
@@ -168,11 +237,12 @@ extension SignUpNickNameViewController {
         self.nextButton.transform = .identity
     }
 }
+
 // MARK: - UI 관련
 extension SignUpNickNameViewController {
+    
     private func addSubViews() {
-        
-        for stackViewItem in [nickNameTextField, nickNameCancleButton] {
+        for stackViewItem in [nickNameTextField, nickNameCancleButton, nickNameCheckButton] {
             nickNameStackView.addArrangedSubview(stackViewItem)
         }
         
@@ -180,42 +250,45 @@ extension SignUpNickNameViewController {
             view.addSubview(viewItem)
         }
     }
+    
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
             make.height.equalTo(8)
         }
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
+            make.top.equalTo(progressView.snp.bottom).offset(Constraint.SignView.padding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
         subNotifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(-15)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.subPadding)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
         }
         
         nickNameStackView.snp.makeConstraints { make in
-            make.top.equalTo(subNotifyLabel.snp.bottom).offset(5)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
+            make.top.equalTo(subNotifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
+            make.leading.equalTo(Constraint.SignView.contentPadding)
+            make.trailing.equalTo(-Constraint.SignView.contentPadding)
+            make.height.equalTo(30)
+        }
+        
+        nickNameCheckButton.snp.makeConstraints { make in
+            make.width.equalTo(80)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
+            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
+            make.height.equalTo(Constraint.Button.commonHeight)
         }
     }
 }

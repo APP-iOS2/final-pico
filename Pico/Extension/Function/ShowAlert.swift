@@ -14,8 +14,9 @@ extension UIViewController {
         let yes = UIAlertAction(title: "확인", style: .default) {_ in
             yesAction?()
         }
+        
         if isCancelButton {
-            let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+            let cancel = UIAlertAction(title: "취소", style: .destructive, handler: nil)    
             alert.addAction(cancel)
         }
         alert.addAction(yes)
