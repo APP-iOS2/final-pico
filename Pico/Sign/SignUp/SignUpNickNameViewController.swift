@@ -80,8 +80,7 @@ final class SignUpNickNameViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
-        nickNameTextField.delegate = self
-        nickNameTextField.becomeFirstResponder()
+        configTextField()
         configBackButton()
         configNextButton(isCheck: false)
     }
@@ -92,6 +91,11 @@ final class SignUpNickNameViewController: UIViewController {
 
 extension SignUpNickNameViewController {
     // MARK: - Config
+    private func configTextField() {
+        nickNameTextField.delegate = self
+        nickNameTextField.becomeFirstResponder()
+    }
+    
     private func configNextButton(isCheck: Bool) {
         if isCheck {
             nextButton.backgroundColor = .picoBlue

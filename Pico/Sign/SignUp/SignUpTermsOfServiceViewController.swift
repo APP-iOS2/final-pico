@@ -50,7 +50,10 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configBackButton()
-        
+        configTableView()
+    }
+    
+    private func configTableView() {
         // 테이블 뷰 설정
         tableView.delegate = self
         tableView.dataSource = self
@@ -113,6 +116,7 @@ extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDa
         cell.textLabel?.numberOfLines = 0
         return cell
     }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let isAtBottom = scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
         
