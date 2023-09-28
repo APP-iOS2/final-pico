@@ -67,6 +67,7 @@ final class SignInViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         followKeyboard()
         phoneNumberTextField.becomeFirstResponder()
     }
@@ -91,7 +92,6 @@ final class SignInViewController: UIViewController {
         if isFullPhoneNumber {
             let viewController = LoginSuccessViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
-            
         }
     }
     
@@ -105,7 +105,6 @@ final class SignInViewController: UIViewController {
             nextButton.backgroundColor = .picoGray
         }
     }
-
 }
 
 // MARK: - 텍스트필드 관련
@@ -141,7 +140,7 @@ extension SignInViewController: UITextFieldDelegate {
         return false
     }
     
-    func formattedTextFieldText(_ filteredText: String) -> String {
+    private func formattedTextFieldText(_ filteredText: String) -> String {
         let formattedText: String
         
         if filteredText.count <= 3 {
@@ -174,8 +173,8 @@ extension SignInViewController {
            let keyboardRectangle = keyboardFrame.cgRectValue
        
             UIView.animate(
-                withDuration: 0.5
-                , animations: {
+                withDuration: 1,
+                animations: {
                     self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
                 }
             )

@@ -1,6 +1,13 @@
+//
+//  SignUpTermsOfServiceViewController.swift
+//  Pico
+//
+//  Created by LJh on 2023/09/27.
+//
+
 import UIKit
 
-class SignUpTermsOfServiceViewController: UIViewController {
+final class SignUpTermsOfServiceViewController: UIViewController {
     
     private let termsOfServiceTexts: [String] = Te4mp.termsOfServiceTexts
     

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SignUpGenderViewController: UIViewController {
+final class SignUpGenderViewController: UIViewController {
     
     private var gender: String = ""
     private var genderButtons: [UIButton] = []

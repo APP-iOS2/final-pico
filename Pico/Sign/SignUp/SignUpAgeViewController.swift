@@ -1,7 +1,14 @@
+//
+//  SignUpAgeViewController.swift
+//  Pico
+//
+//  Created by LJh on 2023/09/27.
+//
+
 import UIKit
 import SnapKit
 
-class SignUpAgeViewController: UIViewController {
+final class SignUpAgeViewController: UIViewController {
     
     private var isChoiceAge: Bool = false
     private var selectedYear: Int = 2000

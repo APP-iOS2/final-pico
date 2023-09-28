@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SignUpNickNameViewController: UIViewController {
+final class SignUpNickNameViewController: UIViewController {
     
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8

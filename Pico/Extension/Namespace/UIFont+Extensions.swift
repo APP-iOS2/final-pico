@@ -41,5 +41,3 @@ extension UIFont {
         return UIFont.systemFont(ofSize: 14, weight: .bold)
     }
 }
-
-

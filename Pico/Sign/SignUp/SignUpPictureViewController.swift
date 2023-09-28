@@ -1,5 +1,5 @@
 //
-//  SignUpNickNameViewController.swift
+//  SignUpPictureViewController.swift
 //  Pico
 //
 //  Created by LJh on 2023/09/27.
@@ -8,7 +8,7 @@
 import UIKit
 import PhotosUI
 
-class SignUpPictureViewController: UIViewController {
+final class SignUpPictureViewController: UIViewController {
     
     private var userImages: [UIImage] = []
 
