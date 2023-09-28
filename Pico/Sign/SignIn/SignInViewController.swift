@@ -59,6 +59,7 @@ final class SignInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        tappedDismissKeyboard()
         addSubViews()
         makeConstraints()
         configTextfield()
@@ -116,44 +117,12 @@ final class SignInViewController: UIViewController {
 // MARK: - 텍스트필드 관련
 extension SignInViewController: UITextFieldDelegate {
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        phoneNumberTextField.resignFirstResponder()
-        self.view.endEditing(true)
-    }
-    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let currentText = (textField.text ?? "") as NSString
-        let updatedText = currentText.replacingCharacters(in: range, with: string)
-        let digits = CharacterSet.decimalDigits
-        let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
-        
-        if filteredText.count < 11 {
-            changeViewState(isFull: false)
-        } else {
-            changeViewState(isFull: true)
+        let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isFull in
+            changeViewState(isFull: isFull)
         }
         
-        textField.text = formattedTextFieldText(filteredText)
-        return filteredText.count < 12
-    }
-    
-    private func formattedTextFieldText(_ filteredText: String) -> String {
-        let formattedText: String
-        
-        if filteredText.count <= 3 {
-            formattedText = filteredText
-        } else if filteredText.count <= 7 {
-            let firstPart = filteredText.prefix(3)
-            let secondPart = filteredText.dropFirst(3).prefix(4)
-            formattedText = "\(firstPart)-\(secondPart)"
-        } else {
-            let firstPart = filteredText.prefix(3)
-            let secondPart = filteredText.dropFirst(3).prefix(4)
-            let thirdPart = filteredText.dropFirst(7).prefix(4)
-            formattedText = "\(firstPart)-\(secondPart)-\(thirdPart)"
-        }
-        
-        return formattedText
+        return isChangeValue
     }
 }
 

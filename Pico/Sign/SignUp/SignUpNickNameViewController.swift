@@ -91,6 +91,7 @@ final class SignUpNickNameViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         configBackButton()
+        tappedDismissKeyboard()
         addSubViews()
         makeConstraints()
         configButtons()
@@ -180,11 +181,6 @@ extension SignUpNickNameViewController {
 
 // MARK: - 텍스트 필드 관련
 extension SignUpNickNameViewController: UITextFieldDelegate {
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        nickNameTextField.resignFirstResponder()
-        self.view.endEditing(true)
-    }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
