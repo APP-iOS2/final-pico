@@ -41,6 +41,7 @@ class SignUpTermsOfServiceViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
+        configBackButton()
         // Do any additional setup after loading the view.
     }
     

@@ -81,6 +81,7 @@ class SignUpNickNameViewController: UIViewController {
         makeConstraints()
         nickNameTextField.delegate = self
         nickNameTextField.becomeFirstResponder()
+        configBackButton()
     }
     override func viewWillAppear(_ animated: Bool) {
         followKeyboard()
@@ -109,7 +110,6 @@ extension SignUpNickNameViewController {
         let viewController = SignUpPictureViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
-    
 }
 
 // MARK: - 텍스트 필드 관련

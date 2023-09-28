@@ -38,6 +38,7 @@ final class LoginSuccessViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configButton()
+        configBackButton()
     }
 
     // MARK: - Config

@@ -45,6 +45,7 @@ final class SignViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configButton()
+        configBackButton()
     }
     
     private func configButton() {

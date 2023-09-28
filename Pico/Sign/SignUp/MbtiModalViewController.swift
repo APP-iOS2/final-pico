@@ -99,6 +99,7 @@ final class MbtiModalViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configMbtiButton()
+        configBackButton()
     }
     
     // MARK: - Config

@@ -94,6 +94,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         addSubViews()
         makeConstraints()
         phoneNumberTextField.delegate = self
+        configBackButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {

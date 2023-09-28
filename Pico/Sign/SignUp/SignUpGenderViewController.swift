@@ -67,6 +67,7 @@ class SignUpGenderViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addSubViews()
         makeConstraints()
+        configBackButton()
     }
    
     // MARK: - Config

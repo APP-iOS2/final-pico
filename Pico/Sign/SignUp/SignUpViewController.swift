@@ -97,6 +97,7 @@ final class SignUpViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configButton()
+        configBackButton()
     }
 }
 
