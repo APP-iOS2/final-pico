@@ -24,7 +24,8 @@ final class SignUpAgeViewController: UIViewController {
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
         view.progress = 0.142 * 4
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = Constraint.SignView.progressViewCornerRadius
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -64,10 +65,10 @@ final class SignUpAgeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        configBackButton()
         addSubViews()
         makeConstraints()
         configDatePicker()
-        configBackButton()
     }
 }
 
@@ -78,6 +79,7 @@ extension SignUpAgeViewController {
         isChoiceAge = true
         nextButton.backgroundColor = .picoBlue
     }
+    
     private func configDatePicker() {
         datePicker.delegate = self
         datePicker.dataSource = self
@@ -91,16 +93,15 @@ extension SignUpAgeViewController {
         datePicker.selectRow(initialMonthIndex, inComponent: 1, animated: false)
         datePicker.selectRow(initialDayIndex, inComponent: 2, animated: false)
     }
+    
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
-        
         if isChoiceAge {
             tappedButtonAnimation(sender)
             let viewController = SignUpNickNameViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
-    
 }
 
 // MARK: - 피커 관련
@@ -163,6 +164,7 @@ extension SignUpAgeViewController: UIPickerViewDelegate, UIPickerViewDataSource 
         }
     }
 }
+
 // MARK: - UI 관련
 extension SignUpAgeViewController {
 
@@ -176,38 +178,36 @@ extension SignUpAgeViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
             make.height.equalTo(8)
         }
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
+            make.top.equalTo(progressView.snp.bottom).offset(Constraint.SignView.padding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
         subNotifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(-15)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.subPadding)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
         }
         
         datePicker.snp.makeConstraints { make in
-            make.top.equalTo(subNotifyLabel.snp.bottom).offset(20)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(subNotifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
+            make.leading.equalTo(Constraint.SignView.contentPadding)
+            make.trailing.equalTo(-Constraint.SignView.contentPadding)
             make.height.equalTo(150)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
+            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
+            make.height.equalTo(Constraint.Button.commonHeight)
         }
     }
 }

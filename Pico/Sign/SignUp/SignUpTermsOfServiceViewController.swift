@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class SignUpTermsOfServiceViewController: UIViewController {
     
@@ -16,7 +17,8 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
         view.progress = 0.142 * 7
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = Constraint.SignView.progressViewCornerRadius
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -47,14 +49,13 @@ final class SignUpTermsOfServiceViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        configBackButton()
         addSubViews()
         makeConstraints()
-        configBackButton()
         configTableView()
     }
     
     private func configTableView() {
-        // 테이블 뷰 설정
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
@@ -74,31 +75,30 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
             make.height.equalTo(8)
         }
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
+            make.top.equalTo(progressView.snp.bottom).offset(Constraint.SignView.padding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.bottom.equalTo(nextButton.snp.top).offset(-10)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.bottom.equalTo(nextButton.snp.top).offset(-Constraint.SignView.padding)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
+            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
+            make.height.equalTo(Constraint.Button.commonHeight)
         }
     }
 }

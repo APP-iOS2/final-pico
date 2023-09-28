@@ -6,18 +6,21 @@
 //
 
 import UIKit
+import SnapKit
 
 final class SignUpGenderViewController: UIViewController {
     
     private var gender: String = ""
     private var genderButtons: [UIButton] = []
     private var isTappedGenderButton = false
+    
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
         view.progress = 0.426
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = Constraint.SignView.progressViewCornerRadius
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -65,9 +68,9 @@ final class SignUpGenderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        configBackButton()
         addSubViews()
         makeConstraints()
-        configBackButton()
     }
    
     // MARK: - Config
@@ -96,8 +99,8 @@ final class SignUpGenderViewController: UIViewController {
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
-    @objc func tappedGenderButton(_ sender: UIButton) {
-        
+    
+    @objc private func tappedGenderButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         configNextButton()
         
@@ -114,11 +117,11 @@ final class SignUpGenderViewController: UIViewController {
             }
         }
     }
-    
 }
 
 // MARK: - UI 관련
 extension SignUpGenderViewController {
+    
     private func addSubViews() {
         for gender in [manButton, girlButton, otherButton] {
             genderButtons.append(gender)
@@ -133,40 +136,38 @@ extension SignUpGenderViewController {
     
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
+        
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
             make.height.equalTo(8)
         }
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
+            make.top.equalTo(progressView.snp.bottom).offset(Constraint.SignView.padding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
         subNotifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(-15)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.subPadding)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(subNotifyLabel.snp.bottom).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(subNotifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
+            make.leading.equalTo(Constraint.SignView.contentPadding)
+            make.trailing.equalTo(-Constraint.SignView.contentPadding)
             make.height.equalTo(200)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
+            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
+            make.height.equalTo(Constraint.Button.commonHeight)
         }
-        
     }
 }

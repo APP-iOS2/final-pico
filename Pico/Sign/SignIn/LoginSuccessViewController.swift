@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class LoginSuccessViewController: UIViewController {
 
@@ -35,26 +36,24 @@ final class LoginSuccessViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        hideBackButton()
         addSubViews()
         makeConstraints()
         configButton()
-        configBackButton()
     }
 
     // MARK: - Config
     private func configButton() {
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
+    
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
-//        if isTappedNextButton {
-//            let viewController = LoginSuccessViewController()
-//            self.navigationController?.pushViewController(viewController, animated: true)
-//        }
+        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(TabBarController(), animated: true)
     }
-    
 }
+
 // MARK: - UI 관련
 extension LoginSuccessViewController {
 
@@ -68,23 +67,22 @@ extension LoginSuccessViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
+            make.top.equalTo(safeArea).offset(Constraint.SignView.padding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
         checkImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(150)
-            make.trailing.equalToSuperview().offset(-150)
+            make.centerX.equalTo(safeArea)
             make.centerY.equalTo(safeArea)
+            make.width.height.equalTo(80)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
+            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
+            make.height.equalTo(Constraint.Button.commonHeight)
         }
     }
 }

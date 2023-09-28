@@ -25,7 +25,7 @@ final class MbtiModalViewController: UIViewController {
         label.text = "당신은 어떤사람인가요?"
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
-        label.font = UIFont.picoTitleFont
+        label.font = UIFont.picoSubTitleFont
         return label
     }()
     
@@ -63,7 +63,7 @@ final class MbtiModalViewController: UIViewController {
     private let leftTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = UIFont.systemFont(ofSize: 50, weight: .regular)
+        label.font = .picoMBTISelectedLabelFont
         label.tag = 1
         return label
     }()
@@ -71,7 +71,7 @@ final class MbtiModalViewController: UIViewController {
     private let leftSubTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.textColor = .picoFontBlack
+        label.font = .picoMBTISelectedSubLabelFont
         label.tag = 1
         return label
     }()
@@ -79,7 +79,7 @@ final class MbtiModalViewController: UIViewController {
     private let rightTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = UIFont.systemFont(ofSize: 50, weight: .regular)
+        label.font = .picoMBTISelectedLabelFont
         label.tag = 2
         return label
     }()
@@ -87,7 +87,7 @@ final class MbtiModalViewController: UIViewController {
     private let rightSubTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.textColor = .picoFontBlack
+        label.font = .picoMBTISelectedSubLabelFont
         label.tag = 2
         return label
     }()
@@ -99,7 +99,6 @@ final class MbtiModalViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configMbtiButton()
-        configBackButton()
     }
     
     // MARK: - Config
@@ -129,7 +128,6 @@ final class MbtiModalViewController: UIViewController {
         }
         slowDownModal()
     }
-    
 }
 
 // MARK: - UI 관련
@@ -153,43 +151,42 @@ extension MbtiModalViewController {
         leftUiView.addSubview(leftSubTitleLabel)
         rightUiView.addSubview(rightTitleLabel)
         rightUiView.addSubview(rightSubTitleLabel)
-        
     }
     
     private func makeConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeArea.snp.top).offset(20)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(safeArea.snp.top).offset(30)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
         buttonsStackView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(20)
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(30)
+            make.leading.equalTo(Constraint.SignView.contentPadding)
+            make.trailing.equalTo(-Constraint.SignView.contentPadding)
             make.height.equalTo(150)
         }
         
         leftTitleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(leftUiView).offset(-15)
             make.centerX.equalTo(leftUiView)
+            make.centerY.equalTo(leftUiView).offset(-Constraint.SignView.padding)
         }
         
         leftSubTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(leftTitleLabel.snp.bottom).offset(5)
             make.centerX.equalTo(leftUiView)
+            make.top.equalTo(leftTitleLabel.snp.bottom).offset(5)
         }
         
         rightTitleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(rightUiView).offset(-15)
             make.centerX.equalTo(rightUiView)
+            make.centerY.equalTo(rightUiView).offset(-Constraint.SignView.padding)
         }
         
         rightSubTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(rightTitleLabel.snp.bottom).offset(5)
             make.centerX.equalTo(rightUiView)
+            make.top.equalTo(rightTitleLabel.snp.bottom).offset(5)
         }
     }
 }
