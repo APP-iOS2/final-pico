@@ -42,9 +42,9 @@ final class MbtiModalViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
         let view = UIView()
         view.addGestureRecognizer(tapGesture)
-        view.backgroundColor = .picoAlphaWhite
+        view.backgroundColor = .systemGray6
         view.layer.cornerRadius = 8
-        view.addShadow(offset: CGSize(width: 1, height: 2), opacity: 0.5)
+        view.addShadow(offset: CGSize(width: 4, height: 4), opacity: 0.2, radius: 5)
         view.tag = 1
         return view
     }()
@@ -53,9 +53,9 @@ final class MbtiModalViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
         let view = UIView()
         view.addGestureRecognizer(tapGesture)
-        view.backgroundColor = .picoAlphaWhite
+        view.backgroundColor = .systemGray6
         view.layer.cornerRadius = 8
-        view.addShadow(offset: CGSize(width: 1, height: 2), opacity: 0.5)
+        view.addShadow(offset: CGSize(width: 4, height: 4), opacity: 0.2, radius: 3)
         view.tag = 2
         return view
     }()
@@ -64,6 +64,7 @@ final class MbtiModalViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .picoMBTISelectedLabelFont
+        label.textColor = .darkGray
         label.tag = 1
         return label
     }()
@@ -72,6 +73,7 @@ final class MbtiModalViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .picoMBTISelectedSubLabelFont
+        label.textColor = .darkGray
         label.tag = 1
         return label
     }()
@@ -80,6 +82,7 @@ final class MbtiModalViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .picoMBTISelectedLabelFont
+        label.textColor = .darkGray
         label.tag = 2
         return label
     }()
@@ -88,6 +91,7 @@ final class MbtiModalViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .picoMBTISelectedSubLabelFont
+        label.textColor = .darkGray
         label.tag = 2
         return label
     }()
