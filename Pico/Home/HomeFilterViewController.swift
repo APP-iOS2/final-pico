@@ -46,6 +46,7 @@ final class HomeFilterViewController: UIViewController {
     // MARK: - viewDidLoad
     override func viewDidLoad() {
         self.navigationItem.title = "선호 설정"
+        view.backgroundColor = .systemBackground
         addSubView()
         makeConstraints()
 
