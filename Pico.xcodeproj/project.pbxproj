@@ -29,7 +29,7 @@
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
 		531C4EDB2AC2D08900ADC614 /* MyPageSecondTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
-		53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */; };
+		53389AEF2AC16D120076DA9B /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* EmptyViewController.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
 		534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F92AC129830035E41A /* LikeMeViewController.swift */; };
 		534790C22AC3B2F20028610D /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C12AC3B2F20028610D /* NotificationViewController.swift */; };
@@ -160,7 +160,7 @@
 		4B2665402AC3F4830074D4E2 /* UserDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummy.swift; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* MyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTransition.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
-		53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeEmptyView.swift; sourceTree = "<group>"; };
+		53389AEE2AC16D120076DA9B /* EmptyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
 		534790C12AC3B2F20028610D /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
@@ -540,7 +540,7 @@
 				B14B590B2AC0A64C009889DA /* LikeViewController.swift */,
 				534172F92AC129830035E41A /* LikeMeViewController.swift */,
 				534172F72AC129730035E41A /* LikeUViewController.swift */,
-				53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */,
+				53389AEE2AC16D120076DA9B /* EmptyViewController.swift */,
 				531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */,
 			);
 			path = Like;
@@ -980,7 +980,7 @@
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				B15ABE2F2AC31C4700529C29 /* AddViewShadow.swift in Sources */,
 				6ADDE2F72AC3BA7E00CE4482 /* ProfileEditLoactionTabelCell.swift in Sources */,
-				53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */,
+				53389AEF2AC16D120076DA9B /* EmptyViewController.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
 				6ADDE2F12AC3BA2500CE4482 /* ProfileEditImageTableCell.swift in Sources */,
 				534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */,

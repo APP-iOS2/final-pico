@@ -8,7 +8,7 @@
 import UIKit
 
 final class LikeMeViewController: UIViewController {
-    private let emptyView: UIView = LikeEmptyView(type: .uLikeMe)
+    private let emptyView = EmptyViewController(type: .uLikeMe)
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private var imageUrls = ["https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg",
                      "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
@@ -34,7 +34,9 @@ final class LikeMeViewController: UIViewController {
     
     private func addViews() {
         if imageUrls.isEmpty {
-            view.addSubview(emptyView)
+            addChild(emptyView)
+            view.addSubview(emptyView.view)
+            emptyView.didMove(toParent: self)
         } else {
             view.addSubview(collectionView)
         }
@@ -42,7 +44,7 @@ final class LikeMeViewController: UIViewController {
     
     private func makeConstraints() {
         if imageUrls.isEmpty {
-            emptyView.snp.makeConstraints { make in
+            emptyView.view.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
             }
         } else {

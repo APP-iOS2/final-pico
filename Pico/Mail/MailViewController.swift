@@ -10,7 +10,7 @@ import SnapKit
 
 final class MailViewController: BaseViewController {
     
-    private let emptyView: UIView = LikeEmptyView(type: .uLikeMe)
+    private let emptyView = EmptyViewController(type: .message)
     
     private let mailText: UILabel = {
         let label = UILabel()
@@ -47,7 +47,9 @@ final class MailViewController: BaseViewController {
         view.addSubview(mailText)
         
         if dataCount < 1 {
-            view.addSubview(emptyView)
+            addChild(emptyView)
+            view.addSubview(emptyView.view)
+            emptyView.didMove(toParent: self)
         } else {
             view.addSubview(mailListTableView)
         }
@@ -63,7 +65,7 @@ final class MailViewController: BaseViewController {
         }
         
         if dataCount < 1 {
-            emptyView.snp.makeConstraints { make in
+            emptyView.view.snp.makeConstraints { make in
                 make.edges.equalTo(safeArea)
             }
         } else {
