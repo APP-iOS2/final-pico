@@ -17,6 +17,7 @@ final class HomeViewController: BaseViewController {
         vStack.axis = .vertical
         return vStack
     }()
+    
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,8 +65,8 @@ final class HomeViewController: BaseViewController {
     }
     
     @objc func reLoadView() {
-            let newViewController = HomeViewController()
-            self.navigationController?.setViewControllers([newViewController], animated: false)
+        let newViewController = HomeViewController()
+        self.navigationController?.setViewControllers([newViewController], animated: false)
     }
 
     @objc func tappedFilterButton() {
@@ -77,5 +78,4 @@ final class HomeViewController: BaseViewController {
         let viewController = NotificationViewController()
         navigationController?.pushViewController(viewController, animated: true)
     }
-    
 }

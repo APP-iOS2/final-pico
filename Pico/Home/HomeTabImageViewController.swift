@@ -58,6 +58,7 @@ final class HomeTabImageViewController: UIViewController {
         button.addTarget(self, action: #selector(tappedPageRight), for: .touchUpInside)
         return button
     }()
+    
     private lazy var pageLeftButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(tappedPageLeft), for: .touchUpInside)
@@ -102,10 +103,12 @@ final class HomeTabImageViewController: UIViewController {
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(touchGesture(_:)))
         self.view.addGestureRecognizer(panGesture)
     }
-     private func configButtons() {
-         likeButton.addTarget(self, action: #selector(tappedLikeButton), for: .touchUpInside)
-         disLikeButton.addTarget(self, action: #selector(tappedDisLikeButton), for: .touchUpInside)
-     }
+    
+    private func configButtons() {
+        likeButton.addTarget(self, action: #selector(tappedLikeButton), for: .touchUpInside)
+        disLikeButton.addTarget(self, action: #selector(tappedDisLikeButton), for: .touchUpInside)
+    }
+    
     private func addSubView() {
         for viewItem in [scrollView, pageControl, pageRightButton, pageLeftButton, pickBackButton, disLikeButton, likeButton, infoHStack, infoMBTILabel] {
             view.addSubview(viewItem)
@@ -259,32 +262,28 @@ final class HomeTabImageViewController: UIViewController {
                     make.height.equalTo(scrollView).offset(-20)
                 }
                 
-                DispatchQueue.global().async {
-                    if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                        DispatchQueue.main.async { [self] in
-                            imageView.image = image
-                            
-                            if index == imageUrl.count - 1 {
-                                scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(imageUrl.count), height: scrollView.frame.height)
-                            }
-                        }
-                    }
+                imageView.load(url: url)
+                if index == imageUrl.count - 1 {
+                    scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(imageUrl.count), height: scrollView.frame.height)
                 }
             }
         }
     }
+    
     @objc func tappedLikeButton() {
         UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
         } completion: { _ in
         }
     }
+    
     @objc func tappedDisLikeButton() {
         UIView.animate(withDuration: 0.5) {
             self.view.center.x -= 1000
         } completion: { _ in
         }
     }
+    
     @objc func tappedPageRight() {
         let nextPage = pageControl.currentPage + 1
         let offsetX = CGFloat(nextPage) * scrollView.frame.size.width
@@ -292,6 +291,7 @@ final class HomeTabImageViewController: UIViewController {
             scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
         }
     }
+    
     @objc func tappedPageLeft() {
         let previousPage = pageControl.currentPage - 1
         let offsetX = CGFloat(previousPage) * scrollView.frame.size.width
@@ -299,16 +299,20 @@ final class HomeTabImageViewController: UIViewController {
             scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
         }
     }
+    
     @objc func tappedInfoButton() {
         let viewController = UserDetailViewController()
         navigationController?.pushViewController(viewController, animated: true)
     }
+    
     @objc func pageControlValueChanged(_ sender: UIPageControl) {
         let offsetX = CGFloat(sender.currentPage) * scrollView.frame.size.width
         scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
     }
 }
+
 extension HomeTabImageViewController: UIScrollViewDelegate {
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard scrollView.frame.size.width != 0 else {
             return

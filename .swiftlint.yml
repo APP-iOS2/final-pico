@@ -13,6 +13,7 @@ disabled_rules: # Default Rules에서 비활성화할 규칙
     
     - function_body_length
     - function_parameter_count
+    - type_body_length
     
 
     
