@@ -10,7 +10,14 @@ import RxCocoa
 import SnapKit
 import UIKit
 
+// 질문 Using 'class' keyword to define a class-constrained protocol is deprecated; use 'AnyObject' instead
+protocol MyPageViewDelegate: AnyObject {
+    func updateProfileViewLayout(newHeight: CGFloat)
+}
+
 final class MyPageTableView: UITableView {
+    
+    weak var myPageViewDelegate: MyPageViewDelegate?
     
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: .insetGrouped)
@@ -21,7 +28,7 @@ final class MyPageTableView: UITableView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     private func configTableView() {
         self.backgroundColor = .picoGray
         self.dataSource = self
@@ -36,6 +43,7 @@ final class MyPageTableView: UITableView {
 }
 
 extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
@@ -47,7 +55,7 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageFirstTableCell", for: indexPath) as? MyPageFirstTableCell else { return UITableViewCell() }
-
+            
             return cell
         } else if indexPath.section == 1 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageSecondTableCell", for: indexPath) as? MyPageSecondTableCell else { return UITableViewCell() }
@@ -86,4 +94,14 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let scrollOffset = scrollView.contentOffset.y
+        let maxHeight = Constraint.MypageView.profileViewMaxHeight + scrollOffset
+        
+        if Constraint.MypageView.profileViewHeight > scrollOffset && Constraint.MypageView.profileViewHeight < maxHeight {
+            Constraint.MypageView.profileViewHeight -= scrollOffset
+            scrollView.contentOffset.y = 0
+        }
+        myPageViewDelegate?.updateProfileViewLayout(newHeight: Constraint.MypageView.profileViewHeight)
+    }
 }

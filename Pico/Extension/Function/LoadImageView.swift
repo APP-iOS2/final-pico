@@ -1,5 +1,5 @@
 //
-//  UIImageView+Extensions.swift
+//  LoadImageView.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/09/26.
@@ -14,8 +14,11 @@ extension UIImageView {
                 DispatchQueue.main.async {
                     self?.image = UIImage(data: data)
                 }
+                
             } else {
-                self?.image = UIImage(named: "chu")
+                DispatchQueue.main.async {
+                    self?.image = UIImage(named: "chu")
+                }
             }
         }
     }

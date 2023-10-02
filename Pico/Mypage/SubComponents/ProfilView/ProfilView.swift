@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class ProfilView: UIView {
     
@@ -47,11 +48,31 @@ final class ProfilView: UIView {
         return label
     }()
     
+    private let stackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .horizontal
+        view.spacing = 10
+        return view
+    }()
+    
+    private let userNameLabel: UILabel = {
+        let label = UILabel()
+        label.text = "김민기,"
+        label.font = UIFont.picoTitleFont
+        return label
+    }()
+    
+    private let userAgeLabel: UILabel = {
+        let label = UILabel()
+        label.text = "100"
+        label.font = UIFont.picoTitleFont
+        return label
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
         makeConstraints()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -59,8 +80,11 @@ final class ProfilView: UIView {
     }
     
     private func addViews() {
-        [percentView, userImage, editImageView, profilPercentLabel].forEach {
+        [percentView, userImage, editImageView, profilPercentLabel, stackView].forEach {
             addSubview($0)
+        }
+        [userNameLabel, userAgeLabel].forEach {
+            stackView.addArrangedSubview($0)
         }
     }
     
@@ -69,21 +93,30 @@ final class ProfilView: UIView {
             make.centerX.equalToSuperview()
             make.height.width.equalTo(160)
         }
+        
         userImage.snp.makeConstraints { make in
+            make.centerX.equalTo(percentView.snp.centerX)
             make.centerY.equalTo(percentView.snp.centerY)
-            make.centerX.equalToSuperview()
             make.height.width.equalTo(140)
         }
+        
         editImageView.snp.makeConstraints { make in
             make.top.equalTo(percentView.snp.top).offset(-10)
             make.trailing.equalTo(percentView.snp.trailing).offset(10)
             make.height.width.equalTo(54)
         }
+        
         profilPercentLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(percentView.snp.bottom).offset(-30)
             make.height.equalTo(40)
             make.width.equalTo(100)
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(profilPercentLabel.snp.bottom).offset(15)
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-15)
         }
     }
 }
