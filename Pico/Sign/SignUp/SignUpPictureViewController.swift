@@ -105,7 +105,7 @@ final class SignUpPictureViewController: UIViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(Constraint.SignView.padding)
+            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
             make.leading.equalTo(Constraint.SignView.padding)
             make.trailing.equalTo(-Constraint.SignView.padding)
             make.height.equalTo(8)
