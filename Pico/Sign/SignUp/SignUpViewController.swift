@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import SwiftUI
+import SnapKit
 
 final class SignUpViewController: UIViewController {
     
@@ -17,7 +17,8 @@ final class SignUpViewController: UIViewController {
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
         view.progress = 0.142
-        view.layer.cornerRadius = 5
+        view.layer.cornerRadius = Constraint.SignView.progressViewCornerRadius
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -35,7 +36,7 @@ final class SignUpViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
-        stackView.spacing = 5
+        stackView.spacing = 8
         return stackView
     }()
     
@@ -45,6 +46,7 @@ final class SignUpViewController: UIViewController {
         button.setTitleColor(.picoAlphaBlue, for: .normal)
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 5
+        button.layer.borderColor = UIColor.picoGray.cgColor
         button.tag = 0
         button.clipsToBounds = true
         return button
@@ -56,6 +58,7 @@ final class SignUpViewController: UIViewController {
         button.setTitleColor(.picoAlphaBlue, for: .normal)
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 5
+        button.layer.borderColor = UIColor.picoGray.cgColor
         button.tag = 1
         button.clipsToBounds = true
         return button
@@ -67,6 +70,7 @@ final class SignUpViewController: UIViewController {
         button.setTitleColor(.picoAlphaBlue, for: .normal)
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 5
+        button.layer.borderColor = UIColor.picoGray.cgColor
         button.tag = 2
         button.clipsToBounds = true
         return button
@@ -78,6 +82,7 @@ final class SignUpViewController: UIViewController {
         button.setTitleColor(.picoAlphaBlue, for: .normal)
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 5
+        button.layer.borderColor = UIColor.picoGray.cgColor
         button.tag = 3
         button.clipsToBounds = true
         return button
@@ -86,6 +91,7 @@ final class SignUpViewController: UIViewController {
     private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
+        button.backgroundColor = .picoGray
         return button
     }()
     
@@ -93,13 +99,16 @@ final class SignUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        configBackButton()
         addSubViews()
         makeConstraints()
-        configButton()
+        configButtons()
     }
-    
-    // MARK: - config
-    private func configButton() {
+}
+
+extension SignUpViewController: SignViewControllerDelegate {
+    // MARK: - Config
+    private func configButtons() {
         mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         mbtiThirdButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
@@ -107,15 +116,7 @@ final class SignUpViewController: UIViewController {
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-//        if !userMbti.contains("") {
-            let viewController = SignUpPhoneNumberViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-//        }
-    }
-    
-    private func showMbtiModal(_ sender: UIButton) {
+    private func configMbtiModal(_ sender: UIButton) {
         let modalVC = MbtiModalViewController()
        
         if let sheet = modalVC.sheetPresentationController {
@@ -161,15 +162,22 @@ final class SignUpViewController: UIViewController {
         present(modalVC, animated: true, completion: nil)
     }
     
+    // MARK: - Tapped
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        if !userMbti.contains("") {
+            let viewController = SignUpPhoneNumberViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+    
     @objc private func tappedMbtiButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
-        showMbtiModal(sender)
+        configMbtiModal(sender)
     }
-}
-
-extension SignUpViewController: SignViewControllerDelegate {
     
-    func choiceMbti(mbti: String, num: Int) {
+    // MARK: - MBTI
+    func getUserMbti(mbti: String, num: Int) {
         switch num {
         case 0:
             userMbti[num] = mbti
@@ -185,6 +193,11 @@ extension SignUpViewController: SignViewControllerDelegate {
             mbtiFourthButton.setTitle(mbti, for: .normal)
         default:
             return
+        }
+        if userMbti.contains("") {
+            nextButton.backgroundColor = .picoGray
+        } else {
+            nextButton.backgroundColor = .picoBlue
         }
     }
 }
@@ -206,31 +219,30 @@ extension SignUpViewController {
         let safeArea = self.view.safeAreaLayoutGuide
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
             make.height.equalTo(8)
         }
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
-            make.height.equalTo(50)
+            make.top.equalTo(progressView.snp.bottom).offset(Constraint.SignView.padding)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(10)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
+            make.leading.equalTo(Constraint.SignView.contentPadding)
+            make.trailing.equalTo(-Constraint.SignView.contentPadding)
             make.height.equalTo(75)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
+            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
+            make.height.equalTo(Constraint.Button.commonHeight)
         }
     }
 }

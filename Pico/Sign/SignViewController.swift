@@ -41,12 +41,14 @@ final class SignViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        configBackButton()
         addSubViews()
         makeConstraints()
-        configButton()
+        configButtons()
+        configBackButton()
     }
     
-    private func configButton() {
+    private func configButtons() {
         signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
     }

@@ -8,31 +8,29 @@
 import UIKit
 import SnapKit
 
-final class MailViewController: UIViewController {
+final class MailViewController: BaseViewController {
     
-    let emptyView: MailEmptyView = MailEmptyView(frame: CGRect(x: 0, y: 0, width: Screen.height, height: Screen.width))
+    private let emptyView = EmptyViewController(type: .message)
     
     private let mailText: UILabel = {
         let label = UILabel()
         label.text = "쪽지"
-        label.font = UIFont.picoSubTitleFont
+        label.font = UIFont.picoContentBoldFont
         label.textColor = .picoFontBlack
         return label
     }()
     
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(MailListTableViewCell.self, forCellReuseIdentifier: MailListTableViewCell.identifier)
+        tableView.register(MailListTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.mailTableCell)
         return tableView
     }()
     
     private let dataCount: Int = 1
+    private let mailCheck: Bool = true // 받은 상태일경우
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        
-        configLogoBarItem()
         configTableView()
         addViews()
         makeConstraints()
@@ -49,7 +47,9 @@ final class MailViewController: UIViewController {
         view.addSubview(mailText)
         
         if dataCount < 1 {
-            view.addSubview(emptyView)
+            addChild(emptyView)
+            view.addSubview(emptyView.view)
+            emptyView.didMove(toParent: self)
         } else {
             view.addSubview(mailListTableView)
         }
@@ -60,12 +60,12 @@ final class MailViewController: UIViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         mailText.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
+            make.top.equalTo(safeArea).offset(20)
             make.leading.trailing.equalTo(safeArea).offset(30)
         }
         
         if dataCount < 1 {
-            emptyView.snp.makeConstraints { make in
+            emptyView.view.snp.makeConstraints { make in
                 make.edges.equalTo(safeArea)
             }
         } else {
@@ -83,7 +83,7 @@ extension MailViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MailListTableViewCell.identifier, for: indexPath) as? MailListTableViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.mailTableCell, for: indexPath) as? MailListTableViewCell else { return UITableViewCell() }
         cell.getData(imageString: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", nameText: "강아지는월월", mbti: "ISTP", message: "하이룽", date: "9.26", new: true)
         
         return cell
@@ -91,8 +91,16 @@ extension MailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let mailSendView = MailSendViewController()
-        mailSendView.modalPresentationStyle = .pageSheet
-        self.present(mailSendView, animated: true, completion: nil)
+        if mailCheck {
+            let mailReceiveView = MailReceiveViewController()
+            mailReceiveView.modalPresentationStyle = .formSheet
+            mailReceiveView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월", message: "하이룽 방가룽", date: "9/25")
+            self.present(mailReceiveView, animated: true, completion: nil)
+        } else {
+            let mailSendView = MailSendViewController()
+            mailSendView.modalPresentationStyle = .formSheet
+            mailSendView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월")
+            self.present(mailSendView, animated: true, completion: nil)
+        }
     }
 }

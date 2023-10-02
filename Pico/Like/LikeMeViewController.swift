@@ -8,11 +8,11 @@
 import UIKit
 
 final class LikeMeViewController: UIViewController {
-    private let emptyView: UIView = LikeEmptyView(type: .uLikeMe)
+    private let emptyView = EmptyViewController(type: .uLikeMe)
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private var imageUrls = ["https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg",
                      "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
-                     "https://i.namu.wiki/i/jUHcYJjORbNSurOw8cwl-g8jduAT01mhJJkF5oDbvyae_1hkSExnUQ0I5fDKgebUKzSFjSFhRheeSI9-rfpuDU8RJ9wqo5KwIodMVjuzKT2o6RK0IutUtsKWZrYxzT-cOvxKhbPm9c3PXo5H-OvBCA.webp"]
+                             "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg"]
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -34,7 +34,9 @@ final class LikeMeViewController: UIViewController {
     
     private func addViews() {
         if imageUrls.isEmpty {
-            view.addSubview(emptyView)
+            addChild(emptyView)
+            view.addSubview(emptyView.view)
+            emptyView.didMove(toParent: self)
         } else {
             view.addSubview(collectionView)
         }
@@ -42,7 +44,7 @@ final class LikeMeViewController: UIViewController {
     
     private func makeConstraints() {
         if imageUrls.isEmpty {
-            emptyView.snp.makeConstraints { make in
+            emptyView.view.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
             }
         } else {
@@ -54,7 +56,7 @@ final class LikeMeViewController: UIViewController {
     }
 }
 
-extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, LikeCollectionViewCellDelegate {
+extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageUrls.count
@@ -64,25 +66,34 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDataSo
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.likeCell, for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
         cell.configData(imageUrl: imageUrls[indexPath.row], isHiddenDeleteButton: false, isHiddenMessageButton: true)
         cell.delegate = self
+        cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tappedCell)))
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = view.frame.width / 2 - 20
+        let width = view.frame.width / 2 - 17.5
         return CGSize(width: width, height: width * 1.5)
     }
     
-    private func loadAsyncImage(imageView: UIImageView, urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data,
-                  response != nil,
-                  error == nil else { return }
-            DispatchQueue.main.async {
-                imageView.image = UIImage(data: data) ?? UIImage()
-            }
-        }.resume()
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 15
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(1)
+    }
+    
+    @objc func tappedCell(_ sender: UITapGestureRecognizer) {
+        let point = sender.location(in: collectionView)
+        if let indexPath = collectionView.indexPathForItem(at: point) {
+            print(indexPath.row)
+            let viewController = UserDetailViewController()
+            navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+}
+
+extension LikeMeViewController: LikeCollectionViewCellDelegate {
     
     func tappedDeleteButton(_ cell: LikeCollectionViewCell) {
         if let indexPath = collectionView.indexPath(for: cell) {

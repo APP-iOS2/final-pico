@@ -15,17 +15,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
 
-//                let tabBarController = UINavigationController(rootViewController: SignViewController())
-        let tabBarController = TabBarController()
+                let tabBarController = UINavigationController(rootViewController: SignViewController())
+//        let tabBarController = TabBarController()
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
     
+    // 사용법 :
+    // (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(UIViewController(), animated: true)
     /// 루트뷰 변경
     func changeRootView(_ viewController: UIViewController, animated: Bool) {
         guard let window = self.window else { return }
+        
+        if animated {
+            let transition = CATransition()
+            transition.duration = 0.4
+            transition.type = CATransitionType.push
+            transition.subtype = CATransitionSubtype.fromRight
+            window.layer.add(transition, forKey: kCATransition)
+        }
+        
         window.rootViewController = viewController
-        UIView.transition(with: window, duration: 0.4, options: [.transitionCrossDissolve], animations: nil, completion: nil)
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

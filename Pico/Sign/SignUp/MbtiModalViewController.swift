@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SignViewControllerDelegate: AnyObject {
-    func choiceMbti(mbti: String, num: Int)
+    func getUserMbti(mbti: String, num: Int)
 }
 
 final class MbtiModalViewController: UIViewController {
@@ -25,7 +25,7 @@ final class MbtiModalViewController: UIViewController {
         label.text = "당신은 어떤사람인가요?"
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
-        label.font = UIFont.picoTitleFont
+        label.font = UIFont.picoSubTitleFont
         return label
     }()
     
@@ -42,9 +42,9 @@ final class MbtiModalViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
         let view = UIView()
         view.addGestureRecognizer(tapGesture)
-        view.backgroundColor = .picoAlphaWhite
-        view.layer.cornerRadius = 10
-        view.layer.borderWidth = 1
+        view.backgroundColor = .systemGray6
+        view.layer.cornerRadius = 8
+        view.addShadow(offset: CGSize(width: 4, height: 4), opacity: 0.2, radius: 5)
         view.tag = 1
         return view
     }()
@@ -53,9 +53,9 @@ final class MbtiModalViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
         let view = UIView()
         view.addGestureRecognizer(tapGesture)
-        view.backgroundColor = .picoAlphaWhite
-        view.layer.cornerRadius = 10
-        view.layer.borderWidth = 1
+        view.backgroundColor = .systemGray6
+        view.layer.cornerRadius = 8
+        view.addShadow(offset: CGSize(width: 4, height: 4), opacity: 0.2, radius: 3)
         view.tag = 2
         return view
     }()
@@ -63,7 +63,8 @@ final class MbtiModalViewController: UIViewController {
     private let leftTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = UIFont.systemFont(ofSize: 50, weight: .regular)
+        label.font = .picoMBTISelectedLabelFont
+        label.textColor = .darkGray
         label.tag = 1
         return label
     }()
@@ -71,7 +72,8 @@ final class MbtiModalViewController: UIViewController {
     private let leftSubTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.textColor = .gray
+        label.font = .picoMBTISelectedSubLabelFont
+        label.textColor = .darkGray
         label.tag = 1
         return label
     }()
@@ -79,7 +81,8 @@ final class MbtiModalViewController: UIViewController {
     private let rightTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = UIFont.systemFont(ofSize: 50, weight: .regular)
+        label.font = .picoMBTISelectedLabelFont
+        label.textColor = .darkGray
         label.tag = 2
         return label
     }()
@@ -87,7 +90,8 @@ final class MbtiModalViewController: UIViewController {
     private let rightSubTitleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.textColor = .gray
+        label.font = .picoMBTISelectedSubLabelFont
+        label.textColor = .darkGray
         label.tag = 2
         return label
     }()
@@ -101,16 +105,15 @@ final class MbtiModalViewController: UIViewController {
         configMbtiButton()
     }
     
-    // MARK: - config
-    
+    // MARK: - Config
     private func configMbtiButton() {
-        
         leftTitleLabel.text = firstTitleText
         leftSubTitleLabel.text = firstSubTitleText
         rightTitleLabel.text = secondTitleText
         rightSubTitleLabel.text = secondSubTitleText
     }
     
+    // MARK: - Tapped
     @objc private func tappedUiView(_ sender: UITapGestureRecognizer) {
         guard let leftTitle = leftTitleLabel.text else { return }
         guard let rightTitle = rightTitleLabel.text else { return }
@@ -119,15 +122,21 @@ final class MbtiModalViewController: UIViewController {
         
         if sender.view?.tag == 1 {
             sender.view?.backgroundColor = .picoBetaBlue
-            self.delegate?.choiceMbti(mbti: leftTitle, num: number)
+            
+            sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoBetaBlue, opacity: 0.8)
+            self.delegate?.getUserMbti(mbti: leftTitle, num: number)
         } else {
             sender.view?.backgroundColor = .picoBetaBlue
-            self.delegate?.choiceMbti(mbti: rightTitle, num: number)
+            sender.view?.addShadow(offset: CGSize(width: 1, height: 2), color: .picoBetaBlue, opacity: 0.8)
+            self.delegate?.getUserMbti(mbti: rightTitle, num: number)
         }
         slowDownModal()
     }
+}
+
+// MARK: - UI 관련
+extension MbtiModalViewController {
     
-    // MARK: - UI 관련
     private func slowDownModal() {
         UIView.animate(withDuration: 0.3, animations: {
             self.view.frame.origin.y += self.view.frame.size.height
@@ -146,43 +155,42 @@ final class MbtiModalViewController: UIViewController {
         leftUiView.addSubview(leftSubTitleLabel)
         rightUiView.addSubview(rightTitleLabel)
         rightUiView.addSubview(rightSubTitleLabel)
-        
     }
     
     private func makeConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeArea.snp.top).offset(20)
-            make.leading.equalTo(25)
-            make.trailing.equalTo(-25)
+            make.top.equalTo(safeArea.snp.top).offset(30)
+            make.leading.equalTo(Constraint.SignView.padding)
+            make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
         buttonsStackView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(20)
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(30)
+            make.leading.equalTo(Constraint.SignView.contentPadding)
+            make.trailing.equalTo(-Constraint.SignView.contentPadding)
             make.height.equalTo(150)
         }
         
         leftTitleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(leftUiView).offset(-15)
             make.centerX.equalTo(leftUiView)
+            make.centerY.equalTo(leftUiView).offset(-Constraint.SignView.padding)
         }
         
         leftSubTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(leftTitleLabel.snp.bottom).offset(5)
             make.centerX.equalTo(leftUiView)
+            make.top.equalTo(leftTitleLabel.snp.bottom).offset(5)
         }
         
         rightTitleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(rightUiView).offset(-15)
             make.centerX.equalTo(rightUiView)
+            make.centerY.equalTo(rightUiView).offset(-Constraint.SignView.padding)
         }
         
         rightSubTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(rightTitleLabel.snp.bottom).offset(5)
             make.centerX.equalTo(rightUiView)
+            make.top.equalTo(rightTitleLabel.snp.bottom).offset(5)
         }
     }
 }

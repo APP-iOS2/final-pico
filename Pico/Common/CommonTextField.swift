@@ -108,7 +108,8 @@ extension CommonTextField: UITextFieldDelegate {
         guard maxLength > 0 else { return true }
         
         let currentText = textField.text ?? ""
-        let newText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        newText = newText.replacingOccurrences(of: " ", with: "")
         
         return newText.count <= maxLength
     }

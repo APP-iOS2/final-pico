@@ -10,7 +10,7 @@ import SnapKit
 
 final class SignInViewController: UIViewController {
     
-    private var isTappedNextButton: Bool = false
+    private var isFullPhoneNumber: Bool = false
     
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -51,6 +51,7 @@ final class SignInViewController: UIViewController {
     private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
+        button.backgroundColor = .picoGray
         return button
     }()
     
@@ -58,23 +59,30 @@ final class SignInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        tappedDismissKeyboard()
         addSubViews()
         makeConstraints()
         configTextfield()
-        configButton()
+        configButtons()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        followKeyboard()
+        super.viewWillAppear(animated)
+        registerKeyboard()
         phoneNumberTextField.becomeFirstResponder()
     }
     
-    // MARK: - config
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterKeyboard()
+    }
+    
+    // MARK: - Config
     private func configTextfield() {
         phoneNumberTextField.delegate = self
     }
     
-    private func configButton() {
+    private func configButtons() {
         phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
@@ -82,13 +90,26 @@ final class SignInViewController: UIViewController {
     @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         phoneNumberTextField.text = ""
+        changeViewState(isFull: false)
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
-        if isTappedNextButton {
+        if isFullPhoneNumber {
             let viewController = LoginSuccessViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+    
+    private func changeViewState(isFull: Bool) {
+        if isFull {
+            phoneNumberTextField.textColor = .picoBlue
+            nextButton.backgroundColor = .picoBlue
+            isFullPhoneNumber = true
+        } else {
+            phoneNumberTextField.textColor = .gray
+            nextButton.backgroundColor = .picoGray
+            isFullPhoneNumber = false
         }
     }
 }
@@ -96,64 +117,35 @@ final class SignInViewController: UIViewController {
 // MARK: - 텍스트필드 관련
 extension SignInViewController: UITextFieldDelegate {
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        phoneNumberTextField.resignFirstResponder()
-        self.view.endEditing(true)
-    }
-    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
-        let currentText = (textField.text ?? "") as NSString
-        let updatedText = currentText.replacingCharacters(in: range, with: string)
-        let digits = CharacterSet.decimalDigits
-        let filteredText = updatedText.components(separatedBy: digits.inverted).joined()
-        isTappedNextButton = false
-        textField.textColor = .gray
-        if filteredText.count > 11 {
-            isTappedNextButton = true
-            textField.textColor = .picoBlue
-            return false
-        } else if filteredText.count > 10 {
-            isTappedNextButton = true
-            textField.textColor = .picoBlue
-            return true
-        }
-        let formattedText: String
-        
-        if filteredText.count <= 3 {
-            formattedText = filteredText
-        } else if filteredText.count <= 7 {
-            let firstPart = filteredText.prefix(3)
-            let secondPart = filteredText.dropFirst(3).prefix(4)
-            formattedText = "\(firstPart)-\(secondPart)"
-        } else {
-            let firstPart = filteredText.prefix(3)
-            let secondPart = filteredText.dropFirst(3).prefix(4)
-            let thirdPart = filteredText.dropFirst(7).prefix(4)
-            formattedText = "\(firstPart)-\(secondPart)-\(thirdPart)"
+        let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isFull in
+            changeViewState(isFull: isFull)
         }
         
-        textField.text = formattedText
-        
-        return false
+        return isChangeValue
     }
 }
 
 // MARK: - 키보드 관련
 extension SignInViewController {
     
-    private func followKeyboard() {
+    private func registerKeyboard() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    private func unregisterKeyboard() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     @objc private func keyboardUp(notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-           let keyboardRectangle = keyboardFrame.cgRectValue
-       
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            
             UIView.animate(
-                withDuration: 0.5
-                , animations: {
+                withDuration: 0.5,
+                animations: {
                     self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
                 }
             )
@@ -183,22 +175,22 @@ extension SignInViewController {
         
         notifyLabel.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(10)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
+            make.leading.equalToSuperview().offset(Constraint.SignView.padding)
+            make.trailing.equalToSuperview().offset(-Constraint.SignView.padding)
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
+            make.leading.equalToSuperview().offset(Constraint.SignView.contentPadding)
+            make.trailing.equalToSuperview().offset(-Constraint.SignView.contentPadding)
             make.height.equalTo(50)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.leading.equalTo(20)
-            make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-30)
-            make.height.equalTo(50)
+            make.leading.equalTo(notifyLabel.snp.leading)
+            make.trailing.equalTo(notifyLabel.snp.trailing)
+            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
+            make.height.equalTo(Constraint.Button.commonHeight)
         }
     }
 }
