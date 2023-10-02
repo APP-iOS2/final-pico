@@ -66,7 +66,7 @@ final class HomeTabImageViewController: UIViewController {
     }()
     
     private let infoMBTILabel: MBTILabelView = {
-        let label = MBTILabelView(mbti: .entp)
+        let label = MBTILabelView(mbti: .entp, scale: .large)
         label.layer.opacity = 0.9
         return label
     }()

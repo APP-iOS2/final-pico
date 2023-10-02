@@ -19,10 +19,31 @@ class BaseViewController: UIViewController {
         configUI()
     }
     
-    private func configUI() {
-        view.backgroundColor = .systemBackground
-        configBackButton()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         configLogoBarItem()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationItem.hidesBackButton = true
+    }
+    
+    private func configUI() {
+        configBgColor()
+        configNavigationBgColor()
+        configBackButton()
         tappedDismissKeyboard()
+    }
+    
+    private func configBgColor() {
+        view.backgroundColor = .systemBackground
+    }
+    
+    private func configNavigationBgColor() {
+        let navigationBarAppearance = UINavigationBarAppearance()
+        navigationBarAppearance.backgroundColor = .systemBackground
+        self.navigationController?.navigationBar.standardAppearance = navigationBarAppearance
+        self.navigationController?.navigationBar.scrollEdgeAppearance = navigationBarAppearance
     }
 }

@@ -12,10 +12,19 @@
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
 		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
+		36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */; };
+		36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */; };
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
 		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
-		4B157D3A2AC116B400EEDEC1 /* RandomBoxBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */; };
+		4B157D3A2AC116B400EEDEC1 /* RandomBoxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D392AC116B400EEDEC1 /* RandomBoxCell.swift */; };
 		4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */; };
+		4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */; };
+		4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */; };
+		4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */; };
+		4B26653B2AC3E3250074D4E2 /* WorldCupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */; };
+		4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */; };
+		4B26653F2AC3E33D0074D4E2 /* RandomBoxModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653E2AC3E33D0074D4E2 /* RandomBoxModel.swift */; };
+		4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665402AC3F4830074D4E2 /* UserDummy.swift */; };
 		531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* MyTransition.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
 		531C4EDB2AC2D08900ADC614 /* MyPageSecondTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */; };
@@ -55,7 +64,9 @@
 		6ADDE2FB2AC3BAF500CE4482 /* ProfileEditBtnTabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2FA2AC3BAF500CE4482 /* ProfileEditBtnTabelCell.swift */; };
 		6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2FC2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift */; };
 		6ADDE2FF2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2FE2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift */; };
+		6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */; };
 		B10241CD2AC21A6500BAE1C6 /* ResizedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */; };
+		B11D2B8C2AC63C43008D80A4 /* ChangePhoneNumDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
 		B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CB2AC0A230009889DA /* SceneDelegate.swift */; };
 		B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CD2AC0A230009889DA /* HomeViewController.swift */; };
@@ -76,6 +87,7 @@
 		B15ABE352AC31D7F00529C29 /* CircleImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE342AC31D7F00529C29 /* CircleImageView.swift */; };
 		B15ABE372AC31DD200529C29 /* NavigationLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE362AC31DD200529C29 /* NavigationLogo.swift */; };
 		B15ABE392AC31E0800529C29 /* TappedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE382AC31E0800529C29 /* TappedAnimation.swift */; };
+		B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B161B8712AC414DD00257A9C /* PopupViewController.swift */; };
 		B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67832AC0A835006F91DC /* SignInViewController.swift */; };
 		B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67852AC0A850006F91DC /* SignUpViewController.swift */; };
 		B17D67882AC0AAFF006F91DC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67872AC0AAFF006F91DC /* User.swift */; };
@@ -134,10 +146,19 @@
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
 		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
+		36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureViewController.swift; sourceTree = "<group>"; };
+		36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTermsOfServiceViewController.swift; sourceTree = "<group>"; };
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
 		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
-		4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxBanner.swift; sourceTree = "<group>"; };
+		4B157D392AC116B400EEDEC1 /* RandomBoxCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxCell.swift; sourceTree = "<group>"; };
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
+		4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupGameViewController.swift; sourceTree = "<group>"; };
+		4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupCollectionViewCell.swift; sourceTree = "<group>"; };
+		4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupUserInfoStackView.swift; sourceTree = "<group>"; };
+		4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupViewController.swift; sourceTree = "<group>"; };
+		4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewController.swift; sourceTree = "<group>"; };
+		4B26653E2AC3E33D0074D4E2 /* RandomBoxModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxModel.swift; sourceTree = "<group>"; };
+		4B2665402AC3F4830074D4E2 /* UserDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummy.swift; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* MyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTransition.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeEmptyView.swift; sourceTree = "<group>"; };
@@ -176,7 +197,9 @@
 		6ADDE2FA2AC3BAF500CE4482 /* ProfileEditBtnTabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditBtnTabelCell.swift; sourceTree = "<group>"; };
 		6ADDE2FC2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditTextTabelCell.swift; sourceTree = "<group>"; };
 		6ADDE2FE2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditCollectionCell.swift; sourceTree = "<group>"; };
+		6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditTableHeaderView.swift; sourceTree = "<group>"; };
 		B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizedImage.swift; sourceTree = "<group>"; };
+		B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePhoneNumDigits.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14B58C92AC0A230009889DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B14B58CB2AC0A230009889DA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -199,6 +222,7 @@
 		B15ABE342AC31D7F00529C29 /* CircleImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleImageView.swift; sourceTree = "<group>"; };
 		B15ABE362AC31DD200529C29 /* NavigationLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLogo.swift; sourceTree = "<group>"; };
 		B15ABE382AC31E0800529C29 /* TappedAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappedAnimation.swift; sourceTree = "<group>"; };
+		B161B8712AC414DD00257A9C /* PopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
 		B17D67832AC0A835006F91DC /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		B17D67852AC0A850006F91DC /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		B17D67872AC0AAFF006F91DC /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -262,6 +286,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4B2665322AC3E2E70074D4E2 /* RandomBox */ = {
+			isa = PBXGroup;
+			children = (
+				4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */,
+				4B26653E2AC3E33D0074D4E2 /* RandomBoxModel.swift */,
+			);
+			path = RandomBox;
+			sourceTree = "<group>";
+		};
+		4B2665332AC3E2EC0074D4E2 /* WorldCup */ = {
+			isa = PBXGroup;
+			children = (
+				4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */,
+				4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */,
+				4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */,
+				4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */,
+				4B2665402AC3F4830074D4E2 /* UserDummy.swift */,
+			);
+			path = WorldCup;
+			sourceTree = "<group>";
+		};
 		534790C02AC3B2B00028610D /* Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -356,6 +401,7 @@
 			isa = PBXGroup;
 			children = (
 				6ADDE2ED2AC3B98000CE4482 /* ProfileEditViewController.swift */,
+				6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */,
 				6ADDE2EF2AC3B9E300CE4482 /* Cell */,
 			);
 			path = ProfileEdit;
@@ -401,13 +447,13 @@
 		B14B58C82AC0A230009889DA /* Pico */ = {
 			isa = PBXGroup;
 			children = (
-				B15ABE292AC2769700529C29 /* Base */,
 				B14B58F92AC0A243009889DA /* Config */,
 				B14B59052AC0A41B009889DA /* UserDefaults */,
 				B17D67B42AC0C043006F91DC /* Constant */,
 				B14B59022AC0A32B009889DA /* Extension */,
 				B14B59032AC0A39E009889DA /* Common */,
 				B14B59042AC0A3F6009889DA /* Model */,
+				B15ABE292AC2769700529C29 /* Base */,
 				B14B58FA2AC0A290009889DA /* Sign */,
 				B14B59062AC0A488009889DA /* TabBar */,
 				B14B58FD2AC0A2C3009889DA /* Home */,
@@ -451,6 +497,8 @@
 				367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */,
 				362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */,
 				362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */,
+				36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */,
+				36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */,
 			);
 			path = SignUp;
 			sourceTree = "<group>";
@@ -504,8 +552,10 @@
 		B14B59002AC0A2FE009889DA /* Ent */ = {
 			isa = PBXGroup;
 			children = (
+				4B2665332AC3E2EC0074D4E2 /* WorldCup */,
+				4B2665322AC3E2E70074D4E2 /* RandomBox */,
 				B14B590D2AC0A658009889DA /* EntViewController.swift */,
-				4B157D392AC116B400EEDEC1 /* RandomBoxBanner.swift */,
+				4B157D392AC116B400EEDEC1 /* RandomBoxCell.swift */,
 				4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */,
 			);
 			path = Ent;
@@ -536,6 +586,7 @@
 				B1844F772AC0E3BF00ACFFED /* CommonButton.swift */,
 				B15ABE1A2AC2672300529C29 /* MBTILabelView.swift */,
 				B15ABE2C2AC2B22100529C29 /* CommonTextField.swift */,
+				B161B8712AC414DD00257A9C /* PopupViewController.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -659,6 +710,7 @@
 				B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */,
 				6937783B2AC26B4300762165 /* LoadImageView.swift */,
 				B15ABE2E2AC31C4700529C29 /* AddViewShadow.swift */,
+				B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */,
 			);
 			path = Function;
 			sourceTree = "<group>";
@@ -912,6 +964,7 @@
 			files = (
 				531C4EDB2AC2D08900ADC614 /* MyPageSecondTableCell.swift in Sources */,
 				6ADDE2E22AC30EFE00CE4482 /* SettingViewController.swift in Sources */,
+				6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */,
 				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
 				54B441312AC2C36C00EC8846 /* MiddleUserTableViewCell.swift in Sources */,
 				6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */,
@@ -921,8 +974,10 @@
 				362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */,
 				5471384C2AC3621000CFE88D /* MbtiCollectionViewCell.swift in Sources */,
 				B15ABE312AC31CF000529C29 /* ShowAlert.swift in Sources */,
+				4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */,
 				BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */,
 				6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */,
+				36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */,
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
 				54B441302AC2C36C00EC8846 /* TopUserTableViewCell.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
@@ -934,6 +989,7 @@
 				534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */,
 				531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */,
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
+				4B26653F2AC3E33D0074D4E2 /* RandomBoxModel.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
@@ -972,6 +1028,7 @@
 				B1844F7C2AC127A900ACFFED /* Constraint.swift in Sources */,
 				693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */,
 				6937783C2AC26B4300762165 /* LoadImageView.swift in Sources */,
+				B11D2B8C2AC63C43008D80A4 /* ChangePhoneNumDigits.swift in Sources */,
 				B17D679F2AC0B116006F91DC /* UserDefaultsData.swift in Sources */,
 				B15ABE392AC31E0800529C29 /* TappedAnimation.swift in Sources */,
 				B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */,
@@ -987,22 +1044,29 @@
 				6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */,
 				B15ABE332AC31D3900529C29 /* NavigationBackButton.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
+				4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */,
+				4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
+				B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */,
 				B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */,
 				B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */,
 				B15ABE372AC31DD200529C29 /* NavigationLogo.swift in Sources */,
 				B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
 				B17D67902AC0AC15006F91DC /* Block.swift in Sources */,
+				4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */,
+				4B26653B2AC3E3250074D4E2 /* WorldCupViewController.swift in Sources */,
 				6ADDE2EA2AC31D1300CE4482 /* SettingNotiTableCell.swift in Sources */,
+				36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */,
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
 				54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */,
 				367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */,
-				4B157D3A2AC116B400EEDEC1 /* RandomBoxBanner.swift in Sources */,
+				4B157D3A2AC116B400EEDEC1 /* RandomBoxCell.swift in Sources */,
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
 				6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */,
 				5471384A2AC361A300CFE88D /* HobbyCollectionViewCell.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
+				4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1181,11 +1245,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pico/Config/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "피코";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 접근 권한 허용 설정";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "갤러리 접근 권한 허용 설정";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1212,11 +1278,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pico/Config/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "피코";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 접근 권한 허용 설정";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "갤러리 접근 권한 허용 설정";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

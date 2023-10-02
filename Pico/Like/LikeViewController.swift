@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class LikeViewController: UIViewController {
+final class LikeViewController: BaseViewController {
     private let viewControllers = [LikeMeViewController(), LikeUViewController()]
     
     private let tabSegmentedControl: UISegmentedControl = {
@@ -50,11 +50,9 @@ final class LikeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()
         configTabBar()
-        configLogoBarItem()
         configBarItem()
     }
 

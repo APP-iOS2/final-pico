@@ -27,7 +27,15 @@ final class ProfileEditCollectionCell: UICollectionViewCell {
         super.init(coder: aDecoder)
     }
     
+    override func prepareForReuse() {
+        imageView.image = .add
+    }
+    
     func configure(imageName: String) {
+    }
+    
+    func configure(image: UIImage) {
+        imageView.image = image
     }
     
     private func addSubView() {

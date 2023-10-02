@@ -1,5 +1,5 @@
 //
-//  UIImage+Extensions.swift
+//  ResizedImage.swift
 //  Pico
 //
 //  Created by 최하늘 on 2023/09/26.

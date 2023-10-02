@@ -14,7 +14,7 @@ disabled_rules: # Default Rules에서 비활성화할 규칙
     - function_body_length
     - function_parameter_count
     - type_body_length
-    
+    - void_return
 
     
 opt_in_rules:  # 기본(default) 룰이 아닌 룰들을 활성화
