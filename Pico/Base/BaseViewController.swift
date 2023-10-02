@@ -30,8 +30,20 @@ class BaseViewController: UIViewController {
     }
     
     private func configUI() {
-        view.backgroundColor = .systemBackground
+        configBgColor()
+        configNavigationBgColor()
         configBackButton()
         tappedDismissKeyboard()
+    }
+    
+    private func configBgColor() {
+        view.backgroundColor = .systemBackground
+    }
+    
+    private func configNavigationBgColor() {
+        let navigationBarAppearance = UINavigationBarAppearance()
+        navigationBarAppearance.backgroundColor = .systemBackground
+        self.navigationController?.navigationBar.standardAppearance = navigationBarAppearance
+        self.navigationController?.navigationBar.scrollEdgeAppearance = navigationBarAppearance
     }
 }
