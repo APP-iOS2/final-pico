@@ -14,6 +14,7 @@ final class MyPageDefaultTableCell: UITableViewCell {
         imageView.tintColor = .darkGray
         return imageView
     }()
+    
     private let tableLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
@@ -54,6 +55,7 @@ final class MyPageDefaultTableCell: UITableViewCell {
             make.leading.equalToSuperview().offset(10)
             make.height.width.equalTo(25)
         }
+        
         tableLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(tableImageView.snp.trailing).offset(10)
