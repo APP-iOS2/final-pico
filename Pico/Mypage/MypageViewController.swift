@@ -23,6 +23,11 @@ final class MypageViewController: BaseViewController {
         myPageTableView.myPageViewDelegate = self
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateProfileViewLayout(newHeight: Constraint.MypageView.profileViewMaxHeight)
+    }
+    
     private func configBarItem() {
         let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .done, target: self, action: #selector(tappedBarButton))
         setButton.tintColor = .darkGray
