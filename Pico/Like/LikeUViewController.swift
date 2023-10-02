@@ -8,7 +8,7 @@
 import UIKit
 
 final class LikeUViewController: UIViewController {
-    private let emptyView: LikeEmptyView = LikeEmptyView(type: .iLikeU)
+    private let emptyView: EmptyViewController = EmptyViewController(type: .iLikeU)
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let imageUrls: [String] = []
     
@@ -16,7 +16,6 @@ final class LikeUViewController: UIViewController {
         super.viewDidLoad()
         addViews()
         makeConstraints()
-        configButtons()
         configCollectionView()
     }
     
@@ -26,13 +25,11 @@ final class LikeUViewController: UIViewController {
         collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.likeCell)
     }
     
-    private func configButtons() {
-        emptyView.linkButton.addTarget(self, action: #selector(tappedLinkButton), for: .touchUpInside)
-    }
-    
     private func addViews() {
         if imageUrls.isEmpty {
-            view.addSubview(emptyView)
+            addChild(emptyView)
+            view.addSubview(emptyView.view)
+            emptyView.didMove(toParent: self)
         } else {
             view.addSubview(collectionView)
         }
@@ -40,7 +37,7 @@ final class LikeUViewController: UIViewController {
     
     private func makeConstraints() {
         if imageUrls.isEmpty {
-            emptyView.snp.makeConstraints { make in
+            emptyView.view.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
             }
         } else {
@@ -50,15 +47,9 @@ final class LikeUViewController: UIViewController {
             }
         }
     }
-    
-    @objc func tappedLinkButton(_ sender: UIButton) {
-        if let tabBarController = self.tabBarController as? TabBarController {
-            tabBarController.selectedIndex = 0
-        }
-    }
 }
 
-extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, LikeCollectionViewCellDelegate {
+extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageUrls.count
     }
@@ -78,10 +69,12 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }
-    
+}
+
+extension LikeUViewController: LikeCollectionViewCellDelegate {
     func tappedDeleteButton(_ cell: LikeCollectionViewCell) { }
     
-    func tappedMessageButton(_ cell: LikeCollectionViewCell) { 
+    func tappedMessageButton(_ cell: LikeCollectionViewCell) {
         // 메시지 연결 작성
     }
 }
