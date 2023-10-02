@@ -73,7 +73,6 @@ final class MailListTableViewCell: UITableViewCell {
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-       
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         addViews()
@@ -85,7 +84,6 @@ final class MailListTableViewCell: UITableViewCell {
     }
     
     func addViews() {
-        
         [nameLabel, mbtiLabelView].forEach {
             nameStackView.addArrangedSubview($0)
         }
@@ -104,7 +102,6 @@ final class MailListTableViewCell: UITableViewCell {
     }
     
     func makeConstraints() {
-        
         userImage.snp.makeConstraints { make in
             make.top.equalTo(contentView).inset(15)
             make.leading.equalTo(contentView).offset(10)
@@ -142,5 +139,4 @@ final class MailListTableViewCell: UITableViewCell {
             newLabel.text = "new"
         }
     }
-    
 }
