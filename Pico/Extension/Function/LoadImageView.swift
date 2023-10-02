@@ -15,7 +15,9 @@ extension UIImageView {
                     self?.image = UIImage(data: data)
                 }
             } else {
-                self?.image = UIImage(named: "chu")
+                DispatchQueue.main.async {
+                    self?.image = UIImage(named: "chu")
+                }
             }
         }
     }

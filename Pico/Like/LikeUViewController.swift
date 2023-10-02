@@ -49,7 +49,7 @@ final class LikeUViewController: UIViewController {
     }
 }
 
-extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, LikeCollectionViewCellDelegate {
+extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imageUrls.count
     }
@@ -69,10 +69,12 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }
-    
+}
+
+extension LikeUViewController: LikeCollectionViewCellDelegate {
     func tappedDeleteButton(_ cell: LikeCollectionViewCell) { }
     
-    func tappedMessageButton(_ cell: LikeCollectionViewCell) { 
+    func tappedMessageButton(_ cell: LikeCollectionViewCell) {
         // 메시지 연결 작성
     }
 }
