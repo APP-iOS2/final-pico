@@ -97,15 +97,15 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let scrollOffset = scrollView.contentOffset.y
-        
-        if Screen.height < scrollView.contentSize.height + Constraint.MypageView.profileViewMaxHeight {
-            let maxHeight = Constraint.MypageView.profileViewMaxHeight + scrollOffset
-            
-            if Constraint.MypageView.profileViewHeight > scrollOffset && Constraint.MypageView.profileViewHeight < maxHeight {
-                Constraint.MypageView.profileViewHeight -= scrollOffset
-                scrollView.contentOffset.y = 0
-            }
+        let maxHeight = Constraint.MypageView.profileViewMaxHeight + scrollOffset
+
+        let isScreenHeightInsufficient = Screen.height < scrollView.contentSize.height + Constraint.MypageView.profileViewMaxHeight
+        let isProfileViewHeightInRange = (scrollOffset..<maxHeight).contains(Constraint.MypageView.profileViewHeight)
+
+        if isScreenHeightInsufficient && isProfileViewHeightInRange {
+            Constraint.MypageView.profileViewHeight -= scrollOffset
+            self.myPageViewDelegate?.updateProfileViewLayout(newHeight: Constraint.MypageView.profileViewHeight)
+            scrollView.contentOffset.y = 0
         }
-        myPageViewDelegate?.updateProfileViewLayout(newHeight: Constraint.MypageView.profileViewHeight)
     }
 }

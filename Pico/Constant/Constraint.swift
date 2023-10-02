@@ -35,9 +35,9 @@ struct Constraint {
     
     struct MypageView {
         /// 마이페이지의 프로필 뷰 높이
-        static var profileViewHeight: CGFloat = 240
+        static var profileViewHeight: CGFloat = 260
         
-        /// 마이페이지의 프로필 최대 높이 (240)
-        static let profileViewMaxHeight: CGFloat = 240
+        /// 마이페이지의 프로필 최대 높이 (260)
+        static let profileViewMaxHeight: CGFloat = 260
     }
 }
