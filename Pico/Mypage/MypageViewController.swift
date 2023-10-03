@@ -23,6 +23,17 @@ final class MypageViewController: BaseViewController {
         myPageTableView.myPageViewDelegate = self
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        resetTableViewScroll()
+    }
+    
+    private func resetTableViewScroll() {
+        let indexPath = IndexPath(row: 0, section: 0)
+        myPageTableView.scrollToRow(at: indexPath, at: .top, animated: false)
+        updateProfileViewLayout(newHeight: Constraint.MypageView.profileViewMaxHeight)
+    }
+    
     private func configBarItem() {
         let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .done, target: self, action: #selector(tappedBarButton))
         setButton.tintColor = .darkGray

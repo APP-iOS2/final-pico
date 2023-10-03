@@ -43,7 +43,6 @@ final class MailViewController: BaseViewController {
     }
     
     func addViews() {
-        
         view.addSubview(mailText)
         
         if dataCount < 1 {
@@ -56,7 +55,6 @@ final class MailViewController: BaseViewController {
     }
     
     func makeConstraints() {
-        
         let safeArea = view.safeAreaLayoutGuide
         
         mailText.snp.makeConstraints { make in
@@ -90,12 +88,12 @@ extension MailViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         if mailCheck {
             let mailReceiveView = MailReceiveViewController()
             mailReceiveView.modalPresentationStyle = .formSheet
             mailReceiveView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월", message: "하이룽 방가룽", date: "9/25")
             self.present(mailReceiveView, animated: true, completion: nil)
+            
         } else {
             let mailSendView = MailSendViewController()
             mailSendView.modalPresentationStyle = .formSheet

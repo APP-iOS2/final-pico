@@ -13,7 +13,9 @@ enum NotiType {
     case message
 }
 class NotificationTableViewCell: UITableViewCell {
+    
     private var notiType: NotiType = .like
+    
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "AppIcon")

@@ -39,8 +39,8 @@ final class NotificationViewController: UIViewController {
     }
     
     private func configViewController() {
+        navigationItem.title = "알림"
         view.backgroundColor = .systemBackground
-        title = "알림"
     }
     
     private func configTableView() {

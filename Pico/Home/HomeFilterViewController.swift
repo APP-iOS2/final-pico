@@ -45,14 +45,13 @@ final class HomeFilterViewController: UIViewController {
     
     // MARK: - viewDidLoad
     override func viewDidLoad() {
-        self.navigationItem.title = "선호 설정"
+        navigationItem.title = "선호 설정"
         view.backgroundColor = .systemBackground
         addSubView()
         makeConstraints()
-
     }
+    
     func addSubView() {
-        
         view.addSubview(genderHStack)
         view.addSubview(ageVStack)
         view.addSubview(distanceVStack)
@@ -75,11 +74,9 @@ final class HomeFilterViewController: UIViewController {
         addChild(mbtiCollectionViewController)
         view.addSubview(mbtiCollectionViewController.view)
         mbtiCollectionViewController.didMove(toParent: self)
-
     }
     
     func makeConstraints() {
-        
         genderHStack.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)

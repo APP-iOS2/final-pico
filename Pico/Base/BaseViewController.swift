@@ -26,6 +26,7 @@ class BaseViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        navigationItem.leftBarButtonItem = nil
         navigationItem.hidesBackButton = true
     }
     
@@ -43,7 +44,14 @@ class BaseViewController: UIViewController {
     private func configNavigationBgColor() {
         let navigationBarAppearance = UINavigationBarAppearance()
         navigationBarAppearance.backgroundColor = .systemBackground
-        self.navigationController?.navigationBar.standardAppearance = navigationBarAppearance
-        self.navigationController?.navigationBar.scrollEdgeAppearance = navigationBarAppearance
+        navigationBarAppearance.shadowColor = .clear // 밑줄 제거
+        navigationBarAppearance.shadowImage = UIImage() // 밑줄 제거
+        navigationController?.navigationBar.standardAppearance = navigationBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navigationBarAppearance
+        
+        // 네비게이션 바의 밑줄을 없앱니다.
+//        navigationController?.navigationBar.compactAppearance?.backgroundImage = UIImage()
+//        navigationController?.navigationBar.scrollEdgeAppearance?.backgroundImage = UIImage()
+
     }
 }

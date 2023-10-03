@@ -114,9 +114,9 @@ final class ProfilView: UIView {
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(profilPercentLabel.snp.bottom).offset(15)
+            make.top.equalTo(profilPercentLabel.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-15)
+            make.bottom.equalToSuperview().offset(-20)
         }
     }
 }
