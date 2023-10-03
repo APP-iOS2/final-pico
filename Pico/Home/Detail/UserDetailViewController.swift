@@ -31,8 +31,8 @@ final class UserDetailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         addViews()
-        configTableView()
         makeConstraints()
+        configTableView()
         configureNavigationBar()
         configActionSheet()
     }
@@ -63,6 +63,7 @@ final class UserDetailViewController: UIViewController {
     final private func configTableView() {
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(UserImageTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.userImageTableCell)
         tableView.register(TopUserTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.topUserTableCell)
         tableView.register(MiddleUserTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.middleUserTableCell)
         tableView.register(BottomUserTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.bottomUserTableCell)
@@ -76,24 +77,9 @@ final class UserDetailViewController: UIViewController {
     
     final private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
-        
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea)
-            make.leading.bottom.trailing.equalTo(safeArea)
+            make.top.leading.bottom.trailing.equalTo(safeArea)
         }
-        
-        disLikeButton.snp.makeConstraints { make in
-            make.bottom.trailing.equalToSuperview().offset(-80)
-            make.width.height.equalTo(50)
-        }
-        
-        likeButton.snp.makeConstraints { make in
-            make.bottom.equalTo(disLikeButton.snp.bottom)
-            make.leading.equalTo(disLikeButton.snp.trailing).offset(10)
-            make.trailing.equalToSuperview()
-            make.width.height.equalTo(50)
-        }
-        
     }
 }
 
@@ -101,7 +87,7 @@ extension UserDetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     final func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if viewModel.userData.subInfo != nil {
-            return 3
+            return 4
         } else {
             return 2
         }
@@ -109,16 +95,22 @@ extension UserDetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     final func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
+            
         case 0:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.userImageTableCell, for: indexPath) as? UserImageTableViewCell else { return UITableViewCell() }
+            cell.config(images: viewModel.userData.imageURLs)
+            cell.selectionStyle = .none
+            return cell
+        case 1:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.topUserTableCell, for: indexPath) as? TopUserTableViewCell else { return UITableViewCell() }
             cell.config(mbti: .infp, nameAgeText: viewModel.userData.nickName, locationText: viewModel.userData.location.address, heightText: "112")
             cell.selectionStyle = .none
             return cell
-        case 1:
+        case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.middleUserTableCell, for: indexPath) as? MiddleUserTableViewCell ?? UITableViewCell()
             cell.selectionStyle = .none
             return cell
-        case 2:
+        case 3:
             let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.bottomUserTableCell, for: indexPath) as? BottomUserTableViewCell ?? UITableViewCell()
             cell.selectionStyle = .none
             return cell
@@ -131,14 +123,15 @@ extension UserDetailViewController: UITableViewDelegate, UITableViewDataSource {
     final func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-            return CGFloat(Screen.height * 0.8)
+            return CGFloat(Screen.height * 0.4)
         case 1:
-            return CGFloat(Screen.height * 0.3)
+            return CGFloat(Screen.height * 0.2)
         case 2:
+            return CGFloat(Screen.height * 0.3)
+        case 3:
             return CGFloat(Screen.height * 0.6)
         default:
             return CGFloat(200)
         }
-        
     }
 }

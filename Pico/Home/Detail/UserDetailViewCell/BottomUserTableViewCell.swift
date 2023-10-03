@@ -15,6 +15,7 @@ final class BottomUserTableViewCell: UITableViewCell {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        layout.minimumInteritemSpacing = 5
         return collectionView
     }()
     
@@ -22,6 +23,7 @@ final class BottomUserTableViewCell: UITableViewCell {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        layout.minimumInteritemSpacing = 5
         return collectionView
     }()
     
@@ -29,6 +31,7 @@ final class BottomUserTableViewCell: UITableViewCell {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        layout.minimumInteritemSpacing = 5
         return collectionView
     }()
     
@@ -88,7 +91,9 @@ final class BottomUserTableViewCell: UITableViewCell {
         
         hobbyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(hobbyLabel.snp.bottom).offset(20)
-            make.leading.trailing.equalToSuperview().offset(10)
+            make.leading.equalToSuperview().offset(10)
+            make.trailing.equalToSuperview().offset(-10)
+            
             make.height.equalTo(Screen.height * 0.1)
         }
         
@@ -101,7 +106,7 @@ final class BottomUserTableViewCell: UITableViewCell {
         personalCollectionView.snp.makeConstraints { make in
             make.top.equalTo(personalLabel.snp.bottom).offset(20)
             make.leading.equalTo(personalLabel.snp.leading)
-            make.trailing.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-10)
             make.height.equalTo(Screen.height * 0.1)
         }
         
@@ -202,4 +207,5 @@ extension BottomUserTableViewCell: UICollectionViewDelegate, UICollectionViewDat
         }
         
     }
+    
 }

@@ -31,6 +31,7 @@ struct Identifier {
         static let profileEditLoactionTabelCell = "ProfileEditLoactionTabelCell"
         static let profileEditIntroTabelCell = "ProfileEditIntroTabelCell"
         static let profileEditTextTabelCell = "ProfileEditTextTabelCell"
+        static let userImageTableCell = "UserImageTableCell"
     }
     
     struct CollectionView {
