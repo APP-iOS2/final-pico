@@ -130,9 +130,9 @@ extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDa
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let isAtBottom = scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
-        print("before guard Cintax")
+        print("before guard Syntax")
         guard !isCheckedBottom else { return }
-        print("after guard Cintax")
+        print("after guard Syntax")
         if isAtBottom {
             isCheckedBottom = true
             updateNextButton(isCheck: isCheckedBottom)
