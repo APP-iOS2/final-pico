@@ -104,7 +104,6 @@ final class MiddleUserTableViewCell: UITableViewCell {
     }
     
     private func makeConstraints() {
-        
         introLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(30)
             make.leading.equalToSuperview().offset(20)

@@ -7,6 +7,6 @@
 
 import Foundation
 
-class UserDetailViewModel {
+final class UserDetailViewModel {
     let userData = User.userData
 }

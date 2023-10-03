@@ -128,7 +128,6 @@ final class BottomUserTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
 
 extension BottomUserTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -205,7 +204,5 @@ extension BottomUserTableViewCell: UICollectionViewDelegate, UICollectionViewDat
         default:
             return CGSize(width: 70, height: 70)
         }
-        
     }
-    
 }

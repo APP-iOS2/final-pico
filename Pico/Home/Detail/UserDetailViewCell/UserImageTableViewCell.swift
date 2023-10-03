@@ -6,8 +6,7 @@
 //
 
 import UIKit
-class UserImageTableViewCell: UITableViewCell {
-    private let myView = UIView()
+final class UserImageTableViewCell: UITableViewCell {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
@@ -31,9 +30,8 @@ class UserImageTableViewCell: UITableViewCell {
         configScrollView()
     }
     
-    func configScrollView() {
+    private func configScrollView() {
         scrollView.frame = UIScreen.main.bounds
-       
         scrollView.delegate = self // scroll범위에 따라 pageControl의 값을 바꾸어주기 위한 delegate
         scrollView.alwaysBounceVertical = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -63,10 +61,6 @@ class UserImageTableViewCell: UITableViewCell {
     }
     
     private func makeConstraints() {
-//        myView.snp.makeConstraints { make in
-//            make.edges.equalToSuperview()
-//        }
-        
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

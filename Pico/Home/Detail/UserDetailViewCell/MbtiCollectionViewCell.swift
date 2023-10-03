@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MbtiCollectionViewCell: UICollectionViewCell {
+final class MbtiCollectionViewCell: UICollectionViewCell {
     private var mbtiView: MBTILabelView = MBTILabelView(mbti: .infp, scale: .large)
     
     override init(frame: CGRect) {

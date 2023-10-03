@@ -8,12 +8,7 @@
 import UIKit
 
 final class TopUserTableViewCell: UITableViewCell {
-
-  
-    
-
     private var mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infp, scale: .large)
-    
     private let nameAgeLabel: UILabel = {
         let label = UILabel()
         label.text = "카리나, 24"
