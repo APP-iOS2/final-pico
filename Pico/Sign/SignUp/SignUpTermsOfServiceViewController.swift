@@ -63,7 +63,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        // "완료" 버튼이 눌렸을 때 수행할 동작을 구현하세요.
+        navigationController?.popToRootViewController(animated: true)
     }
     
     private func addSubViews() {
@@ -139,7 +139,7 @@ extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDa
         if isAtBottom {
             isCheckedBottom = true
         } else {
-            isCheckedBottom = false            
+            isCheckedBottom = false
         }
         updateNextButton(isCheck: isCheckedBottom)
     }
