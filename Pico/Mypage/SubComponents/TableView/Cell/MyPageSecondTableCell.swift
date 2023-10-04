@@ -1,5 +1,5 @@
 //
-//  MyPageSecondTableCell.swift
+//  MyPageMatchingTableCell.swift
 //  Pico
 //
 //  Created by 김민기 on 2023/09/26.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MyPageSecondTableCell: UITableViewCell {
+final class MyPageMatchingTableCell: UITableViewCell {
 
     private let tableImageView: UIImageView = {
         let imageView = UIImageView()

@@ -19,7 +19,7 @@ final class MypageViewController: BaseViewController {
         configTapGesture()
         addViews()
         makeConstraints()
-        
+        myPageTableView.myPageCollectionDelegate = self
         myPageTableView.myPageViewDelegate = self
     }
     
@@ -35,7 +35,7 @@ final class MypageViewController: BaseViewController {
     }
     
     private func configBarItem() {
-        let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .done, target: self, action: #selector(tappedBarButton))
+        let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .done, target: self, action: #selector(tappedBarButton))
         setButton.tintColor = .darkGray
     
         navigationItem.rightBarButtonItem = setButton
@@ -85,5 +85,11 @@ extension MypageViewController: MyPageViewDelegate {
         profilView.snp.updateConstraints { make in
             make.height.equalTo(newHeight)
         }
+    }
+}
+extension MypageViewController: MyPageCollectionDelegate {
+    func didSelectItem(item: Int) {
+        let viewController = StoreViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

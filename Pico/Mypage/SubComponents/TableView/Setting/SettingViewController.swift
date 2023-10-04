@@ -12,9 +12,9 @@ final class SettingViewController: UIViewController {
    
     private let tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .plain)
-        view.register(SettingPrivateTableCell.self, forCellReuseIdentifier: Identifier.TableCell.SettingPrivateTableCell)
-        view.register(SettingNotiTableCell.self, forCellReuseIdentifier: Identifier.TableCell.SettingNotiTableCell)
-        view.register(SettingTableCell.self, forCellReuseIdentifier: Identifier.TableCell.SettingTableCell)
+        view.register(SettingPrivateTableCell.self, forCellReuseIdentifier: Identifier.TableCell.settingPrivateTableCell)
+        view.register(SettingNotiTableCell.self, forCellReuseIdentifier: Identifier.TableCell.settingNotiTableCell)
+        view.register(SettingTableCell.self, forCellReuseIdentifier: Identifier.TableCell.settingTableCell)
         view.backgroundColor = .systemBackground
         view.separatorStyle = .none
         return view
@@ -60,7 +60,7 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
         case 2:
             return 7
         case 3: 
-            return 1
+            return 2
         default: 
             return 0
         }
@@ -73,15 +73,15 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.SettingPrivateTableCell, for: indexPath) as? SettingPrivateTableCell else { return UITableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.settingPrivateTableCell, for: indexPath) as? SettingPrivateTableCell else { return UITableViewCell() }
             
             return cell
         case 1:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.SettingNotiTableCell, for: indexPath) as? SettingNotiTableCell else { return UITableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.settingNotiTableCell, for: indexPath) as? SettingNotiTableCell else { return UITableViewCell() }
             
             return cell
         case 2...3:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.SettingTableCell, for: indexPath) as? SettingTableCell else { return UITableViewCell() }
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.settingTableCell, for: indexPath) as? SettingTableCell else { return UITableViewCell() }
             
             return cell
 
@@ -123,7 +123,12 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 0:
+            return 0
+        default:
             return 20.0
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
