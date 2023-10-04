@@ -138,11 +138,10 @@ extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDa
         guard !isCheckedBottom else { return }
         if isAtBottom {
             isCheckedBottom = true
-            updateNextButton(isCheck: isCheckedBottom)
         } else {
-            isCheckedBottom = false
-            updateNextButton(isCheck: isCheckedBottom)
+            isCheckedBottom = false            
         }
+        updateNextButton(isCheck: isCheckedBottom)
     }
 }
 
