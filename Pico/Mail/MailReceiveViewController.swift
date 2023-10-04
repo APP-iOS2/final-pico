@@ -101,6 +101,7 @@ final class MailReceiveViewController: UIViewController {
     }
     
     func configNavigationBarItem() {
+        configBackButton()
         navItem.rightBarButtonItem = rightBarButton
         navigationBar.shadowImage = UIImage()
         navigationBar.setItems([navItem], animated: true)
@@ -163,9 +164,11 @@ final class MailReceiveViewController: UIViewController {
     }
     
     @objc func tappedNavigationButton() {
+        
         let mailSendView = MailSendViewController()
-        mailSendView.modalPresentationStyle = .formSheet
         mailSendView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월")
+        mailSendView.modalPresentationStyle = .formSheet
+        mailSendView.modalTransitionStyle = .flipHorizontal
         self.present(mailSendView, animated: true, completion: nil)
     }
 }

@@ -100,6 +100,7 @@ final class MailSendViewController: UIViewController {
         
         addViews()
         makeConstraints()
+        configBackButton()
         configNavigationBarItem()
         tappedDismissKeyboard()
     }
@@ -176,6 +177,7 @@ final class MailSendViewController: UIViewController {
     
     @objc private func tappedSendButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
+        dismiss(animated: true)
         print("send")
     }
     

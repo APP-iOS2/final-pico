@@ -8,18 +8,18 @@
 import UIKit
 import SnapKit
 
-final class MailViewController: BaseViewController {
+final class MailViewController: UIViewController {
     
     private let emptyView = EmptyViewController(type: .message)
     
-    private let mailText: UILabel = {
-        let label = UILabel()
-        label.text = "쪽지"
-        label.font = UIFont.picoContentBoldFont
-        label.textColor = .picoFontBlack
-        return label
-    }()
-    
+     private let mailText: UILabel = {
+     let label = UILabel()
+     label.text = "Mail"
+     label.font = UIFont.picoTitleFont
+     label.textColor = .picoFontBlack
+     return label
+     }()
+     
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(MailListTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.mailTableCell)
@@ -31,9 +31,16 @@ final class MailViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configLogoBarItem()
+        configViewController()
         configTableView()
         addViews()
         makeConstraints()
+    }
+    
+    private func configViewController() {
+        //navigationItem.title = "쪽지"
+        view.backgroundColor = .systemBackground
     }
     
     private func configTableView() {
@@ -46,7 +53,6 @@ final class MailViewController: BaseViewController {
         view.addSubview(mailText)
         
         if dataCount < 1 {
-            addChild(emptyView)
             view.addSubview(emptyView.view)
             emptyView.didMove(toParent: self)
         } else {
@@ -57,11 +63,11 @@ final class MailViewController: BaseViewController {
     func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
-        mailText.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(20)
-            make.leading.equalTo(safeArea).offset(30)
-            make.trailing.equalTo(safeArea).offset(-30)
-        }
+         mailText.snp.makeConstraints { make in
+         make.top.equalTo(safeArea).offset(10)
+         make.leading.equalTo(safeArea).offset(20)
+         make.trailing.equalTo(safeArea).offset(-30)
+         }
         
         if dataCount < 1 {
             emptyView.view.snp.makeConstraints { make in
@@ -90,6 +96,7 @@ extension MailViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         if mailCheck {
             let mailReceiveView = MailReceiveViewController()
             mailReceiveView.modalPresentationStyle = .formSheet
