@@ -64,6 +64,14 @@ final class WorldCupResultViewController: UIViewController {
         return label
     }()
     
+    private let cancelButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("채팅 신청하지 않고 나가기", for: .normal)
+        button.setTitleColor(.picoAlphaBlue, for: .normal)
+        button.titleLabel?.font = UIFont.picoButtonFont
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -76,7 +84,7 @@ final class WorldCupResultViewController: UIViewController {
     }
     
     private func addViews() {
-        [backgroundImageView, worldCupTitleLabel, pickMeLabel, contentLabel, resultUserView, chatButton, guideLabel].forEach { item in
+        [backgroundImageView, worldCupTitleLabel, pickMeLabel, contentLabel, resultUserView, chatButton, guideLabel, cancelButton].forEach { item in
             view.addSubview(item)
         }
     }
@@ -120,13 +128,19 @@ final class WorldCupResultViewController: UIViewController {
         }
         
         guideLabel.snp.makeConstraints { make in
+            make.top.equalTo(chatButton.snp.bottom).offset(padding * half)
             make.centerX.equalToSuperview()
+        }
+        
+        cancelButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview().offset(0.5)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-padding * 1.5)
         }
     }
     
     private func configButton() {
         chatButton.addTarget(WorldCupResultViewController.self, action: #selector(tappedChatButton), for: .touchUpInside)
+        cancelButton.addTarget(WorldCupResultViewController.self, action: #selector(tappedCancelButton), for: .touchUpInside)
     }
     
     private func configResultUserCell() {
@@ -155,7 +169,18 @@ final class WorldCupResultViewController: UIViewController {
     
     @objc func tappedChatButton() {
         // 채팅 신청하는 것으로 바뀌어야 함
-        let entViewController = EntViewController()
-        self.navigationController?.pushViewController(entViewController, animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
+    
+    @objc func tappedCancelButton() {
+        guard let navigationController = self.navigationController else {
+            return
+        }
+        let popDepth = 2
+
+        if let targetViewController = navigationController.viewControllers.dropLast(popDepth).last {
+            navigationController.popToViewController(targetViewController, animated: true)
+        }
+    }
+
 }
