@@ -7,9 +7,13 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class SignInViewController: UIViewController {
     
+    private let disposeBag = DisposeBag()
+    private let phoneNumberSubject = BehaviorSubject<String>(value: "")
     private var isFullPhoneNumber: Bool = false
     
     private let notifyLabel: UILabel = {
@@ -63,7 +67,7 @@ final class SignInViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configTextfield()
-        configButtons()
+        configButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,23 +86,28 @@ final class SignInViewController: UIViewController {
         phoneNumberTextField.delegate = self
     }
     
-    private func configButtons() {
-        phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
-        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
-    }
-    
-    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        phoneNumberTextField.text = ""
-        changeViewState(isFull: false)
-    }
-    
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        if isFullPhoneNumber {
-            let viewController = LoginSuccessViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
+    private func configButton() {
+        nextButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                print("nextbutton")
+                self.tappedButtonAnimation(self.nextButton)
+                if self.isFullPhoneNumber {
+                    let viewController = LoginSuccessViewController()
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        phoneNumberCancleButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                print("phoneNumberCancleButton")
+                self.tappedButtonAnimation(self.phoneNumberCancleButton)
+                self.phoneNumberTextField.text = ""
+                changeViewState(isFull: false)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func changeViewState(isFull: Bool) {

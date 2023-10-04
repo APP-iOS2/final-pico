@@ -8,8 +8,12 @@
 import UIKit
 import SwiftUI
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class SignViewController: UIViewController {
+    
+    private let disposeBag = DisposeBag()
     
     private let picoLogoImageView: UIImageView = {
         let imageView = UIImageView()
@@ -44,25 +48,30 @@ final class SignViewController: UIViewController {
         configBackButton()
         addSubViews()
         makeConstraints()
-        configButtons()
+//        configButtons()
         configBackButton()
+        configRx()
     }
     
-    private func configButtons() {
-        signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
-        signUpButton.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
-    }
-    
-    @objc private func tappedSignInButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        let viewController = SignInViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    @objc private func tappedSignUpButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        let viewController = SignUpViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
+    private func configRx() {
+        signInButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.tappedButtonAnimation(self.signInButton)
+                let viewController = SignInViewController()
+                self.navigationController?.pushViewController(viewController, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+        signUpButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.tappedButtonAnimation(self.signUpButton)
+                let viewController = SignUpViewController()
+                self.navigationController?.pushViewController(viewController, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
     }
     
     // MARK: - UI관련
