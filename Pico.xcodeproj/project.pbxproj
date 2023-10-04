@@ -67,6 +67,7 @@
 		6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */; };
 		B10241CD2AC21A6500BAE1C6 /* ResizedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */; };
 		B11D2B8C2AC63C43008D80A4 /* ChangePhoneNumDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */; };
+		B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14805242ACCE8120009FF71 /* FirestoreService.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
 		B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CB2AC0A230009889DA /* SceneDelegate.swift */; };
 		B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CD2AC0A230009889DA /* HomeViewController.swift */; };
@@ -205,6 +206,7 @@
 		6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditTableHeaderView.swift; sourceTree = "<group>"; };
 		B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizedImage.swift; sourceTree = "<group>"; };
 		B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePhoneNumDigits.swift; sourceTree = "<group>"; };
+		B14805242ACCE8120009FF71 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14B58C92AC0A230009889DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B14B58CB2AC0A230009889DA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -432,6 +434,14 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		B14805232ACCE70B0009FF71 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				B14805242ACCE8120009FF71 /* FirestoreService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		B14B58BD2AC0A230009889DA = {
 			isa = PBXGroup;
 			children = (
@@ -459,6 +469,7 @@
 			children = (
 				B14B58F92AC0A243009889DA /* Config */,
 				B14B59052AC0A41B009889DA /* UserDefaults */,
+				B14805232ACCE70B0009FF71 /* Service */,
 				B17D67B42AC0C043006F91DC /* Constant */,
 				B14B59022AC0A32B009889DA /* Extension */,
 				B14B59032AC0A39E009889DA /* Common */,
@@ -1062,6 +1073,7 @@
 				B15ABE332AC31D3900529C29 /* NavigationBackButton.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
 				4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */,
+				B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */,
 				4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
 				B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */,
