@@ -7,7 +7,7 @@
 
 import UIKit
 
-class Loading {
+final class Loading {
     static func showLoading() {
         DispatchQueue.main.async {
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
