@@ -9,7 +9,8 @@ import UIKit
 import SnapKit
 
 final class HomeViewController: BaseViewController {
-    
+    lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
+    lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
     private let emptyView: HomeEmptyView = HomeEmptyView()
     private var tempUser: [User] = []
     private let vStack: UIStackView = {
@@ -21,12 +22,7 @@ final class HomeViewController: BaseViewController {
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
-        tempUser = [
-            User(mbti: .infp, phoneNumber: "01046275953", gender: .male, birth: "25", nickName: "닝닝", location: Location(address: "", latitude: 10, longitude: 10), imageURLs: [], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false),
-            User(mbti: .infp, phoneNumber: "01046275953", gender: .male, birth: "24", nickName: "지젤", location: Location(address: "", latitude: 10, longitude: 10), imageURLs: [], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false),
-            User(mbti: .infp, phoneNumber: "01046275953", gender: .male, birth: "23", nickName: "카리나", location: Location(address: "", latitude: 10, longitude: 10), imageURLs: [], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false),
-            User(mbti: .infp, phoneNumber: "01046275953", gender: .male, birth: "22", nickName: "윈터", location: Location(address: "", latitude: 10, longitude: 10), imageURLs: [], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
-        ]
+        tempUser = UserDummyData.users
         addSubView()
         makeConstraints()
         configNavigationBarItem()
@@ -36,15 +32,30 @@ final class HomeViewController: BaseViewController {
     private func addSubView() {
         view.addSubview(emptyView)
         for user in self.tempUser {
-            let tabImageViewController = HomeTabImageViewController(name: user.nickName, age: user.birth)
+            let tabImageViewController = HomeTabImageViewController(user: user)
+            tabImageViewController.homeViewController = self
             addChild(tabImageViewController)
             view.addSubview(tabImageViewController.view)
         }
+        view.addSubview(likeLabel)
+        view.addSubview(passLabel)
     }
     
     private func makeConstraints() {
         emptyView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        likeLabel.snp.makeConstraints { make in
+            make.centerX.equalTo(view.snp.centerX)
+            make.centerY.equalTo(view.safeAreaLayoutGuide.snp.top).offset(70)
+            make.width.equalTo(150)
+        }
+        
+        passLabel.snp.makeConstraints { make in
+            make.centerX.equalTo(view.snp.centerX)
+            make.centerY.equalTo(view.safeAreaLayoutGuide.snp.top).offset(70)
+            make.width.equalTo(150)
         }
     }
     
@@ -62,6 +73,19 @@ final class HomeViewController: BaseViewController {
         notificationButton.tintColor = .darkGray
         
         navigationItem.rightBarButtonItems = [filterButton, notificationButton]
+    }
+    
+    private func createLabel(text: String, setColor: UIColor) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = .boldSystemFont(ofSize: 40)
+        label.textColor = setColor.withAlphaComponent(0.8)
+        label.textAlignment = .center
+        label.layer.borderWidth = 4
+        label.layer.borderColor = setColor.withAlphaComponent(0.8).cgColor
+        label.layer.cornerRadius = 5
+        label.alpha = 0
+        return label
     }
     
     @objc func reLoadView() {

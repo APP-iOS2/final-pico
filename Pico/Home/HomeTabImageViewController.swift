@@ -7,24 +7,17 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class HomeTabImageViewController: UIViewController {
-    
-    private let name: String
-    private let age: String
+    private let user: User
+    private let disposeBag = DisposeBag()
     private var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
     private var initialCenter: CGPoint = CGPoint()
-    private let imageUrl: [String] = [
-        "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg",
-        "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
-        "https://pbs.twimg.com/media/FJtITDWXwAUQB3y.jpg:large",
-        "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
-        "https://mblogthumb-phinf.pstatic.net/MjAyMjAxMDNfMTg2/MDAxNjQxMjEyOTI2NDc4.KruADoj55vedTCQY5gA2tdWoKckKh8WdhoPlvAs9Mnsg.lRDzpNkVASBeAAX-MFROpCB6Q_9Lkc6AQcz7vZ5u_Vwg.JPEG.ssun2415/IMG_8432.jpg?type=w800"
-    ]
+    weak var homeViewController: HomeViewController?
     
-    init(name: String, age: String) {
-        self.name = name
-        self.age = age
+    init(user: User) {
+        self.user = user
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -65,8 +58,8 @@ final class HomeTabImageViewController: UIViewController {
         return button
     }()
     
-    private let infoMBTILabel: MBTILabelView = {
-        let label = MBTILabelView(mbti: .entp, scale: .large)
+    private lazy var infoMBTILabel: MBTILabelView = {
+        let label = MBTILabelView(mbti: user.mbti, scale: .large)
         label.layer.opacity = 0.9
         return label
     }()
@@ -89,7 +82,7 @@ final class HomeTabImageViewController: UIViewController {
     private lazy var infoVStack: UIStackView = createHomeStack(axis: .vertical, alignment: nil, spacing: 5)
     
     private lazy var infoNameAgeLabel: UILabel = createHomeLabel(text: "", font: .picoTitleFont, textColor: .white)
-    private lazy var infoLocationLabel: UILabel = createHomeLabel(text: "서울특별시 강남구, 12.5km", font: .picoSubTitleFont, textColor: .white)
+    private lazy var infoLocationLabel: UILabel = createHomeLabel(text: "", font: .picoSubTitleFont, textColor: .white)
     
     // MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -99,7 +92,8 @@ final class HomeTabImageViewController: UIViewController {
         makeConstraints()
         loadImages()
         configButtons()
-        infoNameAgeLabel.text = "\(name), \(age)"
+        infoNameAgeLabel.text = "\(user.nickName) \(user.birth)"
+        infoLocationLabel.text = user.location.address
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(touchGesture(_:)))
         self.view.addGestureRecognizer(panGesture)
     }
@@ -146,7 +140,7 @@ final class HomeTabImageViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.width.equalTo(view.safeAreaLayoutGuide).offset(20)
         }
-        pageControl.numberOfPages = imageUrl.count
+        pageControl.numberOfPages = user.imageURLs.count
         
         pickBackButton.snp.makeConstraints { make in
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(paddingVertical)
@@ -188,7 +182,6 @@ final class HomeTabImageViewController: UIViewController {
             make.width.equalTo(infoMBTILabel.frame.size.width)
         }
     }
-    
     @objc func touchGesture(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: self.view)
         if gesture.state == .began {
@@ -196,21 +189,34 @@ final class HomeTabImageViewController: UIViewController {
         } else if gesture.state == .changed {
             self.view.center = CGPoint(x: initialCenter.x + translation.x, y: initialCenter.y)
             self.view.transform = CGAffineTransform(rotationAngle: translation.x / 1000)
+            if translation.x > 0 {
+                UIView.animate(withDuration: 0.5) {
+                    self.homeViewController?.likeLabel.alpha = translation.x / 100
+                }
+            } else if translation.x < 0 {
+                UIView.animate(withDuration: 0.5) {
+                    self.homeViewController?.passLabel.alpha = -translation.x / 100
+                }
+            }
         } else if gesture.state == .ended {
             if translation.x > 100 {
                 UIView.animate(withDuration: 0.5) {
                     self.view.center.x += 1000
+                    self.homeViewController?.likeLabel.alpha = 0
                 } completion: { _ in
                 }
             } else if translation.x < -100 {
                 UIView.animate(withDuration: 0.5) {
                     self.view.center.x -= 1000
+                    self.homeViewController?.passLabel.alpha = 0
                 } completion: { _ in
                 }
             } else {
                 UIView.animate(withDuration: 0.3) {
                     self.view.center = self.initialCenter
                     self.view.transform = CGAffineTransform(rotationAngle: 0)
+                    self.homeViewController?.likeLabel.alpha = 0
+                    self.homeViewController?.passLabel.alpha = 0
                 }
             }
         }
@@ -234,7 +240,7 @@ final class HomeTabImageViewController: UIViewController {
         return label
     }
     
-    @objc private func createHomeButton(iconName: String, backgroundColor: UIColor) -> UIButton {
+    private func createHomeButton(iconName: String, backgroundColor: UIColor) -> UIButton {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
         let image = UIImage(systemName: iconName, withConfiguration: imageConfig)
         let button = UIButton()
@@ -247,47 +253,60 @@ final class HomeTabImageViewController: UIViewController {
     }
     
     private func loadImages() {
-        for (index, urlStr) in imageUrl.enumerated() {
-            if let url = URL(string: urlStr) {
-                let imageView = UIImageView()
-                imageView.contentMode = .scaleAspectFill
-                imageView.clipsToBounds = true
-                imageView.layer.cornerRadius = 10
-                scrollView.addSubview(imageView)
-                
-                imageView.snp.makeConstraints { make in
-                    make.leading.equalTo(scrollView).offset(CGFloat(index) * view.frame.size.width + 10)
-                    make.top.equalTo(scrollView).offset(10)
-                    make.width.equalTo(view).offset(-20)
-                    make.height.equalTo(scrollView).offset(-20)
+        Observable.from(user.imageURLs)
+                .map { urlStr -> URL? in
+                    return URL(string: urlStr)
                 }
-                
-                imageView.load(url: url)
-                if index == imageUrl.count - 1 {
-                    scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(imageUrl.count), height: scrollView.frame.height)
+                .compactMap { $0 }
+                .enumerated()
+                .map { [self] (index, url) -> UIImageView in
+                    let imageView = UIImageView()
+                    imageView.contentMode = .scaleAspectFill
+                    imageView.clipsToBounds = true
+                    imageView.layer.cornerRadius = 10
+                    imageView.backgroundColor = .systemBackground
+                    scrollView.addSubview(imageView)
+                    
+                    imageView.snp.makeConstraints { make in
+                        make.leading.equalTo(scrollView).offset(CGFloat(index) * view.frame.size.width + 10)
+                        make.top.equalTo(scrollView).offset(10)
+                        make.width.equalTo(view).offset(-20)
+                        make.height.equalTo(scrollView).offset(-20)
+                    }
+                    
+                    imageView.load(url: url)
+                    if index == user.imageURLs.count - 1 {
+                        scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(user.imageURLs.count), height: scrollView.frame.height)
+                    }
+                    
+                    return imageView
                 }
-            }
+                .subscribe()
+                .disposed(by: disposeBag)
         }
-    }
     
     @objc func tappedLikeButton() {
-        UIView.animate(withDuration: 0.5) {
+        self.homeViewController?.likeLabel.alpha = 1
+        UIView.animate(withDuration: 0.3) {
             self.view.center.x += 1000
         } completion: { _ in
+            self.homeViewController?.likeLabel.alpha = 0
         }
     }
     
     @objc func tappedDisLikeButton() {
-        UIView.animate(withDuration: 0.5) {
+        self.homeViewController?.passLabel.alpha = 1
+        UIView.animate(withDuration: 0.3) {
             self.view.center.x -= 1000
         } completion: { _ in
+            self.homeViewController?.passLabel.alpha = 0
         }
     }
     
     @objc func tappedPageRight() {
         let nextPage = pageControl.currentPage + 1
         let offsetX = CGFloat(nextPage) * scrollView.frame.size.width
-        if offsetX < scrollView.frame.size.width * CGFloat(imageUrl.count) {
+        if offsetX < scrollView.frame.size.width * CGFloat(user.imageURLs.count) {
             scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
         }
     }
