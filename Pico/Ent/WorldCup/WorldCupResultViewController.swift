@@ -72,6 +72,7 @@ final class WorldCupResultViewController: UIViewController {
         configButton()
         configResultUserCell()
         addShadow()
+        hideBackButton()
     }
     
     private func addViews() {
