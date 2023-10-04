@@ -27,7 +27,7 @@
 		4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665402AC3F4830074D4E2 /* UserDummy.swift */; };
 		531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* MyTransition.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
-		531C4EDB2AC2D08900ADC614 /* MyPageSecondTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */; };
+		531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		53389AEF2AC16D120076DA9B /* LikeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* LikeEmptyView.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
@@ -45,9 +45,10 @@
 		6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783D2AC2742400762165 /* MailSendViewController.swift */; };
 		693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783F2AC2745C00762165 /* MailReceiveViewController.swift */; };
 		6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */; };
-		6A73784D2AC26AD50047DE35 /* MyPageFirstTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */; };
+		6A73784D2AC26AD50047DE35 /* MyPageCollectionTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784C2AC26AD50047DE35 /* MyPageCollectionTableCell.swift */; };
 		6A7378512AC26B1E0047DE35 /* MyPageDefaultTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7378502AC26B1E0047DE35 /* MyPageDefaultTableCell.swift */; };
 		6A7378532AC26D2E0047DE35 /* MyPageCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7378522AC26D2E0047DE35 /* MyPageCollectionCell.swift */; };
+		6ABF04112ACA86BB008E30A2 /* SwitchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABF04102ACA86BB008E30A2 /* SwitchButton.swift */; };
 		6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2DB2AC2D3A200CE4482 /* StoreTableCell.swift */; };
 		6ADDE2DE2AC2D3B500CE4482 /* StoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2DD2AC2D3B500CE4482 /* StoreViewController.swift */; };
 		6ADDE2E22AC30EFE00CE4482 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2E12AC30EFE00CE4482 /* SettingViewController.swift */; };
@@ -65,6 +66,7 @@
 		6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2FC2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift */; };
 		6ADDE2FF2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2FE2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift */; };
 		6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */; };
+		6AF590C02AC856C7001E511F /* CircularProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF590BF2AC856C7001E511F /* CircularProgressBarView.swift */; };
 		B10241CD2AC21A6500BAE1C6 /* ResizedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */; };
 		B11D2B8C2AC63C43008D80A4 /* ChangePhoneNumDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
@@ -176,10 +178,11 @@
 		6937783D2AC2742400762165 /* MailSendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendViewController.swift; sourceTree = "<group>"; };
 		6937783F2AC2745C00762165 /* MailReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveViewController.swift; sourceTree = "<group>"; };
 		6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableView.swift; sourceTree = "<group>"; };
-		6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageFirstTableCell.swift; sourceTree = "<group>"; };
-		6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSecondTableCell.swift; sourceTree = "<group>"; };
+		6A73784C2AC26AD50047DE35 /* MyPageCollectionTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageCollectionTableCell.swift; sourceTree = "<group>"; };
+		6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageMatchingTableCell.swift; sourceTree = "<group>"; };
 		6A7378502AC26B1E0047DE35 /* MyPageDefaultTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageDefaultTableCell.swift; sourceTree = "<group>"; };
 		6A7378522AC26D2E0047DE35 /* MyPageCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageCollectionCell.swift; sourceTree = "<group>"; };
+		6ABF04102ACA86BB008E30A2 /* SwitchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchButton.swift; sourceTree = "<group>"; };
 		6ADDE2DB2AC2D3A200CE4482 /* StoreTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTableCell.swift; sourceTree = "<group>"; };
 		6ADDE2DD2AC2D3B500CE4482 /* StoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreViewController.swift; sourceTree = "<group>"; };
 		6ADDE2E12AC30EFE00CE4482 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
@@ -197,6 +200,7 @@
 		6ADDE2FC2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditTextTabelCell.swift; sourceTree = "<group>"; };
 		6ADDE2FE2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditCollectionCell.swift; sourceTree = "<group>"; };
 		6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditTableHeaderView.swift; sourceTree = "<group>"; };
+		6AF590BF2AC856C7001E511F /* CircularProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBarView.swift; sourceTree = "<group>"; };
 		B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizedImage.swift; sourceTree = "<group>"; };
 		B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePhoneNumDigits.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -350,9 +354,9 @@
 		6A7378562AC2A4EF0047DE35 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */,
+				6A73784C2AC26AD50047DE35 /* MyPageCollectionTableCell.swift */,
 				6A7378522AC26D2E0047DE35 /* MyPageCollectionCell.swift */,
-				6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */,
+				6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */,
 				6A7378502AC26B1E0047DE35 /* MyPageDefaultTableCell.swift */,
 			);
 			path = Cell;
@@ -371,6 +375,7 @@
 			children = (
 				6ADDE2E12AC30EFE00CE4482 /* SettingViewController.swift */,
 				6ADDE2E52AC3109E00CE4482 /* SettingTableHeaderView.swift */,
+				6ABF04102ACA86BB008E30A2 /* SwitchButton.swift */,
 				6ADDE2EB2AC31FCA00CE4482 /* Cell */,
 			);
 			path = Setting;
@@ -791,6 +796,7 @@
 			isa = PBXGroup;
 			children = (
 				B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */,
+				6AF590BF2AC856C7001E511F /* CircularProgressBarView.swift */,
 				6ADDE2EC2AC3B95A00CE4482 /* ProfileEdit */,
 			);
 			path = ProfilView;
@@ -959,7 +965,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				531C4EDB2AC2D08900ADC614 /* MyPageSecondTableCell.swift in Sources */,
+				531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */,
 				6ADDE2E22AC30EFE00CE4482 /* SettingViewController.swift in Sources */,
 				6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */,
 				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
@@ -987,6 +993,7 @@
 				531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */,
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
 				4B26653F2AC3E33D0074D4E2 /* RandomBoxModel.swift in Sources */,
+				6ABF04112ACA86BB008E30A2 /* SwitchButton.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
@@ -1008,7 +1015,8 @@
 				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* DismissKeyboard.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
-				6A73784D2AC26AD50047DE35 /* MyPageFirstTableCell.swift in Sources */,
+				6AF590C02AC856C7001E511F /* CircularProgressBarView.swift in Sources */,
+				6A73784D2AC26AD50047DE35 /* MyPageCollectionTableCell.swift in Sources */,
 				6ADDE2E42AC30F2F00CE4482 /* SettingTableCell.swift in Sources */,
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,
 				B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */,

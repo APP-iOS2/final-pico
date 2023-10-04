@@ -31,6 +31,10 @@ struct Identifier {
         static let profileEditLoactionTabelCell = "ProfileEditLoactionTabelCell"
         static let profileEditIntroTabelCell = "ProfileEditIntroTabelCell"
         static let profileEditTextTabelCell = "ProfileEditTextTabelCell"
+        static let myPageCollectionTableCell = "MyPageCollectionTableCell"
+        static let myPageMatchingTableCell = "MyPageMatchingTableCell"
+        static let myPageDefaultTableCell = "MyPageDefaultTableCell"
+        static let storeTableCell = "StoreTableCell"
     }
     
     struct CollectionView {
@@ -39,5 +43,6 @@ struct Identifier {
         static let mbtiCollectionCell = "mbtiCollectionCell"
         static let filterMbtiCollectionCell = "filterMbtiCollectionCell"
         static let profileEditCollectionCell = "ProfileEditCollectionCell"
+        static let myPageCollectionCell = "MyPageCollectionCell"
     }
 }

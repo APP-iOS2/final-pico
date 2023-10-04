@@ -1,5 +1,5 @@
 //
-//  MyPageFirstTableCell.swift
+//  MyPageCollectionTableCell.swift
 //  Pico
 //
 //  Created by 김민기 on 2023/09/26.
@@ -7,7 +7,13 @@
 
 import UIKit
 
-final class MyPageFirstTableCell: UITableViewCell {
+protocol MyPageDelegate: AnyObject {
+    func didSelectItem(item: Int)
+}
+
+final class MyPageCollectionTableCell: UITableViewCell {
+    
+    weak var delegate: MyPageDelegate?
     
     private let collectionViewFlowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
@@ -22,8 +28,7 @@ final class MyPageFirstTableCell: UITableViewCell {
         view.showsHorizontalScrollIndicator = false
         view.showsVerticalScrollIndicator = false
         view.contentInset = .zero
-        view.backgroundColor = .clear
-        view.register(MyPageCollectionCell.self, forCellWithReuseIdentifier: "MyPageCollectionCell")
+        view.register(MyPageCollectionCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.myPageCollectionCell)
         return view
     }()
     
@@ -45,9 +50,11 @@ final class MyPageFirstTableCell: UITableViewCell {
     }
     
     private func configCollectionView() {
-        collectionView.backgroundColor = .picoGray
+        collectionView.backgroundColor = .picoLightGray
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.addShadow(offset: CGSize(width: 1, height: 1), color: .black, opacity: 0.07, radius: 3.0)
+        collectionView.layer.masksToBounds = true
     }
     
     private func addSubView() {
@@ -64,14 +71,14 @@ final class MyPageFirstTableCell: UITableViewCell {
     
 }
 
-extension MyPageFirstTableCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension MyPageCollectionTableCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyPageCollectionCell", for: indexPath) as? MyPageCollectionCell else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.myPageCollectionCell, for: indexPath) as? MyPageCollectionCell else { return UICollectionViewCell() }
         cell.configure(imageName: "chu", title: "Store", subTitle: "돈을 주세요")
         cell.backgroundColor = .white
         cell.layer.masksToBounds = true
@@ -86,5 +93,9 @@ extension MyPageFirstTableCell: UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.row {
+        default:
+            delegate?.didSelectItem(item: 0)
+        }
     }
 }

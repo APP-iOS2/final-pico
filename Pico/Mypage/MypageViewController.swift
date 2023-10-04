@@ -40,12 +40,12 @@ final class MypageViewController: UIViewController {
         configTapGesture()
         addViews()
         makeConstraints()
+        myPageTableView.myPageDelegate = self
     }
     
     private func configBarItem() {
-        let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .done, target: self, action: #selector(tappedBarButton))
+        let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .done, target: self, action: #selector(tappedBarButton))
         setButton.tintColor = .darkGray
-    
         navigationItem.rightBarButtonItem = setButton
     }
     
@@ -54,7 +54,7 @@ final class MypageViewController: UIViewController {
         profilView.addGestureRecognizer(tapGesture)
     }
     
-    @objc private func tappedProfileView(_ sender: UIBarButtonItem) {
+    @objc private func tappedProfileView() {
         let viewController = ProfileEditViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -75,21 +75,29 @@ final class MypageViewController: UIViewController {
     
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
-    
         profilView.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(30)
             make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(150)
+            make.width.equalTo(170)
+            make.height.equalTo(170)
         }
+        
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(profilView.snp.bottom).offset(40)
+            make.top.equalTo(profilView.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
         }
+        
         myPageTableView.snp.makeConstraints { make in
             make.top.equalTo(stackView.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+    }
+}
+
+extension MypageViewController: MyPageDelegate {
+    func didSelectItem(item: Int) {
+        let viewController = StoreViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

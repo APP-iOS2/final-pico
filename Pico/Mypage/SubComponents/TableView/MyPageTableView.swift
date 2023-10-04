@@ -12,6 +12,8 @@ import UIKit
 
 final class MyPageTableView: UITableView {
     
+    weak var myPageDelegate: MyPageDelegate?
+    
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: .insetGrouped)
         configTableView()
@@ -21,17 +23,19 @@ final class MyPageTableView: UITableView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     private func configTableView() {
-        self.backgroundColor = .picoGray
-        self.dataSource = self
-        self.delegate = self
+        backgroundColor = .picoLightGray
+        dataSource = self
+        delegate = self
+        addShadow(offset: CGSize(width: 5, height: 5), color: .black, opacity: 0.07, radius: 5.0)
+        layer.masksToBounds = true
     }
     
     private func attribute() {
-        self.register(MyPageFirstTableCell.self, forCellReuseIdentifier: "MyPageFirstTableCell")
-        self.register(MyPageSecondTableCell.self, forCellReuseIdentifier: "MyPageSecondTableCell")
-        self.register(MyPageDefaultTableCell.self, forCellReuseIdentifier: "MyPageDefaultTableCell")
+        self.register(MyPageCollectionTableCell.self, forCellReuseIdentifier: Identifier.TableCell.myPageCollectionTableCell)
+        self.register(MyPageMatchingTableCell.self, forCellReuseIdentifier: Identifier.TableCell.myPageMatchingTableCell)
+        self.register(MyPageDefaultTableCell.self, forCellReuseIdentifier: Identifier.TableCell.myPageDefaultTableCell)
     }
 }
 
@@ -45,27 +49,29 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageFirstTableCell", for: indexPath) as? MyPageFirstTableCell else { return UITableViewCell() }
-
+        switch indexPath.section {
+        case 0:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.myPageCollectionTableCell, for: indexPath) as? MyPageCollectionTableCell else { return UITableViewCell() }
+            cell.delegate = myPageDelegate
             return cell
-        } else if indexPath.section == 1 {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageSecondTableCell", for: indexPath) as? MyPageSecondTableCell else { return UITableViewCell() }
+        case 1:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.myPageMatchingTableCell, for: indexPath) as? MyPageMatchingTableCell else { return UITableViewCell() }
             return cell
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageDefaultTableCell", for: indexPath) as? MyPageDefaultTableCell else { return UITableViewCell() }
-            cell.configure(imageName: "person", title: "상담원과 연결")
+        default:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.myPageDefaultTableCell, for: indexPath) as? MyPageDefaultTableCell else { return UITableViewCell() }
+            cell.configure(imageName: "person", title: "상담원 연결")
             return cell
         }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
-            return 90
-        } else if indexPath.section == 1 {
-            return 110
-        } else {
-            return 50
+        switch indexPath.section {
+        case 0:
+        return 90
+        case 1:
+        return 110
+        default:
+        return 50
         }
     }
     
@@ -78,7 +84,7 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
         if section == 0 {
             return 20.0
         } else {
-            return 0.0
+            return 0
         }
     }
     

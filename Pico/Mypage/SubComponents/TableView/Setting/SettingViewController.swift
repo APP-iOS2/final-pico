@@ -60,8 +60,8 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
         case 2:
             return 7
         case 3: 
-            return 1
-        default: 
+            return 2
+        default:
             return 0
         }
     }
@@ -123,7 +123,12 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 0: 
+            return 0
+        default:
             return 20.0
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

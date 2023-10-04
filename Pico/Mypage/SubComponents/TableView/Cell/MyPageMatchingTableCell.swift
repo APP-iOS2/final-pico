@@ -1,5 +1,5 @@
 //
-//  MyPageSecondTableCell.swift
+//  MyPageMatchingTableCell.swift
 //  Pico
 //
 //  Created by 김민기 on 2023/09/26.
@@ -7,10 +7,11 @@
 
 import UIKit
 
-final class MyPageSecondTableCell: UITableViewCell {
+final class MyPageMatchingTableCell: UITableViewCell {
 
     private let tableImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = UIImage(named: "logo")
         return imageView
     }()
     private let titleLabel: UILabel = {
@@ -64,18 +65,21 @@ final class MyPageSecondTableCell: UITableViewCell {
     
     private func makeConstraints() {
         tableImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(15)
+            make.top.equalToSuperview().offset(20)
             make.leading.equalToSuperview().offset(15)
+            make.height.equalTo(25)
+            make.width.equalTo(90)
         }
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(tableImageView.snp.bottom).offset(15)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().inset(10)
+            make.bottom.equalTo(subtitleLabel.snp.top).offset(-2)
         }
         subtitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(4)
+            make.bottom.equalToSuperview().offset(-15)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().inset(10)
+            
         }
         premiumLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
