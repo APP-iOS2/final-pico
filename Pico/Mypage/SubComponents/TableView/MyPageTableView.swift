@@ -18,6 +18,7 @@ protocol MyPageViewDelegate: AnyObject {
 final class MyPageTableView: UITableView {
     
     weak var myPageViewDelegate: MyPageViewDelegate?
+    weak var myPageCollectionDelegate: MyPageCollectionDelegate?
     
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: .insetGrouped)
@@ -30,15 +31,15 @@ final class MyPageTableView: UITableView {
     }
     
     private func configTableView() {
-        self.backgroundColor = .picoGray
+        self.backgroundColor = .picoLightGray
         self.dataSource = self
         self.delegate = self
     }
     
     private func attribute() {
-        self.register(MyPageFirstTableCell.self, forCellReuseIdentifier: "MyPageFirstTableCell")
-        self.register(MyPageSecondTableCell.self, forCellReuseIdentifier: "MyPageSecondTableCell")
-        self.register(MyPageDefaultTableCell.self, forCellReuseIdentifier: "MyPageDefaultTableCell")
+        self.register(MyPageCollectionTableCell.self, forCellReuseIdentifier: Identifier.TableCell.myPageCollectionTableCell)
+        self.register(MyPageMatchingTableCell.self, forCellReuseIdentifier: Identifier.TableCell.myPageMatchingTableCell)
+        self.register(MyPageDefaultTableCell.self, forCellReuseIdentifier: Identifier.TableCell.myPageDefaultTableCell)
     }
 }
 
@@ -53,27 +54,28 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageFirstTableCell", for: indexPath) as? MyPageFirstTableCell else { return UITableViewCell() }
+        switch indexPath.section {
+        case 0:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.myPageCollectionTableCell, for: indexPath) as? MyPageCollectionTableCell else { return UITableViewCell() }
+            cell.delegate = myPageCollectionDelegate
             return cell
-            
-        } else if indexPath.section == 1 {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageSecondTableCell", for: indexPath) as? MyPageSecondTableCell else { return UITableViewCell() }
+        case 1:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.myPageMatchingTableCell, for: indexPath) as? MyPageMatchingTableCell else { return UITableViewCell() }
             return cell
-            
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "MyPageDefaultTableCell", for: indexPath) as? MyPageDefaultTableCell else { return UITableViewCell() }
-            cell.configure(imageName: "person", title: "상담원과 연결")
+        default:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.myPageDefaultTableCell, for: indexPath) as? MyPageDefaultTableCell else { return UITableViewCell() }
+            cell.configure(imageName: "person", title: "상담원 연결")
             return cell
         }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
+        switch indexPath.section {
+        case 0:
             return 90
-        } else if indexPath.section == 1 {
+        case 1:
             return 110
-        } else {
+        default:
             return 50
         }
     }
@@ -84,9 +86,10 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
+        switch section {
+        case 0:
             return 20.0
-        } else {
+        default:
             return 0.0
         }
     }
@@ -98,10 +101,10 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let scrollOffset = scrollView.contentOffset.y
         let maxHeight = Constraint.MypageView.profileViewMaxHeight + scrollOffset
-
+        
         let isScreenHeightInsufficient = Screen.height < scrollView.contentSize.height + Constraint.MypageView.profileViewMaxHeight
         let isProfileViewHeightInRange = (scrollOffset..<maxHeight).contains(Constraint.MypageView.profileViewHeight)
-
+        
         if isScreenHeightInsufficient && isProfileViewHeightInRange {
             Constraint.MypageView.profileViewHeight -= scrollOffset
             self.myPageViewDelegate?.updateProfileViewLayout(newHeight: Constraint.MypageView.profileViewHeight)

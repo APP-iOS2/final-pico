@@ -12,21 +12,23 @@ final class StoreViewController: UIViewController {
     
     private let tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .insetGrouped)
-        view.register(StoreTableCell.self, forCellReuseIdentifier: "StoreTableCell")
-        view.backgroundColor = .white
+        view.register(StoreTableCell.self, forCellReuseIdentifier: Identifier.TableCell.storeTableCell)
+        view.backgroundColor = .clear
+        view.addShadow(offset: CGSize(width: 10, height: 10), opacity: 0.07, radius: 5)
         return view
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configNavigation()
+        configView()
         configTableView()
         addViews()
         makeConstraints()
     }
     
-    private func configNavigation() {
+    private func configView() {
         title = "Store"
+        view.backgroundColor = .systemBackground
     }
     
     private func configTableView() {
@@ -57,7 +59,7 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "StoreTableCell", for: indexPath) as? StoreTableCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.storeTableCell, for: indexPath) as? StoreTableCell else { return UITableViewCell() }
         switch indexPath.section {
         case 0: cell.configure(count: "50", price: "5,500", discount: nil)
         case 1: cell.configure(count: "100", price: "11,000", discount: nil)
@@ -65,8 +67,6 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
         case 3: cell.configure(count: "1000", price: "88,000", discount: "20")
         default: break
         }
-        cell.layer.borderWidth = 1
-        cell.layer.borderColor = UIColor.black.cgColor
         return cell
     }
     
