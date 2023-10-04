@@ -21,9 +21,9 @@ struct Identifier {
         static let SettingPrivateTableCell = "SettingPrivateTableCell"
         static let SettingNotiTableCell = "MailListTableViewCell"
         static let SettingTableCell = "SettingTableCell"
-        static let topUserTableCell = "TopUserTableViewCell"
-        static let middleUserTableCell = "MiddleUserTableViewCell"
-        static let bottomUserTableCell = "BottomUserTableViewCell"
+        static let basicInformationTableCell = "BasicInformationTableCell"
+        static let aboutMeTableCell = "AboutMeTableCell"
+        static let subInfomationTableCell = "SubInfomationTableCell"
         static let notiTableCell = "NotificationTabelViewCell"
         static let profileEditImageTableCell = "ProfileEditImageTableCell"
         static let profileEditNicknameTabelCell = "ProfileEditNicknameTabelCell"
@@ -31,6 +31,7 @@ struct Identifier {
         static let profileEditLoactionTabelCell = "ProfileEditLoactionTabelCell"
         static let profileEditIntroTabelCell = "ProfileEditIntroTabelCell"
         static let profileEditTextTabelCell = "ProfileEditTextTabelCell"
+        static let userImageTableCell = "UserImageTableCell"
     }
     
     struct CollectionView {

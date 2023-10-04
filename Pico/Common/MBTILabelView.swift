@@ -93,6 +93,11 @@ final class MBTILabelView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setMbti(mbti: MBTIType) {
+        textLabel.text = mbti.nameString
+        self.backgroundColor = UIColor(hex: mbti.colorName)
+    }
+    
     private func configUI() {
         self.backgroundColor = UIColor(hex: mbti.colorName)
         self.layer.cornerRadius = labelScale.radius

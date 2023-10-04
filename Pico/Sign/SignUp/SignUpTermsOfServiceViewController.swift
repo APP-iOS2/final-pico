@@ -9,7 +9,8 @@ import UIKit
 import SnapKit
 
 final class SignUpTermsOfServiceViewController: UIViewController {
-    
+    private var isLoading: Bool = false
+    private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = Te4mp.termsOfServiceTexts
     
     private let progressView: UIProgressView = {
@@ -117,16 +118,30 @@ extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDa
         return cell
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let isAtBottom = scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
-        
-        if isAtBottom {
+    func updateNextButton(isCheck: Bool) {
+        if isCheck {
             nextButton.isEnabled = true
             nextButton.backgroundColor = .picoBlue
         } else {
             nextButton.isEnabled = false
             nextButton.backgroundColor = .picoGray
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        isLoading = true
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard isLoading else { return }
+        let isAtBottom = scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
+        guard !isCheckedBottom else { return }
+        if isAtBottom {
+            isCheckedBottom = true
+        } else {
+            isCheckedBottom = false            
+        }
+        updateNextButton(isCheck: isCheckedBottom)
     }
 }
 
