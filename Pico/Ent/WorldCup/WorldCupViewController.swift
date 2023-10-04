@@ -62,6 +62,7 @@ final class WorldCupViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()
+        configBackButton()
     }
 
     private func addViews() {
