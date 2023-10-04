@@ -8,13 +8,14 @@
 import UIKit
 import SnapKit
 
-final class BottomUserTableViewCell: UITableViewCell {
+final class SubInfomationTableCell: UITableViewCell {
     private let viewModel = UserDetailViewModel()
     
     private let hobbyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        layout.minimumInteritemSpacing = 5
         return collectionView
     }()
     
@@ -22,6 +23,7 @@ final class BottomUserTableViewCell: UITableViewCell {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        layout.minimumInteritemSpacing = 5
         return collectionView
     }()
     
@@ -29,6 +31,7 @@ final class BottomUserTableViewCell: UITableViewCell {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
+        layout.minimumInteritemSpacing = 5
         return collectionView
     }()
     
@@ -83,12 +86,14 @@ final class BottomUserTableViewCell: UITableViewCell {
     
     private func makeConstraints() {
         hobbyLabel.snp.makeConstraints { make in
-            make.leading.top.equalToSuperview().offset(10)
+            make.leading.top.equalToSuperview().offset(20)
         }
         
         hobbyCollectionView.snp.makeConstraints { make in
             make.top.equalTo(hobbyLabel.snp.bottom).offset(20)
-            make.leading.trailing.equalToSuperview().offset(10)
+            make.leading.equalTo(hobbyLabel.snp.leading)
+            make.trailing.equalToSuperview().offset(-10)
+            
             make.height.equalTo(Screen.height * 0.1)
         }
         
@@ -101,7 +106,7 @@ final class BottomUserTableViewCell: UITableViewCell {
         personalCollectionView.snp.makeConstraints { make in
             make.top.equalTo(personalLabel.snp.bottom).offset(20)
             make.leading.equalTo(personalLabel.snp.leading)
-            make.trailing.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-10)
             make.height.equalTo(Screen.height * 0.1)
         }
         
@@ -123,10 +128,9 @@ final class BottomUserTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
 
-extension BottomUserTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SubInfomationTableCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let hobbys = viewModel.userData.subInfo?.hobbies else { return 0 }
@@ -200,6 +204,5 @@ extension BottomUserTableViewCell: UICollectionViewDelegate, UICollectionViewDat
         default:
             return CGSize(width: 70, height: 70)
         }
-        
     }
 }

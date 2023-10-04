@@ -47,6 +47,9 @@ final class NotificationViewController: UIViewController {
         tableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
         tableView.delegate = self
         tableView.dataSource = self
+        if #available(iOS 15.0, *) {
+            tableView.tableHeaderView = UIView()
+        }
     }
     
     private func addViews() {
