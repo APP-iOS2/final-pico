@@ -49,7 +49,7 @@ final class WorldCupResultViewController: UIViewController {
         return view
     }()
     
-    private let chatButton: CommonButton = {
+    private lazy var chatButton: CommonButton = {
         let button = CommonButton()
         button.setTitle("채팅 신청하기", for: .normal)
         return button
@@ -64,7 +64,7 @@ final class WorldCupResultViewController: UIViewController {
         return label
     }()
     
-    private let cancelButton: UIButton = {
+    private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("채팅 신청하지 않고 나가기", for: .normal)
         button.setTitleColor(.picoAlphaBlue, for: .normal)
@@ -169,18 +169,10 @@ final class WorldCupResultViewController: UIViewController {
     
     @objc func tappedChatButton() {
         // 채팅 신청하는 것으로 바뀌어야 함
-        self.navigationController?.popViewController(animated: true)
+        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func tappedCancelButton() {
-        guard let navigationController = self.navigationController else {
-            return
-        }
-        let popDepth = 2
-
-        if let targetViewController = navigationController.viewControllers.dropLast(popDepth).last {
-            navigationController.popToViewController(targetViewController, animated: true)
-        }
+        self.dismiss(animated: true, completion: nil)
     }
-
 }
