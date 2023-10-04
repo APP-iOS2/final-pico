@@ -25,6 +25,7 @@ final class EntViewController: UIViewController {
         configLogoBarItem()
         addViews()
         makeConstraints()
+        configBackButton()
         configCollectionView()
     }
     
