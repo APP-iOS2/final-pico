@@ -8,38 +8,34 @@
 import UIKit
 import SnapKit
 
-enum NotiType {
-    case like
-    case message
-}
 class NotificationTableViewCell: UITableViewCell {
     
-    private var notiType: NotiType = .like
+    var notiType: NotiType = .like
     
-    private let profileImageView: UIImageView = {
+    var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "AppIcon")
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
-    private let iconImageView: UIImageView = {
+    var iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "heart.fill")
         imageView.tintColor = .picoBlue
         return imageView
     }()
     
-    private let nameLabel: UILabel = {
+    var nameLabel: UILabel = {
         let label = UILabel()
         label.text = "찐 윈터임, 21"
         label.font = .picoSubTitleFont
         return label
     }()
     
-    private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
+    var mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
     
-    private let contentLabel: UILabel = {
+    var contentLabel: UILabel = {
         let label = UILabel()
         label.text = "좋아요를 누르셨습니다."
         return label
@@ -65,16 +61,6 @@ class NotificationTableViewCell: UITableViewCell {
         profileImageView.layer.cornerRadius = profileImageView.frame.width / 2.0
         profileImageView.clipsToBounds = true
         self.setNeedsUpdateConstraints()
-    }
-    
-    func configData(imageUrl: String, title: String, type: NotiType) {
-        guard let url = URL(string: imageUrl) else { return }
-        notiType = type
-        profileImageView.load(url: url)
-        iconImageView.image = notiType == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
-        iconImageView.tintColor = notiType == .like ? .systemPink : .picoBlue
-        nameLabel.text = title
-        contentLabel.text = notiType == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
     }
     
     private func addViews() {

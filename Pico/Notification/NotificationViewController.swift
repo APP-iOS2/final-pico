@@ -7,24 +7,14 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
+import RxRelay
 
 final class NotificationViewController: UIViewController {
-    struct DummyNoti {
-        let name: String
-        let age: Int
-        let imageUrl: String
-        let notiType: NotiType
-        var title: String {
-            return "\(name), \(age)"
-        }
-    }
-    
     private let tableView = UITableView()
-    private let notifications: [DummyNoti] = [
-        DummyNoti(name: "찐 윈터", age: 21, imageUrl: "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg", notiType: .like),
-        DummyNoti(name: "찐 윈터라니깐여;", age: 21, imageUrl: "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg", notiType: .message),
-        DummyNoti(name: "풍리나", age: 35, imageUrl: "https://flexible.img.hani.co.kr/flexible/normal/640/441/imgdb/original/2023/0525/20230525501996.jpg", notiType: .like)
-    ]
+    private let viewModel = NotificationViewModel()
+    private var disposeBag = DisposeBag()
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.reloadData()
@@ -36,6 +26,8 @@ final class NotificationViewController: UIViewController {
         addViews()
         makeConstraints()
         configTableView()
+        configTableviewDelegate()
+        configTableviewDatasource()
     }
     
     private func configViewController() {
@@ -45,8 +37,6 @@ final class NotificationViewController: UIViewController {
     
     private func configTableView() {
         tableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
-        tableView.delegate = self
-        tableView.dataSource = self
         if #available(iOS 15.0, *) {
             tableView.tableHeaderView = UIView()
         }
@@ -63,20 +53,71 @@ final class NotificationViewController: UIViewController {
     }
 }
 
-extension NotificationViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return notifications.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.notiTableCell, for: indexPath) as? NotificationTableViewCell else {
-            return UITableViewCell()
-        }
-        cell.configData(imageUrl: notifications[indexPath.row].imageUrl, title: notifications[indexPath.row].title, type: notifications[indexPath.row].notiType)
-        return cell
-    }
-    
+extension NotificationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
+    }
+}
+
+// MARK: - UITableView+Rx
+extension NotificationViewController {
+    private func configTableviewDatasource() {
+        viewModel.notifications
+            .bind(to: tableView.rx.items(cellIdentifier: Identifier.TableCell.notiTableCell, cellType: NotificationTableViewCell.self)) { _, item, cell in
+                cell.nameLabel.text = item.name
+                cell.notiType = item.notiType
+                cell.iconImageView.image = item.notiType == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
+                cell.iconImageView.tintColor = item.notiType == .like ? .systemPink : .picoBlue
+                cell.contentLabel.text = item.notiType == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
+                Observable.just(item.imageUrl)
+                    .flatMap(self.imageLoad)
+                    .observe(on: MainScheduler.instance)
+                    .bind(to: cell.profileImageView.rx.image)
+                    .disposed(by: self.disposeBag)
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func configTableviewDelegate() {
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        tableView.rx.modelSelected(DummyNoti.self)
+            .subscribe(onNext: { item in
+                if item.notiType == .like {
+                    let viewController = UserDetailViewController()
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                } else {
+                    if let tabBarController = self.tabBarController as? TabBarController {
+                        tabBarController.selectedIndex = 1
+                        let viewControllers = self.navigationController?.viewControllers
+                        self.navigationController?.setViewControllers(viewControllers ?? [], animated: false)
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func imageLoad(url: String) -> Observable<UIImage?> {
+        return Observable.create { emitter in
+            let task = URLSession.shared.dataTask(with: URL(string: url)!) { data, _, error in
+                if let error = error {
+                    emitter.onError(error)
+                    return
+                }
+                guard let data = data,
+                      let image = UIImage(data: data) else {
+                    emitter.onNext(nil)
+                    emitter.onCompleted()
+                    return
+                }
+                
+                emitter.onNext(image)
+                emitter.onCompleted()
+            }
+            task.resume()
+            return Disposables.create {
+                task.cancel()
+            }
+        }
     }
 }
