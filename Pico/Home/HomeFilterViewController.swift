@@ -13,6 +13,7 @@ final class HomeFilterViewController: UIViewController {
     static var filterGender: [GenderType] = [.female, .male, .etc]
     weak var homeViewController: HomeViewController?
     private let mbtiCollectionViewController = MBTICollectionViewController()
+    private var filterChangeState: Bool = false
     private lazy var selectedGenderLabel: UILabel = createFilterLabel(text: "만나고 싶은 성별", font: .picoTitleFont)
     private lazy var selectedGenderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
     private lazy var selectedAge: UILabel = createFilterLabel(text: "나이", font: .picoSubTitleFont)
@@ -61,7 +62,10 @@ final class HomeFilterViewController: UIViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        self.homeViewController?.reloadView()
+        if filterChangeState == true {
+            self.homeViewController?.reloadView()
+            filterChangeState = false
+        }
     }
     
     private func addSubView() {
@@ -180,6 +184,9 @@ final class HomeFilterViewController: UIViewController {
                 }
             }
             updateButtonAppearance(sender)
+            if HomeFilterViewController.filterGender != homeViewController?.filterGender {
+                filterChangeState = true
+            }
         }
     }
 }

@@ -9,23 +9,25 @@ import UIKit
 import SnapKit
 
 final class HomeViewController: BaseViewController {
+    
+    var removedView: [UIView] = []
+    var filterGender: [GenderType] = HomeFilterViewController.filterGender
     lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
     lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
     
-    var filterGender: [GenderType] = HomeFilterViewController.filterGender
-    
     private let emptyView: HomeEmptyView = HomeEmptyView()
-    var activityIndicatorView: UIActivityIndicatorView = {
-        let activityIndicator = UIActivityIndicatorView()
-        activityIndicator.style = .large
-        activityIndicator.color = .picoBlue
-        return activityIndicator
-    }()
     private var tempUser: [User] = []
     private let vStack: UIStackView = {
         let vStack = UIStackView()
         vStack.axis = .vertical
         return vStack
+    }()
+    
+    private var activityIndicatorView: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView()
+        activityIndicator.style = .large
+        activityIndicator.color = .picoBlue
+        return activityIndicator
     }()
     
     // MARK: - override
