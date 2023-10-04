@@ -69,11 +69,7 @@ extension NotificationViewController {
                 cell.iconImageView.image = item.notiType == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
                 cell.iconImageView.tintColor = item.notiType == .like ? .systemPink : .picoBlue
                 cell.contentLabel.text = item.notiType == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
-                Observable.just(item.imageUrl)
-                    .flatMap(self.imageLoad)
-                    .observe(on: MainScheduler.instance)
-                    .bind(to: cell.profileImageView.rx.image)
-                    .disposed(by: self.disposeBag)
+                cell.profileImageView.loadImage(url: item.imageUrl, disposeBag: self.disposeBag)
             }
             .disposed(by: disposeBag)
     }
@@ -95,29 +91,5 @@ extension NotificationViewController {
                 }
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func imageLoad(url: String) -> Observable<UIImage?> {
-        return Observable.create { emitter in
-            let task = URLSession.shared.dataTask(with: URL(string: url)!) { data, _, error in
-                if let error = error {
-                    emitter.onError(error)
-                    return
-                }
-                guard let data = data,
-                      let image = UIImage(data: data) else {
-                    emitter.onNext(nil)
-                    emitter.onCompleted()
-                    return
-                }
-                
-                emitter.onNext(image)
-                emitter.onCompleted()
-            }
-            task.resume()
-            return Disposables.create {
-                task.cancel()
-            }
-        }
     }
 }
