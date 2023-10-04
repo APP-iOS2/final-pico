@@ -10,11 +10,12 @@ import SnapKit
 import RxSwift
 
 final class HomeTabImageViewController: UIViewController {
+    
+    weak var homeViewController: HomeViewController?
     private let user: User
     private let disposeBag = DisposeBag()
     private var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
     private var initialCenter: CGPoint = CGPoint()
-    weak var homeViewController: HomeViewController?
     
     init(user: User) {
         self.user = user
@@ -97,10 +98,10 @@ final class HomeTabImageViewController: UIViewController {
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(touchGesture(_:)))
         self.view.addGestureRecognizer(panGesture)
     }
-    
     private func configButtons() {
         likeButton.addTarget(self, action: #selector(tappedLikeButton), for: .touchUpInside)
         disLikeButton.addTarget(self, action: #selector(tappedDisLikeButton), for: .touchUpInside)
+        pickBackButton.addTarget(self, action: #selector(tappedPickBackButton), for: .touchUpInside)
     }
     
     private func addSubView() {
@@ -201,12 +202,14 @@ final class HomeTabImageViewController: UIViewController {
         } else if gesture.state == .ended {
             if translation.x > 100 {
                 UIView.animate(withDuration: 0.5) {
+                    self.homeViewController?.removedView.append(self.view)
                     self.view.center.x += 1000
                     self.homeViewController?.likeLabel.alpha = 0
                 } completion: { _ in
                 }
             } else if translation.x < -100 {
                 UIView.animate(withDuration: 0.5) {
+                    self.homeViewController?.removedView.append(self.view)
                     self.view.center.x -= 1000
                     self.homeViewController?.passLabel.alpha = 0
                 } completion: { _ in
@@ -286,6 +289,7 @@ final class HomeTabImageViewController: UIViewController {
         }
     
     @objc func tappedLikeButton() {
+        homeViewController?.removedView.append(self.view)
         self.homeViewController?.likeLabel.alpha = 1
         UIView.animate(withDuration: 0.3) {
             self.view.center.x += 1000
@@ -295,6 +299,7 @@ final class HomeTabImageViewController: UIViewController {
     }
     
     @objc func tappedDisLikeButton() {
+        homeViewController?.removedView.append(self.view)
         self.homeViewController?.passLabel.alpha = 1
         UIView.animate(withDuration: 0.3) {
             self.view.center.x -= 1000
@@ -303,6 +308,18 @@ final class HomeTabImageViewController: UIViewController {
         }
     }
     
+    @objc func tappedPickBackButton() {
+        if let lastView = homeViewController?.removedView.last {
+            UIView.animate(withDuration: 0.3) {
+                lastView.center = self.view.center
+                lastView.transform = CGAffineTransform(rotationAngle: 0)
+            }
+            homeViewController?.removedView.removeLast()
+        } else {
+            showAlert(message: "첫번째 추천입니다.", yesAction: nil)
+        }
+    }
+
     @objc func tappedPageRight() {
         let nextPage = pageControl.currentPage + 1
         let offsetX = CGFloat(nextPage) * scrollView.frame.size.width
