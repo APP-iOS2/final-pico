@@ -8,24 +8,20 @@
 import UIKit
 import SnapKit
 
-final class EntViewController: UIViewController {
+final class EntViewController: BaseViewController {
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
         return collectionView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configLogoBarItem()
         addViews()
         makeConstraints()
-        configBackButton()
         configCollectionView()
     }
     
@@ -41,13 +37,8 @@ final class EntViewController: UIViewController {
     }
     
     private func makeConstraints() {
-        let padding: CGFloat = 20
-        
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.leading.equalToSuperview().offset(padding)
-            make.trailing.equalToSuperview().offset(-padding)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-padding)
+            make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
@@ -83,7 +74,6 @@ extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSourc
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         if section == 0 {
             return 1
         } else {
