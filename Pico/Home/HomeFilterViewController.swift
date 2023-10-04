@@ -51,7 +51,7 @@ final class HomeFilterViewController: UIViewController {
         makeConstraints()
     }
     
-    func addSubView() {
+    private func addSubView() {
         view.addSubview(genderHStack)
         view.addSubview(ageVStack)
         view.addSubview(distanceVStack)
@@ -76,7 +76,7 @@ final class HomeFilterViewController: UIViewController {
         mbtiCollectionViewController.didMove(toParent: self)
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         genderHStack.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
