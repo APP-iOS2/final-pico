@@ -39,6 +39,7 @@
 		534790C22AC3B2F20028610D /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C12AC3B2F20028610D /* NotificationViewController.swift */; };
 		534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C32AC3B3190028610D /* NotificationTableViewCell.swift */; };
 		5375E74A2ACD2C09001A571D /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E7492ACD2C09001A571D /* NotificationViewModel.swift */; };
+		5375E74C2ACD4590001A571D /* StringToDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74B2ACD4590001A571D /* StringToDate.swift */; };
 		53836F532ACC903800D98F77 /* LoadingAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F522ACC903800D98F77 /* LoadingAnimationView.swift */; };
 		53836F552ACC90FC00D98F77 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F542ACC90FC00D98F77 /* Loading.swift */; };
 		547138482AC3615B00CFE88D /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547138472AC3615B00CFE88D /* UserDetailViewModel.swift */; };
@@ -189,6 +190,7 @@
 		534790C12AC3B2F20028610D /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		534790C32AC3B3190028610D /* NotificationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTableViewCell.swift; sourceTree = "<group>"; };
 		5375E7492ACD2C09001A571D /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
+		5375E74B2ACD4590001A571D /* StringToDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringToDate.swift; sourceTree = "<group>"; };
 		53836F522ACC903800D98F77 /* LoadingAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAnimationView.swift; sourceTree = "<group>"; };
 		53836F542ACC90FC00D98F77 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
 		547138472AC3615B00CFE88D /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
@@ -783,6 +785,7 @@
 				6937783B2AC26B4300762165 /* LoadImageView.swift */,
 				B15ABE2E2AC31C4700529C29 /* AddViewShadow.swift */,
 				B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */,
+				5375E74B2ACD4590001A571D /* StringToDate.swift */,
 			);
 			path = Function;
 			sourceTree = "<group>";
@@ -1149,6 +1152,7 @@
 				4B26653B2AC3E3250074D4E2 /* WorldCupViewController.swift in Sources */,
 				6ADDE2EA2AC31D1300CE4482 /* SettingNotiTableCell.swift in Sources */,
 				36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */,
+				5375E74C2ACD4590001A571D /* StringToDate.swift in Sources */,
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
 				54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */,
 				367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */,
