@@ -18,9 +18,9 @@ struct Identifier {
     
     struct TableCell {
         static let mailTableCell = "MailListTableViewCell"
-        static let SettingPrivateTableCell = "SettingPrivateTableCell"
-        static let SettingNotiTableCell = "MailListTableViewCell"
-        static let SettingTableCell = "SettingTableCell"
+        static let settingPrivateTableCell = "SettingPrivateTableCell"
+        static let settingNotiTableCell = "MailListTableViewCell"
+        static let settingTableCell = "SettingTableCell"
         static let basicInformationTableCell = "BasicInformationTableCell"
         static let aboutMeTableCell = "AboutMeTableCell"
         static let subInfomationTableCell = "SubInfomationTableCell"
@@ -32,6 +32,10 @@ struct Identifier {
         static let profileEditIntroTabelCell = "ProfileEditIntroTabelCell"
         static let profileEditTextTabelCell = "ProfileEditTextTabelCell"
         static let userImageTableCell = "UserImageTableCell"
+        static let myPageCollectionTableCell = "MyPageCollectionTableCell"
+        static let myPageMatchingTableCell = "MyPageMatchingTableCell"
+        static let myPageDefaultTableCell = "MyPageDefaultTableCell"
+        static let storeTableCell = "StoreTableCell"
     }
     
     struct CollectionView {
@@ -40,5 +44,6 @@ struct Identifier {
         static let mbtiCollectionCell = "mbtiCollectionCell"
         static let filterMbtiCollectionCell = "filterMbtiCollectionCell"
         static let profileEditCollectionCell = "ProfileEditCollectionCell"
+        static let myPageCollectionCell = "MyPageCollectionCell"
     }
 }

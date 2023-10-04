@@ -1,5 +1,5 @@
 //
-//  MyPageFirstTableCell.swift
+//  MyPageCollectionTableCell.swift
 //  Pico
 //
 //  Created by 김민기 on 2023/09/26.
@@ -7,7 +7,12 @@
 
 import UIKit
 
-final class MyPageFirstTableCell: UITableViewCell {
+protocol MyPageCollectionDelegate: AnyObject {
+    func didSelectItem(item: Int)
+}
+
+final class MyPageCollectionTableCell: UITableViewCell {
+    weak var delegate: MyPageCollectionDelegate?
     
     private let collectionViewFlowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
@@ -22,7 +27,6 @@ final class MyPageFirstTableCell: UITableViewCell {
         view.showsHorizontalScrollIndicator = false
         view.showsVerticalScrollIndicator = false
         view.contentInset = .zero
-        view.backgroundColor = .clear
         view.register(MyPageCollectionCell.self, forCellWithReuseIdentifier: "MyPageCollectionCell")
         return view
     }()
@@ -45,7 +49,7 @@ final class MyPageFirstTableCell: UITableViewCell {
     }
     
     private func configCollectionView() {
-        collectionView.backgroundColor = .picoGray
+        collectionView.backgroundColor = .picoLightGray
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -64,7 +68,7 @@ final class MyPageFirstTableCell: UITableViewCell {
     
 }
 
-extension MyPageFirstTableCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension MyPageCollectionTableCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 2
@@ -86,5 +90,9 @@ extension MyPageFirstTableCell: UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.row {
+        default:
+            delegate?.didSelectItem(item: 0)
+        }
     }
 }

@@ -32,6 +32,8 @@ extension UIColor {
     static let picoGray: UIColor = UIColor(hex: "#E3E3E3")
     /// 투명도 80% 적용된 화이트 색상
     static let picoAlphaWhite: UIColor = .white.withAlphaComponent(0.8)
+    /// 테이블뷰 백그라운드 색상
+    static let picoLightGray: UIColor = UIColor(hex: "#F1F1F1")
     
     /// 폰트 블랙 색상
     static let picoFontBlack: UIColor = .label
