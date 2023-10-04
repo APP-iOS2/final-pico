@@ -59,7 +59,8 @@ final class MailViewController: BaseViewController {
         
         mailText.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(20)
-            make.leading.trailing.equalTo(safeArea).offset(30)
+            make.leading.equalTo(safeArea).offset(30)
+            make.trailing.equalTo(safeArea).offset(-30)
         }
         
         if dataCount < 1 {
@@ -69,7 +70,8 @@ final class MailViewController: BaseViewController {
         } else {
             mailListTableView.snp.makeConstraints { make in
                 make.top.equalTo(mailText.snp.bottom).offset(10)
-                make.leading.trailing.bottom.equalTo(safeArea).offset(20)
+                make.leading.bottom.equalTo(safeArea).offset(20)
+                make.trailing.equalTo(safeArea).offset(-20)
             }
         }
     }

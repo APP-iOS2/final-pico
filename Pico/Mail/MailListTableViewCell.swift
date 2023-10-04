@@ -21,7 +21,6 @@ final class MailListTableViewCell: UITableViewCell {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 10
-        stackView.alignment = .center
         return stackView
     }()
     
@@ -113,6 +112,12 @@ final class MailListTableViewCell: UITableViewCell {
             make.leading.equalTo(userImage.snp.trailing).offset(15)
         }
         
+        mbtiLabelView.snp.makeConstraints { make in
+            make.centerY.equalTo(nameLabel)
+            make.height.equalTo(mbtiLabelView.frame.size.height)
+            make.width.equalTo(mbtiLabelView.frame.size.width)
+        }
+        
         infoStackView.snp.makeConstraints { make in
             make.top.equalTo(userImage).offset(10)
             make.leading.equalTo(nameStackView)
@@ -122,7 +127,7 @@ final class MailListTableViewCell: UITableViewCell {
         
         dateStackView.snp.makeConstraints { make in
             make.top.bottom.equalTo(infoStackView)
-            make.trailing.equalTo(contentView.snp.trailing).offset(-20)
+            make.trailing.equalTo(contentView.snp.trailing)
             make.width.equalTo(50)
         }
     }
