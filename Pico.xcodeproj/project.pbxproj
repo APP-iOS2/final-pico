@@ -519,9 +519,7 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				B14805282ACD05C40009FF71 /* GoogleService-Info.plist */,
 				5375E7452ACD2B1B001A571D /* GoogleService-Info.plist */,
-				B14805282ACD05C40009FF71 /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -977,9 +975,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				B14805292ACD05C50009FF71 /* GoogleService-Info.plist in Resources */,
 				5375E7462ACD2B1B001A571D /* GoogleService-Info.plist in Resources */,
-				B14805292ACD05C50009FF71 /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
