@@ -64,7 +64,7 @@ final class MbtiModalViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .picoMBTISelectedLabelFont
-        label.textColor = .darkGray
+        label.textColor = .picoFontBlack
         label.tag = 1
         return label
     }()
@@ -73,7 +73,7 @@ final class MbtiModalViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .picoMBTISelectedSubLabelFont
-        label.textColor = .darkGray
+        label.textColor = .picoFontBlack
         label.tag = 1
         return label
     }()
@@ -82,7 +82,7 @@ final class MbtiModalViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .picoMBTISelectedLabelFont
-        label.textColor = .darkGray
+        label.textColor = .picoFontBlack
         label.tag = 2
         return label
     }()
@@ -91,7 +91,7 @@ final class MbtiModalViewController: UIViewController {
         let label = UILabel()
         label.text = ""
         label.font = .picoMBTISelectedSubLabelFont
-        label.textColor = .darkGray
+        label.textColor = .picoFontBlack
         label.tag = 2
         return label
     }()
