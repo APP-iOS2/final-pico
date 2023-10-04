@@ -6,7 +6,7 @@
 //
 
 import UIKit
-final class UserImageTableViewCell: UITableViewCell {
+final class UserImageTableCell: UITableViewCell {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
@@ -32,12 +32,9 @@ final class UserImageTableViewCell: UITableViewCell {
     
     private func configScrollView() {
         scrollView.frame = UIScreen.main.bounds
-        scrollView.delegate = self // scroll범위에 따라 pageControl의 값을 바꾸어주기 위한 delegate
+        scrollView.delegate = self
         scrollView.alwaysBounceVertical = false
         scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.isScrollEnabled = true
-        scrollView.isPagingEnabled = true
         scrollView.bounces = false
     }
     
@@ -77,7 +74,7 @@ final class UserImageTableViewCell: UITableViewCell {
     }
 }
 
-extension UserImageTableViewCell: UIScrollViewDelegate {
+extension UserImageTableCell: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         pageControl.currentPage = Int(floor(scrollView.contentOffset.x / UIScreen.main.bounds.width))
     }

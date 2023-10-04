@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MiddleUserTableViewCell: UITableViewCell {
+final class AboutMeTableCell: UITableViewCell {
     private let introLabel: UILabel = {
         let label = UILabel()
         label.text = "저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??가실래요??래요??가실래요??래요??가실래요??"
