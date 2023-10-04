@@ -69,7 +69,6 @@ final class FirestoreService {
                         print("Error to decode document data: \(error)")
                         completion(.failure(error))
                     }
-                    
                 } else {
                     completion(.success(nil))
                 }
