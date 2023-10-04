@@ -11,7 +11,7 @@ final class SettingPrivateTableCell: UITableViewCell {
     
     private let contentLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .picoFontBlack
+        label.textColor = .picoAlphaWhite
         label.font = UIFont.picoSubTitleFont
         label.text = "아는 사람 만나지 않기"
         return label
@@ -21,6 +21,7 @@ final class SettingPrivateTableCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubView()
         makeConstraints()
+        configView()
     }
     
     required init?(coder: NSCoder) {
@@ -31,6 +32,10 @@ final class SettingPrivateTableCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
         // Configure the view for the selected state
+    }
+    
+    private func configView() {
+        contentView.backgroundColor = .picoBlue
     }
     
     func configure(contentLabel: String) {

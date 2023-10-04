@@ -13,15 +13,19 @@ final class SettingNotiTableCell: UITableViewCell {
         let label = UILabel()
         label.textColor = .picoFontBlack
         label.font = UIFont.picoSubTitleFont
-        label.text = "약관 내용"
+        label.text = "알림허용"
         return label
     }()
     private let subTitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
         label.font = UIFont.picoSubTitleFont
-        label.text = "약관 내용"
+        label.text = "모든 알림을 허용합니다"
         return label
+    }()
+    private let switchButton: SwitchButton = {
+        let button = SwitchButton(frame: CGRect(x: 0, y: 0, width: 25, height: 0))
+        return button
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -46,7 +50,7 @@ final class SettingNotiTableCell: UITableViewCell {
     }
     
     private func addSubView() {
-        [titleLabel, subTitleLabel].forEach {
+        [titleLabel, subTitleLabel, switchButton].forEach {
             contentView.addSubview($0)
         }
     }
@@ -61,6 +65,11 @@ final class SettingNotiTableCell: UITableViewCell {
             make.centerY.equalToSuperview().offset(15)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
+        }
+        switchButton.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-15)
+            make.width.equalTo(40)
         }
     }
 }

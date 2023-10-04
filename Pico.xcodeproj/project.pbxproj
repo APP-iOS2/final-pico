@@ -27,7 +27,7 @@
 		4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665402AC3F4830074D4E2 /* UserDummy.swift */; };
 		531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* MyTransition.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
-		531C4EDB2AC2D08900ADC614 /* MyPageSecondTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */; };
+		531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		53389AEF2AC16D120076DA9B /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* EmptyViewController.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
@@ -47,8 +47,10 @@
 		6937783C2AC26B4300762165 /* LoadImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783B2AC26B4300762165 /* LoadImageView.swift */; };
 		6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783D2AC2742400762165 /* MailSendViewController.swift */; };
 		693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783F2AC2745C00762165 /* MailReceiveViewController.swift */; };
+		6A2060482ACD28E100435723 /* CircularProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2060472ACD28E100435723 /* CircularProgressBarView.swift */; };
+		6A20604A2ACD2CF600435723 /* SwitchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2060492ACD2CF600435723 /* SwitchButton.swift */; };
 		6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */; };
-		6A73784D2AC26AD50047DE35 /* MyPageFirstTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */; };
+		6A73784D2AC26AD50047DE35 /* MyPageCollectionTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784C2AC26AD50047DE35 /* MyPageCollectionTableCell.swift */; };
 		6A7378512AC26B1E0047DE35 /* MyPageDefaultTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7378502AC26B1E0047DE35 /* MyPageDefaultTableCell.swift */; };
 		6A7378532AC26D2E0047DE35 /* MyPageCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7378522AC26D2E0047DE35 /* MyPageCollectionCell.swift */; };
 		6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2DB2AC2D3A200CE4482 /* StoreTableCell.swift */; };
@@ -190,9 +192,11 @@
 		6937783B2AC26B4300762165 /* LoadImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadImageView.swift; sourceTree = "<group>"; };
 		6937783D2AC2742400762165 /* MailSendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendViewController.swift; sourceTree = "<group>"; };
 		6937783F2AC2745C00762165 /* MailReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveViewController.swift; sourceTree = "<group>"; };
+		6A2060472ACD28E100435723 /* CircularProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBarView.swift; sourceTree = "<group>"; };
+		6A2060492ACD2CF600435723 /* SwitchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchButton.swift; sourceTree = "<group>"; };
 		6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableView.swift; sourceTree = "<group>"; };
-		6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageFirstTableCell.swift; sourceTree = "<group>"; };
-		6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSecondTableCell.swift; sourceTree = "<group>"; };
+		6A73784C2AC26AD50047DE35 /* MyPageCollectionTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageCollectionTableCell.swift; sourceTree = "<group>"; };
+		6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageMatchingTableCell.swift; sourceTree = "<group>"; };
 		6A7378502AC26B1E0047DE35 /* MyPageDefaultTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageDefaultTableCell.swift; sourceTree = "<group>"; };
 		6A7378522AC26D2E0047DE35 /* MyPageCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageCollectionCell.swift; sourceTree = "<group>"; };
 		6ADDE2DB2AC2D3A200CE4482 /* StoreTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTableCell.swift; sourceTree = "<group>"; };
@@ -375,9 +379,9 @@
 		6A7378562AC2A4EF0047DE35 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				6A73784C2AC26AD50047DE35 /* MyPageFirstTableCell.swift */,
+				6A73784C2AC26AD50047DE35 /* MyPageCollectionTableCell.swift */,
 				6A7378522AC26D2E0047DE35 /* MyPageCollectionCell.swift */,
-				6A73784E2AC26AEA0047DE35 /* MyPageSecondTableCell.swift */,
+				6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */,
 				6A7378502AC26B1E0047DE35 /* MyPageDefaultTableCell.swift */,
 			);
 			path = Cell;
@@ -631,6 +635,7 @@
 				B15ABE2C2AC2B22100529C29 /* CommonTextField.swift */,
 				B161B8712AC414DD00257A9C /* PopupViewController.swift */,
 				53836F522ACC903800D98F77 /* LoadingAnimationView.swift */,
+				6A2060492ACD2CF600435723 /* SwitchButton.swift */,
 				53836F542ACC90FC00D98F77 /* Loading.swift */,
 			);
 			path = Common;
@@ -839,6 +844,7 @@
 			isa = PBXGroup;
 			children = (
 				B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */,
+				6A2060472ACD28E100435723 /* CircularProgressBarView.swift */,
 				6ADDE2EC2AC3B95A00CE4482 /* ProfileEdit */,
 			);
 			path = ProfilView;
@@ -1013,7 +1019,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				531C4EDB2AC2D08900ADC614 /* MyPageSecondTableCell.swift in Sources */,
+				531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */,
 				6ADDE2E22AC30EFE00CE4482 /* SettingViewController.swift in Sources */,
 				6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */,
 				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
@@ -1030,6 +1036,7 @@
 				4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */,
 				BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */,
 				6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */,
+				6A20604A2ACD2CF600435723 /* SwitchButton.swift in Sources */,
 				36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */,
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
 				54B441302AC2C36C00EC8846 /* BasicInformationTableCell.swift in Sources */,
@@ -1067,7 +1074,7 @@
 				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* DismissKeyboard.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
-				6A73784D2AC26AD50047DE35 /* MyPageFirstTableCell.swift in Sources */,
+				6A73784D2AC26AD50047DE35 /* MyPageCollectionTableCell.swift in Sources */,
 				6ADDE2E42AC30F2F00CE4482 /* SettingTableCell.swift in Sources */,
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,
 				B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */,
@@ -1112,6 +1119,7 @@
 				B17D67AA2AC0B86A006F91DC /* Font+Extensions.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
 				B17D67902AC0AC15006F91DC /* Block.swift in Sources */,
+				6A2060482ACD28E100435723 /* CircularProgressBarView.swift in Sources */,
 				4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */,
 				4B26653B2AC3E3250074D4E2 /* WorldCupViewController.swift in Sources */,
 				6ADDE2EA2AC31D1300CE4482 /* SettingNotiTableCell.swift in Sources */,
