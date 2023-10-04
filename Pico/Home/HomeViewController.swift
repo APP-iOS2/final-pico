@@ -11,7 +11,16 @@ import SnapKit
 final class HomeViewController: BaseViewController {
     lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
     lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
+    
+    var filterGender: [GenderType] = HomeFilterViewController.filterGender
+    
     private let emptyView: HomeEmptyView = HomeEmptyView()
+    var activityIndicatorView: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView()
+        activityIndicator.style = .large
+        activityIndicator.color = .picoBlue
+        return activityIndicator
+    }()
     private var tempUser: [User] = []
     private let vStack: UIStackView = {
         let vStack = UIStackView()
@@ -22,20 +31,45 @@ final class HomeViewController: BaseViewController {
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
-        tempUser = UserDummyData.users
+        fetchUsers()
         addSubView()
+        startLoading()
         makeConstraints()
         configNavigationBarItem()
         configButtons()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        stopLoading()
+    }
+    
+    private func fetchUsers() {
+        tempUser = UserDummyData.users
+    }
+    
+    private func startLoading() {
+        view.addSubview(activityIndicatorView)
+        activityIndicatorView.snp.makeConstraints { make in
+            make.centerX.equalTo(view)
+            make.centerY.equalTo(view)
+        }
+        activityIndicatorView.startAnimating()
+        view.isUserInteractionEnabled = false
+    }
+    
+    private func stopLoading() {
+        activityIndicatorView.stopAnimating()
+        view.isUserInteractionEnabled = true
+    }
+    
     private func addSubView() {
         view.addSubview(emptyView)
-        for user in self.tempUser {
-            let tabImageViewController = HomeTabImageViewController(user: user)
-            tabImageViewController.homeViewController = self
-            addChild(tabImageViewController)
-            view.addSubview(tabImageViewController.view)
+        for user in self.tempUser where filterGender.contains(user.gender) {
+                let tabImageViewController = HomeTabImageViewController(user: user)
+                tabImageViewController.homeViewController = self
+                addChild(tabImageViewController)
+                view.addSubview(tabImageViewController.view)
         }
         view.addSubview(likeLabel)
         view.addSubview(passLabel)
@@ -60,7 +94,7 @@ final class HomeViewController: BaseViewController {
     }
     
     private func configButtons() {
-        emptyView.reLoadButton.addTarget(self, action: #selector(reLoadView), for: .touchUpInside)
+        emptyView.reLoadButton.addTarget(self, action: #selector(reloadView), for: .touchUpInside)
     }
     
     private func configNavigationBarItem() {
@@ -88,13 +122,15 @@ final class HomeViewController: BaseViewController {
         return label
     }
     
-    @objc func reLoadView() {
+    @objc func reloadView() {
         let newViewController = HomeViewController()
         self.navigationController?.setViewControllers([newViewController], animated: false)
     }
 
     @objc func tappedFilterButton() {
         let viewController = HomeFilterViewController()
+        viewController.homeViewController = self
+        addChild(viewController)
         navigationController?.pushViewController(viewController, animated: true)
     }
     

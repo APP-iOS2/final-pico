@@ -10,17 +10,17 @@ import SnapKit
 
 final class HomeFilterViewController: UIViewController {
     
+    static var filterGender: [GenderType] = [.female, .male, .etc]
+    weak var homeViewController: HomeViewController?
+    private let mbtiCollectionViewController = MBTICollectionViewController()
     private lazy var selectedGenderLabel: UILabel = createFilterLabel(text: "만나고 싶은 성별", font: .picoTitleFont)
     private lazy var selectedGenderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
     private lazy var selectedAge: UILabel = createFilterLabel(text: "나이", font: .picoSubTitleFont)
     private lazy var selectedDistance: UILabel = createFilterLabel(text: "거리", font: .picoSubTitleFont)
     private lazy var selectedMBTI: UILabel = createFilterLabel(text: "성격 유형", font: .picoSubTitleFont)
-    
     private lazy var manButton: UIButton = createFilterButton(title: "남자")
     private lazy var womanButton: UIButton = createFilterButton(title: "여자")
     private lazy var etcButton: UIButton = createFilterButton(title: "기타")
-    
-    private let mbtiCollectionViewController = MBTICollectionViewController()
     
     private let ageSlider: UISlider = {
         let slider = UISlider()
@@ -49,6 +49,19 @@ final class HomeFilterViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addSubView()
         makeConstraints()
+        
+        manButton.isSelected = self.homeViewController?.filterGender.contains(.male) ?? false
+        updateButtonAppearance(manButton)
+        
+        womanButton.isSelected = self.homeViewController?.filterGender.contains(.female) ?? false
+        updateButtonAppearance(womanButton)
+        
+        etcButton.isSelected = self.homeViewController?.filterGender.contains(.etc) ?? false
+        updateButtonAppearance(etcButton)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        self.homeViewController?.reloadView()
     }
     
     private func addSubView() {
@@ -133,9 +146,6 @@ final class HomeFilterViewController: UIViewController {
     private func createFilterButton(title: String) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .picoBlue
-        button.isSelected = true
         button.layer.borderWidth = 1.0
         button.layer.borderColor = UIColor.picoBlue.cgColor
         button.layer.cornerRadius = 10
@@ -143,15 +153,33 @@ final class HomeFilterViewController: UIViewController {
         return button
     }
     
+    private func updateButtonAppearance(_ button: UIButton) {
+        button.backgroundColor = button.isSelected ? .picoBlue : .white
+        button.setTitleColor(button.isSelected ? .white : .picoFontGray, for: .normal)
+    }
+    
     @objc func tappedButton(_ sender: UIButton) {
         sender.isSelected.toggle()
-        
-        if sender.isSelected {
-            sender.backgroundColor = .picoBlue
-            sender.setTitleColor(.white, for: .normal)
-        } else {
-            sender.backgroundColor = .white
-            sender.setTitleColor(.picoFontGray, for: .normal)
+        let genderType: GenderType?
+        switch sender.currentTitle {
+        case "남자":
+            genderType = .male
+        case "여자":
+            genderType = .female
+        case "기타":
+            genderType = .etc
+        default:
+            genderType = nil
+        }
+        if let genderType = genderType {
+            if sender.isSelected {
+                HomeFilterViewController.filterGender.append(genderType)
+            } else {
+                if let index = HomeFilterViewController.filterGender.firstIndex(of: genderType) {
+                    HomeFilterViewController.filterGender.remove(at: index)
+                }
+            }
+            updateButtonAppearance(sender)
         }
     }
 }
