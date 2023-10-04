@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HobbyCollectionViewCell: UICollectionViewCell {
+final class HobbyCollectionViewCell: UICollectionViewCell {
     private let label: UILabel = {
         let label = UILabel()
         label.text = "test"

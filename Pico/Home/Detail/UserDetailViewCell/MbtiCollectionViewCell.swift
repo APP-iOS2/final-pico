@@ -7,8 +7,8 @@
 
 import UIKit
 
-class MbtiCollectionViewCell: UICollectionViewCell {
-    private var mbtiView: UIView = MBTILabelView(mbti: .enfj, scale: .large)
+final class MbtiCollectionViewCell: UICollectionViewCell {
+    private var mbtiView: MBTILabelView = MBTILabelView(mbti: .infp, scale: .large)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -17,7 +17,7 @@ class MbtiCollectionViewCell: UICollectionViewCell {
     }
     
     func config(mbtiType: MBTIType) {
-        mbtiView = MBTILabelView(mbti: mbtiType, scale: .large)
+      mbtiView.setMbti(mbti: mbtiType)
     }
     
     private func addViews() {
