@@ -65,7 +65,7 @@ class NotificationTableViewCell: UITableViewCell {
     
     private func addViews() {
         [profileImageView, iconImageView, labelView].forEach { item in
-            addSubview(item)
+            contentView.addSubview(item)
         }
         
         [nameLabel, mbitLabel, contentLabel].forEach { item in
@@ -109,5 +109,15 @@ class NotificationTableViewCell: UITableViewCell {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+    }
+}
+
+extension NotificationTableViewCell {
+    func configData(imageUrl: String, title: String, createdDate: String) {
+        guard let url = URL(string: imageUrl) else { return }
+        profileImageView.load(url: url)
+        iconImageView.image = UIImage()
+        nameLabel.text = title
+        contentLabel.text = createdDate
     }
 }

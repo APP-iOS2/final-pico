@@ -31,7 +31,7 @@ final class SignUpViewController: UIViewController {
         return label
     }()
     
-    private let stackView: UIStackView = {
+    private let buttonHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -105,9 +105,9 @@ final class SignUpViewController: UIViewController {
         configButtons()
     }
 }
-
+// MARK: - Config
 extension SignUpViewController: SignViewControllerDelegate {
-    // MARK: - Config
+
     private func configButtons() {
         mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
@@ -161,22 +161,6 @@ extension SignUpViewController: SignViewControllerDelegate {
         }
         present(modalVC, animated: true, completion: nil)
     }
-    
-    // MARK: - Tapped
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        if !userMbti.contains("") {
-            let viewController = SignUpPhoneNumberViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-    }
-    
-    @objc private func tappedMbtiButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        configMbtiModal(sender)
-    }
-    
-    // MARK: - MBTI
     func getUserMbti(mbti: String, num: Int) {
         switch num {
         case 0:
@@ -200,6 +184,20 @@ extension SignUpViewController: SignViewControllerDelegate {
             nextButton.backgroundColor = .picoBlue
         }
     }
+    
+    // MARK: - @objc
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        if !userMbti.contains("") {
+            let viewController = SignUpPhoneNumberViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+    
+    @objc private func tappedMbtiButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        configMbtiModal(sender)
+    }
 }
 
 // MARK: - UI 관련
@@ -207,10 +205,10 @@ extension SignUpViewController {
     
     private func addSubViews() {
         for stackViewItem in [mbtiFirstButton, mbtiSecondButton, mbtiThirdButton, mbtiFourthButton] {
-            stackView.addArrangedSubview(stackViewItem)
+            buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
         
-        for viewItem in [ progressView, notifyLabel, stackView, nextButton] {
+        for viewItem in [ progressView, notifyLabel, buttonHorizontalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -231,7 +229,7 @@ extension SignUpViewController {
             make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
-        stackView.snp.makeConstraints { make in
+        buttonHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalTo(Constraint.SignView.contentPadding)
             make.trailing.equalTo(-Constraint.SignView.contentPadding)

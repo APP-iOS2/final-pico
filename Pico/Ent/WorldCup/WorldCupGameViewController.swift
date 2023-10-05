@@ -13,7 +13,6 @@ final class WorldCupGameViewController: UIViewController {
     private var strong8: [User] = []
     private var strong4: [User] = []
     private var strong2: [User] = []
-    private var winner: [User] = []
     private var index = 0
     
     private let backgroundImageView: UIImageView = {
@@ -144,7 +143,7 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WorldCupCollectionViewCell", for: indexPath) as! WorldCupCollectionViewCell
         
-        let round: Int
+        var round: Int = 16
         let currentItem: User
         
         switch index {
@@ -157,12 +156,9 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
         case 24..<28:
             round = 4
             currentItem = strong4[index - 24 + indexPath.item]
-        case 28:
+        default:
             round = 2
             currentItem = strong2[index - 28 + indexPath.item]
-        default:
-            round = 0
-            currentItem = winner[0]
         }
         
         let dataLabelTexts = self.addDataLabels(currentItem)
@@ -170,7 +166,7 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
         self.roundLabel.text = round == 2 ? "결승" : "\(round)강"
         cell.mbtiLabel.text = "\(currentItem.mbti)"
         cell.userNickname.text = currentItem.nickName
-//        cell.userAge.text = "\(currentItem.age)"
+        //        cell.userAge.text = "\(currentItem.age)"
         cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
         return cell
     }
@@ -203,7 +199,10 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             collectionView.reloadData()
         default:
             let selectedItem = strong2[index - 28 + indexPath.item]
-            winner.append(selectedItem)
+
+            let worldCupResultViewController = WorldCupResultViewController()
+            worldCupResultViewController.selectedItem = selectedItem
+            self.navigationController?.pushViewController(worldCupResultViewController, animated: true)
         }
     }
 }

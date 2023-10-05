@@ -43,7 +43,7 @@ final class SignUpNickNameViewController: UIViewController {
         return label
     }()
     
-    private let nickNameStackView: UIStackView = {
+    private let nickNameHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
@@ -109,9 +109,8 @@ final class SignUpNickNameViewController: UIViewController {
         unregisterKeyboard()
     }
 }
-
+// MARK: - Config
 extension SignUpNickNameViewController {
-    // MARK: - Config
     private func configButtons() {
         nickNameCheckButton.addTarget(self, action: #selector(tappedNickNameCheckButton), for: .touchUpInside)
         nickNameCancleButton.addTarget(self, action: #selector(tappedNickNameCancleButton), for: .touchUpInside)
@@ -133,7 +132,7 @@ extension SignUpNickNameViewController {
         updateNextButton(isCheck: false)
     }
     
-    // MARK: - Tapped
+    // MARK: - @objc
     @objc private func tappedNickNameCheckButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         showAlert(message: "\(nickNameTextField.text ?? "") 이름으로 설정합니다.", isCancelButton: true) {
@@ -159,19 +158,21 @@ extension SignUpNickNameViewController {
     }
     
     private func updateNickNameTextField(isFull: Bool) {
-        if isFull {
+        switch isFull {
+        case true:
             nickNameCheckButton.isHidden = false
-        } else {
+        case false:
             nickNameCheckButton.isHidden = true
         }
     }
     
     private func updateNextButton(isCheck: Bool) {
-        if isCheck {
+        switch isCheck {
+        case true:
             nextButton.backgroundColor = .picoBlue
             nextButton.isEnabled = true
             isCheckNickName = true
-        } else {
+        case false:
             nextButton.backgroundColor = .picoGray
             nextButton.isEnabled = false
             isCheckNickName = false
@@ -239,10 +240,10 @@ extension SignUpNickNameViewController {
     
     private func addSubViews() {
         for stackViewItem in [nickNameTextField, nickNameCancleButton, nickNameCheckButton] {
-            nickNameStackView.addArrangedSubview(stackViewItem)
+            nickNameHorizontalStack.addArrangedSubview(stackViewItem)
         }
         
-        for viewItem in [progressView, notifyLabel, subNotifyLabel, nickNameStackView, nextButton] {
+        for viewItem in [progressView, notifyLabel, subNotifyLabel, nickNameHorizontalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -269,7 +270,7 @@ extension SignUpNickNameViewController {
             make.trailing.equalTo(notifyLabel.snp.trailing)
         }
         
-        nickNameStackView.snp.makeConstraints { make in
+        nickNameHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(subNotifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalTo(Constraint.SignView.contentPadding)
             make.trailing.equalTo(-Constraint.SignView.contentPadding)

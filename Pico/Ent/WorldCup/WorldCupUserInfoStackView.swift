@@ -20,7 +20,7 @@ final class WorldCupUserInfoStackView: UIView {
         return label
     }
     
-    private lazy var dataLabels: [UILabel] = (0..<3).map { text in
+    private lazy var dataLabels: [UILabel] = (0..<3).map { _ in
         let label = UILabel()
         label.textAlignment = .right
         label.textColor = UIColor.picoBlue

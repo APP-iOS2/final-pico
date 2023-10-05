@@ -7,9 +7,13 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class SignInViewController: UIViewController {
     
+    private let disposeBag = DisposeBag()
+    private let phoneNumberSubject = BehaviorSubject<String>(value: "")
     private var isFullPhoneNumber: Bool = false
     
     private let notifyLabel: UILabel = {
@@ -39,7 +43,7 @@ final class SignInViewController: UIViewController {
         return button
     }()
     
-    private let stackView: UIStackView = {
+    private let buttonHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -63,7 +67,7 @@ final class SignInViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configTextfield()
-        configButtons()
+        configButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -76,44 +80,50 @@ final class SignInViewController: UIViewController {
         super.viewWillDisappear(animated)
         unregisterKeyboard()
     }
-    
-    // MARK: - Config
+}
+// MARK: - Config
+extension SignInViewController {
     private func configTextfield() {
         phoneNumberTextField.delegate = self
     }
     
-    private func configButtons() {
-        phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
-        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
-    }
-    
-    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        phoneNumberTextField.text = ""
-        changeViewState(isFull: false)
-    }
-    
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        if isFullPhoneNumber {
-            let viewController = LoginSuccessViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
+    private func configButton() {
+        nextButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                print("nextbutton")
+                self.tappedButtonAnimation(self.nextButton)
+                if self.isFullPhoneNumber {
+                    let viewController = LoginSuccessViewController()
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        phoneNumberCancleButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                print("phoneNumberCancleButton")
+                self.tappedButtonAnimation(self.phoneNumberCancleButton)
+                self.phoneNumberTextField.text = ""
+                changeViewState(isFull: false)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func changeViewState(isFull: Bool) {
-        if isFull {
+        switch isFull {
+        case true:
             phoneNumberTextField.textColor = .picoBlue
             nextButton.backgroundColor = .picoBlue
             isFullPhoneNumber = true
-        } else {
+        case false:
             phoneNumberTextField.textColor = .gray
             nextButton.backgroundColor = .picoGray
             isFullPhoneNumber = false
         }
     }
 }
-
 // MARK: - 텍스트필드 관련
 extension SignInViewController: UITextFieldDelegate {
     
@@ -162,10 +172,10 @@ extension SignInViewController {
     
     private func addSubViews() {
         for stackViewItem in [phoneNumberTextField, phoneNumberCancleButton] {
-            stackView.addArrangedSubview(stackViewItem)
+            buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
         
-        for viewItem in [notifyLabel, stackView, nextButton] {
+        for viewItem in [notifyLabel, buttonHorizontalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -179,7 +189,7 @@ extension SignInViewController {
             make.trailing.equalToSuperview().offset(-Constraint.SignView.padding)
         }
         
-        stackView.snp.makeConstraints { make in
+        buttonHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalToSuperview().offset(Constraint.SignView.contentPadding)
             make.trailing.equalToSuperview().offset(-Constraint.SignView.contentPadding)

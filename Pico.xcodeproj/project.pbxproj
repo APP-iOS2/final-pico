@@ -11,6 +11,7 @@
 		362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */; };
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
+		369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */; };
 		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
 		36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */; };
 		36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */; };
@@ -25,6 +26,8 @@
 		4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */; };
 		4B26653F2AC3E33D0074D4E2 /* RandomBoxModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653E2AC3E33D0074D4E2 /* RandomBoxModel.swift */; };
 		4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665402AC3F4830074D4E2 /* UserDummy.swift */; };
+		4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */; };
+		4B2665492ACD76F00074D4E2 /* ResultUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665482ACD76F00074D4E2 /* ResultUserView.swift */; };
 		531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* MyTransition.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
 		531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */; };
@@ -35,6 +38,10 @@
 		534790C22AC3B2F20028610D /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C12AC3B2F20028610D /* NotificationViewController.swift */; };
 		534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C32AC3B3190028610D /* NotificationTableViewCell.swift */; };
 		5375E74A2ACD2C09001A571D /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E7492ACD2C09001A571D /* NotificationViewModel.swift */; };
+		5375E74C2ACD4590001A571D /* StringToDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74B2ACD4590001A571D /* StringToDate.swift */; };
+		5375E74E2ACD4755001A571D /* LikeMeViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74D2ACD4755001A571D /* LikeMeViewViewModel.swift */; };
+		53817BD82ACE591B00AEE9AE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53817BD72ACE591B00AEE9AE /* GoogleService-Info.plist */; };
+		53817BDC2ACE753800AEE9AE /* LikeUViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53817BDB2ACE753800AEE9AE /* LikeUViewViewModel.swift */; };
 		53836F532ACC903800D98F77 /* LoadingAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F522ACC903800D98F77 /* LoadingAnimationView.swift */; };
 		53836F552ACC90FC00D98F77 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F542ACC90FC00D98F77 /* Loading.swift */; };
 		547138482AC3615B00CFE88D /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547138472AC3615B00CFE88D /* UserDetailViewModel.swift */; };
@@ -43,7 +50,6 @@
 		54A56C642ACC9CA40003C7BD /* UserImageTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A56C632ACC9CA40003C7BD /* UserImageTableCell.swift */; };
 		54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412A2AC2C36200EC8846 /* UserDetailViewController.swift */; };
 		54B441302AC2C36C00EC8846 /* BasicInformationTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412D2AC2C36C00EC8846 /* BasicInformationTableCell.swift */; };
-		54B441312AC2C36C00EC8846 /* AboutMeTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412F2AC2C36C00EC8846 /* AboutMeTableCell.swift */; };
 		54B441322AC2C36C00EC8846 /* SubInfomationTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412E2AC2C36C00EC8846 /* SubInfomationTableCell.swift */; };
 		6937783C2AC26B4300762165 /* LoadImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783B2AC26B4300762165 /* LoadImageView.swift */; };
 		6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783D2AC2742400762165 /* MailSendViewController.swift */; };
@@ -76,6 +82,7 @@
 		B10241CD2AC21A6500BAE1C6 /* ResizedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */; };
 		B11D2B8C2AC63C43008D80A4 /* ChangePhoneNumDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */; };
 		B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14805242ACCE8120009FF71 /* FirestoreService.swift */; };
+		B148052C2ACD2A900009FF71 /* AdminViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B148052B2ACD2A900009FF71 /* AdminViewController.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
 		B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CB2AC0A230009889DA /* SceneDelegate.swift */; };
 		B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CD2AC0A230009889DA /* HomeViewController.swift */; };
@@ -97,6 +104,7 @@
 		B15ABE372AC31DD200529C29 /* NavigationLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE362AC31DD200529C29 /* NavigationLogo.swift */; };
 		B15ABE392AC31E0800529C29 /* TappedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE382AC31E0800529C29 /* TappedAnimation.swift */; };
 		B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B161B8712AC414DD00257A9C /* PopupViewController.swift */; };
+		B16394C52ACDC7EF00D9252F /* AboutMeTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B16394C42ACDC7EF00D9252F /* AboutMeTableCell.swift */; };
 		B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67832AC0A835006F91DC /* SignInViewController.swift */; };
 		B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67852AC0A850006F91DC /* SignUpViewController.swift */; };
 		B17D67882AC0AAFF006F91DC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67872AC0AAFF006F91DC /* User.swift */; };
@@ -159,6 +167,7 @@
 		362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpNickNameViewController.swift; sourceTree = "<group>"; };
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
+		369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceText.swift; sourceTree = "<group>"; };
 		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
 		36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureViewController.swift; sourceTree = "<group>"; };
 		36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTermsOfServiceViewController.swift; sourceTree = "<group>"; };
@@ -173,6 +182,8 @@
 		4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewController.swift; sourceTree = "<group>"; };
 		4B26653E2AC3E33D0074D4E2 /* RandomBoxModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxModel.swift; sourceTree = "<group>"; };
 		4B2665402AC3F4830074D4E2 /* UserDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummy.swift; sourceTree = "<group>"; };
+		4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewController.swift; sourceTree = "<group>"; };
+		4B2665482ACD76F00074D4E2 /* ResultUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultUserView.swift; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* MyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTransition.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* EmptyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
@@ -181,6 +192,10 @@
 		534790C12AC3B2F20028610D /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		534790C32AC3B3190028610D /* NotificationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTableViewCell.swift; sourceTree = "<group>"; };
 		5375E7492ACD2C09001A571D /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
+		5375E74B2ACD4590001A571D /* StringToDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringToDate.swift; sourceTree = "<group>"; };
+		5375E74D2ACD4755001A571D /* LikeMeViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewViewModel.swift; sourceTree = "<group>"; };
+		53817BD72ACE591B00AEE9AE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../자료/구글인포/Pico/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		53817BDB2ACE753800AEE9AE /* LikeUViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewViewModel.swift; sourceTree = "<group>"; };
 		53836F522ACC903800D98F77 /* LoadingAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAnimationView.swift; sourceTree = "<group>"; };
 		53836F542ACC90FC00D98F77 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
 		547138472AC3615B00CFE88D /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
@@ -190,7 +205,6 @@
 		54B4412A2AC2C36200EC8846 /* UserDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		54B4412D2AC2C36C00EC8846 /* BasicInformationTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInformationTableCell.swift; sourceTree = "<group>"; };
 		54B4412E2AC2C36C00EC8846 /* SubInfomationTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubInfomationTableCell.swift; sourceTree = "<group>"; };
-		54B4412F2AC2C36C00EC8846 /* AboutMeTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMeTableCell.swift; sourceTree = "<group>"; };
 		6937783B2AC26B4300762165 /* LoadImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadImageView.swift; sourceTree = "<group>"; };
 		6937783D2AC2742400762165 /* MailSendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendViewController.swift; sourceTree = "<group>"; };
 		6937783F2AC2745C00762165 /* MailReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveViewController.swift; sourceTree = "<group>"; };
@@ -223,6 +237,7 @@
 		B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizedImage.swift; sourceTree = "<group>"; };
 		B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePhoneNumDigits.swift; sourceTree = "<group>"; };
 		B14805242ACCE8120009FF71 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
+		B148052B2ACD2A900009FF71 /* AdminViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewController.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14B58C92AC0A230009889DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B14B58CB2AC0A230009889DA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -246,6 +261,7 @@
 		B15ABE362AC31DD200529C29 /* NavigationLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationLogo.swift; sourceTree = "<group>"; };
 		B15ABE382AC31E0800529C29 /* TappedAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappedAnimation.swift; sourceTree = "<group>"; };
 		B161B8712AC414DD00257A9C /* PopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
+		B16394C42ACDC7EF00D9252F /* AboutMeTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutMeTableCell.swift; sourceTree = "<group>"; };
 		B17D67832AC0A835006F91DC /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		B17D67852AC0A850006F91DC /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		B17D67872AC0AAFF006F91DC /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -314,6 +330,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */ = {
+			isa = PBXGroup;
+			children = (
+				369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */,
+			);
+			path = TermsOfServiceText;
+			sourceTree = "<group>";
+		};
 		4B2665322AC3E2E70074D4E2 /* RandomBox */ = {
 			isa = PBXGroup;
 			children = (
@@ -331,6 +355,8 @@
 				4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */,
 				4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */,
 				4B2665402AC3F4830074D4E2 /* UserDummy.swift */,
+				4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */,
+				4B2665482ACD76F00074D4E2 /* ResultUserView.swift */,
 			);
 			path = WorldCup;
 			sourceTree = "<group>";
@@ -360,7 +386,7 @@
 			children = (
 				54A56C632ACC9CA40003C7BD /* UserImageTableCell.swift */,
 				54B4412D2AC2C36C00EC8846 /* BasicInformationTableCell.swift */,
-				54B4412F2AC2C36C00EC8846 /* AboutMeTableCell.swift */,
+				B16394C42ACDC7EF00D9252F /* AboutMeTableCell.swift */,
 				54B4412E2AC2C36C00EC8846 /* SubInfomationTableCell.swift */,
 				547138492AC361A300CFE88D /* HobbyCollectionViewCell.swift */,
 				5471384B2AC3621000CFE88D /* MbtiCollectionViewCell.swift */,
@@ -460,6 +486,14 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
+		B148052A2ACD2A730009FF71 /* Admin */ = {
+			isa = PBXGroup;
+			children = (
+				B148052B2ACD2A900009FF71 /* AdminViewController.swift */,
+			);
+			path = Admin;
+			sourceTree = "<group>";
+		};
 		B14B58BD2AC0A230009889DA = {
 			isa = PBXGroup;
 			children = (
@@ -501,6 +535,7 @@
 				B14B59002AC0A2FE009889DA /* Ent */,
 				B14B59012AC0A30F009889DA /* Mypage */,
 				534790C02AC3B2B00028610D /* Notification */,
+				B148052A2ACD2A730009FF71 /* Admin */,
 			);
 			path = Pico;
 			sourceTree = "<group>";
@@ -508,7 +543,8 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				6946A8CA2ACD3C34001A0D6F /* GoogleService-Info.plist */,
+
+				53817BD72ACE591B00AEE9AE /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -531,6 +567,7 @@
 		B14B58FB2AC0A2B5009889DA /* SignUp */ = {
 			isa = PBXGroup;
 			children = (
+				369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */,
 				B17D67852AC0A850006F91DC /* SignUpViewController.swift */,
 				36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */,
 				367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */,
@@ -584,7 +621,9 @@
 			children = (
 				B14B590B2AC0A64C009889DA /* LikeViewController.swift */,
 				534172F92AC129830035E41A /* LikeMeViewController.swift */,
+				5375E74D2ACD4755001A571D /* LikeMeViewViewModel.swift */,
 				534172F72AC129730035E41A /* LikeUViewController.swift */,
+				53817BDB2ACE753800AEE9AE /* LikeUViewViewModel.swift */,
 				53389AEE2AC16D120076DA9B /* EmptyViewController.swift */,
 				531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */,
 			);
@@ -756,6 +795,7 @@
 				6937783B2AC26B4300762165 /* LoadImageView.swift */,
 				B15ABE2E2AC31C4700529C29 /* AddViewShadow.swift */,
 				B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */,
+				5375E74B2ACD4590001A571D /* StringToDate.swift */,
 			);
 			path = Function;
 			sourceTree = "<group>";
@@ -965,7 +1005,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				6946A8CB2ACD3C34001A0D6F /* GoogleService-Info.plist in Resources */,
+				53817BD82ACE591B00AEE9AE /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1019,14 +1059,13 @@
 				6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */,
 				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
 				53836F552ACC90FC00D98F77 /* Loading.swift in Sources */,
-				54B441312AC2C36C00EC8846 /* AboutMeTableCell.swift in Sources */,
-				54B441312AC2C36C00EC8846 /* AboutMeTableCell.swift in Sources */,
 				6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */,
 				BCEACEF52AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
 				362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */,
 				362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */,
 				5471384C2AC3621000CFE88D /* MbtiCollectionViewCell.swift in Sources */,
+				369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */,
 				B15ABE312AC31CF000529C29 /* ShowAlert.swift in Sources */,
 				4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */,
 				BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */,
@@ -1042,6 +1081,7 @@
 				53389AEF2AC16D120076DA9B /* EmptyViewController.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
 				6ADDE2F12AC3BA2500CE4482 /* ProfileEditImageTableCell.swift in Sources */,
+				B16394C52ACDC7EF00D9252F /* AboutMeTableCell.swift in Sources */,
 				534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */,
 				531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */,
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
@@ -1050,6 +1090,7 @@
 				B17D67A82AC0B5F7006F91DC /* Color+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
 				6ADDE2F92AC3BABD00CE4482 /* ProfileEditIntroTabelCell.swift in Sources */,
+				53817BDC2ACE753800AEE9AE /* LikeUViewViewModel.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
 				6ADDE2FB2AC3BAF500CE4482 /* ProfileEditBtnTabelCell.swift in Sources */,
 				B17D67942AC0AD45006F91DC /* Like.swift in Sources */,
@@ -1093,15 +1134,18 @@
 				54B441322AC2C36C00EC8846 /* SubInfomationTableCell.swift in Sources */,
 				BCEACEF72AC3DF5F00C93699 /* MBTICollectionViewController.swift in Sources */,
 				4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */,
+				5375E74E2ACD4755001A571D /* LikeMeViewViewModel.swift in Sources */,
 				36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */,
 				B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */,
 				6A7378512AC26B1E0047DE35 /* MyPageDefaultTableCell.swift in Sources */,
 				B17D678E2AC0ABFD006F91DC /* Report.swift in Sources */,
 				6ADDE2F52AC3BA6B00CE4482 /* ProfileEditBirthTableCell.swift in Sources */,
 				54A56C642ACC9CA40003C7BD /* UserImageTableCell.swift in Sources */,
+				4B2665492ACD76F00074D4E2 /* ResultUserView.swift in Sources */,
 				B15ABE2D2AC2B22100529C29 /* CommonTextField.swift in Sources */,
 				5375E74A2ACD2C09001A571D /* NotificationViewModel.swift in Sources */,
 				6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */,
+				B148052C2ACD2A900009FF71 /* AdminViewController.swift in Sources */,
 				B15ABE332AC31D3900529C29 /* NavigationBackButton.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
 				4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */,
@@ -1112,6 +1156,7 @@
 				B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */,
 				B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */,
 				B15ABE372AC31DD200529C29 /* NavigationLogo.swift in Sources */,
+				4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */,
 				B17D67AA2AC0B86A006F91DC /* Font+Extensions.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
 				B17D67902AC0AC15006F91DC /* Block.swift in Sources */,
@@ -1120,6 +1165,7 @@
 				4B26653B2AC3E3250074D4E2 /* WorldCupViewController.swift in Sources */,
 				6ADDE2EA2AC31D1300CE4482 /* SettingNotiTableCell.swift in Sources */,
 				36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */,
+				5375E74C2ACD4590001A571D /* StringToDate.swift in Sources */,
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
 				54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */,
 				367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */,
