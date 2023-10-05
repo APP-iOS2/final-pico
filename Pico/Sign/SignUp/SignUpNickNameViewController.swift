@@ -158,19 +158,21 @@ extension SignUpNickNameViewController {
     }
     
     private func updateNickNameTextField(isFull: Bool) {
-        if isFull {
+        switch isFull {
+        case true:
             nickNameCheckButton.isHidden = false
-        } else {
+        case false:
             nickNameCheckButton.isHidden = true
         }
     }
     
     private func updateNextButton(isCheck: Bool) {
-        if isCheck {
+        switch isCheck {
+        case true:
             nextButton.backgroundColor = .picoBlue
             nextButton.isEnabled = true
             isCheckNickName = true
-        } else {
+        case false:
             nextButton.backgroundColor = .picoGray
             nextButton.isEnabled = false
             isCheckNickName = false

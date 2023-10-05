@@ -112,11 +112,12 @@ extension SignInViewController {
     }
     
     private func changeViewState(isFull: Bool) {
-        if isFull {
+        switch isFull {
+        case true:
             phoneNumberTextField.textColor = .picoBlue
             nextButton.backgroundColor = .picoBlue
             isFullPhoneNumber = true
-        } else {
+        case false:
             phoneNumberTextField.textColor = .gray
             nextButton.backgroundColor = .picoGray
             isFullPhoneNumber = false

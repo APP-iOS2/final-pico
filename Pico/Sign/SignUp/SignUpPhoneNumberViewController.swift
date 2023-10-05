@@ -124,22 +124,24 @@ extension SignUpPhoneNumberViewController {
     }
     
     private func updatePhoneTextField(isFull: Bool) {
-        if isFull {
+        switch isFull {
+        case true:
             phoneNumberCheckButton.isHidden = false
             isFullPhoneNumber = true
-        } else {
+        case false:
             phoneNumberCheckButton.isHidden = true
             isFullPhoneNumber = false
         }
     }
     
     private func updateNextButton(isCheck: Bool) {
-        if isCheck {
+        switch isCheck {
+        case true:
             phoneMessageHorizontalStack.isHidden = false
             phoneNumberTextField.textColor = .picoBlue
             nextButton.backgroundColor = .picoBlue
             isTappedCheckButton = true
-        } else {
+        case false:
             phoneMessageHorizontalStack.isHidden = true
             isTappedCheckButton = false
         }

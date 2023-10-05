@@ -104,15 +104,15 @@ extension SignUpGenderViewController {
     @objc private func tappedGenderButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         configNextButton()
-        
         for button in genderButtons {
             button.isSelected = (button == sender)
             guard let text = sender.titleLabel?.text else { return }
-            if button.isSelected {
+            switch button.isSelected {
+            case true:
                 sender.backgroundColor = .picoAlphaBlue
                 sender.setTitleColor(.white, for: .normal)
                 gender = text
-            } else {
+            case false:
                 button.backgroundColor = .picoGray
                 button.setTitleColor(.black, for: .normal)
             }

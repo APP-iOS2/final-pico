@@ -83,10 +83,11 @@ extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDa
     }
     
     func updateNextButton(isCheck: Bool) {
-        if isCheck {
+        switch isCheck {
+        case true:
             nextButton.isEnabled = true
             nextButton.backgroundColor = .picoBlue
-        } else {
+        case false:
             nextButton.isEnabled = false
             nextButton.backgroundColor = .picoGray
         }
@@ -100,11 +101,7 @@ extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDa
         guard isLoading else { return }
         let isAtBottom = scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
         guard !isCheckedBottom else { return }
-        if isAtBottom {
-            isCheckedBottom = true
-        } else {
-            isCheckedBottom = false
-        }
+        isCheckedBottom = isAtBottom ? true : false
         updateNextButton(isCheck: isCheckedBottom)
     }
 }
