@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import RxRelay
+import FirebaseFirestore
 
 final class LikeMeViewViewModel {
     var likeMeUserList = BehaviorRelay<[User]>(value: [])
@@ -21,7 +22,14 @@ final class LikeMeViewViewModel {
     private let disposeBag = DisposeBag()
     
     init() {
-        likeMeUserList.accept(UserDummyData.users)
+        FirestoreService().loadDocuments(collectionId: .users, dataType: User.self) { result in
+            switch result {
+            case .success(let data):
+                self.likeMeUserList.accept(data)
+            case .failure(let err):
+                print(err)
+            }
+        }
     }
     
     func bindDeleteButtonTap() {

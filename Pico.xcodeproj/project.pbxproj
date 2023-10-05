@@ -31,6 +31,7 @@
 		531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* MyTransition.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
 		531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */; };
+		5323347F2ACF08FB00788B99 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5323347E2ACF08FB00788B99 /* GoogleService-Info.plist */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		53389AEF2AC16D120076DA9B /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* EmptyViewController.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
@@ -41,6 +42,8 @@
 		5375E74C2ACD4590001A571D /* StringToDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74B2ACD4590001A571D /* StringToDate.swift */; };
 		5375E74E2ACD4755001A571D /* LikeMeViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74D2ACD4755001A571D /* LikeMeViewViewModel.swift */; };
 		53817BDC2ACE753800AEE9AE /* LikeUViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53817BDB2ACE753800AEE9AE /* LikeUViewViewModel.swift */; };
+		53817BE12ACED57B00AEE9AE /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 53817BE02ACED57B00AEE9AE /* FirebaseDatabase */; };
+		53817BE32ACED57B00AEE9AE /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 53817BE22ACED57B00AEE9AE /* FirebaseDatabaseSwift */; };
 		53836F532ACC903800D98F77 /* LoadingAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F522ACC903800D98F77 /* LoadingAnimationView.swift */; };
 		53836F552ACC90FC00D98F77 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F542ACC90FC00D98F77 /* Loading.swift */; };
 		547138482AC3615B00CFE88D /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547138472AC3615B00CFE88D /* UserDetailViewModel.swift */; };
@@ -187,6 +190,7 @@
 		4B2665482ACD76F00074D4E2 /* ResultUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultUserView.swift; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* MyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTransition.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
+		5323347E2ACF08FB00788B99 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../자료/구글인포/Pico/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* EmptyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
@@ -309,9 +313,11 @@
 				B18C1DA62ACC95B200BBB207 /* RxRelay in Frameworks */,
 				B18C1DA42ACC95B200BBB207 /* RxCocoa in Frameworks */,
 				B18C1DA82ACC95B200BBB207 /* RxSwift in Frameworks */,
+				53817BE32ACED57B00AEE9AE /* FirebaseDatabaseSwift in Frameworks */,
 				B18C1DAC2ACC984400BBB207 /* FirebaseFirestore in Frameworks */,
 				B18C1DB02ACC984400BBB207 /* FirebaseStorage in Frameworks */,
 				B18C1DA22ACC95B200BBB207 /* SnapKit in Frameworks */,
+				53817BE12ACED57B00AEE9AE /* FirebaseDatabase in Frameworks */,
 				B18C1DAE2ACC984400BBB207 /* FirebaseFirestoreSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -556,6 +562,7 @@
 			isa = PBXGroup;
 			children = (
 				69B99BEF2ACEB3FF00695567 /* GoogleService-Info.plist */,
+				5323347E2ACF08FB00788B99 /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -923,6 +930,8 @@
 				B18C1DAB2ACC984400BBB207 /* FirebaseFirestore */,
 				B18C1DAD2ACC984400BBB207 /* FirebaseFirestoreSwift */,
 				B18C1DAF2ACC984400BBB207 /* FirebaseStorage */,
+				53817BE02ACED57B00AEE9AE /* FirebaseDatabase */,
+				53817BE22ACED57B00AEE9AE /* FirebaseDatabaseSwift */,
 			);
 			productName = Pico;
 			productReference = B14B58C62AC0A230009889DA /* Pico.app */;
@@ -1019,6 +1028,7 @@
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
 				69B99BF02ACEB3FF00695567 /* GoogleService-Info.plist in Resources */,
+				5323347F2ACF08FB00788B99 /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1571,6 +1581,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		53817BE02ACED57B00AEE9AE /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B18C1D9E2ACC956C00BBB207 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		53817BE22ACED57B00AEE9AE /* FirebaseDatabaseSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B18C1D9E2ACC956C00BBB207 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabaseSwift;
+		};
 		B18C1DA12ACC95B200BBB207 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B18C1D9F2ACC958900BBB207 /* XCRemoteSwiftPackageReference "SnapKit" */;

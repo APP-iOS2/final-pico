@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import RxSwift
 
 enum Collections: CaseIterable {
     case users
@@ -101,6 +102,46 @@ final class FirestoreService {
                     completion(.success(result))
                 }
             }
+        }
+    }
+    
+    func loadDocuments<T: Codable>(collectionId: Collections, dataType: T.Type, completion: @escaping (Result<[T], Error>) -> Void) {
+        DispatchQueue.global().async {
+            
+            self.dbRef.collection(collectionId.name).getDocuments { querySnapshot, error in
+                if let error = error {
+                    print("Error to load new document at \(collectionId.name) \(error)")
+                    completion(.failure(error))
+                    return
+                }
+                
+                if let documents = querySnapshot?.documents {
+                    var result: [T] = []
+                    for document in documents {
+                        if let temp = try? document.data(as: dataType) {
+                            result.append(temp)
+                        }
+                    }
+                    completion(.success(result))
+                }
+                
+            }
+        }
+    }
+    
+    // MARK: - 수정 필요
+    func loadDocumentRx<T: Codable>(collectionId: Collections, dataType: T.Type) -> Observable<[T]> {
+        return Observable.create { emitter in
+            self.loadDocuments(collectionId: collectionId, dataType: dataType) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                    emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
         }
     }
 }
