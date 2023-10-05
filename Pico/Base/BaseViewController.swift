@@ -48,10 +48,5 @@ class BaseViewController: UIViewController {
         navigationBarAppearance.shadowImage = UIImage() // 밑줄 제거
         navigationController?.navigationBar.standardAppearance = navigationBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navigationBarAppearance
-        
-        // 네비게이션 바의 밑줄을 없앱니다.
-//        navigationController?.navigationBar.compactAppearance?.backgroundImage = UIImage()
-//        navigationController?.navigationBar.scrollEdgeAppearance?.backgroundImage = UIImage()
-
     }
 }

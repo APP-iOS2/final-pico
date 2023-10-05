@@ -78,6 +78,7 @@ final class RandomBoxViewController: UIViewController {
         addViews()
         makeConstraints()
         configButton()
+        configBackButton()
     }
 
     private func addViews() {
