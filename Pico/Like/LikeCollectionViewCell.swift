@@ -18,7 +18,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return deleteButton.rx.tap.asObservable()
     }
     
-    private var userImageView: UIImageView = {
+    private let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
