@@ -8,7 +8,15 @@
 import UIKit
 import SnapKit
 import CoreLocation
+import Foundation
 
+class LocationService {
+    
+    static var shared = LocationService()
+    var longitude: Double!
+    var latitude: Double!
+  
+}
 final class SignUpTermsOfServiceViewController: UIViewController {
     var locationManager: CLLocationManager = CLLocationManager()
     var currentLocation: CLLocationCoordinate2D!
@@ -128,7 +136,6 @@ extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
             print("s \(locationManager.authorizationStatus)")
             break
         }
-        
     }
 }
 
