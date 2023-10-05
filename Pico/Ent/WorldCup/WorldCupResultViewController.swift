@@ -82,7 +82,7 @@ final class WorldCupResultViewController: UIViewController {
         makeConstraints()
         configResultUserCell()
         addShadow()
-        setupRxBindings()
+        configRxBinding()
         hideBackButton()
     }
     
@@ -165,7 +165,7 @@ final class WorldCupResultViewController: UIViewController {
         resultUserView.layer.shadowRadius = radius
     }
     
-    private func setupRxBindings() {
+    private func configRxBinding() {
         chatButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
