@@ -15,7 +15,6 @@ final class LikeMeViewController: UIViewController {
     private let viewModel: LikeMeViewViewModel = LikeMeViewViewModel()
     private let disposeBag: DisposeBag = DisposeBag()
 
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collectionView.reloadData()
@@ -67,7 +66,6 @@ final class LikeMeViewController: UIViewController {
 }
 
 extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width / 2 - 17.5
         return CGSize(width: width, height: width * 1.5)
@@ -76,21 +74,12 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }
-    
-//    @objc func tappedCell(_ sender: UITapGestureRecognizer) {
-//        let point = sender.location(in: collectionView)
-//        if let indexPath = collectionView.indexPathForItem(at: point) {
-//            let viewController = UserDetailViewController()
-//            navigationController?.pushViewController(viewController, animated: true)
-//        }
-//    }
 }
 
 // MARK: - UITableView+Rx
 extension LikeMeViewController {
     private func configCollectionviewDatasource() {
         viewModel.bindDeleteButtonTap()
-
         viewModel.likeMeUserList
             .bind(to: collectionView.rx.items(cellIdentifier: Identifier.CollectionView.likeCell, cellType: LikeCollectionViewCell.self)) { _, item, cell in
                 cell.configData(images: item.imageURLs, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true)

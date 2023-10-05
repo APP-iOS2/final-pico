@@ -28,7 +28,6 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "찐 윈터임, 21"
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         label.textColor = .white
         return label
@@ -70,7 +69,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         deleteButton.isHidden = isHiddenDeleteButton
     }
    
-    /// 질문: 이 코드를 추가하면 삭제버튼이 처음 한번만되고 그 다음부터는 먹히지않음
+// 질문: 이 코드를 추가하면 삭제버튼이 처음 한번만되고 그 다음부터는 먹히지않음
 //    override func prepareForReuse() {
 //        super.prepareForReuse()
 //        disposeBag = DisposeBag()

@@ -23,7 +23,7 @@ struct UserDummyData {
             "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg"], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
         let user3 = User(mbti: .estj, phoneNumber: "01012341234", gender: .etc, birth: "1998-09-17", nickName: "친절한풍자씨", location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [
             "https://flexible.img.hani.co.kr/flexible/normal/640/441/imgdb/original/2023/0525/20230525501996.jpg"], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
-        let user4 = User(mbti: .istj, phoneNumber: "01012341234", gender: .male, birth: "990917", nickName: "조인성", location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [
+        let user4 = User(mbti: .istj, phoneNumber: "01012341234", gender: .male, birth: "1999-09-17", nickName: "조인성", location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [
             "https://i.namu.wiki/i/HJ5Ue56pWsvoy0bUBJpybjMOBQDWlbRcBRtwfM_CbeOQc60x7nTFBJaux2yRyuFKz64ioVYUvP6ij-Q5ipRQTg.webp"], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
         let user5 = User(mbti: .estj, phoneNumber: "01012341234", gender: .female, birth: "1998-09-17", nickName: "카리나", location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [
             "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",

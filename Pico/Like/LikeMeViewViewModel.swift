@@ -33,7 +33,7 @@ final class LikeMeViewViewModel {
             .disposed(by: disposeBag)
     }
     
-    func deleteUser(user: User) {
+    private func deleteUser(user: User) {
         let updatedUsers = likeMeUserList.value.filter { $0.id != user.id }
         likeMeUserList.accept(updatedUsers)
     }
