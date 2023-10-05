@@ -6,14 +6,18 @@
 //
 
 import UIKit
+import SnapKit
+import RxSwift
 
 final class CircularProgressBarView: UIView {
     
     private var circleLayer = CAShapeLayer()
     private var progressLayer = CAShapeLayer()
     private let startPoint = CGFloat(Double.pi * 0.7)
-    private var endPoint = CGFloat((Double.pi * 0.7) + (Double.pi * 1.6) ) //  (Double.pi *  2.3)
+   
     private let circleLayerEndPoint = CGFloat(Double.pi * 2.3)
+    private var endPointValue : Double = 0
+    let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,7 +32,16 @@ final class CircularProgressBarView: UIView {
         createCircularPath()
     }
     
+    func binds(_ viewModel: CircularProgressBarViewModel) {
+        viewModel.profilePerfection
+            .subscribe {
+                self.endPointValue = $0
+            }
+            .disposed(by: disposeBag)
+    }
+    
     private func createCircularPath() {
+        var endPoint = CGFloat((Double.pi * 0.7) + (Double.pi * 1.6) * endPointValue)
         let center = CGPoint(x: bounds.midX, y: bounds.midY)
         let circularPath = UIBezierPath(arcCenter: center, radius: 80, startAngle: startPoint, endAngle: circleLayerEndPoint, clockwise: true)
         let progressPath = UIBezierPath(arcCenter: center, radius: 80, startAngle: startPoint, endAngle: endPoint, clockwise: true)
