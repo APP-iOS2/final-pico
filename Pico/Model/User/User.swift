@@ -37,7 +37,7 @@ struct User: Codable {
     }
 }
 
-enum GenderType: Codable {
+enum GenderType: String, Codable {
     case male
     case female
     case etc
