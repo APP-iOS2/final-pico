@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class MailSendViewController: UIViewController {
     
@@ -19,6 +21,15 @@ final class MailSendViewController: UIViewController {
     private let navItem: UINavigationItem = {
         let navigationItem = UINavigationItem(title: "쪽지 보내기")
         return navigationItem
+    }()
+    
+    private let leftBarButton: UIBarButtonItem = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+        let barButtonItem = UIBarButtonItem()
+        barButtonItem.image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
+        barButtonItem.tintColor = .picoBlue
+        barButtonItem.action = #selector(tappedBackzButton)
+        return barButtonItem
     }()
     
     private let receiverStack: UIStackView = {
@@ -100,7 +111,6 @@ final class MailSendViewController: UIViewController {
         
         addViews()
         makeConstraints()
-        configBackButton()
         configNavigationBarItem()
         tappedDismissKeyboard()
     }
@@ -110,6 +120,7 @@ final class MailSendViewController: UIViewController {
     }
     
     func configNavigationBarItem() {
+        navItem.leftBarButtonItem = leftBarButton
         navigationBar.shadowImage = UIImage()
         navigationBar.setItems([navItem], animated: true)
     }
@@ -168,25 +179,28 @@ final class MailSendViewController: UIViewController {
         }
     }
     
-    func getReceiver(image: String, name: String) { //rx
-        if let imageURL = URL(string: image) {
+    func getReceiver(mailReceiver: DummyMailUsers) {
+        if let imageURL = URL(string: mailReceiver.messages.imageUrl) {
             receiverImageView.load(url: imageURL)
         }
-        receiverNameLabel.text = name
-    }
-    
-    @objc private func tappedSendButton(_ sender: UIButton) { //rx
-        tappedButtonAnimation(sender)
-        dismiss(animated: true)
-        print("send")
+        receiverNameLabel.text = mailReceiver.messages.oppenentName
     }
     
     private func updateCountLabel(characterCount: Int) {
         remainCountLabel.text = "\(characterCount)/300"
     }
+    
+    @objc private func tappedSendButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func tappedBackzButton() {
+        dismiss(animated: true)
+    }
 }
 
-extension MailSendViewController: UITextViewDelegate { //rx
+extension MailSendViewController: UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.text == textViewPlaceHolder {
@@ -214,4 +228,5 @@ extension MailSendViewController: UITextViewDelegate { //rx
         
         return true
     }
+    
 }

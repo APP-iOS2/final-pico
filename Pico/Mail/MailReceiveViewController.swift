@@ -7,8 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class MailReceiveViewController: UIViewController {
+    
+    private var viewModel: DummyMailUsers?
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -21,8 +25,18 @@ final class MailReceiveViewController: UIViewController {
         return navigationItem
     }()
     
+    private let leftBarButton: UIBarButtonItem = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+        let barButtonItem = UIBarButtonItem()
+        barButtonItem.image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
+        barButtonItem.tintColor = .picoBlue
+        barButtonItem.action = #selector(tappedBackzButton)
+        return barButtonItem
+    }()
+    
     private let rightBarButton: UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "paperplane.fill"), style: .plain, target: nil, action: #selector(tappedNavigationButton))
+        let barButtonItem = UIBarButtonItem()
+        barButtonItem.image = UIImage(systemName: "paperplane.fill")
         barButtonItem.tintColor = .picoBlue
         return barButtonItem
     }()
@@ -95,6 +109,7 @@ final class MailReceiveViewController: UIViewController {
         configNavigationBarItem()
         configSenderStack()
         tappedDismissKeyboard()
+        tappedNavigationButton()
     }
     
     override func viewDidLayoutSubviews() {
@@ -102,7 +117,7 @@ final class MailReceiveViewController: UIViewController {
     }
     
     private func configNavigationBarItem() {
-        configBackButton()
+        navItem.leftBarButtonItem = leftBarButton
         navItem.rightBarButtonItem = rightBarButton
         navigationBar.shadowImage = UIImage()
         navigationBar.setItems([navItem], animated: true)
@@ -160,25 +175,36 @@ final class MailReceiveViewController: UIViewController {
         }
     }
     
-    func getReceiver(image: String, name: String, message: String, date: String) { //rx
-        if let imageURL = URL(string: image) {
+    func getReceiver(mailSender: DummyMailUsers) {
+        
+        viewModel = mailSender
+        
+        if let imageURL = URL(string: mailSender.messages.imageUrl) {
             senderImageView.load(url: imageURL)
         }
-        senderNameLabel.text = name
-        sendDateLabel.text = date
-        messageView.text = message
+        senderNameLabel.text = mailSender.messages.oppenentName
+        sendDateLabel.text = mailSender.messages.sendedDate
+        messageView.text = mailSender.messages.message
     }
     
-    @objc func tappedNavigationButton() { //rx
-        
-        let mailSendView = MailSendViewController()
-        mailSendView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월")
-        mailSendView.modalPresentationStyle = .formSheet
-        mailSendView.modalTransitionStyle = .flipHorizontal
-        self.present(mailSendView, animated: true, completion: nil)
+    func tappedNavigationButton() {
+        rightBarButton.rx.tap
+            .bind {
+                let mailSendView = MailSendViewController()
+                if let mailUser = self.viewModel {
+                    mailSendView.getReceiver(mailReceiver: mailUser)
+                }
+                mailSendView.modalPresentationStyle = .formSheet
+                mailSendView.modalTransitionStyle = .flipHorizontal
+                self.present(mailSendView, animated: true, completion: nil)
+            }
     }
     
-    @objc func tappedSenderStack() { //rx
+    @objc func tappedBackzButton() {
+        dismiss(animated: true)
+    }
+    
+    @objc func tappedSenderStack() {
         let viewController = UserDetailViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }

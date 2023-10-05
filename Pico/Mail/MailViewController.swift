@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 import RxRelay
 
-final class MailViewController: UIViewController {
+final class MailViewController: BaseViewController {
     
     private let emptyView = EmptyViewController(type: .message)
     private let viewModel = MailViewModel()
@@ -35,8 +35,6 @@ final class MailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configLogoBarItem()
-        configViewController()
         configTableView()
         addViews()
         makeConstraints()
@@ -46,12 +44,10 @@ final class MailViewController: UIViewController {
         mailListTableView.reloadData()
     }
     
-    private func configViewController() {
-        view.backgroundColor = .systemBackground
-    }
-    
     private func configTableView() {
-        mailListTableView.rowHeight = 80
+        mailListTableView.rowHeight = 100
+        configTableviewDatasource()
+        configTableviewDelegate()
     }
     
     private func addViews() {
@@ -96,37 +92,32 @@ final class MailViewController: UIViewController {
     }
 }
 
+// MARK: - MailTableView+Rx
 extension MailViewController {
+    private func configTableviewDatasource() {
+        viewModel.mailList
+            .bind(to: mailListTableView.rx.items(cellIdentifier: Identifier.TableCell.mailTableCell, cellType: MailListTableViewCell.self)) { _, item, cell in
+                cell.getData(senderUser: item)
+            }
+            .disposed(by: disposeBag)
+    }
     
+    private func configTableviewDelegate() {
+        mailListTableView.rx.modelSelected(DummyMailUsers.self)
+            .subscribe(onNext: { item in
+                if self.mailCheck {
+                    let mailReceiveView = MailReceiveViewController()
+                    mailReceiveView.modalPresentationStyle = .formSheet
+                    mailReceiveView.getReceiver(mailSender: item)
+                    self.present(mailReceiveView, animated: true, completion: nil)
+                    
+                } else {
+                    let mailSendView = MailSendViewController()
+                    mailSendView.modalPresentationStyle = .formSheet
+                    mailSendView.getReceiver(mailReceiver: item)
+                    self.present(mailSendView, animated: true, completion: nil)
+                }
+            })
+            .disposed(by: disposeBag)
+    }
 }
-
-/*
- extension MailViewController: UITableViewDataSource, UITableViewDelegate {
- func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
- return 2
- }
- 
- func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
- guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.mailTableCell, for: indexPath) as? MailListTableViewCell else { return UITableViewCell() }
- cell.getData(imageString: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", nameText: "강아지는월월", mbti: "ISTP", message: "하이룽", date: "9.26", new: true)
- 
- return cell
- }
- 
- func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
- 
- if mailCheck {
- let mailReceiveView = MailReceiveViewController()
- mailReceiveView.modalPresentationStyle = .formSheet
- mailReceiveView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월", message: "하이룽 방가룽", date: "9/25")
- self.present(mailReceiveView, animated: true, completion: nil)
- 
- } else {
- let mailSendView = MailSendViewController()
- mailSendView.modalPresentationStyle = .formSheet
- mailSendView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월")
- self.present(mailSendView, animated: true, completion: nil)
- }
- }
- }
- */
