@@ -10,7 +10,6 @@ import SnapKit
 import RxSwift
 
 final class LikeCollectionViewCell: UICollectionViewCell {
-    
     private var disposeBag: DisposeBag = DisposeBag()
     private var viewModel: LikeMeViewViewModel?
     private var user: User?
@@ -19,7 +18,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return deleteButton.rx.tap.asObservable()
     }
     
-    var userImageView: UIImageView = {
+    private var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
@@ -30,6 +29,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         label.textColor = .white
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -104,7 +104,10 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         nameLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(5)
             make.bottom.equalToSuperview().offset(-5)
+
         }
+        nameLabel.setContentHuggingPriority(.required, for: .vertical)
+        nameLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         
         deleteButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
@@ -112,7 +115,10 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         }
         
         messageButton.snp.makeConstraints { make in
-            make.trailing.bottom.equalToSuperview()
+            make.top.equalTo(nameLabel)
+            make.leading.equalTo(nameLabel.snp.trailing).offset(5)
+            make.trailing.bottom.equalToSuperview().offset(-5)
+            make.width.equalTo(messageButton.snp.height)
         }
     }
 }

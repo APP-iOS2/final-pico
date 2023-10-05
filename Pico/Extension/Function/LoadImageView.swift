@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 extension UIImageView {
     func load(url: URL) {
