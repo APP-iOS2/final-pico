@@ -6,13 +6,15 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class LikeMeViewController: UIViewController {
     private let emptyView = EmptyViewController(type: .uLikeMe)
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    private var imageUrls = ["https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg",
-                     "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
-                             "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg"]
+    private let viewModel: LikeMeViewViewModel = LikeMeViewViewModel()
+    private let disposeBag: DisposeBag = DisposeBag()
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -24,51 +26,47 @@ final class LikeMeViewController: UIViewController {
         addViews()
         makeConstraints()
         configCollectionView()
+        configCollectionviewDatasource()
+        configCollectionviewDelegate()
     }
     
     private func configCollectionView() {
-        collectionView.dataSource = self
-        collectionView.delegate = self
         collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.likeCell)
     }
     
     private func addViews() {
-        if imageUrls.isEmpty {
-            addChild(emptyView)
-            view.addSubview(emptyView.view)
-            emptyView.didMove(toParent: self)
-        } else {
-            view.addSubview(collectionView)
-        }
+        viewModel.likeMeIsEmpty
+            .subscribe(onNext: { [weak self] isEmpty in
+                if isEmpty {
+                    self?.addChild(self?.emptyView ?? UIViewController())
+                    self?.view.addSubview(self?.emptyView.view ?? UIView())
+                    self?.emptyView.didMove(toParent: self)
+                } else {
+                    self?.view.addSubview(self?.collectionView ?? UICollectionView())
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     private func makeConstraints() {
-        if imageUrls.isEmpty {
-            emptyView.view.snp.makeConstraints { make in
-                make.edges.equalToSuperview()
-            }
-        } else {
-            collectionView.snp.makeConstraints { make in
-                make.top.leading.equalToSuperview().offset(10)
-                make.trailing.bottom.equalToSuperview().offset(-10)
-            }
-        }
+        viewModel.likeMeIsEmpty
+            .subscribe(onNext: { [weak self] isEmpty in
+                if isEmpty {
+                    self?.emptyView.view.snp.makeConstraints { make in
+                        make.edges.equalToSuperview()
+                    }
+                } else {
+                    self?.collectionView.snp.makeConstraints { make in
+                        make.top.leading.equalToSuperview().offset(10)
+                        make.trailing.bottom.equalToSuperview().offset(-10)
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }
 
-extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageUrls.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.likeCell, for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
-        cell.configData(imageUrl: imageUrls[indexPath.row], isHiddenDeleteButton: false, isHiddenMessageButton: true)
-        cell.delegate = self
-        cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tappedCell)))
-        return cell
-    }
+extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width / 2 - 17.5
@@ -79,28 +77,36 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDataSo
         return 15
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(1)
-    }
-    
-    @objc func tappedCell(_ sender: UITapGestureRecognizer) {
-        let point = sender.location(in: collectionView)
-        if let indexPath = collectionView.indexPathForItem(at: point) {
-            print(indexPath.row)
-            let viewController = UserDetailViewController()
-            navigationController?.pushViewController(viewController, animated: true)
-        }
-    }
+//    @objc func tappedCell(_ sender: UITapGestureRecognizer) {
+//        let point = sender.location(in: collectionView)
+//        if let indexPath = collectionView.indexPathForItem(at: point) {
+//            let viewController = UserDetailViewController()
+//            navigationController?.pushViewController(viewController, animated: true)
+//        }
+//    }
 }
 
-extension LikeMeViewController: LikeCollectionViewCellDelegate {
-    
-    func tappedDeleteButton(_ cell: LikeCollectionViewCell) {
-        if let indexPath = collectionView.indexPath(for: cell) {
-            imageUrls.remove(at: indexPath.item)
-            collectionView.deleteItems(at: [indexPath])
-        }
+// MARK: - UITableView+Rx
+extension LikeMeViewController {
+    private func configCollectionviewDatasource() {
+        viewModel.bindDeleteButtonTap()
+
+        viewModel.likeMeUserList
+            .bind(to: collectionView.rx.items(cellIdentifier: Identifier.CollectionView.likeCell, cellType: LikeCollectionViewCell.self)) { _, item, cell in
+                cell.configData(images: item.imageURLs, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true)
+                cell.configureLikeMeViewModel(user: item, viewModel: self.viewModel)
+            }
+            .disposed(by: disposeBag)
     }
     
-    func tappedMessageButton(_ cell: LikeCollectionViewCell) { }
+    private func configCollectionviewDelegate() {
+        collectionView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        collectionView.rx.modelSelected(User.self)
+            .subscribe(onNext: { _ in
+                let viewController = UserDetailViewController()
+                self.navigationController?.pushViewController(viewController, animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
 }

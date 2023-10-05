@@ -7,16 +7,19 @@
 
 import UIKit
 import SnapKit
-
-protocol LikeCollectionViewCellDelegate: AnyObject {
-    func tappedDeleteButton(_ cell: LikeCollectionViewCell)
-    func tappedMessageButton(_ cell: LikeCollectionViewCell)
-}
+import RxSwift
 
 final class LikeCollectionViewCell: UICollectionViewCell {
-    weak var delegate: LikeCollectionViewCellDelegate?
     
-    private lazy var userImageView: UIImageView = {
+    private var disposeBag: DisposeBag = DisposeBag()
+    private var viewModel: LikeMeViewViewModel?
+    private var user: User?
+    
+    var buttonTapObservable: Observable<Void> {
+        return deleteButton.rx.tap.asObservable()
+    }
+    
+    var userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
@@ -48,28 +51,44 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         button.tintColor = .white
         return button
     }()
-    
+  
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
         makeConstraints()
-        configButtons()
+        configDeleteButton()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configData(imageUrl: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool) {
-        guard let url = URL(string: imageUrl) else { return }
-        userImageView.load(url: url)
+    func configData(images: [String], nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool) {
+        userImageView.loadImage(url: images[0], disposeBag: self.disposeBag)
+        nameLabel.text = nameText
         messageButton.isHidden = isHiddenMessageButton
         deleteButton.isHidden = isHiddenDeleteButton
     }
+   
+    /// 질문: 이 코드를 추가하면 삭제버튼이 처음 한번만되고 그 다음부터는 먹히지않음
+//    override func prepareForReuse() {
+//        super.prepareForReuse()
+//        disposeBag = DisposeBag()
+//    }
     
-    private func configButtons() {
-        deleteButton.addTarget(self, action: #selector(tappedDeleteButton), for: .touchUpInside)
-        messageButton.addTarget(self, action: #selector(tappedMessageButton), for: .touchUpInside)
+    private func configDeleteButton() {
+        buttonTapObservable
+            .subscribe(onNext: { [weak self] in
+                if let user = self?.user {
+                    self?.viewModel?.deleteButtonTapUser.onNext(user)
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func configureLikeMeViewModel(user: User, viewModel: LikeMeViewViewModel) {
+        self.user = user
+        self.viewModel = viewModel
     }
     
     private func addViews() {
@@ -96,13 +115,5 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         messageButton.snp.makeConstraints { make in
             make.trailing.bottom.equalToSuperview()
         }
-    }
-    
-    @objc private func tappedDeleteButton() {
-        delegate?.tappedDeleteButton(self)
-    }
-    
-    @objc private func tappedMessageButton() {
-        delegate?.tappedMessageButton(self)
     }
 }

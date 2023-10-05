@@ -56,8 +56,8 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.likeCell, for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
-        cell.configData(imageUrl: imageUrls[indexPath.row], isHiddenDeleteButton: false, isHiddenMessageButton: true)
-        cell.delegate = self
+//        cell.configData(imageUrl: imageUrls[indexPath.row], isHiddenDeleteButton: false, isHiddenMessageButton: true)
+//        cell.delegate = self
         return cell
     }
     
@@ -71,10 +71,10 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
 }
 
-extension LikeUViewController: LikeCollectionViewCellDelegate {
-    func tappedDeleteButton(_ cell: LikeCollectionViewCell) { }
-    
-    func tappedMessageButton(_ cell: LikeCollectionViewCell) {
-        // 메시지 연결 작성
-    }
-}
+// extension LikeUViewController: LikeCollectionViewCellDelegate {
+//    func tappedDeleteButton(_ cell: LikeCollectionViewCell) { }
+//    
+//    func tappedMessageButton(_ cell: LikeCollectionViewCell) {
+//        // 메시지 연결 작성
+//    }
+// }
