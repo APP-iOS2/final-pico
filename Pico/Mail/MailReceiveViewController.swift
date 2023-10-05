@@ -93,6 +93,7 @@ final class MailReceiveViewController: UIViewController {
         addViews()
         makeConstraints()
         configNavigationBarItem()
+        configSenderStack()
         tappedDismissKeyboard()
     }
     
@@ -100,10 +101,16 @@ final class MailReceiveViewController: UIViewController {
         setCircleImageView(imageView: senderImageView)
     }
     
-    func configNavigationBarItem() {
+    private func configNavigationBarItem() {
+        configBackButton()
         navItem.rightBarButtonItem = rightBarButton
         navigationBar.shadowImage = UIImage()
         navigationBar.setItems([navItem], animated: true)
+    }
+    
+    private func configSenderStack() {
+        let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
+        senderStack.addGestureRecognizer(stackTap)
     }
     
     private func addViews() {
@@ -149,11 +156,11 @@ final class MailReceiveViewController: UIViewController {
         contentView.snp.makeConstraints { make in
             make.top.equalTo(senderStack.snp.bottom).offset(20)
             make.leading.trailing.equalTo(senderStack)
-            make.bottom.equalTo(safeArea.snp.bottom).inset(50)
+            make.bottom.equalTo(safeArea.snp.bottom).offset(-50)
         }
     }
     
-    func getReceiver(image: String, name: String, message: String, date: String) {
+    func getReceiver(image: String, name: String, message: String, date: String) { //rx
         if let imageURL = URL(string: image) {
             senderImageView.load(url: imageURL)
         }
@@ -162,10 +169,17 @@ final class MailReceiveViewController: UIViewController {
         messageView.text = message
     }
     
-    @objc func tappedNavigationButton() {
+    @objc func tappedNavigationButton() { //rx
+        
         let mailSendView = MailSendViewController()
-        mailSendView.modalPresentationStyle = .formSheet
         mailSendView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월")
+        mailSendView.modalPresentationStyle = .formSheet
+        mailSendView.modalTransitionStyle = .flipHorizontal
         self.present(mailSendView, animated: true, completion: nil)
+    }
+    
+    @objc func tappedSenderStack() { //rx
+        let viewController = UserDetailViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
