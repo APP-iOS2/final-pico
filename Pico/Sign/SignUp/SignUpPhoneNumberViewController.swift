@@ -170,7 +170,6 @@ extension SignUpPhoneNumberViewController {
         if isFullPhoneNumber && isTappedCheckButton {
             guard let text = phoneNumberTextField.text else { return }
             SignUpViewModel.phoneNumber = text
-            print(text)
             tappedButtonAnimation(sender)
             let viewController = SignUpGenderViewController()
             self.navigationController?.pushViewController(viewController, animated: true)

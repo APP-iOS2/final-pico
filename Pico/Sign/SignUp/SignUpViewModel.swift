@@ -18,7 +18,7 @@ final class SignUpViewModel {
     static var birth: String = ""
     static var nickName: String = ""
     static var location: Location = Location(address: "", latitude: 0, longitude: 0)
-    static var imageURLs: [URL] = []
+    static var imageURLs: [UIImage] = []
     static var createdDate: Double = 0
     static var chuCount: Int = 0
     static var isSubscribe: Bool = false

@@ -17,7 +17,7 @@ import FirebaseFirestoreSwift
 final class SignUpPictureViewController: UIViewController {
     
     private var userImages: [UIImage] = []
-    private let storageRef = Storage.storage().reference()
+//    private let storageRef = Storage.storage().reference()
     
     private let progressView: UIProgressView = {
         let view = UIProgressView()
@@ -94,8 +94,8 @@ final class SignUpPictureViewController: UIViewController {
     }
     
     // MARK: - Tapped
-    @objc private func tappedNextButton(_ sender: UIButton) async {
-        print(userImages)
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        SignUpViewModel.imageURLs = userImages
         let viewController = SignUpTermsOfServiceViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }

@@ -10,8 +10,9 @@ import SnapKit
 import CoreLocation
 
 final class SignUpTermsOfServiceViewController: UIViewController {
-    let locationManager = CLLocationManager()
-
+    var locationManager: CLLocationManager = CLLocationManager()
+    var currentLocation: CLLocationCoordinate2D!
+    
     private var isLoading: Bool = false
     private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts
@@ -57,6 +58,9 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configTableView()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+
     }
 }
 // MARK: - Config
@@ -68,9 +72,66 @@ extension SignUpTermsOfServiceViewController {
     }
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
-        navigationController?.popToRootViewController(animated: true)
+        requestAuthorizqtion()
+//        print("""
+//              mbti:\(SignUpViewModel.userMbti),
+//              === number: \(SignUpViewModel.phoneNumber),
+//              birth: \(SignUpViewModel.birth),
+//              === gender: \(SignUpViewModel.gender),
+//              nickname: \(SignUpViewModel.nickName),
+//              === imageURL \(SignUpViewModel.imageURLs)
+//              """)
+//        navigationController?.popToRootViewController(animated: true)
     }
 }
+
+// MARK: - 위치관련
+extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
+//    private func requestAuthorization() {
+//        if locationManager != nil {
+//            locationManager = CLLocationManager()
+//            // 정확도를 검사한다.
+//            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+//            // 앱을 사용할때 권한요청
+//            locationManager.requestWhenInUseAuthorization()
+//            locationManager.delegate = self
+//            locationManagerDidChangeAuthorization(locationManager)
+//            print("if")
+//        } else {
+//            // 사용자의 위치가 바뀌고 있는지 확인하는 메소드
+//            locationManager.startMonitoringSignificantLocationChanges()
+//            print("else")
+//        }
+//    }
+    // 사용자가 위치 서비스에 대한 권한을 변경할 때마다 이 메서드가 호출
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+            if manager.authorizationStatus == .authorizedWhenInUse {
+                currentLocation = locationManager.location?.coordinate
+                LocationService.shared.longitude = currentLocation.longitude
+                LocationService.shared.latitude = currentLocation.latitude
+            } else {
+                print("ㅎㅎ")
+            }
+        }
+    func requestAuthorizqtion() {
+        switch locationManager.authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:
+            print("autjo")
+//                    moveFocusOnUserLocation()
+        case .notDetermined:
+            print("2notDetermined")
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.startUpdatingLocation()
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.requestAlwaysAuthorization()
+        default:
+            print("s \(locationManager.authorizationStatus)")
+            break
+        }
+        
+    }
+}
+
 // MARK: - tableView관련
 extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDataSource {
     
