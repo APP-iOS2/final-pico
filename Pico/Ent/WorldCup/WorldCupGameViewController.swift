@@ -199,14 +199,10 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             collectionView.reloadData()
         default:
             let selectedItem = strong2[index - 28 + indexPath.item]
-            
+
             let worldCupResultViewController = WorldCupResultViewController()
             worldCupResultViewController.selectedItem = selectedItem
-            
-            let modal = UINavigationController(rootViewController: worldCupResultViewController)
-            modal.modalPresentationStyle = .fullScreen
-            
-            self.present(modal, animated: true, completion: nil)
+            self.navigationController?.pushViewController(worldCupResultViewController, animated: true)
         }
     }
 }

@@ -49,9 +49,10 @@ final class WorldCupResultViewController: UIViewController {
         return view
     }()
     
-    private lazy var chatButton: CommonButton = {
+    lazy var chatButton: CommonButton = {
         let button = CommonButton()
         button.setTitle("채팅 신청하기", for: .normal)
+        button.addTarget(self, action: #selector(tappedChatButton), for: .touchUpInside)
         return button
     }()
     
@@ -64,11 +65,12 @@ final class WorldCupResultViewController: UIViewController {
         return label
     }()
     
-    private lazy var cancelButton: UIButton = {
+    lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("채팅 신청하지 않고 나가기", for: .normal)
         button.setTitleColor(.picoAlphaBlue, for: .normal)
         button.titleLabel?.font = UIFont.picoButtonFont
+        button.addTarget(self, action: #selector(tappedCancelButton), for: .touchUpInside)
         return button
     }()
     
@@ -77,7 +79,6 @@ final class WorldCupResultViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()
-        configButton()
         configResultUserCell()
         addShadow()
         hideBackButton()
@@ -138,11 +139,6 @@ final class WorldCupResultViewController: UIViewController {
         }
     }
     
-    private func configButton() {
-        chatButton.addTarget(WorldCupResultViewController.self, action: #selector(tappedChatButton), for: .touchUpInside)
-        cancelButton.addTarget(WorldCupResultViewController.self, action: #selector(tappedCancelButton), for: .touchUpInside)
-    }
-    
     private func configResultUserCell() {
         if let selectedItem = selectedItem {
             resultUserView.mbtiLabel.text = "\(selectedItem.mbti)"
@@ -169,10 +165,15 @@ final class WorldCupResultViewController: UIViewController {
     
     @objc func tappedChatButton() {
         // 채팅 신청하는 것으로 바뀌어야 함
-        self.dismiss(animated: true, completion: nil)
+        if let navigationController = self.navigationController {
+            navigationController.popToRootViewController(animated: true)
+        }
     }
     
     @objc func tappedCancelButton() {
-        self.dismiss(animated: true, completion: nil)
+        if let navigationController = self.navigationController {
+            navigationController.popToRootViewController(animated: true)
+        }
     }
+
 }
