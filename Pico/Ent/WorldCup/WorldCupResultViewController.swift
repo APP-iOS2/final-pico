@@ -49,7 +49,7 @@ final class WorldCupResultViewController: UIViewController {
         return view
     }()
     
-    lazy var chatButton: CommonButton = {
+    private lazy var chatButton: CommonButton = {
         let button = CommonButton()
         button.setTitle("채팅 신청하기", for: .normal)
         button.addTarget(self, action: #selector(tappedChatButton), for: .touchUpInside)
@@ -65,7 +65,7 @@ final class WorldCupResultViewController: UIViewController {
         return label
     }()
     
-    lazy var cancelButton: UIButton = {
+    private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("채팅 신청하지 않고 나가기", for: .normal)
         button.setTitleColor(.picoAlphaBlue, for: .normal)
