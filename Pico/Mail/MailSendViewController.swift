@@ -100,6 +100,7 @@ final class MailSendViewController: UIViewController {
         
         addViews()
         makeConstraints()
+        configBackButton()
         configNavigationBarItem()
         tappedDismissKeyboard()
     }
@@ -156,7 +157,7 @@ final class MailSendViewController: UIViewController {
         contentView.snp.makeConstraints { make in
             make.top.equalTo(receiverStack.snp.bottom).offset(20)
             make.leading.trailing.equalTo(receiverStack)
-            make.bottom.equalTo(sendButton.snp.bottom).inset(80)
+            make.bottom.equalTo(sendButton.snp.bottom).offset(-80)
         }
         
         sendButton.snp.makeConstraints { make in
@@ -167,15 +168,16 @@ final class MailSendViewController: UIViewController {
         }
     }
     
-    func getReceiver(image: String, name: String) {
+    func getReceiver(image: String, name: String) { //rx
         if let imageURL = URL(string: image) {
             receiverImageView.load(url: imageURL)
         }
         receiverNameLabel.text = name
     }
     
-    @objc private func tappedSendButton(_ sender: UIButton) {
+    @objc private func tappedSendButton(_ sender: UIButton) { //rx
         tappedButtonAnimation(sender)
+        dismiss(animated: true)
         print("send")
     }
     
@@ -184,7 +186,7 @@ final class MailSendViewController: UIViewController {
     }
 }
 
-extension MailSendViewController: UITextViewDelegate {
+extension MailSendViewController: UITextViewDelegate { //rx
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.text == textViewPlaceHolder {
