@@ -41,6 +41,7 @@
 		5375E74C2ACD4590001A571D /* StringToDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74B2ACD4590001A571D /* StringToDate.swift */; };
 		5375E74E2ACD4755001A571D /* LikeMeViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74D2ACD4755001A571D /* LikeMeViewViewModel.swift */; };
 		53817BD82ACE591B00AEE9AE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53817BD72ACE591B00AEE9AE /* GoogleService-Info.plist */; };
+		53817BDC2ACE753800AEE9AE /* LikeUViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53817BDB2ACE753800AEE9AE /* LikeUViewViewModel.swift */; };
 		53836F532ACC903800D98F77 /* LoadingAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F522ACC903800D98F77 /* LoadingAnimationView.swift */; };
 		53836F552ACC90FC00D98F77 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F542ACC90FC00D98F77 /* Loading.swift */; };
 		547138482AC3615B00CFE88D /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547138472AC3615B00CFE88D /* UserDetailViewModel.swift */; };
@@ -192,6 +193,7 @@
 		5375E74B2ACD4590001A571D /* StringToDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringToDate.swift; sourceTree = "<group>"; };
 		5375E74D2ACD4755001A571D /* LikeMeViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewViewModel.swift; sourceTree = "<group>"; };
 		53817BD72ACE591B00AEE9AE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../자료/구글인포/Pico/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		53817BDB2ACE753800AEE9AE /* LikeUViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewViewModel.swift; sourceTree = "<group>"; };
 		53836F522ACC903800D98F77 /* LoadingAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAnimationView.swift; sourceTree = "<group>"; };
 		53836F542ACC90FC00D98F77 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
 		547138472AC3615B00CFE88D /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
@@ -615,6 +617,7 @@
 				534172F92AC129830035E41A /* LikeMeViewController.swift */,
 				5375E74D2ACD4755001A571D /* LikeMeViewViewModel.swift */,
 				534172F72AC129730035E41A /* LikeUViewController.swift */,
+				53817BDB2ACE753800AEE9AE /* LikeUViewViewModel.swift */,
 				53389AEE2AC16D120076DA9B /* EmptyViewController.swift */,
 				531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */,
 			);
@@ -1081,6 +1084,7 @@
 				B17D67A82AC0B5F7006F91DC /* Color+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
 				6ADDE2F92AC3BABD00CE4482 /* ProfileEditIntroTabelCell.swift in Sources */,
+				53817BDC2ACE753800AEE9AE /* LikeUViewViewModel.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
 				6ADDE2FB2AC3BAF500CE4482 /* ProfileEditBtnTabelCell.swift in Sources */,
 				B17D67942AC0AD45006F91DC /* Like.swift in Sources */,
