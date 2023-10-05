@@ -157,7 +157,7 @@ final class MailSendViewController: UIViewController {
         contentView.snp.makeConstraints { make in
             make.top.equalTo(receiverStack.snp.bottom).offset(20)
             make.leading.trailing.equalTo(receiverStack)
-            make.bottom.equalTo(sendButton.snp.bottom).inset(80)
+            make.bottom.equalTo(sendButton.snp.bottom).offset(-80)
         }
         
         sendButton.snp.makeConstraints { make in

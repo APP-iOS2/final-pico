@@ -49,7 +49,7 @@ final class MailViewController: UIViewController {
         mailListTableView.delegate = self
     }
     
-    func addViews() {
+    private func addViews() {
         view.addSubview(mailText)
         
         if dataCount < 1 {
@@ -60,7 +60,7 @@ final class MailViewController: UIViewController {
         }
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
          mailText.snp.makeConstraints { make in

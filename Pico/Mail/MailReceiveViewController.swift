@@ -100,7 +100,7 @@ final class MailReceiveViewController: UIViewController {
         setCircleImageView(imageView: senderImageView)
     }
     
-    func configNavigationBarItem() {
+    private func configNavigationBarItem() {
         configBackButton()
         navItem.rightBarButtonItem = rightBarButton
         navigationBar.shadowImage = UIImage()
@@ -150,7 +150,7 @@ final class MailReceiveViewController: UIViewController {
         contentView.snp.makeConstraints { make in
             make.top.equalTo(senderStack.snp.bottom).offset(20)
             make.leading.trailing.equalTo(senderStack)
-            make.bottom.equalTo(safeArea.snp.bottom).inset(50)
+            make.bottom.equalTo(safeArea.snp.bottom).offset(-50)
         }
     }
     
