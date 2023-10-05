@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class MailListTableViewCell: UITableViewCell {
     
@@ -21,7 +22,6 @@ final class MailListTableViewCell: UITableViewCell {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 10
-        stackView.alignment = .center
         return stackView
     }()
     
@@ -83,7 +83,7 @@ final class MailListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func addViews() {
+    private func addViews() {
         [nameLabel, mbtiLabelView].forEach {
             nameStackView.addArrangedSubview($0)
         }
@@ -101,11 +101,11 @@ final class MailListTableViewCell: UITableViewCell {
         }
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         userImage.snp.makeConstraints { make in
-            make.top.equalTo(contentView).inset(15)
+            make.top.equalTo(contentView).offset(-15)
             make.leading.equalTo(contentView).offset(10)
-            make.width.height.equalTo(contentView.snp.height).inset(15)
+            make.width.height.equalTo(contentView.snp.height).offset(-15)
         }
         
         nameStackView.snp.makeConstraints { make in
@@ -113,16 +113,22 @@ final class MailListTableViewCell: UITableViewCell {
             make.leading.equalTo(userImage.snp.trailing).offset(15)
         }
         
+        mbtiLabelView.snp.makeConstraints { make in
+            make.centerY.equalTo(nameLabel)
+            make.height.equalTo(mbtiLabelView.frame.size.height)
+            make.width.equalTo(mbtiLabelView.frame.size.width)
+        }
+        
         infoStackView.snp.makeConstraints { make in
             make.top.equalTo(userImage).offset(10)
             make.leading.equalTo(nameStackView)
-            make.trailing.equalTo(contentView).inset(70)
+            make.trailing.equalTo(contentView).offset(-70)
             make.bottom.equalTo(userImage).offset(-10)
         }
         
         dateStackView.snp.makeConstraints { make in
             make.top.bottom.equalTo(infoStackView)
-            make.trailing.equalTo(contentView.snp.trailing).offset(-20)
+            make.trailing.equalTo(contentView.snp.trailing)
             make.width.equalTo(50)
         }
     }
