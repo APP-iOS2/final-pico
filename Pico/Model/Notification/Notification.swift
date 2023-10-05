@@ -14,8 +14,14 @@ struct Notification: Codable {
     
     struct NotiInfo: Codable {
         var id: String = UUID().uuidString
+        let notiType: NotiType
         let sendUserId: String
         let content: String
         let notiDate: Double
     }
+}
+
+enum NotiType: Codable {
+    case like
+    case message
 }
