@@ -43,7 +43,7 @@ final class SignUpNickNameViewController: UIViewController {
         return label
     }()
     
-    private let nickNameStackView: UIStackView = {
+    private let nickNameHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
@@ -238,10 +238,10 @@ extension SignUpNickNameViewController {
     
     private func addSubViews() {
         for stackViewItem in [nickNameTextField, nickNameCancleButton, nickNameCheckButton] {
-            nickNameStackView.addArrangedSubview(stackViewItem)
+            nickNameHorizontalStack.addArrangedSubview(stackViewItem)
         }
         
-        for viewItem in [progressView, notifyLabel, subNotifyLabel, nickNameStackView, nextButton] {
+        for viewItem in [progressView, notifyLabel, subNotifyLabel, nickNameHorizontalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -268,7 +268,7 @@ extension SignUpNickNameViewController {
             make.trailing.equalTo(notifyLabel.snp.trailing)
         }
         
-        nickNameStackView.snp.makeConstraints { make in
+        nickNameHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(subNotifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalTo(Constraint.SignView.contentPadding)
             make.trailing.equalTo(-Constraint.SignView.contentPadding)

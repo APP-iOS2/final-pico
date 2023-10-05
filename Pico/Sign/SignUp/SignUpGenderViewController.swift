@@ -43,7 +43,7 @@ final class SignUpGenderViewController: UIViewController {
         return label
     }()
     
-    private let stackView: UIStackView = {
+    private let buttonVerticalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .fill
@@ -127,9 +127,9 @@ extension SignUpGenderViewController {
             genderButtons.append(gender)
         }
         for stackViewItem in genderButtons {
-            stackView.addArrangedSubview(stackViewItem)
+            buttonVerticalStack.addArrangedSubview(stackViewItem)
         }
-        for viewItem in [progressView, notifyLabel, subNotifyLabel, stackView, nextButton] {
+        for viewItem in [progressView, notifyLabel, subNotifyLabel, buttonVerticalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -156,7 +156,7 @@ extension SignUpGenderViewController {
             make.trailing.equalTo(notifyLabel.snp.trailing)
         }
         
-        stackView.snp.makeConstraints { make in
+        buttonVerticalStack.snp.makeConstraints { make in
             make.top.equalTo(subNotifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalTo(Constraint.SignView.contentPadding)
             make.trailing.equalTo(-Constraint.SignView.contentPadding)

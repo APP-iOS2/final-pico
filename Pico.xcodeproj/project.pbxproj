@@ -11,6 +11,8 @@
 		362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */; };
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
+		369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */; };
+		369F1BB42ACE400300A98C7B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 369F1BB32ACE400300A98C7B /* GoogleService-Info.plist */; };
 		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
 		36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */; };
 		36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */; };
@@ -40,7 +42,6 @@
 		5471384A2AC361A300CFE88D /* HobbyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547138492AC361A300CFE88D /* HobbyCollectionViewCell.swift */; };
 		5471384C2AC3621000CFE88D /* MbtiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5471384B2AC3621000CFE88D /* MbtiCollectionViewCell.swift */; };
 		54A56C642ACC9CA40003C7BD /* UserImageTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A56C632ACC9CA40003C7BD /* UserImageTableCell.swift */; };
-		54A56C662ACCE92E0003C7BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54A56C652ACCE92E0003C7BD /* GoogleService-Info.plist */; };
 		54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412A2AC2C36200EC8846 /* UserDetailViewController.swift */; };
 		54B441302AC2C36C00EC8846 /* BasicInformationTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412D2AC2C36C00EC8846 /* BasicInformationTableCell.swift */; };
 		54B441312AC2C36C00EC8846 /* AboutMeTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B4412F2AC2C36C00EC8846 /* AboutMeTableCell.swift */; };
@@ -157,6 +158,8 @@
 		362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpNickNameViewController.swift; sourceTree = "<group>"; };
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
+		369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceText.swift; sourceTree = "<group>"; };
+		369F1BB32ACE400300A98C7B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
 		36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureViewController.swift; sourceTree = "<group>"; };
 		36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTermsOfServiceViewController.swift; sourceTree = "<group>"; };
@@ -184,7 +187,6 @@
 		547138492AC361A300CFE88D /* HobbyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HobbyCollectionViewCell.swift; sourceTree = "<group>"; };
 		5471384B2AC3621000CFE88D /* MbtiCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiCollectionViewCell.swift; sourceTree = "<group>"; };
 		54A56C632ACC9CA40003C7BD /* UserImageTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageTableCell.swift; sourceTree = "<group>"; };
-		54A56C652ACCE92E0003C7BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		54B4412A2AC2C36200EC8846 /* UserDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		54B4412D2AC2C36C00EC8846 /* BasicInformationTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInformationTableCell.swift; sourceTree = "<group>"; };
 		54B4412E2AC2C36C00EC8846 /* SubInfomationTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubInfomationTableCell.swift; sourceTree = "<group>"; };
@@ -310,6 +312,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */ = {
+			isa = PBXGroup;
+			children = (
+				369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */,
+			);
+			path = TermsOfServiceText;
+			sourceTree = "<group>";
+		};
 		4B2665322AC3E2E70074D4E2 /* RandomBox */ = {
 			isa = PBXGroup;
 			children = (
@@ -503,7 +513,7 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				54A56C652ACCE92E0003C7BD /* GoogleService-Info.plist */,
+				369F1BB32ACE400300A98C7B /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -526,6 +536,7 @@
 		B14B58FB2AC0A2B5009889DA /* SignUp */ = {
 			isa = PBXGroup;
 			children = (
+				369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */,
 				B17D67852AC0A850006F91DC /* SignUpViewController.swift */,
 				36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */,
 				367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */,
@@ -959,7 +970,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				54A56C662ACCE92E0003C7BD /* GoogleService-Info.plist in Resources */,
+				369F1BB42ACE400300A98C7B /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1021,6 +1032,7 @@
 				362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */,
 				362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */,
 				5471384C2AC3621000CFE88D /* MbtiCollectionViewCell.swift in Sources */,
+				369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */,
 				B15ABE312AC31CF000529C29 /* ShowAlert.swift in Sources */,
 				4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */,
 				BCB63A772AC1883C00389432 /* HomeTabImageViewController.swift in Sources */,

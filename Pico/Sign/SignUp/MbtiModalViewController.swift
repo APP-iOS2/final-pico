@@ -29,7 +29,7 @@ final class MbtiModalViewController: UIViewController {
         return label
     }()
     
-    private let buttonsStackView: UIStackView = {
+    private let buttonHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -143,9 +143,9 @@ extension MbtiModalViewController {
     
     private func addSubViews() {
         view.addSubview(notifyLabel)
-        view.addSubview(buttonsStackView)
+        view.addSubview(buttonHorizontalStack)
         for stackViewItem in [leftUiView, rightUiView] {
-            buttonsStackView.addArrangedSubview(stackViewItem)
+            buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
         leftUiView.addSubview(leftTitleLabel)
         leftUiView.addSubview(leftSubTitleLabel)
@@ -162,7 +162,7 @@ extension MbtiModalViewController {
             make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
-        buttonsStackView.snp.makeConstraints { make in
+        buttonHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(notifyLabel.snp.bottom).offset(30)
             make.leading.equalTo(Constraint.SignView.contentPadding)
             make.trailing.equalTo(-Constraint.SignView.contentPadding)

@@ -70,7 +70,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return button
     }()
     
-    private let phoneMessageStackView: UIStackView = {
+    private let phoneMessageHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -135,12 +135,12 @@ extension SignUpPhoneNumberViewController {
     
     private func updateNextButton(isCheck: Bool) {
         if isCheck {
-            phoneMessageStackView.isHidden = false
+            phoneMessageHorizontalStack.isHidden = false
             phoneNumberTextField.textColor = .picoBlue
             nextButton.backgroundColor = .picoBlue
             isTappedCheckButton = true
         } else {
-            phoneMessageStackView.isHidden = true
+            phoneMessageHorizontalStack.isHidden = true
             isTappedCheckButton = false
         }
     }
@@ -221,13 +221,13 @@ extension SignUpPhoneNumberViewController {
     private func addSubViews() {
         configMessageButtons()
         for pmStkItem in messageButtons {
-            phoneMessageStackView.addArrangedSubview(pmStkItem)
+            phoneMessageHorizontalStack.addArrangedSubview(pmStkItem)
         }
         
         for stackViewItem in [phoneNumberTextField, phoneNumberCancleButton, phoneNumberCheckButton] {
             phoneTextFieldstackView.addArrangedSubview(stackViewItem)
         }
-        for viewItem in [notifyLabel, progressView, phoneTextFieldstackView, nextButton, phoneMessageStackView] {
+        for viewItem in [notifyLabel, progressView, phoneTextFieldstackView, nextButton, phoneMessageHorizontalStack] {
             view.addSubview(viewItem)
         }
     }
@@ -273,7 +273,7 @@ extension SignUpPhoneNumberViewController {
             make.width.equalTo(60)
         }
         
-        phoneMessageStackView.snp.makeConstraints { make in
+        phoneMessageHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(phoneTextFieldstackView.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalTo(Constraint.SignView.contentPadding)
             make.trailing.equalTo(-Constraint.SignView.contentPadding)

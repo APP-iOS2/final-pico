@@ -43,7 +43,7 @@ final class SignInViewController: UIViewController {
         return button
     }()
     
-    private let stackView: UIStackView = {
+    private let buttonHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -171,10 +171,10 @@ extension SignInViewController {
     
     private func addSubViews() {
         for stackViewItem in [phoneNumberTextField, phoneNumberCancleButton] {
-            stackView.addArrangedSubview(stackViewItem)
+            buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
         
-        for viewItem in [notifyLabel, stackView, nextButton] {
+        for viewItem in [notifyLabel, buttonHorizontalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -188,7 +188,7 @@ extension SignInViewController {
             make.trailing.equalToSuperview().offset(-Constraint.SignView.padding)
         }
         
-        stackView.snp.makeConstraints { make in
+        buttonHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalToSuperview().offset(Constraint.SignView.contentPadding)
             make.trailing.equalToSuperview().offset(-Constraint.SignView.contentPadding)

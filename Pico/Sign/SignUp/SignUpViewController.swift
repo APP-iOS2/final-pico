@@ -31,7 +31,7 @@ final class SignUpViewController: UIViewController {
         return label
     }()
     
-    private let stackView: UIStackView = {
+    private let buttonHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -205,10 +205,10 @@ extension SignUpViewController {
     
     private func addSubViews() {
         for stackViewItem in [mbtiFirstButton, mbtiSecondButton, mbtiThirdButton, mbtiFourthButton] {
-            stackView.addArrangedSubview(stackViewItem)
+            buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
         
-        for viewItem in [ progressView, notifyLabel, stackView, nextButton] {
+        for viewItem in [ progressView, notifyLabel, buttonHorizontalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -229,7 +229,7 @@ extension SignUpViewController {
             make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
-        stackView.snp.makeConstraints { make in
+        buttonHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalTo(Constraint.SignView.contentPadding)
             make.trailing.equalTo(-Constraint.SignView.contentPadding)
