@@ -62,7 +62,6 @@ final class MbtiModalViewController: UIViewController {
     
     private let leftTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.font = .picoMBTISelectedLabelFont
         label.textColor = .picoFontBlack
         label.tag = 1
@@ -71,7 +70,6 @@ final class MbtiModalViewController: UIViewController {
     
     private let leftSubTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.font = .picoMBTISelectedSubLabelFont
         label.textColor = .picoFontBlack
         label.tag = 1
@@ -80,7 +78,6 @@ final class MbtiModalViewController: UIViewController {
     
     private let rightTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.font = .picoMBTISelectedLabelFont
         label.textColor = .picoFontBlack
         label.tag = 2
@@ -89,7 +86,6 @@ final class MbtiModalViewController: UIViewController {
     
     private let rightSubTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.font = .picoMBTISelectedSubLabelFont
         label.textColor = .picoFontBlack
         label.tag = 2
@@ -104,8 +100,9 @@ final class MbtiModalViewController: UIViewController {
         makeConstraints()
         configMbtiButton()
     }
-    
-    // MARK: - Config
+}
+// MARK: - Config
+extension MbtiModalViewController {
     private func configMbtiButton() {
         leftTitleLabel.text = firstTitleText
         leftSubTitleLabel.text = firstSubTitleText
@@ -113,7 +110,7 @@ final class MbtiModalViewController: UIViewController {
         rightSubTitleLabel.text = secondSubTitleText
     }
     
-    // MARK: - Tapped
+    // MARK: - @objc
     @objc private func tappedUiView(_ sender: UITapGestureRecognizer) {
         guard let leftTitle = leftTitleLabel.text else { return }
         guard let rightTitle = rightTitleLabel.text else { return }
@@ -133,7 +130,6 @@ final class MbtiModalViewController: UIViewController {
         slowDownModal()
     }
 }
-
 // MARK: - UI 관련
 extension MbtiModalViewController {
     

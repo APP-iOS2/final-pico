@@ -79,22 +79,94 @@ final class SignUpPictureViewController: UIViewController {
         configBackButton()
         configCollectionView()
     }
-    
-    // MARK: - Config
+}
+// MARK: - Config
+extension SignUpPictureViewController {
     private func configCollectionView() {
         collectionView.backgroundColor = .systemBackground
         collectionView.dataSource = self
         collectionView.delegate = self
     }
     
-    // MARK: - Tapped
+    // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         print(userImages)
         let viewController = SignUpTermsOfServiceViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
+}
+// MARK: - 사진 관련
+extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    // MARK: - UI 관련
+    @objc private func openPhotoLibrary() {
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
+        
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        present(picker, animated: true, completion: nil)
+    }
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        var selectedImages: [UIImage] = []
+        
+        for result in results where result.itemProvider.canLoadObject(ofClass: UIImage.self) {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { (image, _ ) in
+                if let image = image as? UIImage {
+                    selectedImages.append(image)
+                    
+                    if selectedImages.count == results.count {
+                        self.userImages = selectedImages
+                        DispatchQueue.main.async {
+                            self.collectionView.reloadData()
+                            if !self.userImages.isEmpty {
+                                self.nextButton.isEnabled = true
+                                self.nextButton.backgroundColor = .picoBlue
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - collectionView 관련
+extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return userImages.count + 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.profileEditCollectionCell, for: indexPath) as? ProfileEditCollectionCell else { return UICollectionViewCell() }
+        
+        cell.configure(imageName: "chu")
+        cell.backgroundColor = .lightGray
+        cell.layer.masksToBounds = true
+        cell.layer.cornerRadius = 10
+        if indexPath.row != 0 {
+            cell.configure(image: userImages[indexPath.row - 1])
+        }
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let cellWidth: CGFloat = 120
+        let cellHeight = collectionView.bounds.height
+        return CGSize(width: cellWidth, height: cellHeight)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row == 0 {
+            openPhotoLibrary()
+        }
+    }
+}
+
+// MARK: - UI 관련
+extension SignUpPictureViewController {
     private func addSubViews() {
         for viewItem in [progressView, notifyLabel, subNotifyLabel, nextButton, collectionView] { // imageStackView를 포함하여 모든 뷰를 추가
             view.addSubview(viewItem)
@@ -135,76 +207,6 @@ final class SignUpPictureViewController: UIViewController {
             make.trailing.equalTo(notifyLabel.snp.trailing)
             make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
             make.height.equalTo(Constraint.Button.commonHeight)
-        }
-    }
-}
-
-// MARK: - 사진 받아오는곳
-extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    @objc private func openPhotoLibrary() {
-        var configuration = PHPickerConfiguration()
-        configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
-        
-        let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = self
-        present(picker, animated: true, completion: nil)
-    }
-    
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: nil)
-        var selectedImages: [UIImage] = []
-        
-        for result in results where result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-            result.itemProvider.loadObject(ofClass: UIImage.self) { (image, _ ) in
-                if let image = image as? UIImage {
-                    selectedImages.append(image)
-                    
-                    if selectedImages.count == results.count {
-                        self.userImages = selectedImages
-                        DispatchQueue.main.async {
-                            self.collectionView.reloadData()
-                            if !self.userImages.isEmpty {
-                                self.nextButton.isEnabled = true
-                                self.nextButton.backgroundColor = .picoBlue
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - 컬렉션
-extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return userImages.count + 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.profileEditCollectionCell, for: indexPath) as? ProfileEditCollectionCell else { return UICollectionViewCell() }
-        
-        cell.configure(imageName: "chu")
-        cell.backgroundColor = .lightGray
-        cell.layer.masksToBounds = true
-        cell.layer.cornerRadius = 10
-        if indexPath.row != 0 {
-            cell.configure(image: userImages[indexPath.row - 1])
-        }
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth: CGFloat = 120
-        let cellHeight = collectionView.bounds.height
-        return CGSize(width: cellWidth, height: cellHeight)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
-            openPhotoLibrary()
         }
     }
 }

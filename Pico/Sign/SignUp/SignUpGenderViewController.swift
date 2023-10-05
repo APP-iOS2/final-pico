@@ -72,8 +72,9 @@ final class SignUpGenderViewController: UIViewController {
         addSubViews()
         makeConstraints()
     }
-   
-    // MARK: - Config
+}
+// MARK: - Config
+extension SignUpGenderViewController {
     private func configNextButton() {
         isTappedGenderButton = true
         nextButton.backgroundColor = .picoBlue
@@ -91,7 +92,7 @@ final class SignUpGenderViewController: UIViewController {
         return button
     }
     
-    // MARK: - Tapped
+    // MARK: - @@objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isTappedGenderButton {
             tappedButtonAnimation(sender)
@@ -118,7 +119,6 @@ final class SignUpGenderViewController: UIViewController {
         }
     }
 }
-
 // MARK: - UI 관련
 extension SignUpGenderViewController {
     

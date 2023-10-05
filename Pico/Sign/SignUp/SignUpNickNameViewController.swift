@@ -109,9 +109,8 @@ final class SignUpNickNameViewController: UIViewController {
         unregisterKeyboard()
     }
 }
-
+// MARK: - Config
 extension SignUpNickNameViewController {
-    // MARK: - Config
     private func configButtons() {
         nickNameCheckButton.addTarget(self, action: #selector(tappedNickNameCheckButton), for: .touchUpInside)
         nickNameCancleButton.addTarget(self, action: #selector(tappedNickNameCancleButton), for: .touchUpInside)
@@ -133,7 +132,7 @@ extension SignUpNickNameViewController {
         updateNextButton(isCheck: false)
     }
     
-    // MARK: - Tapped
+    // MARK: - @objc
     @objc private func tappedNickNameCheckButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         showAlert(message: "\(nickNameTextField.text ?? "") 이름으로 설정합니다.", isCancelButton: true) {

@@ -105,9 +105,9 @@ final class SignUpViewController: UIViewController {
         configButtons()
     }
 }
-
+// MARK: - Config
 extension SignUpViewController: SignViewControllerDelegate {
-    // MARK: - Config
+
     private func configButtons() {
         mbtiFirstButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         mbtiSecondButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
@@ -161,22 +161,6 @@ extension SignUpViewController: SignViewControllerDelegate {
         }
         present(modalVC, animated: true, completion: nil)
     }
-    
-    // MARK: - Tapped
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        if !userMbti.contains("") {
-            let viewController = SignUpPhoneNumberViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-    }
-    
-    @objc private func tappedMbtiButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        configMbtiModal(sender)
-    }
-    
-    // MARK: - MBTI
     func getUserMbti(mbti: String, num: Int) {
         switch num {
         case 0:
@@ -199,6 +183,20 @@ extension SignUpViewController: SignViewControllerDelegate {
         } else {
             nextButton.backgroundColor = .picoBlue
         }
+    }
+    
+    // MARK: - @objc
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        if !userMbti.contains("") {
+            let viewController = SignUpPhoneNumberViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+    
+    @objc private func tappedMbtiButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        configMbtiModal(sender)
     }
 }
 

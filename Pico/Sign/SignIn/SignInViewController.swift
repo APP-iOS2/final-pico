@@ -80,8 +80,9 @@ final class SignInViewController: UIViewController {
         super.viewWillDisappear(animated)
         unregisterKeyboard()
     }
-    
-    // MARK: - Config
+}
+// MARK: - Config
+extension SignInViewController {
     private func configTextfield() {
         phoneNumberTextField.delegate = self
     }
@@ -122,7 +123,6 @@ final class SignInViewController: UIViewController {
         }
     }
 }
-
 // MARK: - 텍스트필드 관련
 extension SignInViewController: UITextFieldDelegate {
     

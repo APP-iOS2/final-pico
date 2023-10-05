@@ -109,8 +109,10 @@ final class SignUpPhoneNumberViewController: UIViewController {
         super.viewWillDisappear(animated)
         unregisterKeyboard()
     }
-    
-    // MARK: - Config
+}
+// MARK: - Config
+extension SignUpPhoneNumberViewController {
+  
     private func configButtons() {
         phoneNumberCheckButton.addTarget(self, action: #selector(tappedPhoneNumberCheckButton), for: .touchUpInside)
         phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
@@ -121,7 +123,28 @@ final class SignUpPhoneNumberViewController: UIViewController {
         phoneNumberTextField.delegate = self
     }
     
-    // MARK: - Tapped
+    private func updatePhoneTextField(isFull: Bool) {
+        if isFull {
+            phoneNumberCheckButton.isHidden = false
+            isFullPhoneNumber = true
+        } else {
+            phoneNumberCheckButton.isHidden = true
+            isFullPhoneNumber = false
+        }
+    }
+    
+    private func updateNextButton(isCheck: Bool) {
+        if isCheck {
+            phoneMessageStackView.isHidden = false
+            phoneNumberTextField.textColor = .picoBlue
+            nextButton.backgroundColor = .picoBlue
+            isTappedCheckButton = true
+        } else {
+            phoneMessageStackView.isHidden = true
+            isTappedCheckButton = false
+        }
+    }
+    // MARK: - @objc
     @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
@@ -148,30 +171,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
-    
-    private func updatePhoneTextField(isFull: Bool) {
-        if isFull {
-            phoneNumberCheckButton.isHidden = false
-            isFullPhoneNumber = true
-        } else {
-            phoneNumberCheckButton.isHidden = true
-            isFullPhoneNumber = false
-        }
-    }
-    
-    private func updateNextButton(isCheck: Bool) {
-        if isCheck {
-            phoneMessageStackView.isHidden = false
-            phoneNumberTextField.textColor = .picoBlue
-            nextButton.backgroundColor = .picoBlue
-            isTappedCheckButton = true
-        } else {
-            phoneMessageStackView.isHidden = true
-            isTappedCheckButton = false
-        }
-    }
 }
-
 // MARK: - 텍스트필드 관련
 extension SignUpPhoneNumberViewController: UITextFieldDelegate {
     
