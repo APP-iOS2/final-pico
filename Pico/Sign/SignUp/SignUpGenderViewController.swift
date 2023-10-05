@@ -43,7 +43,7 @@ final class SignUpGenderViewController: UIViewController {
         return label
     }()
     
-    private let stackView: UIStackView = {
+    private let buttonVerticalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .fill
@@ -72,8 +72,9 @@ final class SignUpGenderViewController: UIViewController {
         addSubViews()
         makeConstraints()
     }
-   
-    // MARK: - Config
+}
+// MARK: - Config
+extension SignUpGenderViewController {
     private func configNextButton() {
         isTappedGenderButton = true
         nextButton.backgroundColor = .picoBlue
@@ -91,7 +92,7 @@ final class SignUpGenderViewController: UIViewController {
         return button
     }
     
-    // MARK: - Tapped
+    // MARK: - @@objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isTappedGenderButton {
             tappedButtonAnimation(sender)
@@ -103,22 +104,21 @@ final class SignUpGenderViewController: UIViewController {
     @objc private func tappedGenderButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         configNextButton()
-        
         for button in genderButtons {
             button.isSelected = (button == sender)
             guard let text = sender.titleLabel?.text else { return }
-            if button.isSelected {
+            switch button.isSelected {
+            case true:
                 sender.backgroundColor = .picoAlphaBlue
                 sender.setTitleColor(.white, for: .normal)
                 gender = text
-            } else {
+            case false:
                 button.backgroundColor = .picoGray
                 button.setTitleColor(.black, for: .normal)
             }
         }
     }
 }
-
 // MARK: - UI 관련
 extension SignUpGenderViewController {
     
@@ -127,9 +127,9 @@ extension SignUpGenderViewController {
             genderButtons.append(gender)
         }
         for stackViewItem in genderButtons {
-            stackView.addArrangedSubview(stackViewItem)
+            buttonVerticalStack.addArrangedSubview(stackViewItem)
         }
-        for viewItem in [progressView, notifyLabel, subNotifyLabel, stackView, nextButton] {
+        for viewItem in [progressView, notifyLabel, subNotifyLabel, buttonVerticalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -156,7 +156,7 @@ extension SignUpGenderViewController {
             make.trailing.equalTo(notifyLabel.snp.trailing)
         }
         
-        stackView.snp.makeConstraints { make in
+        buttonVerticalStack.snp.makeConstraints { make in
             make.top.equalTo(subNotifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalTo(Constraint.SignView.contentPadding)
             make.trailing.equalTo(-Constraint.SignView.contentPadding)

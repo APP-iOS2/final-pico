@@ -43,7 +43,7 @@ final class SignInViewController: UIViewController {
         return button
     }()
     
-    private let stackView: UIStackView = {
+    private let buttonHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -80,8 +80,9 @@ final class SignInViewController: UIViewController {
         super.viewWillDisappear(animated)
         unregisterKeyboard()
     }
-    
-    // MARK: - Config
+}
+// MARK: - Config
+extension SignInViewController {
     private func configTextfield() {
         phoneNumberTextField.delegate = self
     }
@@ -111,18 +112,18 @@ final class SignInViewController: UIViewController {
     }
     
     private func changeViewState(isFull: Bool) {
-        if isFull {
+        switch isFull {
+        case true:
             phoneNumberTextField.textColor = .picoBlue
             nextButton.backgroundColor = .picoBlue
             isFullPhoneNumber = true
-        } else {
+        case false:
             phoneNumberTextField.textColor = .gray
             nextButton.backgroundColor = .picoGray
             isFullPhoneNumber = false
         }
     }
 }
-
 // MARK: - 텍스트필드 관련
 extension SignInViewController: UITextFieldDelegate {
     
@@ -171,10 +172,10 @@ extension SignInViewController {
     
     private func addSubViews() {
         for stackViewItem in [phoneNumberTextField, phoneNumberCancleButton] {
-            stackView.addArrangedSubview(stackViewItem)
+            buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
         
-        for viewItem in [notifyLabel, stackView, nextButton] {
+        for viewItem in [notifyLabel, buttonHorizontalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -188,7 +189,7 @@ extension SignInViewController {
             make.trailing.equalToSuperview().offset(-Constraint.SignView.padding)
         }
         
-        stackView.snp.makeConstraints { make in
+        buttonHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
             make.leading.equalToSuperview().offset(Constraint.SignView.contentPadding)
             make.trailing.equalToSuperview().offset(-Constraint.SignView.contentPadding)

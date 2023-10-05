@@ -48,11 +48,11 @@ final class SignViewController: UIViewController {
         configBackButton()
         addSubViews()
         makeConstraints()
-//        configButtons()
         configBackButton()
         configRx()
     }
-    
+}
+extension SignViewController {
     private func configRx() {
         signInButton.rx.tap
             .subscribe(onNext: { [weak self] in
@@ -71,10 +71,10 @@ final class SignViewController: UIViewController {
                 self.navigationController?.pushViewController(viewController, animated: true)
             })
             .disposed(by: disposeBag)
-        
     }
-    
-    // MARK: - UI관련
+}
+// MARK: - UI관련
+extension SignViewController {
     private func addSubViews() {
         for viewItem in [picoLogoImageView, picoChuImageView, signInButton, signUpButton] {
             view.addSubview(viewItem)

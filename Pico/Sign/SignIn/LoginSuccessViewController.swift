@@ -44,8 +44,10 @@ final class LoginSuccessViewController: UIViewController {
         makeConstraints()
         configButton()
     }
+}
 
-    // MARK: - Config
+// MARK: - Config
+extension LoginSuccessViewController {
     private func configButton() {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
@@ -56,7 +58,6 @@ final class LoginSuccessViewController: UIViewController {
             .disposed(by: disposeBag)
     }
 }
-
 // MARK: - UI 관련
 extension LoginSuccessViewController {
 

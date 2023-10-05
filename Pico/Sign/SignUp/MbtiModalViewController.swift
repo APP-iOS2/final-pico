@@ -29,7 +29,7 @@ final class MbtiModalViewController: UIViewController {
         return label
     }()
     
-    private let buttonsStackView: UIStackView = {
+    private let buttonHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -62,7 +62,6 @@ final class MbtiModalViewController: UIViewController {
     
     private let leftTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.font = .picoMBTISelectedLabelFont
         label.textColor = .picoFontBlack
         label.tag = 1
@@ -71,7 +70,6 @@ final class MbtiModalViewController: UIViewController {
     
     private let leftSubTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.font = .picoMBTISelectedSubLabelFont
         label.textColor = .picoFontBlack
         label.tag = 1
@@ -80,7 +78,6 @@ final class MbtiModalViewController: UIViewController {
     
     private let rightTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.font = .picoMBTISelectedLabelFont
         label.textColor = .picoFontBlack
         label.tag = 2
@@ -89,7 +86,6 @@ final class MbtiModalViewController: UIViewController {
     
     private let rightSubTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.font = .picoMBTISelectedSubLabelFont
         label.textColor = .picoFontBlack
         label.tag = 2
@@ -104,8 +100,9 @@ final class MbtiModalViewController: UIViewController {
         makeConstraints()
         configMbtiButton()
     }
-    
-    // MARK: - Config
+}
+// MARK: - Config
+extension MbtiModalViewController {
     private func configMbtiButton() {
         leftTitleLabel.text = firstTitleText
         leftSubTitleLabel.text = firstSubTitleText
@@ -113,7 +110,7 @@ final class MbtiModalViewController: UIViewController {
         rightSubTitleLabel.text = secondSubTitleText
     }
     
-    // MARK: - Tapped
+    // MARK: - @objc
     @objc private func tappedUiView(_ sender: UITapGestureRecognizer) {
         guard let leftTitle = leftTitleLabel.text else { return }
         guard let rightTitle = rightTitleLabel.text else { return }
@@ -133,7 +130,6 @@ final class MbtiModalViewController: UIViewController {
         slowDownModal()
     }
 }
-
 // MARK: - UI 관련
 extension MbtiModalViewController {
     
@@ -147,9 +143,9 @@ extension MbtiModalViewController {
     
     private func addSubViews() {
         view.addSubview(notifyLabel)
-        view.addSubview(buttonsStackView)
+        view.addSubview(buttonHorizontalStack)
         for stackViewItem in [leftUiView, rightUiView] {
-            buttonsStackView.addArrangedSubview(stackViewItem)
+            buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
         leftUiView.addSubview(leftTitleLabel)
         leftUiView.addSubview(leftSubTitleLabel)
@@ -166,7 +162,7 @@ extension MbtiModalViewController {
             make.trailing.equalTo(-Constraint.SignView.padding)
         }
         
-        buttonsStackView.snp.makeConstraints { make in
+        buttonHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(notifyLabel.snp.bottom).offset(30)
             make.leading.equalTo(Constraint.SignView.contentPadding)
             make.trailing.equalTo(-Constraint.SignView.contentPadding)

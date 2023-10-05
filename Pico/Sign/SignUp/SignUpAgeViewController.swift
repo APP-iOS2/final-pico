@@ -71,10 +71,8 @@ final class SignUpAgeViewController: UIViewController {
         configDatePicker()
     }
 }
-
+// MARK: - Config
 extension SignUpAgeViewController {
-    
-    // MARK: - Config
     private func configNextButton() {
         isChoiceAge = true
         nextButton.backgroundColor = .picoBlue
@@ -94,7 +92,7 @@ extension SignUpAgeViewController {
         datePicker.selectRow(initialDayIndex, inComponent: 2, animated: false)
     }
     
-    // MARK: - Tapped
+    // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isChoiceAge {
             tappedButtonAnimation(sender)
