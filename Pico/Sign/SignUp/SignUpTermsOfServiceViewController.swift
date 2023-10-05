@@ -7,8 +7,11 @@
 
 import UIKit
 import SnapKit
+import CoreLocation
 
 final class SignUpTermsOfServiceViewController: UIViewController {
+    let locationManager = CLLocationManager()
+
     private var isLoading: Bool = false
     private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts

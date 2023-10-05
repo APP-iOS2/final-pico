@@ -19,6 +19,14 @@ final class SignUpAgeViewController: UIViewController {
     private let months = Array(1...12)
     private var days: [Int] = []
     
+    private var userAge: String {
+        var age: [String] = []
+        for selectAge in [selectedYear, selectedMonth, selectedDay] {
+            age.append(String(selectAge))
+        }
+        return age.joined()
+    }
+    
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -95,6 +103,8 @@ extension SignUpAgeViewController {
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isChoiceAge {
+            SignUpViewModel.birth = userAge
+            print(userAge)
             tappedButtonAnimation(sender)
             let viewController = SignUpNickNameViewController()
             self.navigationController?.pushViewController(viewController, animated: true)

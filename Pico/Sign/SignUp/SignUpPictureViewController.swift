@@ -8,10 +8,16 @@
 import UIKit
 import SnapKit
 import PhotosUI
+import Firebase
+import FirebaseCore
+import FirebaseStorage
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 final class SignUpPictureViewController: UIViewController {
     
     private var userImages: [UIImage] = []
+    private let storageRef = Storage.storage().reference()
     
     private let progressView: UIProgressView = {
         let view = UIProgressView()
@@ -79,23 +85,24 @@ final class SignUpPictureViewController: UIViewController {
         configBackButton()
         configCollectionView()
     }
-}
-// MARK: - Config
-extension SignUpPictureViewController {
+    
+    // MARK: - Config
     private func configCollectionView() {
         collectionView.backgroundColor = .systemBackground
         collectionView.dataSource = self
         collectionView.delegate = self
     }
     
-    // MARK: - @objc
-    @objc private func tappedNextButton(_ sender: UIButton) {
+    // MARK: - Tapped
+    @objc private func tappedNextButton(_ sender: UIButton) async {
         print(userImages)
         let viewController = SignUpTermsOfServiceViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
+    
 }
-// MARK: - 사진 관련
+
+// MARK: - 사진 받아오는곳
 extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @objc private func openPhotoLibrary() {
@@ -132,7 +139,7 @@ extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePi
     }
 }
 
-// MARK: - collectionView 관련
+// MARK: - 컬렉션
 extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -164,9 +171,9 @@ extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionV
         }
     }
 }
-
 // MARK: - UI 관련
 extension SignUpPictureViewController {
+  
     private func addSubViews() {
         for viewItem in [progressView, notifyLabel, subNotifyLabel, nextButton, collectionView] { // imageStackView를 포함하여 모든 뷰를 추가
             view.addSubview(viewItem)

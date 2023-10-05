@@ -153,6 +153,8 @@ extension SignUpNickNameViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
+        SignUpViewModel.nickName = nickNameTextField.text!
+        print(SignUpViewModel.nickName)
         let viewController = SignUpPictureViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
