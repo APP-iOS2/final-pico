@@ -175,6 +175,19 @@ final class MailReceiveViewController: UIViewController {
         }
     }
     
+    private func tappedNavigationButton() {
+        rightBarButton.rx.tap
+            .bind { _ in
+                let mailSendView = MailSendViewController()
+                if let mailUser = self.viewModel {
+                    mailSendView.getReceiver(mailReceiver: mailUser)
+                }
+                mailSendView.modalPresentationStyle = .formSheet
+                mailSendView.modalTransitionStyle = .flipHorizontal
+                self.present(mailSendView, animated: true, completion: nil)
+            }
+    }
+    
     func getReceiver(mailSender: DummyMailUsers) {
         
         viewModel = mailSender
@@ -185,19 +198,6 @@ final class MailReceiveViewController: UIViewController {
         senderNameLabel.text = mailSender.messages.oppenentName
         sendDateLabel.text = mailSender.messages.sendedDate
         messageView.text = mailSender.messages.message
-    }
-    
-    func tappedNavigationButton() {
-        rightBarButton.rx.tap
-            .bind {
-                let mailSendView = MailSendViewController()
-                if let mailUser = self.viewModel {
-                    mailSendView.getReceiver(mailReceiver: mailUser)
-                }
-                mailSendView.modalPresentationStyle = .formSheet
-                mailSendView.modalTransitionStyle = .flipHorizontal
-                self.present(mailSendView, animated: true, completion: nil)
-            }
     }
     
     @objc func tappedBackzButton() {

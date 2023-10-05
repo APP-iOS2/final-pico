@@ -12,6 +12,8 @@ import RxCocoa
 
 final class MailSendViewController: UIViewController {
     
+    var diposeBag = DisposeBag()
+    
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
         navigationBar.barTintColor = .systemBackground
@@ -79,13 +81,11 @@ final class MailSendViewController: UIViewController {
     private let textViewPlaceHolder = "메시지를 입력하세요"
     
     private lazy var messageView: UITextView = {
-        
         let textView: UITextView = UITextView()
         textView.text = textViewPlaceHolder
         textView.font = .picoContentFont
         textView.textColor = .lightGray
         textView.backgroundColor = .clear
-        textView.delegate = self
         return textView
     }()
     
@@ -113,6 +113,7 @@ final class MailSendViewController: UIViewController {
         makeConstraints()
         configNavigationBarItem()
         tappedDismissKeyboard()
+        changeTextView()
     }
     
     override func viewDidLayoutSubviews() {
@@ -179,15 +180,48 @@ final class MailSendViewController: UIViewController {
         }
     }
     
+    private func changeTextView() {
+        
+        messageView.rx.didBeginEditing
+            .bind { _ in
+                if self.messageView.text == self.textViewPlaceHolder {
+                    self.messageView.text = nil
+                    self.messageView.textColor = .black
+                }
+            }
+            .disposed(by: diposeBag)
+        
+        messageView.rx.didEndEditing
+            .bind { _ in
+                if self.messageView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    self.messageView.text = self.textViewPlaceHolder
+                    self.messageView.textColor = .lightGray
+                    self.updateCountLabel(characterCount: 0)
+                }
+            }
+            .disposed(by: diposeBag)
+        
+        messageView.rx.text
+            .orEmpty
+            .debug()
+            .subscribe(onNext: { changedText in
+                let characterCount = changedText.count
+                if characterCount <= 300 {
+                    self.updateCountLabel(characterCount: characterCount)
+                }
+            })
+            .disposed(by: diposeBag)
+    }
+    
+    private func updateCountLabel(characterCount: Int) {
+        remainCountLabel.text = "\(characterCount)/300"
+    }
+    
     func getReceiver(mailReceiver: DummyMailUsers) {
         if let imageURL = URL(string: mailReceiver.messages.imageUrl) {
             receiverImageView.load(url: imageURL)
         }
         receiverNameLabel.text = mailReceiver.messages.oppenentName
-    }
-    
-    private func updateCountLabel(characterCount: Int) {
-        remainCountLabel.text = "\(characterCount)/300"
     }
     
     @objc private func tappedSendButton(_ sender: UIButton) {
@@ -198,35 +232,4 @@ final class MailSendViewController: UIViewController {
     @objc func tappedBackzButton() {
         dismiss(animated: true)
     }
-}
-
-extension MailSendViewController: UITextViewDelegate {
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == textViewPlaceHolder {
-            textView.text = nil
-            textView.textColor = .black
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = textViewPlaceHolder
-            textView.textColor = .lightGray
-            updateCountLabel(characterCount: 0)
-        }
-    }
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
-        let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        let characterCount = newString.count
-        guard characterCount <= 300 else { return false }
-        updateCountLabel(characterCount: characterCount)
-        
-        return true
-    }
-    
 }
