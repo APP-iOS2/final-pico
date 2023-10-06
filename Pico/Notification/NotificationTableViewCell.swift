@@ -12,30 +12,30 @@ import RxSwift
 
 class NotificationTableViewCell: UITableViewCell {
     
-    var notiType: NotiType = .like
+    private var notiType: NotiType = .like
     
-    var profileImageView: UIImageView = {
+    private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
-    var iconImageView: UIImageView = {
+    private let iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "heart.fill")
         imageView.tintColor = .picoBlue
         return imageView
     }()
     
-    var nameLabel: UILabel = {
+    private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = .picoSubTitleFont
         return label
     }()
     
-    let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
+    private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
     
-    let contentLabel: UILabel = UILabel()
+    private let contentLabel: UILabel = UILabel()
     private let labelView: UIView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -105,6 +105,17 @@ class NotificationTableViewCell: UITableViewCell {
 }
 
 extension NotificationTableViewCell {
+    func configData(notitype: NotiType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType) {
+        guard let url = URL(string: imageUrl) else { return }
+        profileImageView.load(url: url)
+        notiType = notitype
+        iconImageView.image = notitype == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
+        iconImageView.tintColor = notitype == .like ? .systemPink : .picoBlue
+        contentLabel.text = notitype == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
+        nameLabel.text = "\(nickName), \(age)"
+        mbitLabel.setMbti(mbti: mbti)
+    }
+    
     func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: String) {
         guard let url = URL(string: imageUrl) else { return }
         profileImageView.load(url: url)

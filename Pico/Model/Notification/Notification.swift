@@ -31,6 +31,7 @@ struct Noti: Codable {
     let birth: String // 보내는사람 생년월일
     let imageUrl: String // 보내는 사람 첫번째 이미지
     let notiType: NotiType
+    let mbti: MBTIType // 보내는 사람 mbti
     
     var age: Int {
         let calendar = Calendar.current

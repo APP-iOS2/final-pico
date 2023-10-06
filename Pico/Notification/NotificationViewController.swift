@@ -63,12 +63,7 @@ extension NotificationViewController {
     private func configTableviewDatasource() {
         viewModel.notifications
             .bind(to: tableView.rx.items(cellIdentifier: Identifier.TableCell.notiTableCell, cellType: NotificationTableViewCell.self)) { _, item, cell in
-                cell.nameLabel.text = item.name
-                cell.notiType = item.notiType
-                cell.iconImageView.image = item.notiType == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
-                cell.iconImageView.tintColor = item.notiType == .like ? .systemPink : .picoBlue
-                cell.contentLabel.text = item.notiType == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
-                cell.profileImageView.loadImage(url: item.imageUrl, disposeBag: self.disposeBag)
+                cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti)
             }
             .disposed(by: disposeBag)
     }
