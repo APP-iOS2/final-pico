@@ -80,9 +80,9 @@ final class MailSendViewController: UIViewController {
     
     private let textViewPlaceHolder = "메시지를 입력하세요"
     
-    private lazy var messageView: UITextView = {
+    private let messageView: UITextView = {
         let textView: UITextView = UITextView()
-        textView.text = textViewPlaceHolder
+        textView.text = "메시지를 입력하세요"
         textView.font = .picoContentFont
         textView.textColor = .lightGray
         textView.backgroundColor = .clear
