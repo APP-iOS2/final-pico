@@ -10,6 +10,21 @@ import SnapKit
 
 final class EntViewController: BaseViewController {
     
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        return scrollView
+    }()
+    
+    private let containerView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
+    private let randomBoxView: RandomBoxView = {
+        let view = RandomBoxView()
+        return view
+    }()
+    
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -31,14 +46,33 @@ final class EntViewController: BaseViewController {
     }
     
     private func addViews() {
-        [collectionView].forEach { item in
+        [scrollView].forEach { item in
+            view.addSubview(item)
+        }
+        [randomBoxView, collectionView].forEach { item in
             view.addSubview(item)
         }
     }
     
     private func makeConstraints() {
-        collectionView.snp.makeConstraints { make in
+        let padding: CGFloat = 20
+        
+        scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        randomBoxView.snp.makeConstraints { make in
+            make.top.equalTo(scrollView).offset(padding)
+            make.leading.equalTo(scrollView).offset(padding)
+            make.trailing.equalTo(scrollView).offset(-padding)
+            make.height.equalTo(scrollView).dividedBy(6.5)
+        }
+        
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(randomBoxView.snp.bottom).offset(padding)
+            make.leading.equalTo(scrollView).offset(padding)
+            make.trailing.equalTo(scrollView).offset(-padding)
+            make.bottom.equalTo(scrollView).offset(-padding)
         }
     }
     
@@ -46,10 +80,9 @@ final class EntViewController: BaseViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(EntCollectionViewCell.self, forCellWithReuseIdentifier: "GameCell")
-        collectionView.register(RandomBoxCell.self, forCellWithReuseIdentifier: "RandomBoxCell")
     }
     
-    @objc func tappedRandomBoxButton() {
+    @objc func tappedRandomBoxBanner() {
         let randomBoxViewController = RandomBoxViewController()
         self.navigationController?.pushViewController(randomBoxViewController, animated: true)
         self.tabBarController?.tabBar.isHidden = true
@@ -59,54 +92,28 @@ final class EntViewController: BaseViewController {
 
 extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
-    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let sides = (collectionView.bounds.width / 2) - 10
-        
-        if indexPath.section == 0 {
-            return CGSize(width: collectionView.bounds.width, height: sides * 0.6)
-        } else {
-            return CGSize(width: sides, height: sides * 1.4)
-        }
+
+        return CGSize(width: sides, height: sides * 1.4)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        } else {
-            return 10
-        }
+        return 6
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.section == 0 {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "RandomBoxCell", for: indexPath) as? RandomBoxCell else { return UICollectionViewCell() }
-            return cell
-        } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GameCell", for: indexPath) as? EntCollectionViewCell else { return UICollectionViewCell() }
-            return cell
-        }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GameCell", for: indexPath) as? EntCollectionViewCell else { return UICollectionViewCell() }
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if section == 0 {
-            return 20
-        } else {
-            return 10
-        }
+        return 10
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            let randomBoxViewController = RandomBoxViewController()
-            self.navigationController?.pushViewController(randomBoxViewController, animated: true)
-        } else {
-            let worldCupViewController = WorldCupViewController()
-            self.navigationController?.pushViewController(worldCupViewController, animated: true)
-        }
+        let worldCupViewController = WorldCupViewController()
+        self.navigationController?.pushViewController(worldCupViewController, animated: true)
         self.tabBarController?.tabBar.isHidden = true
     }
 }

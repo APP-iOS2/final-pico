@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class RandomBoxCell: UICollectionViewCell {
+final class RandomBoxView: UIView {
     
     private let boxChuImage: UIImageView = {
         let imageView = UIImageView()

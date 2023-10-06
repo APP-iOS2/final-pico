@@ -17,7 +17,7 @@
 		36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */; };
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
 		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
-		4B157D3A2AC116B400EEDEC1 /* RandomBoxCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D392AC116B400EEDEC1 /* RandomBoxCell.swift */; };
+		4B157D3A2AC116B400EEDEC1 /* RandomBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D392AC116B400EEDEC1 /* RandomBoxView.swift */; };
 		4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */; };
 		4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */; };
 		4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */; };
@@ -177,7 +177,7 @@
 		36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTermsOfServiceViewController.swift; sourceTree = "<group>"; };
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
 		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
-		4B157D392AC116B400EEDEC1 /* RandomBoxCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxCell.swift; sourceTree = "<group>"; };
+		4B157D392AC116B400EEDEC1 /* RandomBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxView.swift; sourceTree = "<group>"; };
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
 		4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupGameViewController.swift; sourceTree = "<group>"; };
 		4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -352,7 +352,6 @@
 			children = (
 				4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */,
 				4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */,
-				4B157D392AC116B400EEDEC1 /* RandomBoxCell.swift */,
 			);
 			path = RandomBox;
 			sourceTree = "<group>";
@@ -386,6 +385,15 @@
 				4B2665482ACD76F00074D4E2 /* ResultUserView.swift */,
 			);
 			path = WorldCupResultView;
+			sourceTree = "<group>";
+		};
+		4B26655C2ACF8B6F0074D4E2 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */,
+				4B157D392AC116B400EEDEC1 /* RandomBoxView.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		534790C02AC3B2B00028610D /* Notification */ = {
@@ -669,7 +677,7 @@
 			isa = PBXGroup;
 			children = (
 				B14B590D2AC0A658009889DA /* EntViewController.swift */,
-				4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */,
+				4B26655C2ACF8B6F0074D4E2 /* Cell */,
 				4B2665332AC3E2EC0074D4E2 /* WorldCup */,
 				4B2665322AC3E2E70074D4E2 /* RandomBox */,
 			);
@@ -1210,7 +1218,7 @@
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
 				54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */,
 				367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */,
-				4B157D3A2AC116B400EEDEC1 /* RandomBoxCell.swift in Sources */,
+				4B157D3A2AC116B400EEDEC1 /* RandomBoxView.swift in Sources */,
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
 				6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */,
 				5471384A2AC361A300CFE88D /* HobbyCollectionViewCell.swift in Sources */,
