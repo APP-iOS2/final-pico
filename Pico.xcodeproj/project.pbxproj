@@ -28,11 +28,10 @@
 		4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665402AC3F4830074D4E2 /* UserDummy.swift */; };
 		4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */; };
 		4B2665492ACD76F00074D4E2 /* ResultUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665482ACD76F00074D4E2 /* ResultUserView.swift */; };
-		4B26654B2ACE76B40074D4E2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B26654A2ACE76B40074D4E2 /* GoogleService-Info.plist */; };
+		4B26654E2ACF83EE0074D4E2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B26654D2ACF83EE0074D4E2 /* GoogleService-Info.plist */; };
 		531C4ED82AC26BA300ADC614 /* MyTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* MyTransition.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
 		531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */; };
-		5323347F2ACF08FB00788B99 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5323347E2ACF08FB00788B99 /* GoogleService-Info.plist */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		53389AEF2AC16D120076DA9B /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* EmptyViewController.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
@@ -188,10 +187,9 @@
 		4B2665402AC3F4830074D4E2 /* UserDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummy.swift; sourceTree = "<group>"; };
 		4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewController.swift; sourceTree = "<group>"; };
 		4B2665482ACD76F00074D4E2 /* ResultUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultUserView.swift; sourceTree = "<group>"; };
-		4B26654A2ACE76B40074D4E2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4B26654D2ACF83EE0074D4E2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* MyTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTransition.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
-		5323347E2ACF08FB00788B99 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../자료/구글인포/Pico/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* EmptyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
@@ -352,6 +350,7 @@
 			children = (
 				4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */,
 				4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */,
+				4B157D392AC116B400EEDEC1 /* RandomBoxCell.swift */,
 			);
 			path = RandomBox;
 			sourceTree = "<group>";
@@ -359,15 +358,31 @@
 		4B2665332AC3E2EC0074D4E2 /* WorldCup */ = {
 			isa = PBXGroup;
 			children = (
-				4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */,
-				4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */,
-				4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */,
 				4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */,
 				4B2665402AC3F4830074D4E2 /* UserDummy.swift */,
+				4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */,
+				4B2665522ACF857E0074D4E2 /* WorldCupGameView */,
+			);
+			path = WorldCup;
+			sourceTree = "<group>";
+		};
+		4B2665522ACF857E0074D4E2 /* WorldCupGameView */ = {
+			isa = PBXGroup;
+			children = (
+				4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */,
+				4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */,
+				4B2665592ACF86DF0074D4E2 /* WorldCupResultView */,
+			);
+			path = WorldCupGameView;
+			sourceTree = "<group>";
+		};
+		4B2665592ACF86DF0074D4E2 /* WorldCupResultView */ = {
+			isa = PBXGroup;
+			children = (
 				4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */,
 				4B2665482ACD76F00074D4E2 /* ResultUserView.swift */,
 			);
-			path = WorldCup;
+			path = WorldCupResultView;
 			sourceTree = "<group>";
 		};
 		534790C02AC3B2B00028610D /* Notification */ = {
@@ -561,7 +576,7 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				5323347E2ACF08FB00788B99 /* GoogleService-Info.plist */,
+				4B26654D2ACF83EE0074D4E2 /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -650,11 +665,10 @@
 		B14B59002AC0A2FE009889DA /* Ent */ = {
 			isa = PBXGroup;
 			children = (
+				B14B590D2AC0A658009889DA /* EntViewController.swift */,
+				4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */,
 				4B2665332AC3E2EC0074D4E2 /* WorldCup */,
 				4B2665322AC3E2E70074D4E2 /* RandomBox */,
-				B14B590D2AC0A658009889DA /* EntViewController.swift */,
-				4B157D392AC116B400EEDEC1 /* RandomBoxCell.swift */,
-				4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */,
 			);
 			path = Ent;
 			sourceTree = "<group>";
@@ -1026,7 +1040,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				5323347F2ACF08FB00788B99 /* GoogleService-Info.plist in Resources */,
+				4B26654E2ACF83EE0074D4E2 /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
