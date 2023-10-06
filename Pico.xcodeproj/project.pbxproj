@@ -13,10 +13,7 @@
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
 		369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */; };
-
-		369F1BB82ACE890200A98C7B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 369F1BB72ACE890200A98C7B /* GoogleService-Info.plist */; };
 		369F1BBA2ACE8B8500A98C7B /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369F1BB92ACE8B8500A98C7B /* SignUpViewModel.swift */; };
-
 		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
 		36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */; };
 		36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */; };
@@ -178,10 +175,7 @@
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
 		369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceText.swift; sourceTree = "<group>"; };
-
-		369F1BB72ACE890200A98C7B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		369F1BB92ACE8B8500A98C7B /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
-
 		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
 		36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureViewController.swift; sourceTree = "<group>"; };
 		36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTermsOfServiceViewController.swift; sourceTree = "<group>"; };
@@ -605,9 +599,6 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-
-				369F1BB72ACE890200A98C7B /* GoogleService-Info.plist */,
-
 				4B26654D2ACF83EE0074D4E2 /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
@@ -1074,8 +1065,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				369F1BB82ACE890200A98C7B /* GoogleService-Info.plist in Resources */,
-
 				4B26654E2ACF83EE0074D4E2 /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,

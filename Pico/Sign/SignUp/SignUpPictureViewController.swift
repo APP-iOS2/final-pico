@@ -8,16 +8,10 @@
 import UIKit
 import SnapKit
 import PhotosUI
-import Firebase
-import FirebaseCore
-import FirebaseStorage
-import FirebaseFirestore
-import FirebaseFirestoreSwift
 
 final class SignUpPictureViewController: UIViewController {
     
     private var userImages: [UIImage] = []
-//    private let storageRef = Storage.storage().reference()
     
     private let progressView: UIProgressView = {
         let view = UIProgressView()
@@ -102,7 +96,7 @@ final class SignUpPictureViewController: UIViewController {
     
 }
 
-// MARK: - 사진 받아오는곳
+// MARK: - 사진 관련
 extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @objc private func openPhotoLibrary() {
@@ -120,26 +114,24 @@ extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePi
         
         for result in results where result.itemProvider.canLoadObject(ofClass: UIImage.self) {
             result.itemProvider.loadObject(ofClass: UIImage.self) { (image, _ ) in
-                if let image = image as? UIImage {
-                    selectedImages.append(image)
-                    
-                    if selectedImages.count == results.count {
-                        self.userImages = selectedImages
-                        DispatchQueue.main.async {
-                            self.collectionView.reloadData()
-                            if !self.userImages.isEmpty {
-                                self.nextButton.isEnabled = true
-                                self.nextButton.backgroundColor = .picoBlue
-                            }
-                        }
-                    }
+                
+                guard let image = image as? UIImage else { return }
+                selectedImages.append(image)
+                
+                guard selectedImages.count == results.count else { return }
+                self.userImages = selectedImages
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                    guard !self.userImages.isEmpty else { return }
+                    self.nextButton.isEnabled = true
+                    self.nextButton.backgroundColor = .picoBlue
                 }
             }
         }
     }
 }
 
-// MARK: - 컬렉션
+// MARK: - 컬렉션 관련
 extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

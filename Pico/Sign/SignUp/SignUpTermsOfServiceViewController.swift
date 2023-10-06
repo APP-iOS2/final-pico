@@ -10,10 +10,9 @@ import SnapKit
 import CoreLocation
 
 final class SignUpTermsOfServiceViewController: UIViewController {
+    
     private var locationManager: CLLocationManager = CLLocationManager()
-    private var currentLocation: CLLocationCoordinate2D!
-    private var latitude: Double = 0
-    private var longitude: Double = 0
+    private var currentLocation: CLLocationCoordinate2D?
     private var isLoading: Bool = false
     private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts
@@ -101,16 +100,13 @@ extension SignUpTermsOfServiceViewController {
 extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
     func getAddressFromCoordinates(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
         let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
-        var addressString = "s"
-        
         CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
             if let error = error {
                 print("Geocoding Error: \(error)")
                 return
             }
-            
             if let placemark = placemarks?.first {
-                addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
+                let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
                 SignUpViewModel.location = Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
             }
         }

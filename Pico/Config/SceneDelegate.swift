@@ -16,8 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
 
 //
-//                let tabBarController = UINavigationController(rootViewController: SignUpTermsOfServiceViewController())
-        let tabBarController = TabBarController()
+                let tabBarController = UINavigationController(rootViewController: SignViewController())
+//        let tabBarController = TabBarController()
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
