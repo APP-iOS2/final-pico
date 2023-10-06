@@ -179,9 +179,9 @@ final class MailSendViewController: UIViewController {
             make.height.equalTo(50)
         }
     }
-    
+
+//질문! textView에서 rx 설정하는 아래 코드를 mvvm으로 할 때 여기에 두는 것이 맞나요? 만약 다른 파일을 만들어서 둬야한다면 어떤 식으로 두면 좋을지 모르겠습닏
     private func changeTextView() {
-        
         messageView.rx.didBeginEditing
             .bind { _ in
                 if self.messageView.text == self.textViewPlaceHolder {
