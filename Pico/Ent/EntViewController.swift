@@ -1,35 +1,16 @@
-//
-//  EntViewController.swift
-//  Pico
-//
-//  Created by 최하늘 on 2023/09/25.
-//
-
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class EntViewController: BaseViewController {
-    
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        return scrollView
-    }()
-    
-    private let containerView: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
-    private let randomBoxView: RandomBoxView = {
-        let view = RandomBoxView()
-        return view
-    }()
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        
+
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(RandomBoxView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "RandomBoxView")
         return collectionView
     }()
     
@@ -38,6 +19,8 @@ final class EntViewController: BaseViewController {
         addViews()
         makeConstraints()
         configCollectionView()
+        collectionView.register(RandomBoxView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "RandomBoxView")
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -46,33 +29,19 @@ final class EntViewController: BaseViewController {
     }
     
     private func addViews() {
-        [scrollView].forEach { item in
-            view.addSubview(item)
-        }
-        [randomBoxView, collectionView].forEach { item in
+        [collectionView].forEach { item in
             view.addSubview(item)
         }
     }
     
     private func makeConstraints() {
-        let padding: CGFloat = 20
-        
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-        
-        randomBoxView.snp.makeConstraints { make in
-            make.top.equalTo(scrollView).offset(padding)
-            make.leading.equalTo(scrollView).offset(padding)
-            make.trailing.equalTo(scrollView).offset(-padding)
-            make.height.equalTo(scrollView).dividedBy(6.5)
-        }
+        let padding: CGFloat = 10
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(randomBoxView.snp.bottom).offset(padding)
-            make.leading.equalTo(scrollView).offset(padding)
-            make.trailing.equalTo(scrollView).offset(-padding)
-            make.bottom.equalTo(scrollView).offset(-padding)
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview().offset(padding)
+            make.trailing.equalToSuperview().offset(-padding)
+            make.bottom.equalToSuperview().offset(-padding)
         }
     }
     
@@ -87,11 +56,24 @@ final class EntViewController: BaseViewController {
         self.navigationController?.pushViewController(randomBoxViewController, animated: true)
         self.tabBarController?.tabBar.isHidden = true
     }
-    
 }
 
 extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "RandomBoxView", for: indexPath) as! RandomBoxView
+            return headerView
+        default:
+            fatalError("Unexpected element kind")
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: Screen.height * 0.12)
+    }
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let sides = (collectionView.bounds.width / 2) - 10
         return CGSize(width: sides, height: sides * 1.4)
@@ -101,6 +83,10 @@ extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSourc
         return 6
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 10, left: 0, bottom: 20, right: 0)
+    }
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GameCell", for: indexPath) as? EntCollectionViewCell else { return UICollectionViewCell() }
         return cell
