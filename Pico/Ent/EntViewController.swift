@@ -8,9 +8,7 @@ final class EntViewController: BaseViewController {
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(RandomBoxView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "RandomBoxView")
         return collectionView
     }()
     
@@ -19,8 +17,7 @@ final class EntViewController: BaseViewController {
         addViews()
         makeConstraints()
         configCollectionView()
-        collectionView.register(RandomBoxView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "RandomBoxView")
-
+        configRxBinding()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,7 +45,12 @@ final class EntViewController: BaseViewController {
     private func configCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.register(RandomBoxView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "RandomBoxView")
         collectionView.register(EntCollectionViewCell.self, forCellWithReuseIdentifier: "GameCell")
+    }
+    
+    private func configRxBinding() {
+        
     }
     
     @objc func tappedRandomBoxBanner() {

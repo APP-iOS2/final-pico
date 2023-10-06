@@ -7,8 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class EntCollectionViewCell: UICollectionViewCell {
+    
+    private let disposeBag = DisposeBag()
     
     private let cellImage: UIImageView = {
         let imageView = UIImageView()
