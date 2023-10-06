@@ -184,9 +184,7 @@ final class HomeFilterViewController: UIViewController {
                 }
             }
             updateButtonAppearance(sender)
-            if HomeFilterViewController.filterGender != homeViewController?.filterGender {
-                filterChangeState = true
-            }
+            filterChangeState = true
         }
     }
 }

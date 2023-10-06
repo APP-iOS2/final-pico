@@ -12,12 +12,16 @@ import RxSwift
 
 enum Collections: CaseIterable {
     case users
+    case likes
     
     var name: String {
         switch self {
         case .users:
             return "users"
+        case .likes:
+            return "likes"
         }
+    
     }
 }
 
@@ -38,11 +42,10 @@ final class FirestoreService {
     }
     
     func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
+        DispatchQueue.global().async {
             
             do {
-                try dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
+                try self.dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
                 print("Success to save new document at \(collectionId.name) \(documentId)")
             } catch {
                 print("Error to save new document at \(collectionId.name) \(documentId) \(error)")
@@ -51,10 +54,9 @@ final class FirestoreService {
     }
     
     func loadDocument<T: Codable>(collectionId: Collections, documentId: String, dataType: T.Type, completion: @escaping (Result<T?, Error>) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
+        DispatchQueue.global().async { 
             
-            dbRef.collection(collectionId.name).document(documentId).getDocument { (snapshot, error) in
+            self.dbRef.collection(collectionId.name).document(documentId).getDocument { (snapshot, error) in
                 if let error = error {
                     print("Error to load new document at \(collectionId.name) \(documentId) \(error)")
                     completion(.failure(error))

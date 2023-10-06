@@ -9,13 +9,14 @@ import UIKit
 import SnapKit
 import RxSwift
 
-final class HomeTabImageViewController: UIViewController {
+final class HomeUserCardViewController: UIViewController {
     
     weak var homeViewController: HomeViewController?
     private let user: User
     private let disposeBag = DisposeBag()
-    private var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
-    private var initialCenter: CGPoint = CGPoint()
+    private var panGesture = UIPanGestureRecognizer()
+    private var initialCenter = CGPoint()
+    private let viewModel = HomeUserCardViewModel()
     
     init(user: User) {
         self.user = user
@@ -90,18 +91,11 @@ final class HomeTabImageViewController: UIViewController {
         super.viewDidLoad()
         scrollView.delegate = self
         addSubView()
+        loadUserImages()
         makeConstraints()
-        loadImages()
         configButtons()
-        infoNameAgeLabel.text = "\(user.nickName) \(user.birth)"
-        infoLocationLabel.text = user.location.address
-        panGesture = UIPanGestureRecognizer(target: self, action: #selector(touchGesture(_:)))
-        self.view.addGestureRecognizer(panGesture)
-    }
-    private func configButtons() {
-        likeButton.addTarget(self, action: #selector(tappedLikeButton), for: .touchUpInside)
-        disLikeButton.addTarget(self, action: #selector(tappedDisLikeButton), for: .touchUpInside)
-        pickBackButton.addTarget(self, action: #selector(tappedPickBackButton), for: .touchUpInside)
+        configLabels()
+        configGesture()
     }
     
     private func addSubView() {
@@ -183,46 +177,21 @@ final class HomeTabImageViewController: UIViewController {
             make.width.equalTo(infoMBTILabel.frame.size.width)
         }
     }
-    @objc func touchGesture(_ gesture: UIPanGestureRecognizer) {
-        let translation = gesture.translation(in: self.view)
-        if gesture.state == .began {
-            initialCenter = self.view.center
-        } else if gesture.state == .changed {
-            self.view.center = CGPoint(x: initialCenter.x + translation.x, y: initialCenter.y)
-            self.view.transform = CGAffineTransform(rotationAngle: translation.x / 1000)
-            if translation.x > 0 {
-                UIView.animate(withDuration: 0.5) {
-                    self.homeViewController?.likeLabel.alpha = translation.x / 100
-                }
-            } else if translation.x < 0 {
-                UIView.animate(withDuration: 0.5) {
-                    self.homeViewController?.passLabel.alpha = -translation.x / 100
-                }
-            }
-        } else if gesture.state == .ended {
-            if translation.x > 100 {
-                UIView.animate(withDuration: 0.5) {
-                    self.homeViewController?.removedView.append(self.view)
-                    self.view.center.x += 1000
-                    self.homeViewController?.likeLabel.alpha = 0
-                } completion: { _ in
-                }
-            } else if translation.x < -100 {
-                UIView.animate(withDuration: 0.5) {
-                    self.homeViewController?.removedView.append(self.view)
-                    self.view.center.x -= 1000
-                    self.homeViewController?.passLabel.alpha = 0
-                } completion: { _ in
-                }
-            } else {
-                UIView.animate(withDuration: 0.3) {
-                    self.view.center = self.initialCenter
-                    self.view.transform = CGAffineTransform(rotationAngle: 0)
-                    self.homeViewController?.likeLabel.alpha = 0
-                    self.homeViewController?.passLabel.alpha = 0
-                }
-            }
-        }
+    
+    private func configButtons() {
+        likeButton.addTarget(self, action: #selector(tappedLikeButton), for: .touchUpInside)
+        disLikeButton.addTarget(self, action: #selector(tappedDisLikeButton), for: .touchUpInside)
+        pickBackButton.addTarget(self, action: #selector(tappedPickBackButton), for: .touchUpInside)
+    }
+    
+    private func configLabels() {
+        infoNameAgeLabel.text = "\(user.nickName) \(user.birth)"
+        infoLocationLabel.text = user.location.address
+    }
+    
+    private func configGesture() {
+        panGesture = UIPanGestureRecognizer(target: self, action: #selector(touchGesture(_:)))
+        self.view.addGestureRecognizer(panGesture)
     }
     
     private func createHomeStack(axis: NSLayoutConstraint.Axis, alignment: UIStackView.Alignment?, spacing: CGFloat) -> UIStackView {
@@ -255,42 +224,94 @@ final class HomeTabImageViewController: UIViewController {
         return button
     }
     
-    private func loadImages() {
-        Observable.from(user.imageURLs)
-                .map { urlStr -> URL? in
-                    return URL(string: urlStr)
-                }
+    private func loadUserImages() {
+        homeViewController?.startLoading()
+        for (index, url) in user.imageURLs.enumerated() {
+            
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.layer.cornerRadius = 10
+            imageView.backgroundColor = .systemBackground
+            scrollView.addSubview(imageView)
+            
+            imageView.snp.makeConstraints { make in
+                make.leading.equalTo(scrollView).offset(CGFloat(index) * view.frame.size.width + 10)
+                make.top.equalTo(scrollView).offset(10)
+                make.width.equalTo(view).offset(-20)
+                make.height.equalTo(scrollView).offset(-20)
+            }
+            Observable.just(url)
+                .map { URL(string: $0)}
                 .compactMap { $0 }
-                .enumerated()
-                .map { [self] (index, url) -> UIImageView in
-                    let imageView = UIImageView()
-                    imageView.contentMode = .scaleAspectFill
-                    imageView.clipsToBounds = true
-                    imageView.layer.cornerRadius = 10
-                    imageView.backgroundColor = .systemBackground
-                    scrollView.addSubview(imageView)
-                    
-                    imageView.snp.makeConstraints { make in
-                        make.leading.equalTo(scrollView).offset(CGFloat(index) * view.frame.size.width + 10)
-                        make.top.equalTo(scrollView).offset(10)
-                        make.width.equalTo(view).offset(-20)
-                        make.height.equalTo(scrollView).offset(-20)
-                    }
-                    
-                    imageView.load(url: url)
-                    if index == user.imageURLs.count - 1 {
-                        scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(user.imageURLs.count), height: scrollView.frame.height)
-                    }
-                    
-                    return imageView
+                .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
+                .map { try Data(contentsOf: $0)}
+                .map { UIImage(data: $0)}
+                .observe(on: MainScheduler.instance)
+                .subscribe { image in
+                    imageView.image = image
+                    self.homeViewController?.stopLoading()
                 }
-                .subscribe()
                 .disposed(by: disposeBag)
+            
+            if index == user.imageURLs.count - 1 {
+                scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(user.imageURLs.count), height: scrollView.frame.height)
+            }
         }
+    }
+    
+    @objc func touchGesture(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: self.view)
+        
+        switch gesture.state {
+        case .began:
+            initialCenter = self.view.center
+        case .changed:
+            self.view.center = CGPoint(x: initialCenter.x + translation.x, y: initialCenter.y)
+            self.view.transform = CGAffineTransform(rotationAngle: translation.x / 1000)
+            if translation.x > 0 {
+                UIView.animate(withDuration: 0.5) {
+                    self.homeViewController?.likeLabel.alpha = translation.x / 100
+                }
+            } else if translation.x < 0 {
+                UIView.animate(withDuration: 0.5) {
+                    self.homeViewController?.passLabel.alpha = -translation.x / 100
+                }
+            }
+        case .ended:
+            if translation.x > 100 {
+                UIView.animate(withDuration: 0.5) { [self] in
+                    viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .like)
+                    homeViewController?.removedView.append(view)
+                    view.center.x += 1000
+                    homeViewController?.likeLabel.alpha = 0
+                } completion: { _ in
+                }
+            } else if translation.x < -100 {
+                self.viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .dislike)
+                UIView.animate(withDuration: 0.5) { [self] in
+                    homeViewController?.removedView.append(view)
+                    view.center.x -= 1000
+                    homeViewController?.passLabel.alpha = 0
+                } completion: { _ in
+                }
+            } else {
+                UIView.animate(withDuration: 0.3) {
+                    self.view.center = self.initialCenter
+                    self.view.transform = CGAffineTransform(rotationAngle: 0)
+                    self.homeViewController?.likeLabel.alpha = 0
+                    self.homeViewController?.passLabel.alpha = 0
+                }
+            }
+        default:
+            break
+        }
+    }
     
     @objc func tappedLikeButton() {
         homeViewController?.removedView.append(self.view)
         self.homeViewController?.likeLabel.alpha = 1
+        self.viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .like)
         UIView.animate(withDuration: 0.3) {
             self.view.center.x += 1000
         } completion: { _ in
@@ -301,6 +322,7 @@ final class HomeTabImageViewController: UIViewController {
     @objc func tappedDisLikeButton() {
         homeViewController?.removedView.append(self.view)
         self.homeViewController?.passLabel.alpha = 1
+        self.viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .dislike)
         UIView.animate(withDuration: 0.3) {
             self.view.center.x -= 1000
         } completion: { _ in
@@ -319,7 +341,7 @@ final class HomeTabImageViewController: UIViewController {
             showAlert(message: "첫번째 추천입니다.", yesAction: nil)
         }
     }
-
+    
     @objc func tappedPageRight() {
         let nextPage = pageControl.currentPage + 1
         let offsetX = CGFloat(nextPage) * scrollView.frame.size.width
@@ -347,7 +369,7 @@ final class HomeTabImageViewController: UIViewController {
     }
 }
 
-extension HomeTabImageViewController: UIScrollViewDelegate {
+extension HomeUserCardViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard scrollView.frame.size.width != 0 else {
