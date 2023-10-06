@@ -25,6 +25,8 @@ enum Collections: CaseIterable {
 }
 
 final class FirestoreService {
+    static let shared: FirestoreService = FirestoreService()
+    
     private let dbRef = Firestore.firestore()
     
     func saveDocument<T: Codable>(collectionId: Collections, data: T) {

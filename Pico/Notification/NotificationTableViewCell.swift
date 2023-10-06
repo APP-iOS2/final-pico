@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxCocoa
+import RxSwift
 
 class NotificationTableViewCell: UITableViewCell {
     
@@ -14,7 +16,6 @@ class NotificationTableViewCell: UITableViewCell {
     
     var profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "AppIcon")
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -28,23 +29,14 @@ class NotificationTableViewCell: UITableViewCell {
     
     var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "찐 윈터임, 21"
         label.font = .picoSubTitleFont
         return label
     }()
     
-    var mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
+    let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
     
-    var contentLabel: UILabel = {
-        let label = UILabel()
-        label.text = "좋아요를 누르셨습니다."
-        return label
-    }()
-    
-    private let labelView: UIView = {
-        let view = UIView()
-        return view
-    }()
+    let contentLabel: UILabel = UILabel()
+    private let labelView: UIView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -113,11 +105,19 @@ class NotificationTableViewCell: UITableViewCell {
 }
 
 extension NotificationTableViewCell {
-    func configData(imageUrl: String, title: String, createdDate: String) {
+    func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: String) {
         guard let url = URL(string: imageUrl) else { return }
         profileImageView.load(url: url)
         iconImageView.image = UIImage()
-        nameLabel.text = title
+        nameLabel.text = "\(nickName), \(age)"
+        mbitLabel.setMbti(mbti: mbti)
         contentLabel.text = createdDate
+    }
+    
+    override func prepareForReuse() {
+        profileImageView.image = UIImage(named: "AppIcon")
+        iconImageView.image = UIImage()
+        nameLabel.text = ""
+        contentLabel.text = ""
     }
 }
