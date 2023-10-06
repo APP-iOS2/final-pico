@@ -95,7 +95,6 @@ extension SignUpGenderViewController {
     // MARK: - @@objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isTappedGenderButton {
-            print(SignUpViewModel.gender)
             tappedButtonAnimation(sender)
             let viewController = SignUpAgeViewController()
             self.navigationController?.pushViewController(viewController, animated: true)

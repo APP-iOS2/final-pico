@@ -568,7 +568,6 @@
 		B14B58FB2AC0A2B5009889DA /* SignUp */ = {
 			isa = PBXGroup;
 			children = (
-				363CC4822ACF9CB300C86EDC /* LocationManager */,
 				369F1BB92ACE8B8500A98C7B /* SignUpViewModel.swift */,
 				B17D67852AC0A850006F91DC /* SignUpViewController.swift */,
 				36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */,
@@ -578,6 +577,7 @@
 				362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */,
 				36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */,
 				36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */,
+				363CC4822ACF9CB300C86EDC /* LocationManager */,
 				369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */,
 			);
 			path = SignUp;

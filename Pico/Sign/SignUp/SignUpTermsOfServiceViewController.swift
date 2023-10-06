@@ -113,7 +113,6 @@ extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
                 addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
                 SignUpViewModel.location = Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
             }
-            
         }
     }
     
