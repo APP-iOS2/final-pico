@@ -94,7 +94,6 @@ extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSourc
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let sides = (collectionView.bounds.width / 2) - 10
-
         return CGSize(width: sides, height: sides * 1.4)
     }
     
