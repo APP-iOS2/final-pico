@@ -8,28 +8,24 @@
 import Foundation
 import RxSwift
 import RxRelay
-import FirebaseFirestore
 
 final class LikeMeViewViewModel {
     var likeMeUserList = BehaviorRelay<[User]>(value: [])
     var likeMeIsEmpty: Observable<Bool> {
         return likeMeUserList
             .map { $0.isEmpty }
-            .distinctUntilChanged()
     }
     var deleteButtonTapUser: PublishSubject<User> = PublishSubject()
     
     private let disposeBag = DisposeBag()
     
     init() {
-        FirestoreService().loadDocuments(collectionId: .users, dataType: User.self) { result in
-            switch result {
-            case .success(let data):
-                self.likeMeUserList.accept(data)
-            case .failure(let err):
-                print(err)
+        FirestoreService().loadDocumentRx(collectionId: .users, dataType: User.self)
+            .map { users in
+                return users
             }
-        }
+            .bind(to: likeMeUserList)
+            .disposed(by: disposeBag)
     }
     
     func bindDeleteButtonTap() {

@@ -79,22 +79,23 @@ final class SignUpPictureViewController: UIViewController {
         configBackButton()
         configCollectionView()
     }
-}
-// MARK: - Config
-extension SignUpPictureViewController {
+    
+    // MARK: - Config
     private func configCollectionView() {
         collectionView.backgroundColor = .systemBackground
         collectionView.dataSource = self
         collectionView.delegate = self
     }
     
-    // MARK: - @objc
+    // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
-        print(userImages)
+        SignUpViewModel.imageURLs = userImages
         let viewController = SignUpTermsOfServiceViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
+    
 }
+
 // MARK: - 사진 관련
 extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -113,26 +114,24 @@ extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePi
         
         for result in results where result.itemProvider.canLoadObject(ofClass: UIImage.self) {
             result.itemProvider.loadObject(ofClass: UIImage.self) { (image, _ ) in
-                if let image = image as? UIImage {
-                    selectedImages.append(image)
-                    
-                    if selectedImages.count == results.count {
-                        self.userImages = selectedImages
-                        DispatchQueue.main.async {
-                            self.collectionView.reloadData()
-                            if !self.userImages.isEmpty {
-                                self.nextButton.isEnabled = true
-                                self.nextButton.backgroundColor = .picoBlue
-                            }
-                        }
-                    }
+                
+                guard let image = image as? UIImage else { return }
+                selectedImages.append(image)
+                
+                guard selectedImages.count == results.count else { return }
+                self.userImages = selectedImages
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                    guard !self.userImages.isEmpty else { return }
+                    self.nextButton.isEnabled = true
+                    self.nextButton.backgroundColor = .picoBlue
                 }
             }
         }
     }
 }
 
-// MARK: - collectionView 관련
+// MARK: - 컬렉션 관련
 extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -164,9 +163,9 @@ extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionV
         }
     }
 }
-
 // MARK: - UI 관련
 extension SignUpPictureViewController {
+  
     private func addSubViews() {
         for viewItem in [progressView, notifyLabel, subNotifyLabel, nextButton, collectionView] { // imageStackView를 포함하여 모든 뷰를 추가
             view.addSubview(viewItem)

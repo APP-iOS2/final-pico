@@ -66,6 +66,21 @@ final class SignViewController: UIViewController {
         configBackButton()
         configRx()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        print("""
+              ===========================================
+              mbti:\(SignUpViewModel.userMbti),
+              === number: \(SignUpViewModel.phoneNumber),
+              birth: \(SignUpViewModel.birth),
+              === gender: \(SignUpViewModel.gender),
+              nickname: \(SignUpViewModel.nickName),
+              === imageURL \(SignUpViewModel.imageURLs)
+              위도:1 \(SignUpViewModel.location.latitude),
+              경도:1 \(SignUpViewModel.location.longitude),
+              주소:1 \(SignUpViewModel.location.address)
+              ===========================================
+              """)
+    }
 }
 
 extension SignViewController {
