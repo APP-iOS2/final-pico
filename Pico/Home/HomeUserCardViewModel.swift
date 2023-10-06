@@ -25,7 +25,6 @@ final class HomeUserCardViewModel {
         let myLikeUser: [String: Any] = [
             "likedUserId": receiveUserInfo.id,
             "likeType": likeType.rawValue,
-            "createdDate": Date().timeIntervalSince1970,
             "birth": receiveUserInfo.birth,
             "nickName": receiveUserInfo.nickName,
             "mbti": receiveUserInfo.mbti.rawValue,
@@ -35,7 +34,6 @@ final class HomeUserCardViewModel {
         let myInfo: [String: Any] = [
             "likedUserId": sendUserInfo.id,
             "likeType": likeType.rawValue,
-            "createdDate": Date().timeIntervalSince1970,
             "birth": sendUserInfo.birth,
             "nickName": sendUserInfo.nickName,
             "mbti": sendUserInfo.mbti.rawValue,

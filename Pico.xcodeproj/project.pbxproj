@@ -47,7 +47,6 @@
 		53817BE32ACED57B00AEE9AE /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 53817BE22ACED57B00AEE9AE /* FirebaseDatabaseSwift */; };
 		53836F532ACC903800D98F77 /* LoadingAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F522ACC903800D98F77 /* LoadingAnimationView.swift */; };
 		53836F552ACC90FC00D98F77 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F542ACC90FC00D98F77 /* Loading.swift */; };
-		53D1F0782AD030F5008339EE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53D1F0772AD030F5008339EE /* GoogleService-Info.plist */; };
 		547138482AC3615B00CFE88D /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547138472AC3615B00CFE88D /* UserDetailViewModel.swift */; };
 		5471384A2AC361A300CFE88D /* HobbyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547138492AC361A300CFE88D /* HobbyCollectionViewCell.swift */; };
 		5471384C2AC3621000CFE88D /* MbtiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5471384B2AC3621000CFE88D /* MbtiCollectionViewCell.swift */; };
@@ -145,11 +144,11 @@
 		B18C1DB02ACC984400BBB207 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DAF2ACC984400BBB207 /* FirebaseStorage */; };
 		B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */; };
 		B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */; };
-		BC0D292F2ACF1F720043554B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC0D292E2ACF1F720043554B /* GoogleService-Info.plist */; };
 		BC0D29312ACF1F8C0043554B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */; };
 		BC0D29332ACF1FD70043554B /* HomeUserCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */; };
 		BC5DE6642AC6EFB00082D18D /* HomeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */; };
 		BC5DE6662ACCFFB70082D18D /* UserDummyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5DE6652ACCFFB70082D18D /* UserDummyData.swift */; };
+		BC6F61512AD0610F0067F500 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC6F61502AD0610F0067F500 /* GoogleService-Info.plist */; };
 		BCB63A772AC1883C00389432 /* HomeUserCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB63A762AC1883C00389432 /* HomeUserCardViewController.swift */; };
 		BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */; };
 		BCEACEF52AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */; };
@@ -210,7 +209,6 @@
 		53817BDB2ACE753800AEE9AE /* LikeUViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewViewModel.swift; sourceTree = "<group>"; };
 		53836F522ACC903800D98F77 /* LoadingAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAnimationView.swift; sourceTree = "<group>"; };
 		53836F542ACC90FC00D98F77 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
-		53D1F0772AD030F5008339EE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../자료/구글인포/Pico/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		547138472AC3615B00CFE88D /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
 		547138492AC361A300CFE88D /* HobbyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HobbyCollectionViewCell.swift; sourceTree = "<group>"; };
 		5471384B2AC3621000CFE88D /* MbtiCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -306,11 +304,11 @@
 		B1844F7B2AC127A900ACFFED /* Constraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constraint.swift; sourceTree = "<group>"; };
 		B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
 		B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
-		BC0D292E2ACF1F720043554B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Desktop/피코 백업/6일 브렌치 삭제  전 홈/Pico/Config/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewModel.swift; sourceTree = "<group>"; };
 		BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyView.swift; sourceTree = "<group>"; };
 		BC5DE6652ACCFFB70082D18D /* UserDummyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummyData.swift; sourceTree = "<group>"; };
+		BC6F61502AD0610F0067F500 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BCB63A762AC1883C00389432 /* HomeUserCardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewController.swift; sourceTree = "<group>"; };
 		BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFilterViewController.swift; sourceTree = "<group>"; };
 		BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTILabelCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -599,7 +597,7 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				53D1F0772AD030F5008339EE /* GoogleService-Info.plist */,
+				BC6F61502AD0610F0067F500 /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -1070,9 +1068,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				53D1F0782AD030F5008339EE /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
+				BC6F61512AD0610F0067F500 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1242,7 +1240,7 @@
 				54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */,
 				367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */,
 				B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */,
-				4B157D3A2AC116B400EEDEC1 /* RandomBoxCell.swift in Sources */,
+				4B157D3A2AC116B400EEDEC1 /* RandomBoxView.swift in Sources */,
 				4B157D3A2AC116B400EEDEC1 /* RandomBoxView.swift in Sources */,
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
 				6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */,

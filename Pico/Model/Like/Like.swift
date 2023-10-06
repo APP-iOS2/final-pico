@@ -16,7 +16,6 @@ struct Like: Codable {
         var id: String = UUID().uuidString
         let likedUserId: String
         let likeType: LikeType
-        let createdDate: Double
         let birth: String
         let nickName: String
         let mbti: MBTIType
