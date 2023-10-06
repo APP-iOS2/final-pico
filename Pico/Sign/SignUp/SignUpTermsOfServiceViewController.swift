@@ -91,6 +91,16 @@ extension SignUpTermsOfServiceViewController {
             }
         }
     }
+    private func updateNextButton(isCheck: Bool) {
+        switch isCheck {
+        case true:
+            nextButton.isEnabled = true
+            nextButton.backgroundColor = .picoBlue
+        case false:
+            nextButton.isEnabled = false
+            nextButton.backgroundColor = .picoGray
+        }
+    }
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         navigationController?.popToRootViewController(animated: true)
@@ -98,7 +108,7 @@ extension SignUpTermsOfServiceViewController {
 }
 // MARK: - 위치관련
 extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
-    func getAddressFromCoordinates(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
+    private func getAddressFromCoordinates(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
         let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
         CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
             if let error = error {
@@ -128,17 +138,6 @@ extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDa
         cell.textLabel?.text = termsOfServiceTexts[indexPath.row]
         cell.textLabel?.numberOfLines = 0
         return cell
-    }
-    
-    func updateNextButton(isCheck: Bool) {
-        switch isCheck {
-        case true:
-            nextButton.isEnabled = true
-            nextButton.backgroundColor = .picoBlue
-        case false:
-            nextButton.isEnabled = false
-            nextButton.backgroundColor = .picoGray
-        }
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
