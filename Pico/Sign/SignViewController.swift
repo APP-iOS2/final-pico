@@ -15,29 +15,44 @@ final class SignViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    private let picoLogoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
+    private lazy var backgroundView: UIView = {
+        let view = UIView()
+//        view.backgroundColor = .picoBlue
+        let gradient: CAGradientLayer = CAGradientLayer()
+        gradient.colors = [UIColor.picoGradientMedium2.cgColor, UIColor.picoGradientMedium.cgColor, UIColor.picoBlue.cgColor]
+        gradient.locations = [0.0, 0.3, 1.0]
+
+        gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradient.endPoint = CGPoint(x: 0.5, y: 1.0)
+
+        view.frame = self.view.bounds
+        gradient.frame = view.bounds
+        view.layer.addSublayer(gradient)
+        return view
     }()
     
-    private let picoChuImageView: UIImageView = {
+    private let picoLogoImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = UIImage(named: "logo_white")
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "chu")
         return imageView
     }()
     
     private let signInButton: CommonButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("로그인", for: .normal)
+        button.backgroundColor = .white
+        button.setTitleColor(.picoBlue, for: .normal)
         return button
     }()
     
     private let signUpButton: CommonButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("회원가입", for: .normal)
+        button.backgroundColor = .clear
+        button.setTitleColor(.white, for: .normal)
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 1
         return button
     }()
     
@@ -51,8 +66,25 @@ final class SignViewController: UIViewController {
         configBackButton()
         configRx()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        print("""
+              ===========================================
+              mbti:\(SignUpViewModel.userMbti),
+              === number: \(SignUpViewModel.phoneNumber),
+              birth: \(SignUpViewModel.birth),
+              === gender: \(SignUpViewModel.gender),
+              nickname: \(SignUpViewModel.nickName),
+              === imageURL \(SignUpViewModel.imageURLs)
+              위도:1 \(SignUpViewModel.location.latitude),
+              경도:1 \(SignUpViewModel.location.longitude),
+              주소:1 \(SignUpViewModel.location.address)
+              ===========================================
+              """)
+    }
 }
+
 extension SignViewController {
+    
     private func configRx() {
         signInButton.rx.tap
             .subscribe(onNext: { [weak self] in
@@ -73,29 +105,30 @@ extension SignViewController {
             .disposed(by: disposeBag)
     }
 }
+
 // MARK: - UI관련
 extension SignViewController {
+    
     private func addSubViews() {
-        for viewItem in [picoLogoImageView, picoChuImageView, signInButton, signUpButton] {
-            view.addSubview(viewItem)
+        view.addSubview(backgroundView)
+        
+        for viewItem in [picoLogoImageView, signInButton, signUpButton] {
+            backgroundView.addSubview(viewItem)
         }
     }
     
     private func makeConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         
-        picoLogoImageView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(30)
-            make.leading.equalTo(50)
-            make.trailing.equalTo(-50)
-            make.height.equalTo(100)
+        backgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
-        picoChuImageView.snp.makeConstraints { make in
-            make.top.equalTo(picoLogoImageView.snp.bottom).offset(50)
+        picoLogoImageView.snp.makeConstraints { make in
+            make.top.equalTo(safeArea).offset(110)
             make.leading.equalTo(50)
             make.trailing.equalTo(-50)
-            make.height.equalTo(200)
+            make.height.equalTo(60)
         }
         
         signInButton.snp.makeConstraints { make in
@@ -110,7 +143,7 @@ extension SignViewController {
             make.centerX.equalToSuperview()
             make.leading.equalTo(20)
             make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-100)
+            make.bottom.equalTo(safeArea).offset(-80)
             make.height.equalTo(50)
         }
     }

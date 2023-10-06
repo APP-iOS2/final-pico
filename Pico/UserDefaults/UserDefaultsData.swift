@@ -13,9 +13,7 @@ final class UserDefaultsData {
         case latitude, longitude
     }
     
-    static let shared: UserDefaultsData = {
-        return UserDefaultsData()
-    }()
+    static let shared: UserDefaultsData = UserDefaultsData()
     
     func removeAll() {
         Key.allCases.forEach {

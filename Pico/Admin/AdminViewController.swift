@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxCocoa
+import RxSwift
 
 final class AdminViewController: BaseViewController {
     struct DummyUser {
@@ -122,6 +124,9 @@ final class AdminViewController: BaseViewController {
     
     private let textField = CommonTextField()
     private let userListTableView = UITableView()
+    
+    private let viewModel: AdminViewModel = AdminViewModel()
+    private let disposeBag: DisposeBag = DisposeBag()
 
     // MARK: - LifeCycle
     override func viewDidLoad() {
@@ -130,6 +135,7 @@ final class AdminViewController: BaseViewController {
         makeConstraints()
         configNavigationBarItem()
         configTableView()
+        configTableViewDatasource()
     }
     
     // MARK: - config
@@ -141,35 +147,19 @@ final class AdminViewController: BaseViewController {
     
     private func configTableView() {
         userListTableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
-        userListTableView.delegate = self
-        userListTableView.dataSource = self
-        if #available(iOS 15.0, *) {
-            userListTableView.tableHeaderView = UIView()
-        }
+        userListTableView.rowHeight = 80
     }
 }
 
 // MARK: - 테이블뷰관련
-extension AdminViewController: UITableViewDelegate, UITableViewDataSource {
+extension AdminViewController {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sortedUsers.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.notiTableCell, for: indexPath) as? NotificationTableViewCell else {
-            return UITableViewCell()
-        }
-        cell.configData(imageUrl: sortedUsers[indexPath.row].imageUrl, title: sortedUsers[indexPath.row].title, createdDate: sortedUsers[indexPath.row].createdDate)
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("zmfflr \(indexPath.row)")
+    private func configTableViewDatasource() {
+        viewModel.userList
+            .bind(to: userListTableView.rx.items(cellIdentifier: Identifier.TableCell.notiTableCell, cellType: NotificationTableViewCell.self)) { _, item, cell in
+                cell.configData(imageUrl: item.imageURLs[0], nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate.toString())
+            }
+            .disposed(by: disposeBag)
     }
 }
 

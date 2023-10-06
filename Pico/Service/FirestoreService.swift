@@ -13,6 +13,7 @@ import RxSwift
 enum Collections: CaseIterable {
     case users
     case likes
+    case notifications
     
     var name: String {
         switch self {
@@ -20,12 +21,16 @@ enum Collections: CaseIterable {
             return "users"
         case .likes:
             return "likes"
+        case .notifications:
+            return "notifications"
         }
     
     }
 }
 
 final class FirestoreService {
+    static let shared: FirestoreService = FirestoreService()
+    
     private let dbRef = Firestore.firestore()
     
     func saveDocument<T: Codable>(collectionId: Collections, data: T) {
@@ -54,8 +59,7 @@ final class FirestoreService {
     }
     
     func loadDocument<T: Codable>(collectionId: Collections, documentId: String, dataType: T.Type, completion: @escaping (Result<T?, Error>) -> Void) {
-        DispatchQueue.global().async { 
-            
+        DispatchQueue.global().async {
             self.dbRef.collection(collectionId.name).document(documentId).getDocument { (snapshot, error) in
                 if let error = error {
                     print("Error to load new document at \(collectionId.name) \(documentId) \(error)")
@@ -79,11 +83,9 @@ final class FirestoreService {
         }
     }
     
-    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, completion: @escaping (Result<[T]?, Error>) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            
-            let query = dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
+    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type, completion: @escaping (Result<[T]?, Error>) -> Void) {
+        DispatchQueue.global().async {
+            let query = self.dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("Error in query: \(error)")
@@ -97,7 +99,7 @@ final class FirestoreService {
                 } else {
                     var result: [T] = []
                     for document in querySnapshot!.documents {
-                        if let temp = try? document.data(as: T.self) {
+                        if let temp = try? document.data(as: dataType) {
                             result.append(temp)
                         }
                     }
@@ -126,15 +128,28 @@ final class FirestoreService {
                     }
                     completion(.success(result))
                 }
-                
             }
         }
     }
     
-    // MARK: - 수정 필요
     func loadDocumentRx<T: Codable>(collectionId: Collections, dataType: T.Type) -> Observable<[T]> {
         return Observable.create { emitter in
             self.loadDocuments(collectionId: collectionId, dataType: dataType) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                    emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func loadDocumentRx<T: Codable>(collectionId: Collections, documentId: String, dataType: T.Type) -> Observable<T?> {
+        return Observable.create { emitter in
+            self.loadDocument(collectionId: collectionId, documentId: documentId, dataType: dataType) { result in
                 switch result {
                 case .success(let data):
                     emitter.onNext(data)

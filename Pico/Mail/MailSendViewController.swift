@@ -7,8 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class MailSendViewController: UIViewController {
+    
+    var diposeBag = DisposeBag()
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -19,6 +23,15 @@ final class MailSendViewController: UIViewController {
     private let navItem: UINavigationItem = {
         let navigationItem = UINavigationItem(title: "쪽지 보내기")
         return navigationItem
+    }()
+    
+    private let leftBarButton: UIBarButtonItem = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+        let barButtonItem = UIBarButtonItem()
+        barButtonItem.image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
+        barButtonItem.tintColor = .picoBlue
+        barButtonItem.action = #selector(tappedBackzButton)
+        return barButtonItem
     }()
     
     private let receiverStack: UIStackView = {
@@ -67,14 +80,12 @@ final class MailSendViewController: UIViewController {
     
     private let textViewPlaceHolder = "메시지를 입력하세요"
     
-    private lazy var messageView: UITextView = {
-        
+    private let messageView: UITextView = {
         let textView: UITextView = UITextView()
-        textView.text = textViewPlaceHolder
+        textView.text = "메시지를 입력하세요"
         textView.font = .picoContentFont
         textView.textColor = .lightGray
         textView.backgroundColor = .clear
-        textView.delegate = self
         return textView
     }()
     
@@ -100,9 +111,9 @@ final class MailSendViewController: UIViewController {
         
         addViews()
         makeConstraints()
-        configBackButton()
         configNavigationBarItem()
         tappedDismissKeyboard()
+        changeTextView()
     }
     
     override func viewDidLayoutSubviews() {
@@ -110,6 +121,7 @@ final class MailSendViewController: UIViewController {
     }
     
     func configNavigationBarItem() {
+        navItem.leftBarButtonItem = leftBarButton
         navigationBar.shadowImage = UIImage()
         navigationBar.setItems([navItem], animated: true)
     }
@@ -167,51 +179,57 @@ final class MailSendViewController: UIViewController {
             make.height.equalTo(50)
         }
     }
-    
-    func getReceiver(image: String, name: String) { //rx
-        if let imageURL = URL(string: image) {
-            receiverImageView.load(url: imageURL)
-        }
-        receiverNameLabel.text = name
-    }
-    
-    @objc private func tappedSendButton(_ sender: UIButton) { //rx
-        tappedButtonAnimation(sender)
-        dismiss(animated: true)
-        print("send")
+
+//질문! textView에서 rx 설정하는 아래 코드를 mvvm으로 할 때 여기에 두는 것이 맞나요? 만약 다른 파일을 만들어서 둬야한다면 어떤 식으로 두면 좋을지 모르겠습닏
+    private func changeTextView() {
+        messageView.rx.didBeginEditing
+            .bind { _ in
+                if self.messageView.text == self.textViewPlaceHolder {
+                    self.messageView.text = nil
+                    self.messageView.textColor = .black
+                }
+            }
+            .disposed(by: diposeBag)
+        
+        messageView.rx.didEndEditing
+            .bind { _ in
+                if self.messageView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    self.messageView.text = self.textViewPlaceHolder
+                    self.messageView.textColor = .lightGray
+                    self.updateCountLabel(characterCount: 0)
+                }
+            }
+            .disposed(by: diposeBag)
+        
+        messageView.rx.text
+            .orEmpty
+            .debug()
+            .subscribe(onNext: { changedText in
+                let characterCount = changedText.count
+                if characterCount <= 300 {
+                    self.updateCountLabel(characterCount: characterCount)
+                }
+            })
+            .disposed(by: diposeBag)
     }
     
     private func updateCountLabel(characterCount: Int) {
         remainCountLabel.text = "\(characterCount)/300"
     }
-}
-
-extension MailSendViewController: UITextViewDelegate { //rx
     
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == textViewPlaceHolder {
-            textView.text = nil
-            textView.textColor = .black
+    func getReceiver(mailReceiver: DummyMailUsers) {
+        if let imageURL = URL(string: mailReceiver.messages.imageUrl) {
+            receiverImageView.load(url: imageURL)
         }
+        receiverNameLabel.text = mailReceiver.messages.oppenentName
     }
     
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = textViewPlaceHolder
-            textView.textColor = .lightGray
-            updateCountLabel(characterCount: 0)
-        }
+    @objc private func tappedSendButton(_ sender: UIButton) {
+        tappedButtonAnimation(sender)
+        presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
     
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
-        let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        let characterCount = newString.count
-        guard characterCount <= 300 else { return false }
-        updateCountLabel(characterCount: characterCount)
-        
-        return true
+    @objc func tappedBackzButton() {
+        dismiss(animated: true)
     }
 }

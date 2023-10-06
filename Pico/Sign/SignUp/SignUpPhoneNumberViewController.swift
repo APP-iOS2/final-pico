@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class SignUpPhoneNumberViewController: UIViewController {
-    
+    private var phoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
     private var messageButtons: [UIButton] = []
@@ -168,6 +168,8 @@ extension SignUpPhoneNumberViewController {
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isFullPhoneNumber && isTappedCheckButton {
+            guard let text = phoneNumberTextField.text else { return }
+            SignUpViewModel.phoneNumber = text
             tappedButtonAnimation(sender)
             let viewController = SignUpGenderViewController()
             self.navigationController?.pushViewController(viewController, animated: true)

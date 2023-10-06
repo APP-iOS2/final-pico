@@ -35,6 +35,13 @@ extension UIColor {
     /// 테이블뷰 백그라운드 색상
     static let picoLightGray: UIColor = UIColor(hex: "#F1F1F1")
     
+    /// 그라이데이션 중간 색상
+    static let picoGradientMedium: UIColor = UIColor(hex: "#A07BEE")
+    /// 그라이데이션 중간2 색상
+    static let picoGradientMedium2: UIColor = UIColor(hex: "#B58FF4")
+    /// 그라이데이션 마지막 색상
+    static let picoGradientLast: UIColor = UIColor(hex: "#DFB7FF")
+    
     /// 폰트 블랙 색상
     static let picoFontBlack: UIColor = .label
     /// 폰트 그레이 색상

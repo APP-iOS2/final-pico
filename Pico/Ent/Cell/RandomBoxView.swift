@@ -7,8 +7,10 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
-final class RandomBoxCell: UICollectionViewCell {
+final class RandomBoxView: UICollectionReusableView {
     
     private let boxChuImage: UIImageView = {
         let imageView = UIImageView()

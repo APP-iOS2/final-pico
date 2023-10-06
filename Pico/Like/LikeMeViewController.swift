@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import FirebaseFirestore
+
 final class LikeMeViewController: UIViewController {
     private let emptyView = EmptyViewController(type: .uLikeMe)
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())

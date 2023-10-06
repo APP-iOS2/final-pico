@@ -7,44 +7,36 @@
 
 import UIKit
 import SnapKit
+import RxCocoa
+import RxSwift
 
 class NotificationTableViewCell: UITableViewCell {
     
-    var notiType: NotiType = .like
+    private var notiType: NotiType = .like
     
-    var profileImageView: UIImageView = {
+    private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "AppIcon")
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
-    var iconImageView: UIImageView = {
+    private let iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "heart.fill")
         imageView.tintColor = .picoBlue
         return imageView
     }()
     
-    var nameLabel: UILabel = {
+    private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "찐 윈터임, 21"
         label.font = .picoSubTitleFont
         return label
     }()
     
-    var mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
+    private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
     
-    var contentLabel: UILabel = {
-        let label = UILabel()
-        label.text = "좋아요를 누르셨습니다."
-        return label
-    }()
-    
-    private let labelView: UIView = {
-        let view = UIView()
-        return view
-    }()
+    private let contentLabel: UILabel = UILabel()
+    private let labelView: UIView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -113,11 +105,30 @@ class NotificationTableViewCell: UITableViewCell {
 }
 
 extension NotificationTableViewCell {
-    func configData(imageUrl: String, title: String, createdDate: String) {
+    func configData(notitype: NotiType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType) {
+        guard let url = URL(string: imageUrl) else { return }
+        profileImageView.load(url: url)
+        notiType = notitype
+        iconImageView.image = notitype == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
+        iconImageView.tintColor = notitype == .like ? .systemPink : .picoBlue
+        contentLabel.text = notitype == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
+        nameLabel.text = "\(nickName), \(age)"
+        mbitLabel.setMbti(mbti: mbti)
+    }
+    
+    func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: String) {
         guard let url = URL(string: imageUrl) else { return }
         profileImageView.load(url: url)
         iconImageView.image = UIImage()
-        nameLabel.text = title
+        nameLabel.text = "\(nickName), \(age)"
+        mbitLabel.setMbti(mbti: mbti)
         contentLabel.text = createdDate
+    }
+    
+    override func prepareForReuse() {
+        profileImageView.image = UIImage(named: "AppIcon")
+        iconImageView.image = UIImage()
+        nameLabel.text = ""
+        contentLabel.text = ""
     }
 }
