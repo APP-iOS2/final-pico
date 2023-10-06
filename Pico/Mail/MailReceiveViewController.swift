@@ -178,7 +178,7 @@ final class MailReceiveViewController: UIViewController {
     // 질문! 단순히 화면 전환을 하는 경우에도 rx 처리를 하는 것이 맞나요?
     private func tappedNavigationButton() {
         rightBarButton.rx.tap
-            .do {
+            .bind {
                 let mailSendView = MailSendViewController()
                 if let mailUser = self.viewModel {
                     mailSendView.getReceiver(mailReceiver: mailUser)
