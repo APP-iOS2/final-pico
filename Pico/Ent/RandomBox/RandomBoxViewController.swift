@@ -162,9 +162,9 @@ final class RandomBoxViewController: UIViewController {
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
 
-        self.shake(view: self.randomBoxImage) {
+        randomBoxManager.shake(view: self.randomBoxImage) {
             let randomValue = self.randomBoxManager.getRandomValue()
-            self.updateCoin(with: Double(randomValue), number: 1)
+            self.randomBoxManager.updateChu(with: Double(randomValue), number: 1)
             self.showAlert(with: randomValue)
 
             self.openOneBoxButton.isEnabled = true
@@ -178,10 +178,10 @@ final class RandomBoxViewController: UIViewController {
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
 
-        self.shake(view: self.randomBoxImage) {
+        randomBoxManager.shake(view: self.randomBoxImage) {
             for _ in 0 ..< 10 {
                 let randomValue = self.randomBoxManager.getRandomValue()
-                self.updateCoin(with: Double(randomValue), number: 10)
+                self.randomBoxManager.updateChu(with: Double(randomValue), number: 10)
                 boxHistory.append(randomValue)
             }
 
@@ -192,10 +192,6 @@ final class RandomBoxViewController: UIViewController {
             self.openOneBoxButton.isEnabled = true
             self.openTenBoxButton.isEnabled = true
         }
-    }
-
-    private func updateCoin(with randomValue: Double, number: Int) {
-        _ = Int(randomValue)
     }
 
     private func showAlert(with message: Int) {
@@ -210,22 +206,5 @@ final class RandomBoxViewController: UIViewController {
         let alert = UIAlertController(title: nil, message: messageSting, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
-    }
-
-    private func shake(view: UIView, duration: CFTimeInterval = 0.5, repeatCount: Float = 3, completion: (() -> Void)? = nil) {
-        let animation = CAKeyframeAnimation(keyPath: "transform.rotation")
-        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        animation.duration = duration
-        animation.values = [-0.15, 0.15, -0.15]
-        animation.repeatCount = repeatCount
-
-        CATransaction.begin()
-        CATransaction.setCompletionBlock {
-            completion?()
-        }
-
-        view.layer.add(animation, forKey: "shake")
-
-        CATransaction.commit()
     }
 }
