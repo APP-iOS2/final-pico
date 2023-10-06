@@ -23,15 +23,20 @@ final class SignViewModel {
     var nickName: String = ""
     var location: Location = Location(address: "", latitude: 0, longitude: 0)
     var imageArray: [UIImage] = []
+    var createdDate: Double = 0
+    var chuCount: Int = 0
+    var isSubscribe: Bool = false
     var imagesSubject: PublishSubject<[UIImage]> = PublishSubject()
     var urlStringsSubject: PublishSubject<[String]> = PublishSubject()
     var locationSubject: PublishSubject<Location> = PublishSubject()
+    var isSaveSuccess: PublishSubject<Void> = PublishSubject()
+    lazy var newUser: User =
+    User(id: id, mbti: .entp, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
     
     private init() {
         locationSubject.subscribe { location in
             self.newUser.location = location
-            
-            self.startSave()
+            self.saveImage()
         }
         .disposed(by: disposeBag)
         
@@ -48,20 +53,11 @@ final class SignViewModel {
                 self.newUser.imageURLs = strings
                 self.saveNewUser()
             }.disposed(by: disposeBag)
-        
     }
     
-    func startSave() {
+    func saveImage() {
         imagesSubject.onNext(imageArray)
     }
-    
-    var createdDate: Double = 0
-    var chuCount: Int = 0
-    var isSubscribe: Bool = false
-    var isSaveSuccess: PublishSubject<Void> = PublishSubject()
-    
-    lazy var newUser: User =
-    User(id: id, mbti: .entp, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
     
     func saveNewUser() {
         FirestoreService().saveDocumentRx(collectionId: .users, documentId: newUser.id, data: newUser)
