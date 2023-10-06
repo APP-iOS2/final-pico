@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 extension UIImageView {
     func load(url: URL) {
@@ -26,13 +27,13 @@ extension UIImageView {
     
     func loadImage(url: String, disposeBag: DisposeBag) {
         Observable.just(url)
-            .flatMap(imageLoad)
+            .flatMap(loadImageObservable)
             .observe(on: MainScheduler.instance)
             .bind(to: rx.image)
             .disposed(by: disposeBag)
     }
     
-    private func imageLoad(url: String) -> Observable<UIImage?> {
+    private func loadImageObservable(url: String) -> Observable<UIImage?> {
         return Observable.create { emitter in
             let task = URLSession.shared.dataTask(with: URL(string: url)!) { data, _, error in
                 if let error = error {

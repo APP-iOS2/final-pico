@@ -5,6 +5,7 @@
 //  Created by 오영석 on 2023/09/25.
 //
 import Foundation
+import UIKit
 
 struct RandomBox {
     let first: Int
@@ -35,5 +36,26 @@ final class RandomBoxManager {
         default:
             return randomBoxDummy[0].fifth
         }
+    }
+    
+    func shake(view: UIView, duration: CFTimeInterval = 0.5, repeatCount: Float = 3, completion: (() -> Void)? = nil) {
+        let animation = CAKeyframeAnimation(keyPath: "transform.rotation")
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        animation.duration = duration
+        animation.values = [-0.15, 0.15, -0.15]
+        animation.repeatCount = repeatCount
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            completion?()
+        }
+
+        view.layer.add(animation, forKey: "shake")
+
+        CATransaction.commit()
+    }
+    
+    func updateChu(with randomValue: Double, number: Int) {
+        _ = Int(randomValue)
     }
 }

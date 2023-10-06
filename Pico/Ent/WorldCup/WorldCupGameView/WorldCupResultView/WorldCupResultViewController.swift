@@ -7,10 +7,13 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class WorldCupResultViewController: UIViewController {
     
     var selectedItem: User?
+    private let disposeBag = DisposeBag()
     
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
@@ -77,9 +80,9 @@ final class WorldCupResultViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()
-        configButton()
         configResultUserCell()
         addShadow()
+        configRxBinding()
         hideBackButton()
     }
     
@@ -138,11 +141,6 @@ final class WorldCupResultViewController: UIViewController {
         }
     }
     
-    private func configButton() {
-        chatButton.addTarget(WorldCupResultViewController.self, action: #selector(tappedChatButton), for: .touchUpInside)
-        cancelButton.addTarget(WorldCupResultViewController.self, action: #selector(tappedCancelButton), for: .touchUpInside)
-    }
-    
     private func configResultUserCell() {
         if let selectedItem = selectedItem {
             resultUserView.mbtiLabel.text = "\(selectedItem.mbti)"
@@ -167,12 +165,50 @@ final class WorldCupResultViewController: UIViewController {
         resultUserView.layer.shadowRadius = radius
     }
     
-    @objc func tappedChatButton() {
-        // 채팅 신청하는 것으로 바뀌어야 함
-        self.dismiss(animated: true, completion: nil)
+    private func configRxBinding() {
+        chatButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.tappedChatButton()
+            })
+            .disposed(by: disposeBag)
+        
+        cancelButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.tappedCancelButton()
+            })
+            .disposed(by: disposeBag)
     }
     
-    @objc func tappedCancelButton() {
-        self.dismiss(animated: true, completion: nil)
+    private func tappedChatButton() {
+        let alertController = UIAlertController(title: "채팅 신청 고?", message: "오늘 결혼쌉가능", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let confirmAction = UIAlertAction(title: "바로 고", style: .default) { [weak self] _ in
+            if let navigationController = self?.navigationController {
+                navigationController.popToRootViewController(animated: true)
+            } else {
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(confirmAction)
+        self.present(alertController, animated: true, completion: nil)
     }
+    
+    private func tappedCancelButton() {
+        let alertController = UIAlertController(title: "정말로 나가실건가용~?", message: "지금 채팅 신청하면 50% 할인해드리는뎅ㅋ", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "나가기", style: .cancel, handler: nil)
+        let confirmAction = UIAlertAction(title: "고민해볼래", style: .default) { [weak self] _ in
+            if let navigationController = self?.navigationController {
+                navigationController.popToRootViewController(animated: true)
+            } else {
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(confirmAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
 }
