@@ -9,11 +9,6 @@ import Foundation
 import RxSwift
 import RxRelay
 
-enum NotiType {
-    case like
-    case message
-}
-
 struct DummyNoti {
     let name: String
     let age: Int

@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class ProfilView: UIView {
     
@@ -31,7 +33,6 @@ final class ProfilView: UIView {
     
     private let profilPercentLabel: UILabel = {
         let label = UILabel()
-        label.text = "25% 완성"
         label.textAlignment = .center
         label.layer.masksToBounds = true
         label.layer.cornerRadius = 15
@@ -49,19 +50,18 @@ final class ProfilView: UIView {
     
     private let userNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "김민기,"
         label.font = UIFont.picoTitleFont
         return label
     }()
     
     private let userAgeLabel: UILabel = {
         let label = UILabel()
-        label.text = "100"
         label.font = UIFont.picoTitleFont
         return label
     }()
     
     private let circularProgressBarView = CircularProgressBarView()
+    private let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -69,6 +69,7 @@ final class ProfilView: UIView {
         addViews()
         makeConstraints()
         configProgressBarView()
+        bindings(viewModel: ProfileViewModel())
     }
     
     required init?(coder: NSCoder) {
@@ -77,6 +78,29 @@ final class ProfilView: UIView {
     
     private func configView() {
         backgroundColor = .systemBackground
+    }
+    
+    private func bindings(viewModel: ProfileViewModel) {
+        circularProgressBarView.binds(viewModel.circularProgressBarViewModel)
+        
+        viewModel.userName
+            .map {
+                $0 + ","
+            }
+            .bind(to: userNameLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        viewModel.userAge
+            .bind(to: userAgeLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        viewModel.profilePerfection
+            .map {
+                "\($0)% 완료"
+            }
+            .bind(to: profilPercentLabel.rx.text)
+            .disposed(by: disposeBag)
+        
     }
     
     private func configProgressBarView() {
