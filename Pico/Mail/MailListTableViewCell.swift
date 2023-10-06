@@ -14,7 +14,7 @@ final class MailListTableViewCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 35
+        imageView.layer.cornerRadius = 40
         return imageView
     }()
     
@@ -54,7 +54,6 @@ final class MailListTableViewCell: UITableViewCell {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 10
-        stackView.alignment = .fill
         return stackView
     }()
     
@@ -103,14 +102,15 @@ final class MailListTableViewCell: UITableViewCell {
     
     private func makeConstraints() {
         userImage.snp.makeConstraints { make in
-            make.top.equalTo(contentView).offset(-15)
+            make.top.equalTo(contentView).offset(10)
             make.leading.equalTo(contentView).offset(10)
-            make.width.height.equalTo(contentView.snp.height).offset(-15)
+            make.width.height.equalTo(80)
         }
         
         nameStackView.snp.makeConstraints { make in
             make.top.equalTo(infoStackView)
             make.leading.equalTo(userImage.snp.trailing).offset(15)
+            
         }
         
         mbtiLabelView.snp.makeConstraints { make in
@@ -128,20 +128,21 @@ final class MailListTableViewCell: UITableViewCell {
         
         dateStackView.snp.makeConstraints { make in
             make.top.bottom.equalTo(infoStackView)
-            make.trailing.equalTo(contentView.snp.trailing)
+            make.trailing.equalTo(contentView.snp.trailing).offset(-10)
             make.width.equalTo(50)
         }
     }
     
-    func getData(imageString: String, nameText: String, mbti: String, message: String, date: String, new: Bool) {
-        if let imageURL = URL(string: imageString) {
+    // 질문! 받아와서 보여줘야하는 경우 코드를 cell 뷰 파일에 두는 것이 맞나요? 또한 rx 처리를 해줘야하나요?
+    func getData(senderUser: DummyMailUsers) {
+        if let imageURL = URL(string: senderUser.messages.imageUrl) {
             userImage.load(url: imageURL)
         }
-        nameLabel.text = nameText
+        nameLabel.text = senderUser.messages.oppenentName
         nameLabel.sizeToFit()
-        self.message.text = message
-        dateLabel.text = date
-        if new {
+        self.message.text = senderUser.messages.message
+        dateLabel.text = senderUser.messages.sendedDate
+        if !senderUser.messages.isReading {
             newLabel.text = "new"
         }
     }

@@ -6,11 +6,14 @@
 //
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class RandomBoxViewController: UIViewController {
 
     private let randomBoxManager = RandomBoxManager()
-
+    private let disposeBag = DisposeBag()
+    
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
         imageView.contentMode = .scaleAspectFill
@@ -21,7 +24,6 @@ final class RandomBoxViewController: UIViewController {
         let button = UIButton()
         button.setImage(UIImage(named: "chu"), for: .normal)
         button.contentMode = .scaleAspectFit
-        //        button.addTarget(self, action: #selector(chuButtonTapped), for: .touchUpInside)
         return button
     }()
 
@@ -29,7 +31,6 @@ final class RandomBoxViewController: UIViewController {
         let button = UIButton()
         button.setImage(UIImage(systemName: "info.circle"), for: .normal)
         button.contentMode = .scaleAspectFill
-        //        button.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
         return button
     }()
 
@@ -77,7 +78,7 @@ final class RandomBoxViewController: UIViewController {
         view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()
-        configButton()
+        configRxBinding()
         configBackButton()
     }
 
@@ -140,36 +141,47 @@ final class RandomBoxViewController: UIViewController {
             make.height.equalTo(padding * 2)
         }
     }
-
-    private func configButton() {
-        self.openOneBoxButton.addTarget(self, action: #selector(openBoxButtonTapped), for: .touchUpInside)
-        self.openTenBoxButton.addTarget(self, action: #selector(openTenBoxButtonTapped), for: .touchUpInside)
+    
+    private func configRxBinding() {
+        openOneBoxButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.openBoxButtonTapped()
+            })
+            .disposed(by: disposeBag)
+        
+        openTenBoxButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.openTenBoxButtonTapped()
+            })
+            .disposed(by: disposeBag)
     }
     
-    @objc func openBoxButtonTapped() {
+    private func openBoxButtonTapped() {
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
 
-        self.shake(view: self.randomBoxImage) {
+        randomBoxManager.shake(view: self.randomBoxImage) {
             let randomValue = self.randomBoxManager.getRandomValue()
-            self.updateCoin(with: Double(randomValue), number: 1)
+            self.randomBoxManager.updateChu(with: Double(randomValue), number: 1)
             self.showAlert(with: randomValue)
 
             self.openOneBoxButton.isEnabled = true
             self.openTenBoxButton.isEnabled = true
         }
     }
-
-    @objc func openTenBoxButtonTapped() {
+    
+    private func openTenBoxButtonTapped() {
         var boxHistory: [Int] = []
 
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
 
-        self.shake(view: self.randomBoxImage) {
+        randomBoxManager.shake(view: self.randomBoxImage) {
             for _ in 0 ..< 10 {
                 let randomValue = self.randomBoxManager.getRandomValue()
-                self.updateCoin(with: Double(randomValue), number: 10)
+                self.randomBoxManager.updateChu(with: Double(randomValue), number: 10)
                 boxHistory.append(randomValue)
             }
 
@@ -180,10 +192,6 @@ final class RandomBoxViewController: UIViewController {
             self.openOneBoxButton.isEnabled = true
             self.openTenBoxButton.isEnabled = true
         }
-    }
-
-    private func updateCoin(with randomValue: Double, number: Int) {
-        _ = Int(randomValue)
     }
 
     private func showAlert(with message: Int) {
@@ -198,22 +206,5 @@ final class RandomBoxViewController: UIViewController {
         let alert = UIAlertController(title: nil, message: messageSting, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
-    }
-
-    private func shake(view: UIView, duration: CFTimeInterval = 0.5, repeatCount: Float = 3, completion: (() -> Void)? = nil) {
-        let animation = CAKeyframeAnimation(keyPath: "transform.rotation")
-        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        animation.duration = duration
-        animation.values = [-0.15, 0.15, -0.15]
-        animation.repeatCount = repeatCount
-
-        CATransaction.begin()
-        CATransaction.setCompletionBlock {
-            completion?()
-        }
-
-        view.layer.add(animation, forKey: "shake")
-
-        CATransaction.commit()
     }
 }

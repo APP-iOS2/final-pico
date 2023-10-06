@@ -12,11 +12,14 @@ import RxSwift
 
 enum Collections: CaseIterable {
     case users
+    case notifications
     
     var name: String {
         switch self {
         case .users:
             return "users"
+        case .notifications:
+            return "notifications"
         }
     }
 }
@@ -53,10 +56,8 @@ final class FirestoreService {
     }
     
     func loadDocument<T: Codable>(collectionId: Collections, documentId: String, dataType: T.Type, completion: @escaping (Result<T?, Error>) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            
-            dbRef.collection(collectionId.name).document(documentId).getDocument { (snapshot, error) in
+        DispatchQueue.global().async {
+            self.dbRef.collection(collectionId.name).document(documentId).getDocument { (snapshot, error) in
                 if let error = error {
                     print("Error to load new document at \(collectionId.name) \(documentId) \(error)")
                     completion(.failure(error))
@@ -126,15 +127,28 @@ final class FirestoreService {
                     }
                     completion(.success(result))
                 }
-                
             }
         }
     }
     
-    // MARK: - 수정 필요
     func loadDocumentRx<T: Codable>(collectionId: Collections, dataType: T.Type) -> Observable<[T]> {
         return Observable.create { emitter in
             self.loadDocuments(collectionId: collectionId, dataType: dataType) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                    emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func loadDocumentRx<T: Codable>(collectionId: Collections, documentId: String, dataType: T.Type) -> Observable<T?> {
+        return Observable.create { emitter in
+            self.loadDocument(collectionId: collectionId, documentId: documentId, dataType: dataType) { result in
                 switch result {
                 case .success(let data):
                     emitter.onNext(data)

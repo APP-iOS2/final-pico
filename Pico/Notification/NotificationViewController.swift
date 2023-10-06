@@ -9,7 +9,6 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
-import RxRelay
 
 final class NotificationViewController: UIViewController {
     private let tableView = UITableView()
@@ -77,7 +76,7 @@ extension NotificationViewController {
     private func configTableviewDelegate() {
         tableView.rx.setDelegate(self)
             .disposed(by: disposeBag)
-        tableView.rx.modelSelected(DummyNoti.self)
+        tableView.rx.modelSelected(Noti.self)
             .subscribe(onNext: { item in
                 if item.notiType == .like {
                     let viewController = UserDetailViewController()
