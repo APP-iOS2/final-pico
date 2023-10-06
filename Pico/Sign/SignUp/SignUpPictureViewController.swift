@@ -12,7 +12,7 @@ import PhotosUI
 final class SignUpPictureViewController: UIViewController {
     
     private var userImages: [UIImage] = []
-    
+    let viewModel: SignViewModel = .shared
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -89,7 +89,8 @@ final class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
-        SingUpUserData.imageURLs = userImages
+        viewModel.imageArray = userImages
+        
         let viewController = SignUpTermsOfServiceViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }

@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 
 final class SignViewController: UIViewController {
-    
+    var viewModel: SignViewModel = .shared
     private let disposeBag = DisposeBag()
     
     private let picoLogoImageView: UIImageView = {
@@ -50,21 +50,6 @@ final class SignViewController: UIViewController {
         makeConstraints()
         configBackButton()
         configRx()
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        print("""
-              ===========================================
-              mbti:\(SingUpUserData.userMbti),
-              === number: \(SingUpUserData.phoneNumber),
-              birth: \(SingUpUserData.birth),
-              === gender: \(SingUpUserData.gender),
-              nickname: \(SingUpUserData.nickName),
-              === imageURL \(SingUpUserData.imageURLs)
-              위도:1 \(SingUpUserData.location.latitude),
-              경도:1 \(SingUpUserData.location.longitude),
-              주소:1 \(SingUpUserData.location.address)
-              ===========================================
-              """)
     }
 }
 extension SignViewController {

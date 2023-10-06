@@ -11,6 +11,7 @@ import RxSwift
 import RxRelay
 
 final class SignUpViewController: UIViewController {
+    var viewModel: SignViewModel = .shared
     private var userMbti: [String] = ["", "", "", ""]
     private var mbti: String = ""
     private let progressView: UIProgressView = {
@@ -194,7 +195,7 @@ extension SignUpViewController: SignViewControllerDelegate {
             var convertMbti: String {
                 return userMbti.joined()
             }
-            SingUpUserData.userMbti = convertMbti
+            viewModel.userMbti = convertMbti
             let viewController = SignUpPhoneNumberViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }

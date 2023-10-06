@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class SignUpGenderViewController: UIViewController {
-    
+    var viewModel: SignViewModel = .shared
     private var gender: String = ""
     private var genderButtons: [UIButton] = []
     private var isTappedGenderButton = false
@@ -122,11 +122,11 @@ extension SignUpGenderViewController {
     func configGender() {
         switch gender {
         case "남자":
-            SingUpUserData.gender = .male
+                viewModel.gender = .male
         case "여자":
-            SingUpUserData.gender = .female
+                viewModel.gender = .female
         case "기타":
-            SingUpUserData.gender = .etc
+                viewModel.gender = .etc
         default:
             return
         }
