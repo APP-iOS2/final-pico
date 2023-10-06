@@ -14,7 +14,6 @@ class LikeUViewViewModel {
     var likeUIsEmpty: Observable<Bool> {
         return likeUUserList
             .map { $0.isEmpty }
-            .distinctUntilChanged()
     }
     var messageButtonTapUser: PublishSubject<User> = PublishSubject()
     
