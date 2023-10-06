@@ -33,16 +33,23 @@ extension UIImageView {
             .disposed(by: disposeBag)
     }
     
-    private func loadImageObservable(url: String) -> Observable<UIImage?> {
+    private func loadImageObservable(url: String) -> Observable<UIImage> {
         return Observable.create { emitter in
-            let task = URLSession.shared.dataTask(with: URL(string: url)!) { data, _, error in
+            guard let url = URL(string: url) else {
+                emitter.onNext(UIImage(named: "chu")!)
+                emitter.onCompleted()
+                return Disposables.create()
+            }
+            
+            let task = URLSession.shared.dataTask(with: url) { data, _, error in
                 if let error = error {
                     emitter.onError(error)
                     return
                 }
+                
                 guard let data = data,
                       let image = UIImage(data: data) else {
-                    emitter.onNext(nil)
+                    emitter.onNext(UIImage(named: "chu")!)
                     emitter.onCompleted()
                     return
                 }
@@ -50,10 +57,9 @@ extension UIImageView {
                 emitter.onNext(image)
                 emitter.onCompleted()
             }
+            
             task.resume()
-            return Disposables.create {
-                task.cancel()
-            }
+            return Disposables.create()
         }
     }
 }
