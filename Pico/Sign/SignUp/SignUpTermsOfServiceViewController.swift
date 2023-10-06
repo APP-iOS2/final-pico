@@ -117,7 +117,7 @@ extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
             }
             if let placemark = placemarks?.first {
                 let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
-                SignUpViewModel.location = Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                SingUpUserData.location = Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
             }
         }
     }

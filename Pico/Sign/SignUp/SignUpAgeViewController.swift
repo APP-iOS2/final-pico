@@ -104,7 +104,7 @@ extension SignUpAgeViewController {
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isChoiceAge {
-            SignUpViewModel.birth = userAge
+            SingUpUserData.birth = userAge
             tappedButtonAnimation(sender)
             let viewController = SignUpNickNameViewController()
             self.navigationController?.pushViewController(viewController, animated: true)

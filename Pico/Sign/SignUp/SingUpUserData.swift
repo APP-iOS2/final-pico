@@ -10,7 +10,7 @@ import RxSwift
 import RxRelay
 import UIKit
 
-final class SignUpViewModel {
+final class SingUpUserData {
     static var userMbti = "" // mbti타입에 맞게 소문자로 만들어야함
     static var phoneNumber: String = ""
     static var gender: GenderType = .etc

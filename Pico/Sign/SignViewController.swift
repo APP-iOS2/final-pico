@@ -54,15 +54,15 @@ final class SignViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         print("""
               ===========================================
-              mbti:\(SignUpViewModel.userMbti),
-              === number: \(SignUpViewModel.phoneNumber),
-              birth: \(SignUpViewModel.birth),
-              === gender: \(SignUpViewModel.gender),
-              nickname: \(SignUpViewModel.nickName),
-              === imageURL \(SignUpViewModel.imageURLs)
-              위도:1 \(SignUpViewModel.location.latitude),
-              경도:1 \(SignUpViewModel.location.longitude),
-              주소:1 \(SignUpViewModel.location.address)
+              mbti:\(SingUpUserData.userMbti),
+              === number: \(SingUpUserData.phoneNumber),
+              birth: \(SingUpUserData.birth),
+              === gender: \(SingUpUserData.gender),
+              nickname: \(SingUpUserData.nickName),
+              === imageURL \(SingUpUserData.imageURLs)
+              위도:1 \(SingUpUserData.location.latitude),
+              경도:1 \(SingUpUserData.location.longitude),
+              주소:1 \(SingUpUserData.location.address)
               ===========================================
               """)
     }

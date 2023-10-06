@@ -89,7 +89,7 @@ final class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
-        SignUpViewModel.imageURLs = userImages
+        SingUpUserData.imageURLs = userImages
         let viewController = SignUpTermsOfServiceViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }

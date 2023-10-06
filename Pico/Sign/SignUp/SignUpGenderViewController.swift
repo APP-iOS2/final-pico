@@ -122,11 +122,11 @@ extension SignUpGenderViewController {
     func configGender() {
         switch gender {
         case "남자":
-            SignUpViewModel.gender = .male
+            SingUpUserData.gender = .male
         case "여자":
-            SignUpViewModel.gender = .female
+            SingUpUserData.gender = .female
         case "기타":
-            SignUpViewModel.gender = .etc
+            SingUpUserData.gender = .etc
         default:
             return
         }

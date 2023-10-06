@@ -194,7 +194,7 @@ extension SignUpViewController: SignViewControllerDelegate {
             var convertMbti: String {
                 return userMbti.joined()
             }
-            SignUpViewModel.userMbti = convertMbti
+            SingUpUserData.userMbti = convertMbti
             let viewController = SignUpPhoneNumberViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }
