@@ -33,10 +33,10 @@ extension UIImageView {
             .disposed(by: disposeBag)
     }
     
-    private func loadImageObservable(url: String) -> Observable<UIImage> {
+    private func loadImageObservable(url: String) -> Observable<UIImage?> {
         return Observable.create { emitter in
             guard let url = URL(string: url) else {
-                emitter.onNext(UIImage(named: "chu")!)
+                emitter.onNext(UIImage(named: "chu"))
                 emitter.onCompleted()
                 return Disposables.create()
             }
@@ -49,7 +49,7 @@ extension UIImageView {
                 
                 guard let data = data,
                       let image = UIImage(data: data) else {
-                    emitter.onNext(UIImage(named: "chu")!)
+                    emitter.onNext(UIImage(named: "chu"))
                     emitter.onCompleted()
                     return
                 }
