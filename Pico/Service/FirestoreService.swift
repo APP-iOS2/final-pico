@@ -12,15 +12,19 @@ import RxSwift
 
 enum Collections: CaseIterable {
     case users
+    case likes
     case notifications
     
     var name: String {
         switch self {
         case .users:
             return "users"
+        case .likes:
+            return "likes"
         case .notifications:
             return "notifications"
         }
+    
     }
 }
 
@@ -43,11 +47,10 @@ final class FirestoreService {
     }
     
     func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
+        DispatchQueue.global().async {
             
             do {
-                try dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
+                try self.dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
                 print("Success to save new document at \(collectionId.name) \(documentId)")
             } catch {
                 print("Error to save new document at \(collectionId.name) \(documentId) \(error)")
