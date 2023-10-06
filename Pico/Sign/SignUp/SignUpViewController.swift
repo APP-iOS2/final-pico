@@ -7,11 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxRelay
 
 final class SignUpViewController: UIViewController {
-    
     private var userMbti: [String] = ["", "", "", ""]
-    
+    private var mbti: String = ""
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -178,6 +179,7 @@ extension SignUpViewController: SignViewControllerDelegate {
         default:
             return
         }
+        
         if userMbti.contains("") {
             nextButton.backgroundColor = .picoGray
         } else {
@@ -189,6 +191,10 @@ extension SignUpViewController: SignViewControllerDelegate {
     @objc private func tappedNextButton(_ sender: UIButton) {
         tappedButtonAnimation(sender)
         if !userMbti.contains("") {
+            var convertMbti: String {
+                return userMbti.joined()
+            }
+            SignUpViewModel.userMbti = convertMbti
             let viewController = SignUpPhoneNumberViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }

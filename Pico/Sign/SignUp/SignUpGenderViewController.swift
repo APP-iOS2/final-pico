@@ -112,10 +112,23 @@ extension SignUpGenderViewController {
                 sender.backgroundColor = .picoAlphaBlue
                 sender.setTitleColor(.white, for: .normal)
                 gender = text
+                configGender()
             case false:
                 button.backgroundColor = .picoGray
                 button.setTitleColor(.black, for: .normal)
             }
+        }
+    }
+    func configGender() {
+        switch gender {
+        case "남자":
+            SignUpViewModel.gender = .male
+        case "여자":
+            SignUpViewModel.gender = .female
+        case "기타":
+            SignUpViewModel.gender = .etc
+        default:
+            return
         }
     }
 }

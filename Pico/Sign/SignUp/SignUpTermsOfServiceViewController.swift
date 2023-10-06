@@ -7,8 +7,12 @@
 
 import UIKit
 import SnapKit
+import CoreLocation
 
 final class SignUpTermsOfServiceViewController: UIViewController {
+    
+    private var locationManager: CLLocationManager = CLLocationManager()
+    private var currentLocation: CLLocationCoordinate2D?
     private var isLoading: Bool = false
     private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts
@@ -36,6 +40,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         let button = CommonButton(type: .custom)
         button.setTitle("완료", for: .normal)
         button.backgroundColor = .picoGray
+        button.isEnabled = false
         button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
@@ -55,6 +60,10 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         makeConstraints()
         configTableView()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        configLocation()
+    }
 }
 // MARK: - Config
 extension SignUpTermsOfServiceViewController {
@@ -63,9 +72,48 @@ extension SignUpTermsOfServiceViewController {
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
+    
+    private func configLocation() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        // 위도 경도
+        let space = locationManager.location?.coordinate
+        let lat = space?.latitude
+        let long = space?.longitude
+        getAddressFromCoordinates(latitude: lat, longitude: long)
+        DispatchQueue.global().async {
+            if CLLocationManager.locationServicesEnabled() {
+                self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                self.locationManager.startUpdatingLocation()
+            } else {
+                print("이미 했잖아")
+            }
+        }
+    }
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         navigationController?.popToRootViewController(animated: true)
+    }
+}
+// MARK: - 위치관련
+extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
+    func getAddressFromCoordinates(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
+        let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
+        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
+            if let error = error {
+                print("Geocoding Error: \(error)")
+                return
+            }
+            if let placemark = placemarks?.first {
+                let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
+                SignUpViewModel.location = Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            }
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
     }
 }
 // MARK: - tableView관련
