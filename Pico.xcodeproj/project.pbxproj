@@ -109,6 +109,7 @@
 		B15ABE392AC31E0800529C29 /* TappedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE382AC31E0800529C29 /* TappedAnimation.swift */; };
 		B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B161B8712AC414DD00257A9C /* PopupViewController.swift */; };
 		B16394C52ACDC7EF00D9252F /* AboutMeTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B16394C42ACDC7EF00D9252F /* AboutMeTableCell.swift */; };
+		B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F8F2AD033B70014850D /* Double+Extensions.swift */; };
 		B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67832AC0A835006F91DC /* SignInViewController.swift */; };
 		B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67852AC0A850006F91DC /* SignUpViewController.swift */; };
 		B17D67882AC0AAFF006F91DC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67872AC0AAFF006F91DC /* User.swift */; };
@@ -269,6 +270,7 @@
 		B15ABE382AC31E0800529C29 /* TappedAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TappedAnimation.swift; sourceTree = "<group>"; };
 		B161B8712AC414DD00257A9C /* PopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
 		B16394C42ACDC7EF00D9252F /* AboutMeTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutMeTableCell.swift; sourceTree = "<group>"; };
+		B1701F8F2AD033B70014850D /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
 		B17D67832AC0A835006F91DC /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		B17D67852AC0A850006F91DC /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		B17D67872AC0AAFF006F91DC /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -814,6 +816,7 @@
 				B15ABE2E2AC31C4700529C29 /* AddViewShadow.swift */,
 				B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */,
 				5375E74B2ACD4590001A571D /* StringToDate.swift */,
+				B1701F8F2AD033B70014850D /* Double+Extensions.swift */,
 			);
 			path = Function;
 			sourceTree = "<group>";
@@ -1194,6 +1197,7 @@
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
 				54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */,
 				367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */,
+				B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */,
 				4B157D3A2AC116B400EEDEC1 /* RandomBoxCell.swift in Sources */,
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
 				6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */,
