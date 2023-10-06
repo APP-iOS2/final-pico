@@ -80,11 +80,9 @@ final class FirestoreService {
         }
     }
     
-    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, completion: @escaping (Result<[T]?, Error>) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            
-            let query = dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
+    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type, completion: @escaping (Result<[T]?, Error>) -> Void) {
+        DispatchQueue.global().async {
+            let query = self.dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("Error in query: \(error)")
@@ -98,7 +96,7 @@ final class FirestoreService {
                 } else {
                     var result: [T] = []
                     for document in querySnapshot!.documents {
-                        if let temp = try? document.data(as: T.self) {
+                        if let temp = try? document.data(as: dataType) {
                             result.append(temp)
                         }
                     }
