@@ -143,6 +143,7 @@ final class MailListTableViewCell: UITableViewCell {
         self.message.text = senderUser.messages.message
         dateLabel.text = senderUser.messages.sendedDate
         if !senderUser.messages.isReading {
+            print(senderUser.messages.isReading)
             newLabel.text = "new"
         }
     }

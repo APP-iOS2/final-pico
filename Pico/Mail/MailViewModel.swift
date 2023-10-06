@@ -81,12 +81,5 @@ final class MailViewModel {
             }
         mailSendList.accept(sendMails)
         mailRecieveList.accept(receiveMails)
-        
-        print("sendData")
-        print(sendMails)
-        
-        print("----------")
-        print("receive")
-        print(receiveMails)
     }
 }

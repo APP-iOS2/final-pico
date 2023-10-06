@@ -161,13 +161,18 @@ final class MailViewController: BaseViewController {
                 button.setTitleColor(.picoBetaBlue, for: .normal)
             }
         }
-        self.mailListTableView.reloadData()
+        configTableviewDatasource()
+        mailListTableView.reloadData()
     }
 }
 
 // MARK: - MailTableView+Rx
 extension MailViewController {
     private func configTableviewDatasource() {
+        
+        self.mailListTableView.delegate = nil
+        self.mailListTableView.dataSource = nil
+        
         if mailType == .receive {
             viewModel.mailRecieveList
                 .bind(to: mailListTableView.rx.items(cellIdentifier: Identifier.TableCell.mailTableCell, cellType: MailListTableViewCell.self)) { _, item, cell in
