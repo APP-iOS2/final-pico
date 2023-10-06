@@ -8,19 +8,12 @@
 import UIKit
 import SnapKit
 import CoreLocation
-import Foundation
 
-class LocationService {
-    
-    static var shared = LocationService()
-    var longitude: Double!
-    var latitude: Double!
-  
-}
 final class SignUpTermsOfServiceViewController: UIViewController {
-    var locationManager: CLLocationManager = CLLocationManager()
-    var currentLocation: CLLocationCoordinate2D!
-    
+    private var locationManager: CLLocationManager = CLLocationManager()
+    private var currentLocation: CLLocationCoordinate2D!
+    private var latitude: Double = 0
+    private var longitude: Double = 0
     private var isLoading: Bool = false
     private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts
@@ -48,6 +41,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         let button = CommonButton(type: .custom)
         button.setTitle("완료", for: .normal)
         button.backgroundColor = .picoGray
+        button.isEnabled = false
         button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
@@ -66,9 +60,10 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configTableView()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        configLocation()
     }
 }
 // MARK: - Config
@@ -78,67 +73,54 @@ extension SignUpTermsOfServiceViewController {
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
-    // MARK: - @objc
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        requestAuthorizqtion()
-//        print("""
-//              mbti:\(SignUpViewModel.userMbti),
-//              === number: \(SignUpViewModel.phoneNumber),
-//              birth: \(SignUpViewModel.birth),
-//              === gender: \(SignUpViewModel.gender),
-//              nickname: \(SignUpViewModel.nickName),
-//              === imageURL \(SignUpViewModel.imageURLs)
-//              """)
-//        navigationController?.popToRootViewController(animated: true)
-    }
-}
-
-// MARK: - 위치관련
-extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
-//    private func requestAuthorization() {
-//        if locationManager != nil {
-//            locationManager = CLLocationManager()
-//            // 정확도를 검사한다.
-//            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-//            // 앱을 사용할때 권한요청
-//            locationManager.requestWhenInUseAuthorization()
-//            locationManager.delegate = self
-//            locationManagerDidChangeAuthorization(locationManager)
-//            print("if")
-//        } else {
-//            // 사용자의 위치가 바뀌고 있는지 확인하는 메소드
-//            locationManager.startMonitoringSignificantLocationChanges()
-//            print("else")
-//        }
-//    }
-    // 사용자가 위치 서비스에 대한 권한을 변경할 때마다 이 메서드가 호출
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-            if manager.authorizationStatus == .authorizedWhenInUse {
-                currentLocation = locationManager.location?.coordinate
-                LocationService.shared.longitude = currentLocation.longitude
-                LocationService.shared.latitude = currentLocation.latitude
+    
+    private func configLocation() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        // 위도 경도
+        let space = locationManager.location?.coordinate
+        let lat = space?.latitude
+        let long = space?.longitude
+        getAddressFromCoordinates(latitude: lat, longitude: long)
+        DispatchQueue.global().async {
+            if CLLocationManager.locationServicesEnabled() {
+                self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                self.locationManager.startUpdatingLocation()
             } else {
-                print("ㅎㅎ")
+                print("이미 했잖아")
             }
         }
-    func requestAuthorizqtion() {
-        switch locationManager.authorizationStatus {
-        case .authorizedWhenInUse, .authorizedAlways:
-            print("autjo")
-//                    moveFocusOnUserLocation()
-        case .notDetermined:
-            print("2notDetermined")
-            locationManager.requestWhenInUseAuthorization()
-            locationManager.startUpdatingLocation()
-            locationManager.requestWhenInUseAuthorization()
-            locationManager.requestAlwaysAuthorization()
-        default:
-            print("s \(locationManager.authorizationStatus)")
-            break
-        }
+    }
+    // MARK: - @objc
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        navigationController?.popToRootViewController(animated: true)
     }
 }
-
+// MARK: - 위치관련
+extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
+    func getAddressFromCoordinates(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
+        let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
+        var addressString = "s"
+        
+        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
+            if let error = error {
+                print("Geocoding Error: \(error)")
+                return
+            }
+            
+            if let placemark = placemarks?.first {
+                addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
+                SignUpViewModel.location = Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            }
+            
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
+    }
+}
 // MARK: - tableView관련
 extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDataSource {
     

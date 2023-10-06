@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */; };
 		362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */; };
+		363CC4842ACF9CC500C86EDC /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CC4832ACF9CC500C86EDC /* LocationManager.swift */; };
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
 		369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */; };
@@ -161,6 +162,7 @@
 /* Begin PBXFileReference section */
 		362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpAgeViewController.swift; sourceTree = "<group>"; };
 		362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpNickNameViewController.swift; sourceTree = "<group>"; };
+		363CC4832ACF9CC500C86EDC /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
 		369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceText.swift; sourceTree = "<group>"; };
@@ -322,6 +324,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		363CC4822ACF9CB300C86EDC /* LocationManager */ = {
+			isa = PBXGroup;
+			children = (
+				363CC4832ACF9CC500C86EDC /* LocationManager.swift */,
+			);
+			path = LocationManager;
+			sourceTree = "<group>";
+		};
 		369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */ = {
 			isa = PBXGroup;
 			children = (
@@ -558,8 +568,8 @@
 		B14B58FB2AC0A2B5009889DA /* SignUp */ = {
 			isa = PBXGroup;
 			children = (
+				363CC4822ACF9CB300C86EDC /* LocationManager */,
 				369F1BB92ACE8B8500A98C7B /* SignUpViewModel.swift */,
-				369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */,
 				B17D67852AC0A850006F91DC /* SignUpViewController.swift */,
 				36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */,
 				367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */,
@@ -568,6 +578,7 @@
 				362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */,
 				36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */,
 				36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */,
+				369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */,
 			);
 			path = SignUp;
 			sourceTree = "<group>";
@@ -1094,6 +1105,7 @@
 				6ADDE2F32AC3BA4700CE4482 /* ProfileEditNicknameTabelCell.swift in Sources */,
 				534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */,
 				B15ABE352AC31D7F00529C29 /* CircleImageView.swift in Sources */,
+				363CC4842ACF9CC500C86EDC /* LocationManager.swift in Sources */,
 				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* DismissKeyboard.swift in Sources */,
