@@ -43,7 +43,6 @@ final class MailViewModel {
     var mailIsEmpty: Observable<Bool> {
             return mailList
                 .map { $0.isEmpty }
-                .distinctUntilChanged()
         }
     
     init() {
