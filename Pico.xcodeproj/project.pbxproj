@@ -88,6 +88,7 @@
 		6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */; };
 		B10241CD2AC21A6500BAE1C6 /* ResizedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */; };
 		B11D2B8C2AC63C43008D80A4 /* ChangePhoneNumDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */; };
+		B130BB502ACF2DA90039A1FA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B130BB4F2ACF2DA90039A1FA /* GoogleService-Info.plist */; };
 		B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14805242ACCE8120009FF71 /* FirestoreService.swift */; };
 		B148052C2ACD2A900009FF71 /* AdminViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B148052B2ACD2A900009FF71 /* AdminViewController.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
@@ -248,6 +249,7 @@
 		6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditTableHeaderView.swift; sourceTree = "<group>"; };
 		B10241CC2AC21A6500BAE1C6 /* ResizedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizedImage.swift; sourceTree = "<group>"; };
 		B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePhoneNumDigits.swift; sourceTree = "<group>"; };
+		B130BB4F2ACF2DA90039A1FA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B14805242ACCE8120009FF71 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		B148052B2ACD2A900009FF71 /* AdminViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewController.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
