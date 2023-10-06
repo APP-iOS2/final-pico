@@ -12,6 +12,8 @@ import RxCocoa
 
 final class WorldCupCollectionViewCell: UICollectionViewCell {
     
+    private let disposeBag = DisposeBag()
+    
     lazy var mbtiLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center

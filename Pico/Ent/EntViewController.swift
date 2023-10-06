@@ -5,8 +5,6 @@ import RxCocoa
 
 final class EntViewController: BaseViewController {
     
-    private let disposeBag = DisposeBag()
-    
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
