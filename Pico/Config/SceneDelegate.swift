@@ -34,8 +34,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             transition.subtype = CATransitionSubtype.fromRight
             window.layer.add(transition, forKey: kCATransition)
         }
+        let rootViewController = UINavigationController(rootViewController: viewController)
         
-        window.rootViewController = viewController
+        window.rootViewController = rootViewController
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
