@@ -14,6 +14,7 @@ enum Collections: CaseIterable {
     case users
     case likes
     case notifications
+    case subInfo
     
     var name: String {
         switch self {
@@ -23,6 +24,8 @@ enum Collections: CaseIterable {
             return "likes"
         case .notifications:
             return "notifications"
+        case .subInfo:
+            return "subInfo"
         }
     
     }
