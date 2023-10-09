@@ -8,10 +8,10 @@
 import UIKit
 import SnapKit
 import PhotosUI
+import AVFoundation
+import Vision
 
 final class SignUpPictureViewController: UIViewController {
-    
-    private var userImages: [UIImage] = []
     
     private let progressView: UIProgressView = {
         let view = UIProgressView()
@@ -66,9 +66,14 @@ final class SignUpPictureViewController: UIViewController {
         view.contentInset = .zero
         view.backgroundColor = .clear
         view.contentInset = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25)
-//        view.register(ProfileEditCollectionCell.self, forCellWithReuseIdentifier: )
+        view.register(ProfileEditCollectionCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.profileEditCollectionCell)
         return view
     }()
+    
+    private var userImages: [UIImage] = []
+    
+    private var isDetectedImage: Bool? = false
+    private var objectDetectionRequest: VNCoreMLRequest?
     
     // MARK: - LifeCyle
     override func viewDidLoad() {
@@ -78,6 +83,7 @@ final class SignUpPictureViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configCollectionView()
+        loadYOLOv3Model()
     }
     
     // MARK: - Config
@@ -87,18 +93,48 @@ final class SignUpPictureViewController: UIViewController {
         collectionView.delegate = self
     }
     
-    // MARK: - Tapped
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        SignUpViewModel.imageURLs = userImages
-        let viewController = SignUpTermsOfServiceViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
+    private func configNextButton(isEnabled: Bool) {
+        if isEnabled {
+            nextButton.isEnabled = isEnabled
+            nextButton.backgroundColor = .picoBlue
+        } else {
+            nextButton.isEnabled = isEnabled
+            nextButton.backgroundColor = .picoGray
+        }
     }
     
+    // MARK: - Tapped
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        var allImagesDetected = true
+        
+        for image in userImages {
+            detectPeople(image: image)
+            
+            if !(isDetectedImage ?? true) {
+                allImagesDetected = false
+                break
+            }
+        }
+        
+        if allImagesDetected {
+            showAlert(message: "이미지가 등록되었습니다.") {
+                SignUpViewModel.imageURLs = self.userImages
+                let viewController = SignUpTermsOfServiceViewController()
+                self.navigationController?.pushViewController(viewController, animated: true)
+            }
+        } else {
+            showAlert(message: "이미지 등록에 실해하셨습니다.") {
+                self.userImages.removeAll()
+                self.collectionView.reloadData()
+                self.configNextButton(isEnabled: false)
+            }
+        }
+    }
 }
 
 // MARK: - 사진 관련
 extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
+
     @objc private func openPhotoLibrary() {
         var configuration = PHPickerConfiguration()
         configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
@@ -123,8 +159,7 @@ extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePi
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
                     guard !self.userImages.isEmpty else { return }
-                    self.nextButton.isEnabled = true
-                    self.nextButton.backgroundColor = .picoBlue
+                    self.configNextButton(isEnabled: true)
                 }
             }
         }
@@ -163,6 +198,55 @@ extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionV
         }
     }
 }
+
+// MARK: - YOLOv3Model 관련
+extension SignUpPictureViewController {
+    
+    private func loadYOLOv3Model() {
+        let configuration = MLModelConfiguration()
+        guard let yoloModel = try? VNCoreMLModel(for: YOLOv3(configuration: configuration).model) else {
+            fatalError("Failed to load YOLOv3 model.")
+        }
+
+        objectDetectionRequest = VNCoreMLRequest(model: yoloModel, completionHandler: { [weak self] request, error in
+            self?.isDetectedImage = self?.handleObjectDetectionResults(request: request, error: error)
+        })
+    }
+    
+    private func handleObjectDetectionResults(request: VNRequest, error: Error?) -> Bool {
+        guard let results = request.results as? [VNRecognizedObjectObservation] else { return false }
+
+        var detectedObjects = ""
+        for result in results {
+            if let label = result.labels.first {
+                if label.identifier == "person" {
+                    detectedObjects += "\(label.identifier) (\(String(format: "%.2f", label.confidence * 100))%)\n"
+                    if label.confidence * 100 >= 80 {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+    
+    private func detectPeople(image: UIImage) {
+        guard let cgImage = image.cgImage, let objectDetectionRequest = objectDetectionRequest else { return }
+
+        let request = VNCoreMLRequest(model: objectDetectionRequest.model) { [weak self] request, error in
+            self?.isDetectedImage = self?.handleObjectDetectionResults(request: request, error: error)
+        }
+
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+
+        do {
+            try handler.perform([request])
+        } catch {
+            print("Failed to perform object detection: \(error)")
+        }
+    }
+}
+
 // MARK: - UI 관련
 extension SignUpPictureViewController {
   
