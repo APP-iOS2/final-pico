@@ -22,10 +22,22 @@ final class LikeUViewController: UIViewController {
         configCollectionView()
         configCollectionviewDatasource()
         configCollectionviewDelegate()
+        buttonBind()
     }
     
     private func configCollectionView() {
         collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.likeCell)
+    }
+    
+    private func buttonBind() {
+        viewModel.sendViewConnectSubject
+            .subscribe { user in
+                // 센드 뷰 데이터 연결 후 User정보 넘겨서 보내주기
+                let mailSendView = MailSendViewController()
+                mailSendView.modalPresentationStyle = .formSheet
+                self.present(mailSendView, animated: true, completion: nil)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func addViews() {
@@ -77,7 +89,8 @@ extension LikeUViewController {
     private func configCollectionviewDatasource() {
         viewModel.likeUUserList
             .bind(to: collectionView.rx.items(cellIdentifier: Identifier.CollectionView.likeCell, cellType: LikeCollectionViewCell.self)) { _, item, cell in
-                cell.configData(images: item.imageURLs, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false)
+                cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
+                cell.configLikeUViewModel(userId: item.likedUserId, viewModel: self.viewModel)
             }
             .disposed(by: disposeBag)
     }
@@ -85,8 +98,9 @@ extension LikeUViewController {
     private func configCollectionviewDelegate() {
         collectionView.rx.setDelegate(self)
             .disposed(by: disposeBag)
-        collectionView.rx.modelSelected(User.self)
+        collectionView.rx.modelSelected(Like.LikeInfo.self)
             .subscribe(onNext: { _ in
+                // 디테일뷰 데이터 연결 후 UserId 값 넘겨주기
                 let viewController = UserDetailViewController()
                 self.navigationController?.pushViewController(viewController, animated: true)
             })

@@ -14,7 +14,7 @@ final class LikeMeViewController: UIViewController {
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let viewModel: LikeMeViewModel = LikeMeViewModel()
     private let disposeBag: DisposeBag = DisposeBag()
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 //        collectionView.reloadData()
@@ -27,6 +27,7 @@ final class LikeMeViewController: UIViewController {
         configCollectionView()
         configCollectionviewDatasource()
         configCollectionviewDelegate()
+
     }
     
     private func configCollectionView() {
@@ -79,11 +80,10 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
 // MARK: - UITableView+Rx
 extension LikeMeViewController {
     private func configCollectionviewDatasource() {
-        viewModel.bindDeleteButtonTap()
         viewModel.likeMeUserList
             .bind(to: collectionView.rx.items(cellIdentifier: Identifier.CollectionView.likeCell, cellType: LikeCollectionViewCell.self)) { _, item, cell in
-                cell.configData(images: item.imageURLs, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true)
-                cell.configureLikeMeViewModel(user: item, viewModel: self.viewModel)
+                cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true, mbti: item.mbti)
+                cell.configLikeMeViewModel(userId: item.likedUserId, viewModel: self.viewModel)
             }
             .disposed(by: disposeBag)
     }
@@ -91,8 +91,9 @@ extension LikeMeViewController {
     private func configCollectionviewDelegate() {
         collectionView.rx.setDelegate(self)
             .disposed(by: disposeBag)
-        collectionView.rx.modelSelected(User.self)
+        collectionView.rx.modelSelected(Like.LikeInfo.self)
             .subscribe(onNext: { _ in
+                // 디테일 뷰 데이터 완성 후 User 정보 연결
                 let viewController = UserDetailViewController()
                 self.navigationController?.pushViewController(viewController, animated: true)
             })

@@ -10,7 +10,7 @@ import RxSwift
 import RxRelay
 
 final class LikeMeViewModel {
-    var likeMeUserList = BehaviorRelay<[User]>(value: [])
+    var likeMeUserList = BehaviorRelay<[Like.LikeInfo]>(value: [])
     var likeMeIsEmpty: Observable<Bool> {
         return likeMeUserList
             .map { $0.isEmpty }
@@ -20,15 +20,22 @@ final class LikeMeViewModel {
     private let disposeBag = DisposeBag()
     
     init() {
-        FirestoreService().loadDocumentRx(collectionId: .users, dataType: User.self)
-            .map { users in
-                return users
+        FirestoreService.shared.loadDocumentRx(collectionId: .likes, documentId: "cJDnaz3Yn6lQBa9nZSpH", dataType: Like.self)
+            .map { like -> [Like.LikeInfo] in
+                if let like = like {
+                    return like.recivedlikes ?? []
+                }
+                return []
             }
+            .map({ likeInfos in
+                return likeInfos.filter { $0.likeType == .like }
+            })
             .bind(to: likeMeUserList)
             .disposed(by: disposeBag)
+        bindDeleteButtonTap()
     }
     
-    func bindDeleteButtonTap() {
+    private func bindDeleteButtonTap() {
         deleteButtonTapUser
             .subscribe(onNext: { [weak self] user in
                 self?.deleteUser(user: user)
@@ -37,7 +44,7 @@ final class LikeMeViewModel {
     }
     
     private func deleteUser(user: User) {
-        let updatedUsers = likeMeUserList.value.filter { $0.id != user.id }
+        let updatedUsers = likeMeUserList.value.filter { $0.likedUserId != user.id }
         likeMeUserList.accept(updatedUsers)
     }
 }
