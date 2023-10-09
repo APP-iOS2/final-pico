@@ -29,14 +29,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if animated {
             let transition = CATransition()
-            transition.duration = 0.4
+            transition.duration = 0.3
             transition.type = CATransitionType.push
             transition.subtype = CATransitionSubtype.fromRight
             window.layer.add(transition, forKey: kCATransition)
-        }
-        let rootViewController = UINavigationController(rootViewController: viewController)
-        
-        window.rootViewController = rootViewController
+        }        
+        window.rootViewController = viewController
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

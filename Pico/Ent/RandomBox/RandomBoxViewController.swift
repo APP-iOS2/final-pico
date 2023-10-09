@@ -75,11 +75,11 @@ final class RandomBoxViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
+        configNavigationBackButton()
         addViews()
         makeConstraints()
         configRxBinding()
-        configBackButton()
     }
 
     private func addViews() {

@@ -8,6 +8,7 @@
 import Foundation
 
 extension Double {
+    /// Double -> yyyy.mm.dd 으로 변환
     func toString() -> String {
         let date = Date(timeIntervalSince1970: self)
 

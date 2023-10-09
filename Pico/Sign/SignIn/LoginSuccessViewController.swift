@@ -38,8 +38,8 @@ final class LoginSuccessViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        hideBackButton()
+        view.configBackgroundColor()
+        hideNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButton()
@@ -52,7 +52,7 @@ extension LoginSuccessViewController {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.tappedButtonAnimation(self.nextButton)
+                nextButton.tappedAnimation()
                 (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(TabBarController(), animated: true)
             })
             .disposed(by: disposeBag)

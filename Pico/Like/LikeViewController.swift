@@ -33,7 +33,7 @@ final class LikeViewController: BaseViewController {
     
     private let segmentView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
         return view
     }()
     

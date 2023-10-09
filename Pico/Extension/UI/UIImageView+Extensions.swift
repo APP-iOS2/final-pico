@@ -1,8 +1,8 @@
 //
-//  LoadImageView.swift
+//  UIImageView+Extensions.swift
 //  Pico
 //
-//  Created by 양성혜 on 2023/09/26.
+//  Created by 최하늘 on 10/9/23.
 //
 
 import UIKit
@@ -10,6 +10,15 @@ import RxSwift
 import RxCocoa
 
 extension UIImageView {
+    /// 원형 이미지 만들기
+    /// -> viewDidLayoutSubviews에서 호출
+    func setCircleImageView(border: CGFloat = 0, borderColor: CGColor = UIColor.clear.cgColor) {
+        self.layer.cornerRadius = self.frame.width / 2.0
+        self.layer.borderWidth = border
+        self.layer.borderColor = borderColor
+        self.clipsToBounds = true
+    }
+    
     func load(url: URL) {
         DispatchQueue.global().async { [weak self] in
             if let data = try? Data(contentsOf: url) {

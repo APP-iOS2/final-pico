@@ -29,7 +29,7 @@ final class UserDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
         addViews()
         makeConstraints()
         configTableView()

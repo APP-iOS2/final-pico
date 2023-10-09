@@ -15,7 +15,7 @@ final class SettingViewController: UIViewController {
         view.register(SettingPrivateTableCell.self, forCellReuseIdentifier: Identifier.TableCell.settingPrivateTableCell)
         view.register(SettingNotiTableCell.self, forCellReuseIdentifier: Identifier.TableCell.settingNotiTableCell)
         view.register(SettingTableCell.self, forCellReuseIdentifier: Identifier.TableCell.settingTableCell)
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
         view.separatorStyle = .none
         return view
     }()
@@ -58,7 +58,8 @@ final class SettingViewController: UIViewController {
           print("Error signing out: %@", signOutError)
         }
          */
-        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(SignViewController(), animated: true)
+        let signViewController = UINavigationController(rootViewController: SignViewController())
+        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(signViewController, animated: true)
     }
 }
 

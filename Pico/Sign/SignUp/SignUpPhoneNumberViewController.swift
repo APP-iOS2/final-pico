@@ -90,9 +90,9 @@ final class SignUpPhoneNumberViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
-        tappedDismissKeyboard()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButtons()
@@ -148,20 +148,19 @@ extension SignUpPhoneNumberViewController {
     }
     // MARK: - @objc
     @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
             self.phoneNumberCheckButton.isEnabled = false
             self.phoneNumberCheckButton.backgroundColor = .picoGray
             self.phoneNumberCancleButton.isHidden = true
             self.phoneNumberTextField.textColor = .picoBlue
             self.phoneNumberTextField.isEnabled = false
-            
             self.updateNextButton(isCheck: true)
         }
     }
     
     @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         phoneNumberTextField.text = ""
         updatePhoneTextField(isFull: false)
     }
@@ -170,12 +169,13 @@ extension SignUpPhoneNumberViewController {
         if isFullPhoneNumber && isTappedCheckButton {
             guard let text = phoneNumberTextField.text else { return }
             SignUpViewModel.phoneNumber = text
-            tappedButtonAnimation(sender)
+            sender.tappedAnimation()
             let viewController = SignUpGenderViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }
+
 // MARK: - 텍스트필드 관련
 extension SignUpPhoneNumberViewController: UITextFieldDelegate {
     

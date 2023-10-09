@@ -28,7 +28,7 @@ final class StoreViewController: UIViewController {
     
     private func configView() {
         title = "Store"
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
     }
     
     private func configTableView() {

@@ -73,16 +73,16 @@ final class SignUpPictureViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
-        configBackButton()
         configCollectionView()
     }
     
     // MARK: - Config
     private func configCollectionView() {
-        collectionView.backgroundColor = .systemBackground
+        collectionView.configBackgroundColor()
         collectionView.dataSource = self
         collectionView.delegate = self
     }

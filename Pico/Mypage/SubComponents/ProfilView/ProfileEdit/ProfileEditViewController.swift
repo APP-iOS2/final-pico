@@ -17,7 +17,7 @@ final class ProfileEditViewController: UIViewController {
         view.register(ProfileEditLoactionTabelCell.self, forCellReuseIdentifier: Identifier.TableCell.profileEditLoactionTabelCell)
         view.register(ProfileEditIntroTabelCell.self, forCellReuseIdentifier: Identifier.TableCell.profileEditIntroTabelCell)
         view.register(ProfileEditTextTabelCell.self, forCellReuseIdentifier: Identifier.TableCell.profileEditTextTabelCell)
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
         view.separatorStyle = .none
         return view
     }()

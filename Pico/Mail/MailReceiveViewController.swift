@@ -102,18 +102,17 @@ final class MailReceiveViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
         addViews()
         makeConstraints()
         configNavigationBarItem()
         configSenderStack()
-        tappedDismissKeyboard()
         tappedNavigationButton()
     }
     
     override func viewDidLayoutSubviews() {
-        setCircleImageView(imageView: senderImageView)
+        senderImageView.setCircleImageView()
     }
     
     private func configNavigationBarItem() {

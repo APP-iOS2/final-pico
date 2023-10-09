@@ -89,9 +89,9 @@ final class SignUpNickNameViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
-        tappedDismissKeyboard()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButtons()
@@ -134,7 +134,7 @@ extension SignUpNickNameViewController {
     
     // MARK: - @objc
     @objc private func tappedNickNameCheckButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         showAlert(message: "\(nickNameTextField.text ?? "") 이름으로 설정합니다.", isCancelButton: true) {
             self.nickNameCheckButton.isEnabled = false
             self.nickNameCheckButton.backgroundColor = .picoGray
@@ -147,7 +147,7 @@ extension SignUpNickNameViewController {
     }
     
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         nickNameTextField.text = ""
         updateNickNameTextField(isFull: false)
     }

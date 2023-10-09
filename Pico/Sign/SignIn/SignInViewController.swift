@@ -62,8 +62,8 @@ final class SignInViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        tappedDismissKeyboard()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
         addSubViews()
         makeConstraints()
         configTextfield()
@@ -91,8 +91,7 @@ extension SignInViewController {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                print("nextbutton")
-                self.tappedButtonAnimation(self.nextButton)
+                nextButton.tappedAnimation()
                 if self.isFullPhoneNumber {
                     let viewController = LoginSuccessViewController()
                     self.navigationController?.pushViewController(viewController, animated: true)
@@ -104,7 +103,7 @@ extension SignInViewController {
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 print("phoneNumberCancleButton")
-                self.tappedButtonAnimation(self.phoneNumberCancleButton)
+                phoneNumberCancleButton.tappedAnimation()
                 self.phoneNumberTextField.text = ""
                 changeViewState(isFull: false)
             })

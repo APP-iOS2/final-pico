@@ -232,7 +232,7 @@ final class HomeUserCardViewController: UIViewController {
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
             imageView.layer.cornerRadius = 10
-            imageView.backgroundColor = .systemBackground
+            imageView.configBackgroundColor()
             scrollView.addSubview(imageView)
             
             imageView.snp.makeConstraints { make in

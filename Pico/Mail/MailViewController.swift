@@ -66,13 +66,14 @@ final class MailViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configTableView()
-        configMailTypeButtons()
         addViews()
         makeConstraints()
+        configTableView()
+        configMailTypeButtons()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         mailListTableView.reloadData()
     }
     

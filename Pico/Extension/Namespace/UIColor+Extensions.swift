@@ -1,5 +1,5 @@
 //
-//  Color+Extensions.swift
+//  UIColor+Extensions.swift
 //  Pico
 //
 //  Created by 최하늘 on 2023/09/25.

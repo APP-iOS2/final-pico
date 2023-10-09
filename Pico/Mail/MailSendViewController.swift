@@ -107,17 +107,16 @@ final class MailSendViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
+        configNavigationBarItem()
         addViews()
         makeConstraints()
-        configNavigationBarItem()
-        tappedDismissKeyboard()
         changeTextView()
     }
     
     override func viewDidLayoutSubviews() {
-        setCircleImageView(imageView: receiverImageView)
+        receiverImageView.setCircleImageView()
     }
     
     func configNavigationBarItem() {
@@ -225,7 +224,7 @@ final class MailSendViewController: UIViewController {
     }
     
     @objc private func tappedSendButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
     

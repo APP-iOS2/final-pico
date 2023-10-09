@@ -45,7 +45,7 @@ final class ProfileEditImageTableCell: UITableViewCell {
     }
     
     private func configCollectionView() {
-        collectionView.backgroundColor = .systemBackground
+        collectionView.configBackgroundColor()
         collectionView.dataSource = self
         collectionView.delegate = self
     }

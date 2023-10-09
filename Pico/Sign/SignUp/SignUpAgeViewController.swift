@@ -73,8 +73,8 @@ final class SignUpAgeViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
+        view.configBackgroundColor()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
         configDatePicker()
@@ -105,7 +105,7 @@ extension SignUpAgeViewController {
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isChoiceAge {
             SignUpViewModel.birth = userAge
-            tappedButtonAnimation(sender)
+            sender.tappedAnimation()
             let viewController = SignUpNickNameViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }

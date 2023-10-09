@@ -67,8 +67,8 @@ final class SignUpGenderViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
+        view.configBackgroundColor()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
     }
@@ -95,14 +95,14 @@ extension SignUpGenderViewController {
     // MARK: - @@objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isTappedGenderButton {
-            tappedButtonAnimation(sender)
+            sender.tappedAnimation()
             let viewController = SignUpAgeViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
     
     @objc private func tappedGenderButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         configNextButton()
         for button in genderButtons {
             button.isSelected = (button == sender)

@@ -30,8 +30,9 @@ final class NotificationViewController: UIViewController {
     }
     
     private func configViewController() {
+        view.configBackgroundColor()
+        configNavigationBackButton()
         navigationItem.title = "알림"
-        view.backgroundColor = .systemBackground
     }
     
     private func configTableView() {

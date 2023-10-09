@@ -1,13 +1,32 @@
 //
-//  ViewShadow.swift
+//  UIView+Extensions.swift
 //  Pico
 //
-//  Created by 최하늘 on 2023/09/26.
+//  Created by 최하늘 on 2023/09/25.
 //
 
 import UIKit
 
 extension UIView {
+    /// 기본 배경색 설정
+    func configBackgroundColor() {
+        self.backgroundColor = .systemBackground
+    }
+    
+    /// 배경 탭하면 키보드 내리기
+    func tappedDismissKeyboard() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        self.addGestureRecognizer(tapGesture)
+    }
+    @objc private func dismissKeyboard() {
+        self.endEditing(true)
+    }
+}
+
+// MARK: - 그림자 관련
+extension UIView {
+    
     enum VerticalLocation {
         case bottom
         case top

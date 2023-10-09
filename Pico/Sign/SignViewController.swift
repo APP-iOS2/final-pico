@@ -59,37 +59,20 @@ final class SignViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
+        view.configBackgroundColor()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
-        configBackButton()
         configRx()
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        print("""
-              ===========================================
-              mbti:\(SignUpViewModel.userMbti),
-              === number: \(SignUpViewModel.phoneNumber),
-              birth: \(SignUpViewModel.birth),
-              === gender: \(SignUpViewModel.gender),
-              nickname: \(SignUpViewModel.nickName),
-              === imageURL \(SignUpViewModel.imageURLs)
-              위도:1 \(SignUpViewModel.location.latitude),
-              경도:1 \(SignUpViewModel.location.longitude),
-              주소:1 \(SignUpViewModel.location.address)
-              ===========================================
-              """)
     }
 }
 
 extension SignViewController {
-    
     private func configRx() {
         signInButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.tappedButtonAnimation(self.signInButton)
+                signInButton.tappedAnimation()
                 let viewController = SignInViewController()
                 self.navigationController?.pushViewController(viewController, animated: true)
             })
@@ -98,7 +81,7 @@ extension SignViewController {
         signUpButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.tappedButtonAnimation(self.signUpButton)
+                signUpButton.tappedAnimation()
                 let viewController = SignUpViewController()
                 self.navigationController?.pushViewController(viewController, animated: true)
             })

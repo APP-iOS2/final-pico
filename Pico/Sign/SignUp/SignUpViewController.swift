@@ -99,8 +99,8 @@ final class SignUpViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
+        view.configBackgroundColor()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButtons()
@@ -189,7 +189,7 @@ extension SignUpViewController: SignViewControllerDelegate {
     
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         if !userMbti.contains("") {
             var convertMbti: String {
                 return userMbti.joined()
@@ -201,7 +201,7 @@ extension SignUpViewController: SignViewControllerDelegate {
     }
     
     @objc private func tappedMbtiButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         configMbtiModal(sender)
     }
 }
