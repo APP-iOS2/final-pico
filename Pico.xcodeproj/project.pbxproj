@@ -19,7 +19,6 @@
 		36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */; };
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
 		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
-		4B157D3A2AC116B400EEDEC1 /* RandomBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D392AC116B400EEDEC1 /* RandomBoxView.swift */; };
 		4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */; };
 		4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */; };
 		4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */; };
@@ -112,6 +111,8 @@
 		B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B161B8712AC414DD00257A9C /* PopupViewController.swift */; };
 		B16394C52ACDC7EF00D9252F /* AboutMeTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B16394C42ACDC7EF00D9252F /* AboutMeTableCell.swift */; };
 		B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F8F2AD033B70014850D /* Double+Extensions.swift */; };
+		B1701F922AD4351A0014850D /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F912AD4351A0014850D /* Array+Extensions.swift */; };
+		B1701F962AD436F80014850D /* RandomBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F952AD436F80014850D /* RandomBoxView.swift */; };
 		B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67832AC0A835006F91DC /* SignInViewController.swift */; };
 		B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67852AC0A850006F91DC /* SignUpViewController.swift */; };
 		B17D67882AC0AAFF006F91DC /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67872AC0AAFF006F91DC /* User.swift */; };
@@ -185,7 +186,6 @@
 		36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTermsOfServiceViewController.swift; sourceTree = "<group>"; };
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
 		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
-		4B157D392AC116B400EEDEC1 /* RandomBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxView.swift; sourceTree = "<group>"; };
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
 		4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupGameViewController.swift; sourceTree = "<group>"; };
 		4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -276,6 +276,8 @@
 		B161B8712AC414DD00257A9C /* PopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
 		B16394C42ACDC7EF00D9252F /* AboutMeTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutMeTableCell.swift; sourceTree = "<group>"; };
 		B1701F8F2AD033B70014850D /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
+		B1701F912AD4351A0014850D /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
+		B1701F952AD436F80014850D /* RandomBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomBoxView.swift; sourceTree = "<group>"; };
 		B17D67832AC0A835006F91DC /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		B17D67852AC0A850006F91DC /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		B17D67872AC0AAFF006F91DC /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -408,8 +410,8 @@
 		4B26655C2ACF8B6F0074D4E2 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				B1701F952AD436F80014850D /* RandomBoxView.swift */,
 				4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */,
-				4B157D392AC116B400EEDEC1 /* RandomBoxView.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -853,6 +855,7 @@
 				B11D2B8B2AC63C43008D80A4 /* ChangePhoneNumDigits.swift */,
 				5375E74B2ACD4590001A571D /* StringToDate.swift */,
 				B1701F8F2AD033B70014850D /* Double+Extensions.swift */,
+				B1701F912AD4351A0014850D /* Array+Extensions.swift */,
 			);
 			path = Function;
 			sourceTree = "<group>";
@@ -1136,6 +1139,7 @@
 				6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */,
 				6A20604A2ACD2CF600435723 /* SwitchButton.swift in Sources */,
 				36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */,
+				B1701F962AD436F80014850D /* RandomBoxView.swift in Sources */,
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
 				54B441302AC2C36C00EC8846 /* BasicInformationTableCell.swift in Sources */,
 				B130BB4C2ACF207A0039A1FA /* AdminViewModel.swift in Sources */,
@@ -1246,6 +1250,7 @@
 				6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */,
 				5471384A2AC361A300CFE88D /* HobbyCollectionViewCell.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
+				B1701F922AD4351A0014850D /* Array+Extensions.swift in Sources */,
 				4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
