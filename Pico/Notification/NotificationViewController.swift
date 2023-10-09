@@ -36,7 +36,7 @@ final class NotificationViewController: UIViewController {
     }
     
     private func configTableView() {
-        tableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
+        tableView.register(cell: NotificationTableViewCell.self)
         if #available(iOS 15.0, *) {
             tableView.tableHeaderView = UIView()
         }
@@ -63,7 +63,7 @@ extension NotificationViewController: UITableViewDelegate {
 extension NotificationViewController {
     private func configTableviewDatasource() {
         viewModel.notifications
-            .bind(to: tableView.rx.items(cellIdentifier: Identifier.TableCell.notiTableCell, cellType: NotificationTableViewCell.self)) { _, item, cell in
+            .bind(to: tableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
                 cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti)
             }
             .disposed(by: disposeBag)

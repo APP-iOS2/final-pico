@@ -81,6 +81,11 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+        likeMeViewModel = nil
+        likeUViewModel = nil
+        user = nil
         userImageView.image = UIImage(named: "chu")
         nameLabel.text = ""
     }
@@ -94,12 +99,6 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         likeButton.isHidden = isHiddenDeleteButton
     }
    
-// 질문: 이 코드를 추가하면 삭제버튼이 처음 한번만되고 그 다음부터는 먹히지않음
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        disposeBag = DisposeBag()
-//    }
-    
     private func configDeleteButton() {
         deleteButtonTapObservable
             .subscribe(onNext: { [weak self] in
@@ -120,12 +119,6 @@ final class LikeCollectionViewCell: UICollectionViewCell {
             .disposed(by: disposeBag)
     }
     
-    /*
-     질문 : deleteButtonTapObservable 처럼 셀 버튼의 옵저버블을 셀 안에서 만들고 구독해서 버튼을 클릭하면
-        뷰모델의 서브젝트에 User정보를 전달해 뷰모델에서 처리 함수를 실행시키도록 만들었는데
-        이때 뷰컨트롤러에서 가지고 있던 뷰모델과 선택된 유저정보를 셀로 전달해주는 것이 맞나요?
-        전달을 하는게 아니라면 선택된 셀에 대해 독립적으로 이벤트가 실행되도록할라면 어떤 방법이 있을지
-     */
     func configLikeMeViewModel(userId: String, viewModel: LikeMeViewModel) {
         FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { result in
             switch result {

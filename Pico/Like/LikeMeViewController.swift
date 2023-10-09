@@ -31,7 +31,7 @@ final class LikeMeViewController: UIViewController {
     }
     
     private func configCollectionView() {
-        collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.likeCell)
+        collectionView.register(cell: LikeCollectionViewCell.self)
     }
     
     private func addViews() {
@@ -81,7 +81,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
 extension LikeMeViewController {
     private func configCollectionviewDatasource() {
         viewModel.likeMeUserList
-            .bind(to: collectionView.rx.items(cellIdentifier: Identifier.CollectionView.likeCell, cellType: LikeCollectionViewCell.self)) { _, item, cell in
+            .bind(to: collectionView.rx.items(cellIdentifier: LikeCollectionViewCell.reuseIdentifier, cellType: LikeCollectionViewCell.self)) { _, item, cell in
                 cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true, mbti: item.mbti)
                 cell.configLikeMeViewModel(userId: item.likedUserId, viewModel: self.viewModel)
             }

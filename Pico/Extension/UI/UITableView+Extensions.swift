@@ -48,12 +48,11 @@ extension UITableView {
         }
         return cell
     }
-    
+
     func register<T>(
-        cell: T.Type,
-        forCellReuseIdentifier reuseIdentifier: String = T.reuseIdentifier
+        cell: T.Type
     ) where T: UITableViewCell {
-        register(cell, forCellReuseIdentifier: reuseIdentifier)
+        register(cell, forCellReuseIdentifier: cell.reuseIdentifier)
     }
     
     func register<T>(

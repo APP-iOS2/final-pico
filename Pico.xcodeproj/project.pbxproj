@@ -30,6 +30,7 @@
 		4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */; };
 		4B2665492ACD76F00074D4E2 /* ResultUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665482ACD76F00074D4E2 /* ResultUserView.swift */; };
 		5307500B2AD46779000FE4CB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5307500A2AD46779000FE4CB /* GoogleService-Info.plist */; };
+		5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */; };
 		531C4ED82AC26BA300ADC614 /* CustomTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
 		531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */; };
@@ -196,6 +197,7 @@
 		4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewController.swift; sourceTree = "<group>"; };
 		4B2665482ACD76F00074D4E2 /* ResultUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultUserView.swift; sourceTree = "<group>"; };
 		5307500A2AD46779000FE4CB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransitionAnimator.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* EmptyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
@@ -911,6 +913,7 @@
 				B15ABE382AC31E0800529C29 /* UIButton+Extensions.swift */,
 				B11D2B8B2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift */,
 				B146A3CD2AD45795003143DD /* UITableView+Extensions.swift */,
+				5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1235,6 +1238,7 @@
 				69B99BE62ACE815600695567 /* MailViewModel.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIView+Extensions.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
+				5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */,
 				6A73784D2AC26AD50047DE35 /* MyPageCollectionTableCell.swift in Sources */,
 				6ADDE2E42AC30F2F00CE4482 /* SettingTableCell.swift in Sources */,
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,

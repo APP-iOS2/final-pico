@@ -26,7 +26,7 @@ final class LikeUViewController: UIViewController {
     }
     
     private func configCollectionView() {
-        collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.likeCell)
+        collectionView.register(cell: LikeCollectionViewCell.self)
     }
     
     private func buttonBind() {
@@ -88,7 +88,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
 extension LikeUViewController {
     private func configCollectionviewDatasource() {
         viewModel.likeUUserList
-            .bind(to: collectionView.rx.items(cellIdentifier: Identifier.CollectionView.likeCell, cellType: LikeCollectionViewCell.self)) { _, item, cell in
+            .bind(to: collectionView.rx.items(cellIdentifier: LikeCollectionViewCell.reuseIdentifier, cellType: LikeCollectionViewCell.self)) { _, item, cell in
                 cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
                 cell.configLikeUViewModel(userId: item.likedUserId, viewModel: self.viewModel)
             }
