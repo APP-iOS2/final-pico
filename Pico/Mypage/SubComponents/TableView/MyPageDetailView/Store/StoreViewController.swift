@@ -12,7 +12,7 @@ final class StoreViewController: UIViewController {
     
     private let tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .insetGrouped)
-        view.register(StoreTableCell.self, forCellReuseIdentifier: Identifier.TableCell.storeTableCell)
+        view.register(cell: StoreTableCell.self)
         view.backgroundColor = .clear
         view.addShadow(offset: CGSize(width: 10, height: 10), opacity: 0.07, radius: 5)
         return view
@@ -59,7 +59,7 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.storeTableCell, for: indexPath) as? StoreTableCell else { return UITableViewCell() }
+        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: StoreTableCell.self)
         switch indexPath.section {
         case 0: cell.configure(count: "50", price: "5,500", discount: nil)
         case 1: cell.configure(count: "100", price: "11,000", discount: nil)

@@ -66,7 +66,7 @@ final class SignUpPictureViewController: UIViewController {
         view.contentInset = .zero
         view.backgroundColor = .clear
         view.contentInset = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25)
-        view.register(ProfileEditCollectionCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.profileEditCollectionCell)
+        view.register(cell: ProfileEditCollectionCell.self)
         return view
     }()
     
@@ -174,7 +174,7 @@ extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.profileEditCollectionCell, for: indexPath) as? ProfileEditCollectionCell else { return UICollectionViewCell() }
+        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditCollectionCell.self)
         
         cell.configure(imageName: "chu")
         cell.backgroundColor = .lightGray

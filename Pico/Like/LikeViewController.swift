@@ -21,7 +21,7 @@ final class LikeViewController: BaseViewController {
         segment.selectedSegmentIndex = 0
         let font = UIFont.systemFont(ofSize: 20, weight: .heavy)
         segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.gray], for: .normal)
-        segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.black], for: .selected)
+        segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.picoFontBlack], for: .selected)
         return segment
     }()
 

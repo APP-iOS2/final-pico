@@ -69,15 +69,15 @@ final class SubInfomationTableCell: UITableViewCell {
     }
     
     private func configCollectionView() {
-        hobbyCollectionView.register(HobbyCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.hobbyCollectionCell)
+        hobbyCollectionView.register(cell: HobbyCollectionViewCell.self)
         hobbyCollectionView.delegate = self
         hobbyCollectionView.dataSource = self
         
-        personalCollectionView.register(HobbyCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.hobbyCollectionCell)
+        personalCollectionView.register(cell: HobbyCollectionViewCell.self)
         personalCollectionView.delegate = self
         personalCollectionView.dataSource = self
         
-        mbtiCollectionView.register(MbtiCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.mbtiCollectionCell)
+        mbtiCollectionView.register(cell: MbtiCollectionViewCell.self)
         mbtiCollectionView.delegate = self
         mbtiCollectionView.dataSource = self
     }
@@ -157,20 +157,20 @@ extension SubInfomationTableCell: UICollectionViewDelegate, UICollectionViewData
         switch collectionView {
             
         case hobbyCollectionView:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.hobbyCollectionCell, for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
+            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: HobbyCollectionViewCell.self)
             guard let hobbys = viewModel.userData.subInfo?.hobbies else { return UICollectionViewCell() }
             
             cell.config(labelText: hobbys[indexPath.row])
             return cell
             
         case personalCollectionView:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.hobbyCollectionCell, for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
+            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: HobbyCollectionViewCell.self)
             guard let personal = viewModel.userData.subInfo?.personalities else { return UICollectionViewCell() }
             cell.config(labelText: personal[indexPath.row])
             return cell
             
         case mbtiCollectionView:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.mbtiCollectionCell, for: indexPath) as? MbtiCollectionViewCell else { return UICollectionViewCell() }
+            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: MbtiCollectionViewCell.self)
             guard let mbtis = viewModel.userData.subInfo?.favoriteMBTIs else { return UICollectionViewCell() }
             cell.config(mbtiType: mbtis[indexPath.row])
             return cell

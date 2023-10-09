@@ -13,7 +13,7 @@ extension Double {
         let date = Date(timeIntervalSince1970: self)
 
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy.MM.dd"
+        dateFormatter.dateFormat = "yyyy-MM-dd"
 
         let formattedDate = dateFormatter.string(from: date)
         return formattedDate

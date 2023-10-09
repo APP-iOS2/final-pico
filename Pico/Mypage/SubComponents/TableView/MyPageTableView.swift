@@ -38,9 +38,9 @@ final class MyPageTableView: UITableView {
     }
     
     private func attribute() {
-        self.register(MyPageCollectionTableCell.self, forCellReuseIdentifier: Identifier.TableCell.myPageCollectionTableCell)
-        self.register(MyPageMatchingTableCell.self, forCellReuseIdentifier: Identifier.TableCell.myPageMatchingTableCell)
-        self.register(MyPageDefaultTableCell.self, forCellReuseIdentifier: Identifier.TableCell.myPageDefaultTableCell)
+        self.register(cell: MyPageCollectionTableCell.self)
+        self.register(cell: MyPageMatchingTableCell.self)
+        self.register(cell: MyPageDefaultTableCell.self)
     }
 }
 
@@ -57,14 +57,14 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.myPageCollectionTableCell, for: indexPath) as? MyPageCollectionTableCell else { return UITableViewCell() }
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageCollectionTableCell.self)
             cell.delegate = myPageCollectionDelegate
             return cell
         case 1:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.myPageMatchingTableCell, for: indexPath) as? MyPageMatchingTableCell else { return UITableViewCell() }
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageMatchingTableCell.self)
             return cell
         default:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.myPageDefaultTableCell, for: indexPath) as? MyPageDefaultTableCell else { return UITableViewCell() }
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageDefaultTableCell.self)
             cell.configure(imageName: "person", title: "상담원 연결")
             return cell
         }

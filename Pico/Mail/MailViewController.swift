@@ -60,7 +60,7 @@ final class MailViewController: BaseViewController {
     
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(MailListTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.mailTableCell)
+        tableView.register(cell: MailListTableViewCell.self)
         return tableView
     }()
     
@@ -176,13 +176,13 @@ extension MailViewController {
         
         if mailType == .receive {
             viewModel.mailRecieveList
-                .bind(to: mailListTableView.rx.items(cellIdentifier: Identifier.TableCell.mailTableCell, cellType: MailListTableViewCell.self)) { _, item, cell in
+                .bind(to: mailListTableView.rx.items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
                     cell.getData(senderUser: item)
                 }
                 .disposed(by: disposeBag)
         } else {
             viewModel.mailSendList
-                .bind(to: mailListTableView.rx.items(cellIdentifier: Identifier.TableCell.mailTableCell, cellType: MailListTableViewCell.self)) { _, item, cell in
+                .bind(to: mailListTableView.rx.items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
                     cell.getData(senderUser: item)
                 }
                 .disposed(by: disposeBag)
