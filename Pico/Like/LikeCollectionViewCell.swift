@@ -19,7 +19,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return messageButton.rx.tap.asObservable()
     }
     
-    private var disposeBag: DisposeBag = DisposeBag()
+    var disposeBag: DisposeBag = DisposeBag()
     private var likeMeViewModel: LikeMeViewModel?
     private var likeUViewModel: LikeUViewModel?
     private var user: User?
@@ -72,8 +72,6 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         addViews()
         makeConstraints()
-        configDeleteButton()
-        configMessageButton()
     }
     
     required init?(coder: NSCoder) {
@@ -97,50 +95,6 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         messageButton.isHidden = isHiddenMessageButton
         deleteButton.isHidden = isHiddenDeleteButton
         likeButton.isHidden = isHiddenDeleteButton
-    }
-   
-    private func configDeleteButton() {
-        deleteButtonTapObservable
-            .subscribe(onNext: { [weak self] in
-                if let user = self?.user {
-                    self?.likeMeViewModel?.deleteButtonTapUser.onNext(user)
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func configMessageButton() {
-        messageButtonTapObservable
-            .subscribe(onNext: { [weak self] in
-                if let user = self?.user {
-                    self?.likeUViewModel?.messageButtonTapUser.onNext(user)
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    func configLikeMeViewModel(userId: String, viewModel: LikeMeViewModel) {
-        FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { result in
-            switch result {
-            case .success(let data):
-                self.likeMeViewModel = viewModel
-                self.user = data
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-    
-    func configLikeUViewModel(userId: String, viewModel: LikeUViewModel) {
-        FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { result in
-            switch result {
-            case .success(let data):
-                self.likeUViewModel = viewModel
-                self.user = data
-            case .failure(let error):
-                print(error)
-            }
-        }
     }
     
     private func addViews() {

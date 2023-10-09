@@ -83,7 +83,12 @@ extension LikeMeViewController {
         viewModel.likeMeUserList
             .bind(to: collectionView.rx.items(cellIdentifier: LikeCollectionViewCell.reuseIdentifier, cellType: LikeCollectionViewCell.self)) { _, item, cell in
                 cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true, mbti: item.mbti)
-                cell.configLikeMeViewModel(userId: item.likedUserId, viewModel: self.viewModel)
+                
+                cell.deleteButtonTapObservable
+                    .subscribe(onNext: { [weak self] in
+                        self?.viewModel.deleteUser(userId: item.likedUserId)
+                    })
+                    .disposed(by: cell.disposeBag)
             }
             .disposed(by: disposeBag)
     }

@@ -22,22 +22,10 @@ final class LikeUViewController: UIViewController {
         configCollectionView()
         configCollectionviewDatasource()
         configCollectionviewDelegate()
-        buttonBind()
     }
     
     private func configCollectionView() {
         collectionView.register(cell: LikeCollectionViewCell.self)
-    }
-    
-    private func buttonBind() {
-        viewModel.sendViewConnectSubject
-            .subscribe { user in
-                // 센드 뷰 데이터 연결 후 User정보 넘겨서 보내주기
-                let mailSendView = MailSendViewController()
-                mailSendView.modalPresentationStyle = .formSheet
-                self.present(mailSendView, animated: true, completion: nil)
-            }
-            .disposed(by: disposeBag)
     }
     
     private func addViews() {
@@ -90,7 +78,14 @@ extension LikeUViewController {
         viewModel.likeUUserList
             .bind(to: collectionView.rx.items(cellIdentifier: LikeCollectionViewCell.reuseIdentifier, cellType: LikeCollectionViewCell.self)) { _, item, cell in
                 cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
-                cell.configLikeUViewModel(userId: item.likedUserId, viewModel: self.viewModel)
+                cell.messageButtonTapObservable
+                    .subscribe(onNext: { [weak self] in
+                        // 메일 뷰 데이터 연결 후 userId 값 넘겨주기
+                        let mailSendView = MailSendViewController()
+                        mailSendView.modalPresentationStyle = .formSheet
+                        self?.present(mailSendView, animated: true, completion: nil)
+                    })
+                    .disposed(by: cell.disposeBag)
             }
             .disposed(by: disposeBag)
     }

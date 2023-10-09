@@ -15,7 +15,6 @@ final class LikeMeViewModel {
         return likeMeUserList
             .map { $0.isEmpty }
     }
-    var deleteButtonTapUser: PublishSubject<User> = PublishSubject()
     
     private let disposeBag = DisposeBag()
     
@@ -32,19 +31,10 @@ final class LikeMeViewModel {
             })
             .bind(to: likeMeUserList)
             .disposed(by: disposeBag)
-        bindDeleteButtonTap()
     }
     
-    private func bindDeleteButtonTap() {
-        deleteButtonTapUser
-            .subscribe(onNext: { [weak self] user in
-                self?.deleteUser(user: user)
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func deleteUser(user: User) {
-        let updatedUsers = likeMeUserList.value.filter { $0.likedUserId != user.id }
+   func deleteUser(userId: String) {
+        let updatedUsers = likeMeUserList.value.filter { $0.likedUserId != userId }
         likeMeUserList.accept(updatedUsers)
     }
 }
