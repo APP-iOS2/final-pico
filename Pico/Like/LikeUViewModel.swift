@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 import RxRelay
 
-class LikeUViewViewModel {
+class LikeUViewModel {
     var likeUUserList = BehaviorRelay<[User]>(value: [])
     var likeUIsEmpty: Observable<Bool> {
         return likeUUserList

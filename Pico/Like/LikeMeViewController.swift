@@ -12,7 +12,7 @@ import RxCocoa
 final class LikeMeViewController: UIViewController {
     private let emptyView = EmptyViewController(type: .uLikeMe)
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    private let viewModel: LikeMeViewViewModel = LikeMeViewViewModel()
+    private let viewModel: LikeMeViewModel = LikeMeViewModel()
     private let disposeBag: DisposeBag = DisposeBag()
 
     override func viewWillAppear(_ animated: Bool) {

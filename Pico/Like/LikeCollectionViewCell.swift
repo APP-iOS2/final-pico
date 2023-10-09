@@ -86,7 +86,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
             .disposed(by: disposeBag)
     }
     
-    func configureLikeMeViewModel(user: User, viewModel: LikeMeViewViewModel) {
+    func configureLikeMeViewModel(user: User, viewModel: LikeMeViewModel) {
         self.user = user
         self.viewModel = viewModel
     }

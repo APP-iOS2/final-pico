@@ -12,7 +12,7 @@ import RxCocoa
 final class LikeUViewController: UIViewController {
     private let emptyView: EmptyViewController = EmptyViewController(type: .iLikeU)
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    private let viewModel: LikeUViewViewModel = LikeUViewViewModel()
+    private let viewModel: LikeUViewModel = LikeUViewModel()
     private let disposeBag: DisposeBag = DisposeBag()
     
     override func viewDidLoad() {
