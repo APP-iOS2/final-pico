@@ -48,6 +48,18 @@ final class SettingViewController: UIViewController {
             make.edges.equalToSuperview()
         }
     }
+    
+    private func logout() {
+        /*
+        let firebaseAuth = Auth.auth()
+        do {
+          try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+          print("Error signing out: %@", signOutError)
+        }
+         */
+        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(SignViewController(), animated: true)
+    }
 }
 
 extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
@@ -82,7 +94,9 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
             return cell
         case 2...3:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.settingTableCell, for: indexPath) as? SettingTableCell else { return UITableViewCell() }
-            
+            if indexPath.section == 3 {
+                cell.configure(contentLabel: "로그아웃")
+            }
             return cell
 
         default:
@@ -133,5 +147,11 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        switch indexPath.section {
+        case 3:
+            logout()
+        default:
+            break
+        }
     }
 }
