@@ -157,7 +157,8 @@ extension AdminViewController {
     private func configTableViewDatasource() {
         viewModel.userList
             .bind(to: userListTableView.rx.items(cellIdentifier: Identifier.TableCell.notiTableCell, cellType: NotificationTableViewCell.self)) { _, item, cell in
-                cell.configData(imageUrl: item.imageURLs[0], nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate.toString())
+                guard let imageURL = item.imageURLs[safe: 0] else { return }
+                cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate.toString())
             }
             .disposed(by: disposeBag)
     }
