@@ -105,28 +105,40 @@ final class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
-        var allImagesDetected = true
+        let detectionGroup = DispatchGroup()
         
-        for image in userImages {
-            detectPeople(image: image)
+        Loading.showLoading()
+        DispatchQueue.global().async {
+            var allImagesDetected = false
+
+            for image in self.userImages {
+                detectionGroup.enter()
+                
+                self.detectPeople(image: image) {
+                    detectionGroup.leave()
+                }
+                
+                if !(self.isDetectedImage ?? true) {
+                    allImagesDetected = false
+                }
+            }
             
-            if !(isDetectedImage ?? true) {
-                allImagesDetected = false
-                break
-            }
-        }
-        
-        if allImagesDetected {
-            showAlert(message: "이미지가 등록되었습니다.") {
-                SignUpViewModel.imageURLs = self.userImages
-                let viewController = SignUpTermsOfServiceViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
-            }
-        } else {
-            showAlert(message: "이미지 등록에 실해하셨습니다.") {
-                self.userImages.removeAll()
-                self.collectionView.reloadData()
-                self.configNextButton(isEnabled: false)
+            detectionGroup.notify(queue: .main) {
+                Loading.hideLoading()
+                
+                if allImagesDetected {
+                    self.showAlert(message: "이미지가 등록되었습니다.") {
+                        SignUpViewModel.imageURLs = self.userImages
+                        let viewController = SignUpTermsOfServiceViewController()
+                        self.navigationController?.pushViewController(viewController, animated: true)
+                    }
+                } else {
+                    self.showAlert(message: "이미지 등록에 실패하셨습니다.") {
+                        self.userImages.removeAll()
+                        self.collectionView.reloadData()
+                        self.configNextButton(isEnabled: false)
+                    }
+                }
             }
         }
     }
@@ -158,7 +170,6 @@ extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePi
                 self.userImages = selectedImages
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
-                    guard !self.userImages.isEmpty else { return }
                     self.configNextButton(isEnabled: true)
                 }
             }
@@ -230,11 +241,12 @@ extension SignUpPictureViewController {
         return false
     }
     
-    private func detectPeople(image: UIImage) {
+    private func detectPeople(image: UIImage, completion: @escaping () -> ()) {
         guard let cgImage = image.cgImage, let objectDetectionRequest = objectDetectionRequest else { return }
 
         let request = VNCoreMLRequest(model: objectDetectionRequest.model) { [weak self] request, error in
             self?.isDetectedImage = self?.handleObjectDetectionResults(request: request, error: error)
+            completion()
         }
 
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
