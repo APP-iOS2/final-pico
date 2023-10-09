@@ -89,7 +89,6 @@
 		B146A3C32AD4566C003143DD /* SignViewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3C22AD4566C003143DD /* SignViewConstraints.swift */; };
 		B146A3C72AD456A8003143DD /* CommonConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3C62AD456A8003143DD /* CommonConstraints.swift */; };
 		B146A3CA2AD456D2003143DD /* MypageViewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3C92AD456D2003143DD /* MypageViewConstraints.swift */; };
-		B146A3CC2AD45734003143DD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B146A3CB2AD45733003143DD /* GoogleService-Info.plist */; };
 		B146A3CE2AD45795003143DD /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3CD2AD45795003143DD /* UITableView+Extensions.swift */; };
 		B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14805242ACCE8120009FF71 /* FirestoreService.swift */; };
 		B148052C2ACD2A900009FF71 /* AdminViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B148052B2ACD2A900009FF71 /* AdminViewController.swift */; };
@@ -251,7 +250,6 @@
 		B146A3C22AD4566C003143DD /* SignViewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignViewConstraints.swift; sourceTree = "<group>"; };
 		B146A3C62AD456A8003143DD /* CommonConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonConstraints.swift; sourceTree = "<group>"; };
 		B146A3C92AD456D2003143DD /* MypageViewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageViewConstraints.swift; sourceTree = "<group>"; };
-		B146A3CB2AD45733003143DD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B146A3CD2AD45795003143DD /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
 		B14805242ACCE8120009FF71 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		B148052B2ACD2A900009FF71 /* AdminViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewController.swift; sourceTree = "<group>"; };
@@ -658,7 +656,6 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				B146A3CB2AD45733003143DD /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -1124,7 +1121,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				B146A3CC2AD45734003143DD /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
