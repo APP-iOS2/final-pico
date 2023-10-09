@@ -22,11 +22,17 @@ extension UIView {
     @objc private func dismissKeyboard() {
         self.endEditing(true)
     }
+    
+    /// [UIView] 배열을 view 에 추가하기
+    func addViews(_ views: [UIView]) {
+        views.forEach {
+            self.addSubview($0)
+        }
+    }
 }
 
 // MARK: - 그림자 관련
 extension UIView {
-    
     enum VerticalLocation {
         case bottom
         case top

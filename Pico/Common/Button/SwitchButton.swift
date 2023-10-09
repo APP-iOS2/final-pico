@@ -41,6 +41,7 @@ final class SwitchButton: UIButton {
         configView(frame: frame)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }

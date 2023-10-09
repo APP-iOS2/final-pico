@@ -72,6 +72,7 @@ final class ProfilView: UIView {
         bindings(viewModel: ProfileViewModel())
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

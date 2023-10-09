@@ -31,7 +31,7 @@ final class MypageViewController: BaseViewController {
     private func resetTableViewScroll() {
         let indexPath = IndexPath(row: 0, section: 0)
         myPageTableView.scrollToRow(at: indexPath, at: .top, animated: false)
-        updateProfileViewLayout(newHeight: Constraint.MypageView.profileViewMaxHeight)
+        updateProfileViewLayout(newHeight: MypageView.profileViewMaxHeight)
     }
     
     private func configBarItem() {
@@ -68,7 +68,7 @@ final class MypageViewController: BaseViewController {
         profilView.snp.makeConstraints { make in
             make.top.equalTo(safeArea)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(Constraint.MypageView.profileViewHeight)
+            make.height.equalTo(MypageView.profileViewHeight)
         }
         
         myPageTableView.snp.makeConstraints { make in

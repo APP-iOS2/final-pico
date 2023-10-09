@@ -158,20 +158,20 @@ extension MbtiModalViewController {
         
         notifyLabel.snp.makeConstraints { make in
             make.top.equalTo(safeArea.snp.top).offset(30)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
         }
         
         buttonHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(notifyLabel.snp.bottom).offset(30)
-            make.leading.equalTo(Constraint.SignView.contentPadding)
-            make.trailing.equalTo(-Constraint.SignView.contentPadding)
+            make.leading.equalTo(SignView.contentPadding)
+            make.trailing.equalTo(-SignView.contentPadding)
             make.height.equalTo(150)
         }
         
         leftTitleLabel.snp.makeConstraints { make in
             make.centerX.equalTo(leftUiView)
-            make.centerY.equalTo(leftUiView).offset(-Constraint.SignView.padding)
+            make.centerY.equalTo(leftUiView).offset(-SignView.padding)
         }
         
         leftSubTitleLabel.snp.makeConstraints { make in
@@ -181,7 +181,7 @@ extension MbtiModalViewController {
         
         rightTitleLabel.snp.makeConstraints { make in
             make.centerX.equalTo(rightUiView)
-            make.centerY.equalTo(rightUiView).offset(-Constraint.SignView.padding)
+            make.centerY.equalTo(rightUiView).offset(-SignView.padding)
         }
         
         rightSubTitleLabel.snp.makeConstraints { make in

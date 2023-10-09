@@ -1,14 +1,13 @@
 //
-//  MyTransition.swift
+//  CustomTransitionAnimator.swift
 //  Pico
 //
 //  Created by 방유빈 on 2023/09/26.
 //
 
-import Foundation
 import UIKit
 
-final class MyTransition: NSObject, UIViewControllerAnimatedTransitioning {
+final class CustomTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     
     let viewControllers: [UIViewController]?
     let transitionDuration: Double = 0.3

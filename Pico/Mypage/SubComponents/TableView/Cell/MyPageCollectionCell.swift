@@ -34,8 +34,9 @@ final class MyPageCollectionCell: UICollectionViewCell {
         makeConstraints()
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func configure(imageName: String, title: String, subTitle: String) {

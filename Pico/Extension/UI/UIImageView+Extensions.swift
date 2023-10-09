@@ -25,7 +25,6 @@ extension UIImageView {
                 DispatchQueue.main.async {
                     self?.image = UIImage(data: data)
                 }
-                
             } else {
                 DispatchQueue.main.async {
                     self?.image = UIImage(named: "chu")
@@ -55,18 +54,15 @@ extension UIImageView {
                     emitter.onError(error)
                     return
                 }
-                
                 guard let data = data,
                       let image = UIImage(data: data) else {
                     emitter.onNext(UIImage(named: "chu"))
                     emitter.onCompleted()
                     return
                 }
-                
                 emitter.onNext(image)
                 emitter.onCompleted()
             }
-            
             task.resume()
             return Disposables.create()
         }

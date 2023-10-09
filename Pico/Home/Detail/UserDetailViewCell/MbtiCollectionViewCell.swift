@@ -16,6 +16,11 @@ final class MbtiCollectionViewCell: UICollectionViewCell {
         makeConstraints()
     }
     
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     func config(mbtiType: MBTIType) {
       mbtiView.setMbti(mbti: mbtiType)
     }
@@ -28,9 +33,5 @@ final class MbtiCollectionViewCell: UICollectionViewCell {
         mbtiView.snp.makeConstraints { make in
             make.edges.equalToSuperview().offset(5)
         }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

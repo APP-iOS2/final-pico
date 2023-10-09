@@ -26,6 +26,7 @@ final class MyPageTableView: UITableView {
         attribute()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -100,14 +101,14 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let scrollOffset = scrollView.contentOffset.y
-        let maxHeight = Constraint.MypageView.profileViewMaxHeight + scrollOffset
+        let maxHeight = MypageView.profileViewMaxHeight + scrollOffset
         
-        let isScreenHeightInsufficient = Screen.height < scrollView.contentSize.height + Constraint.MypageView.profileViewMaxHeight
-        let isProfileViewHeightInRange = (scrollOffset..<maxHeight).contains(Constraint.MypageView.profileViewHeight)
+        let isScreenHeightInsufficient = Screen.height < scrollView.contentSize.height + MypageView.profileViewMaxHeight
+        let isProfileViewHeightInRange = (scrollOffset..<maxHeight).contains(MypageView.profileViewHeight)
         
         if isScreenHeightInsufficient && isProfileViewHeightInRange {
-            Constraint.MypageView.profileViewHeight -= scrollOffset
-            self.myPageViewDelegate?.updateProfileViewLayout(newHeight: Constraint.MypageView.profileViewHeight)
+            MypageView.profileViewHeight -= scrollOffset
+            self.myPageViewDelegate?.updateProfileViewLayout(newHeight: MypageView.profileViewHeight)
             scrollView.contentOffset.y = 0
         }
     }

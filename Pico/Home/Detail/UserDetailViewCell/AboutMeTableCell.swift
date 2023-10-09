@@ -90,6 +90,11 @@ final class AboutMeTableCell: UITableViewCell {
         makeConstraints()
     }
     
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     func config(eduText: String, religionText: String, smokeText: String, jobText: String, drinkText: String) {
         educationLabel.text = eduText
         religionLabel.text = religionText
@@ -159,9 +164,5 @@ final class AboutMeTableCell: UITableViewCell {
             make.top.equalTo(drinkImageView.snp.top)
             make.leading.equalTo(drinkImageView.snp.trailing).offset(5)
         }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

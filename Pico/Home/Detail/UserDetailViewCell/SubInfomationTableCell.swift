@@ -61,7 +61,11 @@ final class SubInfomationTableCell: UITableViewCell {
         addViews()
         makeConstraints()
         configCollectionView()
-        
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func configCollectionView() {
@@ -123,10 +127,6 @@ final class SubInfomationTableCell: UITableViewCell {
             make.trailing.bottom.equalToSuperview()
             
         }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
