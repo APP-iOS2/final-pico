@@ -54,40 +54,26 @@ final class MBTILabelView: UIView {
         }
     }
     
-    private var labelScale: LabelScale
-    
-    private lazy var textLabel: UILabel = {
+    private let textLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
         return label
     }()
     
     private var mbti: MBTIType
+    private var labelScale: LabelScale
     
-    convenience init(mbti: MBTIType, scale: LabelScale) {
-        self.init(frame: scale.frameSize)
-        textLabel.text = mbti.nameString
-        self.labelScale = scale
+    init(mbti: MBTIType, scale: LabelScale) {
         self.mbti = mbti
+        self.labelScale = scale
+        
+        super.init(frame: labelScale.frameSize)
+        
         configUI()
-    }
-    
-    // !!! 질문: init에 디폴트 값을 주면 왜 안되는가.. (convenience 없을때)
-    // override init(frame: CGRect = CGRect(x: 0, y: 0, width: 80, height: 40)) {
-    override init(frame: CGRect) {
-        self.mbti = .infj
-        self.labelScale = .large
-        super.init(frame: frame)
         addViews()
         makeConstraints()
     }
-    
-    /* !!! 질문: makeConstraints를 layoutSubviews여기서 해주는가
-    override func layoutSubviews() {
-        makeConstraints()
-    }
-     */
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

@@ -47,7 +47,7 @@ final class AdminViewController: BaseViewController {
         }
     }
     
-    enum FilterType: CaseIterable {
+    enum FilterType {
         case name
         case mbti
         
@@ -131,6 +131,7 @@ final class AdminViewController: BaseViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.tappedDismissKeyboard()
         addViews()
         makeConstraints()
         configNavigationBarItem()

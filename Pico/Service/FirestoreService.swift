@@ -10,7 +10,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 import RxSwift
 
-enum Collections: CaseIterable {
+enum Collections {
     case users
     case likes
     case notifications
@@ -27,7 +27,6 @@ enum Collections: CaseIterable {
         case .subInfo:
             return "subInfo"
         }
-    
     }
 }
 

@@ -36,38 +36,27 @@ final class CommonTextField: UIView {
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
         button.tintColor = .picoBlue
+        button.isHidden = true
         return button
     }()
     
-    // MARK: - 프로퍼티
     /// 최대 글자 수 제한
     private var maxLength: Int
     
-    convenience init(frame: CGRect = .zero, maxLength: Int) {
-        self.init(frame: frame)
+    init(frame: CGRect = .zero, maxLength: Int = 0) {
         self.maxLength = maxLength
-    }
-    
-    override init(frame: CGRect) {
-        self.maxLength = 0
         super.init(frame: frame)
-        configUI()
+        
         addViews()
         makeConstraints()
         configTextField()
         configButtons()
+        configBorder(color: .picoGray)
     }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func configUI() {
-        self.layer.borderColor = UIColor.picoBlue.cgColor
-        self.layer.borderWidth = 2
-        self.layer.cornerRadius = 5
-        self.clipsToBounds = true
     }
     
     private func configTextField() {
@@ -80,8 +69,41 @@ final class CommonTextField: UIView {
     
     @objc private func tappedRemoveAllButton(_ sender: UIButton) {
         textField.text = ""
+        removeAllButton.isHidden = true
+    }
+}
+
+extension CommonTextField: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        configBorder(color: .picoBlue)
+        removeAllButton.isHidden = false
     }
     
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        configBorder(color: .picoGray)
+        removeAllButton.isHidden = true
+    }
+    
+    private func configBorder(color: UIColor) {
+        self.layer.borderColor = color.cgColor
+        self.layer.borderWidth = 1
+        self.layer.cornerRadius = 5
+        self.clipsToBounds = true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard maxLength > 0 else { return true }
+        
+        let currentText = textField.text ?? ""
+        var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        newText = newText.replacingOccurrences(of: " ", with: "")
+        
+        return newText.count <= maxLength
+    }
+}
+
+// MARK: - UI 관련
+extension CommonTextField {
     private func addViews() {
         self.addSubview(textField)
         self.addSubview(removeAllButton)
@@ -101,17 +123,5 @@ final class CommonTextField: UIView {
             make.centerY.equalTo(textField.snp.centerY)
             make.width.equalTo(40)
         }
-    }
-}
-
-extension CommonTextField: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard maxLength > 0 else { return true }
-        
-        let currentText = textField.text ?? ""
-        var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
-        newText = newText.replacingOccurrences(of: " ", with: "")
-        
-        return newText.count <= maxLength
     }
 }

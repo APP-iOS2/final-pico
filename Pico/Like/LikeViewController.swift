@@ -27,7 +27,7 @@ final class LikeViewController: BaseViewController {
 
     private let underLineView: UIView = {
         let view = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = .picoFontBlack
         return view
     }()
     

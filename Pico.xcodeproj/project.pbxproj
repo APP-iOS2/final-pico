@@ -90,6 +90,7 @@
 		B146A3C72AD456A8003143DD /* CommonConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3C62AD456A8003143DD /* CommonConstraints.swift */; };
 		B146A3CA2AD456D2003143DD /* MypageViewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3C92AD456D2003143DD /* MypageViewConstraints.swift */; };
 		B146A3CE2AD45795003143DD /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3CD2AD45795003143DD /* UITableView+Extensions.swift */; };
+		B146A3D42AD4629A003143DD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B146A3D32AD4629A003143DD /* GoogleService-Info.plist */; };
 		B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14805242ACCE8120009FF71 /* FirestoreService.swift */; };
 		B148052C2ACD2A900009FF71 /* AdminViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B148052B2ACD2A900009FF71 /* AdminViewController.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
@@ -251,6 +252,7 @@
 		B146A3C62AD456A8003143DD /* CommonConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonConstraints.swift; sourceTree = "<group>"; };
 		B146A3C92AD456D2003143DD /* MypageViewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageViewConstraints.swift; sourceTree = "<group>"; };
 		B146A3CD2AD45795003143DD /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
+		B146A3D32AD4629A003143DD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B14805242ACCE8120009FF71 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		B148052B2ACD2A900009FF71 /* AdminViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewController.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -656,6 +658,7 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				B146A3D32AD4629A003143DD /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -781,10 +784,10 @@
 			isa = PBXGroup;
 			children = (
 				B146A3C52AD4569B003143DD /* Constatnt */,
-				B146A3D22AD45E16003143DD /* Transition */,
+				B146A3D02AD45DE7003143DD /* View */,
 				B146A3CF2AD45DBC003143DD /* Button */,
 				B146A3D12AD45E06003143DD /* TextField */,
-				B146A3D02AD45DE7003143DD /* View */,
+				B146A3D22AD45E16003143DD /* Transition */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1121,6 +1124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
+				B146A3D42AD4629A003143DD /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
