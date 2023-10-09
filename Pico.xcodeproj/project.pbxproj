@@ -29,7 +29,6 @@
 		4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665402AC3F4830074D4E2 /* UserDummy.swift */; };
 		4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */; };
 		4B2665492ACD76F00074D4E2 /* ResultUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665482ACD76F00074D4E2 /* ResultUserView.swift */; };
-		5307500B2AD46779000FE4CB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5307500A2AD46779000FE4CB /* GoogleService-Info.plist */; };
 		5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */; };
 		531C4ED82AC26BA300ADC614 /* CustomTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
@@ -131,7 +130,6 @@
 		B17D67A32AC0B21F006F91DC /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67A22AC0B21F006F91DC /* UIView+Extensions.swift */; };
 		B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67A72AC0B5F7006F91DC /* UIColor+Extensions.swift */; };
 		B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67A92AC0B86A006F91DC /* UIFont+Extensions.swift */; };
-		B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B72AC0C0C5006F91DC /* Identifier.swift */; };
 		B1844F5C2AC0CD9B00ACFFED /* PicoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F5B2AC0CD9B00ACFFED /* PicoUITests.swift */; };
 		B1844F5E2AC0CD9B00ACFFED /* PicoUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F5D2AC0CD9B00ACFFED /* PicoUITestsLaunchTests.swift */; };
 		B1844F6B2AC0CDA500ACFFED /* PicoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */; };
@@ -196,7 +194,6 @@
 		4B2665402AC3F4830074D4E2 /* UserDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummy.swift; sourceTree = "<group>"; };
 		4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewController.swift; sourceTree = "<group>"; };
 		4B2665482ACD76F00074D4E2 /* ResultUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultUserView.swift; sourceTree = "<group>"; };
-		5307500A2AD46779000FE4CB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransitionAnimator.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -297,7 +294,6 @@
 		B17D67A72AC0B5F7006F91DC /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		B17D67A92AC0B86A006F91DC /* UIFont+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		B17D67B52AC0C09C006F91DC /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
-		B17D67B72AC0C0C5006F91DC /* Identifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		B1844F592AC0CD9B00ACFFED /* PicoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PicoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1844F5B2AC0CD9B00ACFFED /* PicoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoUITests.swift; sourceTree = "<group>"; };
 		B1844F5D2AC0CD9B00ACFFED /* PicoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -639,7 +635,6 @@
 				B14B58F92AC0A243009889DA /* Config */,
 				B14B59052AC0A41B009889DA /* UserDefaults */,
 				B14805232ACCE70B0009FF71 /* Service */,
-				B17D67B42AC0C043006F91DC /* Constant */,
 				B14B59022AC0A32B009889DA /* Extension */,
 				B14B59032AC0A39E009889DA /* Common */,
 				B14B59042AC0A3F6009889DA /* Model */,
@@ -660,7 +655,6 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				5307500A2AD46779000FE4CB /* GoogleService-Info.plist */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -925,14 +919,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B17D67B42AC0C043006F91DC /* Constant */ = {
-			isa = PBXGroup;
-			children = (
-				B17D67B72AC0C0C5006F91DC /* Identifier.swift */,
-			);
-			path = Constant;
-			sourceTree = "<group>";
-		};
 		B17D67BB2AC0C41B006F91DC /* SubInfo */ = {
 			isa = PBXGroup;
 			children = (
@@ -1127,7 +1113,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				5307500B2AD46779000FE4CB /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1233,7 +1218,6 @@
 				6ADDE2F32AC3BA4700CE4482 /* ProfileEditNicknameTabelCell.swift in Sources */,
 				534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */,
 				363CC4842ACF9CC500C86EDC /* LocationManager.swift in Sources */,
-				B17D67B82AC0C0C5006F91DC /* Identifier.swift in Sources */,
 				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
 				69B99BE62ACE815600695567 /* MailViewModel.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIView+Extensions.swift in Sources */,

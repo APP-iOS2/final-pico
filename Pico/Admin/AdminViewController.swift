@@ -147,7 +147,7 @@ final class AdminViewController: BaseViewController {
     }
     
     private func configTableView() {
-        userListTableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
+        userListTableView.register(cell: NotificationTableViewCell.self)
         userListTableView.rowHeight = 80
     }
 }
@@ -157,7 +157,7 @@ extension AdminViewController {
     
     private func configTableViewDatasource() {
         viewModel.userList
-            .bind(to: userListTableView.rx.items(cellIdentifier: Identifier.TableCell.notiTableCell, cellType: NotificationTableViewCell.self)) { _, item, cell in
+            .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
                 guard let imageURL = item.imageURLs[safe: 0] else { return }
                 cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate.toString())
             }

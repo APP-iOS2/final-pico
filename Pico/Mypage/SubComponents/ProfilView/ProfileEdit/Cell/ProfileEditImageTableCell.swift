@@ -23,7 +23,7 @@ final class ProfileEditImageTableCell: UITableViewCell {
         view.showsVerticalScrollIndicator = false
         view.contentInset = .zero
         view.backgroundColor = .clear
-        view.register(ProfileEditCollectionCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.profileEditCollectionCell)
+        view.register(cell: ProfileEditCollectionCell.self)
         return view
     }()
     
@@ -72,7 +72,7 @@ extension ProfileEditImageTableCell: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.profileEditCollectionCell, for: indexPath) as? ProfileEditCollectionCell else { return UICollectionViewCell() }
+        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditCollectionCell.self)
         cell.configure(imageName: "chu")
         cell.backgroundColor = .lightGray
         cell.layer.masksToBounds = true
