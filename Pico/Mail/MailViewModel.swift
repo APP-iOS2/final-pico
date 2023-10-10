@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 import RxRelay
 
 enum MailType: String {
@@ -41,13 +42,18 @@ struct DummyMail {
 final class MailViewModel {
     var mailList = BehaviorRelay<[DummyMailUsers]>(value: [])
     
+    var sendLinst = [DummyMailUsers].self
+    var recieveLsit = [DummyMailUsers].self
+    
     var mailSendList = BehaviorRelay<[DummyMailUsers]>(value: [])
     var mailRecieveList = BehaviorRelay<[DummyMailUsers]>(value: [])
     
     var mailIsEmpty: Observable<Bool> {
-            return mailList
-                .map { $0.isEmpty }
-        }
+        return mailList
+            .map { $0.isEmpty }
+    }
+    
+    var disposeBag = DisposeBag()
     
     init() {
         let mail: [DummyMailUsers] = [
@@ -61,13 +67,12 @@ final class MailViewModel {
                             DummyMail(oppenentName: "멍때리는댕댕이구름", oppenentAge: 24, imageUrl: "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg", mbti: .intj, message: "일상에 미소를 채우는 더 좋은 한입", sendedDate: "10.24", isReading: true)),
             DummyMailUsers(userName: "오점순", age: 26, mbti: .enfj, mailType: .receive, messages:
                             DummyMail(oppenentName: "마이꾸미", oppenentAge: 24, imageUrl: "https://cdn.newsculture.press/news/photo/202306/526271_651222_532.jpg", mbti: .esfp, message: "한달뒤에 보자", sendedDate: "08.11", isReading: true))
-            ]
+        ]
         mailList.accept(mail)
         divideMail()
     }
     
     func divideMail() {
-        
         var receiveMails: [DummyMailUsers] = []
         var sendMails: [DummyMailUsers] = []
         
@@ -81,5 +86,83 @@ final class MailViewModel {
             }
         mailSendList.accept(sendMails)
         mailRecieveList.accept(receiveMails)
+    }
+    
+    /// mailtableviewDatasore
+    func configMailTableviewDatasource(tableView: UITableView, type: MailType) {
+        
+        tableView.delegate = nil
+        tableView.dataSource = nil
+        
+        if type == .receive {
+            mailRecieveList
+                .bind(to: tableView.rx
+                    .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
+                        cell.getData(senderUser: item)
+                    }
+                    .disposed(by: disposeBag)
+        } else {
+            mailSendList
+                .bind(to: tableView.rx
+                    .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
+                        cell.getData(senderUser: item)
+                    }
+                    .disposed(by: disposeBag)
+        }
+    }
+    
+    /*
+     func configTableviewDelegate(tableView: UITableView, type: MailType) {
+     tableView
+     .rx
+     .itemSelected
+     .subscribe(onNext: { indexPath in
+     let mailModel = mailSendList.value[indexPath.item]
+     let mailReceiveView = MailReceiveViewController()
+     mailReceiveView.modalPresentationStyle = .formSheet
+     mailReceiveView.getReceiver(mailSender: mailModel)
+     self.present(mailReceiveView, animated: true, completion: nil)
+     })
+     .disposed(by: disposeBag)
+     }
+     */
+    
+    //질문! textView에서 rx 설정하는 아래 코드를 mvvm으로 할 때 여기에 두는 것이 맞나요? 만약 다른 파일을 만들어서 둬야한다면 어떤 식으로 두면 좋을지 모르겠습닏
+    /// textview 변경시 불러지는 함수
+    func changeTextView(textView: UITextView, label: UILabel) {
+        let textViewPlaceHolder = "메시지를 입력하세요"
+        
+        textView.rx.didBeginEditing
+            .bind { _ in
+                if textView.text == textViewPlaceHolder {
+                    textView.text = nil
+                    textView.textColor = .black
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        textView.rx.didEndEditing
+            .bind { _ in
+                if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    textView.text = textViewPlaceHolder
+                    textView.textColor = .picoFontGray
+                    self.updateCountLabel(label: label, characterCount: 0)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        textView.rx.text
+            .orEmpty
+            .subscribe(onNext: { changedText in
+                let characterCount = changedText.count
+                if characterCount <= 300 {
+                    self.updateCountLabel(label: label, characterCount: characterCount)
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func updateCountLabel(label: UILabel, characterCount: Int) {
+        label.text = "\(characterCount)/300"
     }
 }

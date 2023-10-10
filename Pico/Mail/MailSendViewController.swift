@@ -7,12 +7,10 @@
 
 import UIKit
 import SnapKit
-import RxSwift
-import RxCocoa
 
 final class MailSendViewController: UIViewController {
     
-    var diposeBag = DisposeBag()
+    private let viewModel = MailViewModel()
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -78,13 +76,11 @@ final class MailSendViewController: UIViewController {
         return stackView
     }()
     
-    private let textViewPlaceHolder = "메시지를 입력하세요"
-    
     private let messageView: UITextView = {
         let textView: UITextView = UITextView()
         textView.text = "메시지를 입력하세요"
         textView.font = .picoContentFont
-        textView.textColor = .lightGray
+        textView.textColor = .picoFontGray
         textView.backgroundColor = .clear
         return textView
     }()
@@ -112,21 +108,21 @@ final class MailSendViewController: UIViewController {
         configNavigationBarItem()
         addViews()
         makeConstraints()
-        changeTextView()
+        viewModel.changeTextView(textView: messageView, label: remainCountLabel)
     }
     
     override func viewDidLayoutSubviews() {
         receiverImageView.setCircleImageView()
     }
     
-    func configNavigationBarItem() {
-        navItem.leftBarButtonItem = leftBarButton
-        navigationBar.shadowImage = UIImage()
-        navigationBar.setItems([navItem], animated: true)
+    func getReceiver(mailReceiver: DummyMailUsers) {
+        if let imageURL = URL(string: mailReceiver.messages.imageUrl) {
+            receiverImageView.load(url: imageURL)
+        }
+        receiverNameLabel.text = mailReceiver.messages.oppenentName
     }
     
     private func addViews() {
-        
         [receiverLabel, receiverImageView, receiverNameLabel].forEach { views in
             receiverStack.addArrangedSubview(views)
         }
@@ -143,7 +139,6 @@ final class MailSendViewController: UIViewController {
     }
     
     private func makeConstraints() {
-        
         let safeArea = view.safeAreaLayoutGuide
         
         navigationBar.snp.makeConstraints { make in
@@ -178,49 +173,11 @@ final class MailSendViewController: UIViewController {
             make.height.equalTo(50)
         }
     }
-
-//질문! textView에서 rx 설정하는 아래 코드를 mvvm으로 할 때 여기에 두는 것이 맞나요? 만약 다른 파일을 만들어서 둬야한다면 어떤 식으로 두면 좋을지 모르겠습닏
-    private func changeTextView() {
-        messageView.rx.didBeginEditing
-            .bind { _ in
-                if self.messageView.text == self.textViewPlaceHolder {
-                    self.messageView.text = nil
-                    self.messageView.textColor = .black
-                }
-            }
-            .disposed(by: diposeBag)
-        
-        messageView.rx.didEndEditing
-            .bind { _ in
-                if self.messageView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    self.messageView.text = self.textViewPlaceHolder
-                    self.messageView.textColor = .lightGray
-                    self.updateCountLabel(characterCount: 0)
-                }
-            }
-            .disposed(by: diposeBag)
-        
-        messageView.rx.text
-            .orEmpty
-            .debug()
-            .subscribe(onNext: { changedText in
-                let characterCount = changedText.count
-                if characterCount <= 300 {
-                    self.updateCountLabel(characterCount: characterCount)
-                }
-            })
-            .disposed(by: diposeBag)
-    }
     
-    private func updateCountLabel(characterCount: Int) {
-        remainCountLabel.text = "\(characterCount)/300"
-    }
-    
-    func getReceiver(mailReceiver: DummyMailUsers) {
-        if let imageURL = URL(string: mailReceiver.messages.imageUrl) {
-            receiverImageView.load(url: imageURL)
-        }
-        receiverNameLabel.text = mailReceiver.messages.oppenentName
+    private func configNavigationBarItem() {
+        navItem.leftBarButtonItem = leftBarButton
+        navigationBar.shadowImage = UIImage()
+        navigationBar.setItems([navItem], animated: true)
     }
     
     @objc private func tappedSendButton(_ sender: UIButton) {

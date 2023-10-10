@@ -77,17 +77,6 @@ final class MailViewController: BaseViewController {
         mailListTableView.reloadData()
     }
     
-    private func configTableView() {
-        mailListTableView.rowHeight = 100
-        configTableviewDatasource()
-        configTableviewDelegate()
-    }
-    
-    private func configMailTypeButtons() {
-        sendButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
-        receiveButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
-    }
-    
     private func addViews() {
         view.addSubview(mailText)
         
@@ -148,6 +137,28 @@ final class MailViewController: BaseViewController {
             .disposed(by: disposeBag)
     }
     
+    private func configTableView() {
+        mailListTableView.rowHeight = 100
+        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        configTableviewDelegate()
+    }
+    
+    private func configMailTypeButtons() {
+        sendButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
+        receiveButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
+    }
+    
+    private func configTableviewDelegate() {
+           mailListTableView.rx.modelSelected(DummyMailUsers.self)
+               .subscribe(onNext: { item in
+                   let mailReceiveView = MailReceiveViewController()
+                   mailReceiveView.modalPresentationStyle = .formSheet
+                   mailReceiveView.getReceiver(mailSender: item)
+                   self.present(mailReceiveView, animated: true, completion: nil)
+               })
+               .disposed(by: disposeBag)
+       }
+    
     @objc func tappedMailTypeButton(_ sender: UIButton) {
         for button in mailTypeButtons {
             button.isSelected = (button == sender)
@@ -162,45 +173,7 @@ final class MailViewController: BaseViewController {
                 button.setTitleColor(.picoBetaBlue, for: .normal)
             }
         }
-        configTableviewDatasource()
+        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
         mailListTableView.reloadData()
     }
 }
-
-// MARK: - MailTableView+Rx
-extension MailViewController {
-    private func configTableviewDatasource() {
-        
-        self.mailListTableView.delegate = nil
-        self.mailListTableView.dataSource = nil
-        
-        if mailType == .receive {
-            viewModel.mailRecieveList
-                .bind(to: mailListTableView.rx.items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
-                    cell.getData(senderUser: item)
-                }
-                .disposed(by: disposeBag)
-        } else {
-            viewModel.mailSendList
-                .bind(to: mailListTableView.rx.items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
-                    cell.getData(senderUser: item)
-                }
-                .disposed(by: disposeBag)
-        }
-    }
-    
-    private func configTableviewDelegate() {
-        mailListTableView.rx.modelSelected(DummyMailUsers.self)
-            .subscribe(onNext: { item in
-                let mailReceiveView = MailReceiveViewController()
-                mailReceiveView.modalPresentationStyle = .formSheet
-                mailReceiveView.getReceiver(mailSender: item)
-                self.present(mailReceiveView, animated: true, completion: nil)
-            })
-            .disposed(by: disposeBag)
-    }
-}
-
-// 밥먹고 해야할 일
-// - 시작시 버튼 받은 메일로 뜨도록
-// - 받는 값 수정에 따른 보이는 값 변경 ( 유빈님 like 코드 확인 )

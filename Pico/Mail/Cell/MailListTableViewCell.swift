@@ -82,6 +82,20 @@ final class MailListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // 질문! 받아와서 보여줘야하는 경우 코드를 cell 뷰 파일에 두는 것이 맞나요? 또한 rx 처리를 해줘야하나요?
+    func getData(senderUser: DummyMailUsers) {
+        if let imageURL = URL(string: senderUser.messages.imageUrl) {
+            userImage.load(url: imageURL)
+        }
+        nameLabel.text = senderUser.messages.oppenentName
+        nameLabel.sizeToFit()
+        self.message.text = senderUser.messages.message
+        dateLabel.text = senderUser.messages.sendedDate
+        if !senderUser.messages.isReading {
+            newLabel.text = "new"
+        }
+    }
+    
     private func addViews() {
         [nameLabel, mbtiLabelView].forEach {
             nameStackView.addArrangedSubview($0)
@@ -130,20 +144,6 @@ final class MailListTableViewCell: UITableViewCell {
             make.top.bottom.equalTo(infoStackView)
             make.trailing.equalTo(contentView.snp.trailing).offset(-10)
             make.width.equalTo(50)
-        }
-    }
-    
-    // 질문! 받아와서 보여줘야하는 경우 코드를 cell 뷰 파일에 두는 것이 맞나요? 또한 rx 처리를 해줘야하나요?
-    func getData(senderUser: DummyMailUsers) {
-        if let imageURL = URL(string: senderUser.messages.imageUrl) {
-            userImage.load(url: imageURL)
-        }
-        nameLabel.text = senderUser.messages.oppenentName
-        nameLabel.sizeToFit()
-        self.message.text = senderUser.messages.message
-        dateLabel.text = senderUser.messages.sendedDate
-        if !senderUser.messages.isReading {
-            newLabel.text = "new"
         }
     }
 }
