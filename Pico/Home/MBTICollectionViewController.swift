@@ -21,7 +21,7 @@ final class MBTICollectionViewController: UIViewController {
     private func configCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(MBTILabelCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.filterMbtiCollectionCell)
+        collectionView.register(cell: MBTILabelCollectionViewCell.self)
     }
     
     private func addViews() {
@@ -42,7 +42,7 @@ extension MBTICollectionViewController: UICollectionViewDelegate, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.filterMbtiCollectionCell, for: indexPath) as? MBTILabelCollectionViewCell else { return UICollectionViewCell() }
+        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: MBTILabelCollectionViewCell.self)
         let mbti = MBTIType.allCases[indexPath.item]
         cell.configureWithMBTI(mbti)
         return cell

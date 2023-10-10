@@ -30,7 +30,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
         view.progress = 0.284
-        view.layer.cornerRadius = Constraint.SignView.progressViewCornerRadius
+        view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
         return view
     }()
@@ -92,9 +92,9 @@ final class SignUpPhoneNumberViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
-        tappedDismissKeyboard()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButtons()
@@ -150,20 +150,19 @@ extension SignUpPhoneNumberViewController {
     }
     // MARK: - @objc
     @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
             self.phoneNumberCheckButton.isEnabled = false
             self.phoneNumberCheckButton.backgroundColor = .picoGray
             self.phoneNumberCancleButton.isHidden = true
             self.phoneNumberTextField.textColor = .picoBlue
             self.phoneNumberTextField.isEnabled = false
-            
             self.updateNextButton(isCheck: true)
         }
     }
     
     @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         phoneNumberTextField.text = ""
         updatePhoneTextField(isFull: false)
     }
@@ -171,13 +170,16 @@ extension SignUpPhoneNumberViewController {
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isFullPhoneNumber && isTappedCheckButton {
             guard let text = phoneNumberTextField.text else { return }
+
             viewModel.phoneNumber = text
             tappedButtonAnimation(sender)
+
             let viewController = SignUpGenderViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }
+
 // MARK: - 텍스트필드 관련
 extension SignUpPhoneNumberViewController: UITextFieldDelegate {
     
@@ -256,22 +258,22 @@ extension SignUpPhoneNumberViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(safeArea).offset(SignView.progressViewTopPadding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
             make.height.equalTo(8)
         }
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(Constraint.SignView.padding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(progressView.snp.bottom).offset(SignView.padding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
         }
         
         phoneTextFieldstackView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
-            make.leading.equalTo(Constraint.SignView.contentPadding)
-            make.trailing.equalTo(-Constraint.SignView.contentPadding)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(SignView.contentPadding)
+            make.leading.equalTo(SignView.contentPadding)
+            make.trailing.equalTo(-SignView.contentPadding)
             make.height.equalTo(30)
         }
         
@@ -280,17 +282,17 @@ extension SignUpPhoneNumberViewController {
         }
         
         phoneMessageHorizontalStack.snp.makeConstraints { make in
-            make.top.equalTo(phoneTextFieldstackView.snp.bottom).offset(Constraint.SignView.contentPadding)
-            make.leading.equalTo(Constraint.SignView.contentPadding)
-            make.trailing.equalTo(-Constraint.SignView.contentPadding)
+            make.top.equalTo(phoneTextFieldstackView.snp.bottom).offset(SignView.contentPadding)
+            make.leading.equalTo(SignView.contentPadding)
+            make.trailing.equalTo(-SignView.contentPadding)
             make.height.equalTo(50)
         }
         
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
-            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
-            make.height.equalTo(Constraint.Button.commonHeight)
+            make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
+            make.height.equalTo(CommonConstraints.buttonHeight)
         }
     }
 }

@@ -10,13 +10,19 @@ import SnapKit
 import RxSwift
 
 final class LikeCollectionViewCell: UICollectionViewCell {
-    private var disposeBag: DisposeBag = DisposeBag()
-    private var viewModel: LikeMeViewViewModel?
-    private var user: User?
     
-    var buttonTapObservable: Observable<Void> {
+    var deleteButtonTapObservable: Observable<Void> {
         return deleteButton.rx.tap.asObservable()
     }
+    
+    var messageButtonTapObservable: Observable<Void> {
+        return messageButton.rx.tap.asObservable()
+    }
+    
+    var disposeBag: DisposeBag = DisposeBag()
+    private var likeMeViewModel: LikeMeViewModel?
+    private var likeUViewModel: LikeUViewModel?
+    private var user: User?
     
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
@@ -32,6 +38,8 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
+    
+    private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: .enfj, scale: .small)
     
     private let deleteButton: UIButton = {
         let button = UIButton(configuration: .plain())
@@ -50,48 +58,47 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         button.tintColor = .white
         return button
     }()
+    
+    private let likeButton: UIButton = {
+        let button = UIButton(configuration: .plain())
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .light)
+        let image = UIImage(systemName: "heart.circle", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        return button
+    }()
   
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
         makeConstraints()
-        configDeleteButton()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configData(images: [String], nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool) {
-        userImageView.loadImage(url: images[0], disposeBag: self.disposeBag)
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+        likeMeViewModel = nil
+        likeUViewModel = nil
+        user = nil
+        userImageView.image = UIImage(named: "chu")
+        nameLabel.text = ""
+    }
+    
+    func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType) {
+        userImageView.loadImage(url: image, disposeBag: self.disposeBag)
         nameLabel.text = nameText
+        mbtiLabel.setMbti(mbti: mbti)
         messageButton.isHidden = isHiddenMessageButton
         deleteButton.isHidden = isHiddenDeleteButton
-    }
-   
-// 질문: 이 코드를 추가하면 삭제버튼이 처음 한번만되고 그 다음부터는 먹히지않음
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        disposeBag = DisposeBag()
-//    }
-    
-    private func configDeleteButton() {
-        buttonTapObservable
-            .subscribe(onNext: { [weak self] in
-                if let user = self?.user {
-                    self?.viewModel?.deleteButtonTapUser.onNext(user)
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    func configureLikeMeViewModel(user: User, viewModel: LikeMeViewViewModel) {
-        self.user = user
-        self.viewModel = viewModel
+        likeButton.isHidden = isHiddenDeleteButton
     }
     
     private func addViews() {
-        [userImageView, nameLabel, deleteButton, messageButton].forEach { item in
+        [userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton].forEach { item in
             addSubview(item)
         }
     }
@@ -109,12 +116,26 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         nameLabel.setContentHuggingPriority(.required, for: .vertical)
         nameLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         
+        mbtiLabel.snp.makeConstraints { make in
+            make.leading.equalTo(nameLabel)
+            make.bottom.equalTo(nameLabel.snp.top).offset(-5)
+            make.width.equalTo(mbtiLabel.frame.size.width)
+            make.height.equalTo(mbtiLabel.frame.size.height)
+        }
+        
         deleteButton.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.trailing.equalToSuperview().offset(5)
         }
         
         messageButton.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel)
+            make.leading.equalTo(nameLabel.snp.trailing).offset(5)
+            make.trailing.bottom.equalToSuperview().offset(-5)
+            make.width.equalTo(messageButton.snp.height)
+        }
+        
+        likeButton.snp.makeConstraints { make in
             make.top.equalTo(nameLabel)
             make.leading.equalTo(nameLabel.snp.trailing).offset(5)
             make.trailing.bottom.equalToSuperview().offset(-5)

@@ -19,7 +19,7 @@ final class SignUpNickNameViewController: UIViewController {
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
         view.progress = 0.142 * 5
-        view.layer.cornerRadius = Constraint.SignView.progressViewCornerRadius
+        view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
         return view
     }()
@@ -89,9 +89,9 @@ final class SignUpNickNameViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
-        tappedDismissKeyboard()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButtons()
@@ -134,7 +134,7 @@ extension SignUpNickNameViewController {
     
     // MARK: - @objc
     @objc private func tappedNickNameCheckButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         showAlert(message: "\(nickNameTextField.text ?? "") 이름으로 설정합니다.", isCancelButton: true) {
             self.nickNameCheckButton.isEnabled = false
             self.nickNameCheckButton.backgroundColor = .picoGray
@@ -147,7 +147,7 @@ extension SignUpNickNameViewController {
     }
     
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         nickNameTextField.text = ""
         updateNickNameTextField(isFull: false)
     }
@@ -253,28 +253,28 @@ extension SignUpNickNameViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(safeArea).offset(SignView.progressViewTopPadding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
             make.height.equalTo(8)
         }
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(Constraint.SignView.padding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(progressView.snp.bottom).offset(SignView.padding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
         }
         
         subNotifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.subPadding)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(SignView.subPadding)
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
         }
         
         nickNameHorizontalStack.snp.makeConstraints { make in
-            make.top.equalTo(subNotifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
-            make.leading.equalTo(Constraint.SignView.contentPadding)
-            make.trailing.equalTo(-Constraint.SignView.contentPadding)
+            make.top.equalTo(subNotifyLabel.snp.bottom).offset(SignView.contentPadding)
+            make.leading.equalTo(SignView.contentPadding)
+            make.trailing.equalTo(-SignView.contentPadding)
             make.height.equalTo(30)
         }
         
@@ -285,8 +285,8 @@ extension SignUpNickNameViewController {
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
-            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
-            make.height.equalTo(Constraint.Button.commonHeight)
+            make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
+            make.height.equalTo(CommonConstraints.buttonHeight)
         }
     }
 }

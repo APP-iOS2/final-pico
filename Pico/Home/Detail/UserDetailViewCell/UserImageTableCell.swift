@@ -30,6 +30,11 @@ final class UserImageTableCell: UITableViewCell {
         configScrollView()
     }
     
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private func configScrollView() {
         scrollView.frame = UIScreen.main.bounds
         scrollView.delegate = self
@@ -67,10 +72,6 @@ final class UserImageTableCell: UITableViewCell {
             make.centerX.equalToSuperview()
             make.height.equalTo(50)
         }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 

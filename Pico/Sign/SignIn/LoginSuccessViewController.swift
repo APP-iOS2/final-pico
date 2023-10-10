@@ -38,8 +38,8 @@ final class LoginSuccessViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        hideBackButton()
+        view.configBackgroundColor()
+        hideNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButton()
@@ -52,7 +52,7 @@ extension LoginSuccessViewController {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.tappedButtonAnimation(self.nextButton)
+                nextButton.tappedAnimation()
                 (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(TabBarController(), animated: true)
             })
             .disposed(by: disposeBag)
@@ -71,9 +71,9 @@ extension LoginSuccessViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(Constraint.SignView.padding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(safeArea).offset(SignView.padding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
         }
         
         checkImageView.snp.makeConstraints { make in
@@ -85,8 +85,8 @@ extension LoginSuccessViewController {
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
-            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
-            make.height.equalTo(Constraint.Button.commonHeight)
+            make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
+            make.height.equalTo(CommonConstraints.buttonHeight)
         }
     }
 }

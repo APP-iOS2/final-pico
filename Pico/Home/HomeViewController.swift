@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class HomeViewController: BaseViewController {
     
@@ -16,12 +18,9 @@ final class HomeViewController: BaseViewController {
     lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
     
     private let emptyView: HomeEmptyView = HomeEmptyView()
-    private var tempUser: [User] = []
-    private let vStack: UIStackView = {
-        let vStack = UIStackView()
-        vStack.axis = .vertical
-        return vStack
-    }()
+    private let tempUser = BehaviorRelay<[User]>(value: [])
+    private let disposeBag = DisposeBag()
+    private let viewModel = HomeViewModel()
     
     private var activityIndicatorView: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView()
@@ -33,48 +32,49 @@ final class HomeViewController: BaseViewController {
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchUsers()
         addSubView()
-        startLoading()
         makeConstraints()
         configNavigationBarItem()
         configButtons()
+        
+        viewModel.users
+            .bind(to: tempUser)
+            .disposed(by: disposeBag)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        stopLoading()
-    }
-    
-    private func fetchUsers() {
-        tempUser = UserDummyData.users
-    }
-    
-    private func startLoading() {
-        view.addSubview(activityIndicatorView)
-        activityIndicatorView.snp.makeConstraints { make in
-            make.centerX.equalTo(view)
-            make.centerY.equalTo(view)
-        }
+    // 인디케이터뷰 시작 외부 접근
+    func startLoading() {
         activityIndicatorView.startAnimating()
         view.isUserInteractionEnabled = false
     }
     
-    private func stopLoading() {
+    func stopLoading() {
         activityIndicatorView.stopAnimating()
         view.isUserInteractionEnabled = true
     }
     
     private func addSubView() {
         view.addSubview(emptyView)
-        for user in self.tempUser where filterGender.contains(user.gender) {
-                let tabImageViewController = HomeTabImageViewController(user: user)
-                tabImageViewController.homeViewController = self
-                addChild(tabImageViewController)
-                view.addSubview(tabImageViewController.view)
-        }
+        tempUser
+            .map { users in
+                return users.filter { user in
+                    return self.filterGender.contains(user.gender)
+                }
+            }
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] filteredUsers in
+                guard let self = self else { return }
+                for user in filteredUsers {
+                    let tabImageViewController = HomeUserCardViewController(user: user)
+                    tabImageViewController.homeViewController = self
+                    self.addChild(tabImageViewController)
+                    self.view.insertSubview(tabImageViewController.view, at: 1)
+                }
+            })
+            .disposed(by: disposeBag)
         view.addSubview(likeLabel)
         view.addSubview(passLabel)
+        view.addSubview(activityIndicatorView)
     }
     
     private func makeConstraints() {
@@ -92,6 +92,10 @@ final class HomeViewController: BaseViewController {
             make.centerX.equalTo(view.snp.centerX)
             make.centerY.equalTo(view.safeAreaLayoutGuide.snp.top).offset(70)
             make.width.equalTo(150)
+        }
+        activityIndicatorView.snp.makeConstraints { make in
+            make.centerX.equalTo(view)
+            make.centerY.equalTo(view)
         }
     }
     

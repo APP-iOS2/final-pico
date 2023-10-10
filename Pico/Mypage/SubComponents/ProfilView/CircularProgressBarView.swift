@@ -16,15 +16,16 @@ final class CircularProgressBarView: UIView {
     private let startPoint = CGFloat(Double.pi * 0.7)
    
     private let circleLayerEndPoint = CGFloat(Double.pi * 2.3)
-    private var endPointValue : Double = 0
+    private var endPointValue: Double = 0
     let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func layoutSubviews() {
@@ -41,7 +42,7 @@ final class CircularProgressBarView: UIView {
     }
     
     private func createCircularPath() {
-        var endPoint = CGFloat((Double.pi * 0.7) + (Double.pi * 1.6) * endPointValue)
+        let endPoint = CGFloat((Double.pi * 0.7) + (Double.pi * 1.6) * endPointValue)
         let center = CGPoint(x: bounds.midX, y: bounds.midY)
         let circularPath = UIBezierPath(arcCenter: center, radius: 80, startAngle: startPoint, endAngle: circleLayerEndPoint, clockwise: true)
         let progressPath = UIBezierPath(arcCenter: center, radius: 80, startAngle: startPoint, endAngle: endPoint, clockwise: true)

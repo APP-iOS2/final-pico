@@ -30,12 +30,13 @@ final class NotificationViewController: UIViewController {
     }
     
     private func configViewController() {
+        view.configBackgroundColor()
+        configNavigationBackButton()
         navigationItem.title = "알림"
-        view.backgroundColor = .systemBackground
     }
     
     private func configTableView() {
-        tableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
+        tableView.register(cell: NotificationTableViewCell.self)
         if #available(iOS 15.0, *) {
             tableView.tableHeaderView = UIView()
         }
@@ -62,13 +63,8 @@ extension NotificationViewController: UITableViewDelegate {
 extension NotificationViewController {
     private func configTableviewDatasource() {
         viewModel.notifications
-            .bind(to: tableView.rx.items(cellIdentifier: Identifier.TableCell.notiTableCell, cellType: NotificationTableViewCell.self)) { _, item, cell in
-                cell.nameLabel.text = item.name
-                cell.notiType = item.notiType
-                cell.iconImageView.image = item.notiType == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
-                cell.iconImageView.tintColor = item.notiType == .like ? .systemPink : .picoBlue
-                cell.contentLabel.text = item.notiType == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
-                cell.profileImageView.loadImage(url: item.imageUrl, disposeBag: self.disposeBag)
+            .bind(to: tableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
+                cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti)
             }
             .disposed(by: disposeBag)
     }

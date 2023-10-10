@@ -10,21 +10,29 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 import RxSwift
 
-enum Collections: CaseIterable {
+enum Collections {
     case users
+    case likes
     case notifications
+    case subInfo
     
     var name: String {
         switch self {
         case .users:
             return "users"
+        case .likes:
+            return "likes"
         case .notifications:
             return "notifications"
+        case .subInfo:
+            return "subInfo"
         }
     }
 }
 
 final class FirestoreService {
+    static let shared: FirestoreService = FirestoreService()
+    
     private let dbRef = Firestore.firestore()
     
     func saveDocument<T: Codable>(collectionId: Collections, data: T) {
@@ -40,11 +48,13 @@ final class FirestoreService {
         }
     }
     
+
     func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.global().async {
             do {
                 try self.dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
                 completion(.success(true))
+
                 print("Success to save new document at \(collectionId.name) \(documentId)")
             } catch {
                 print("Error to save new document at \(collectionId.name) \(documentId) \(error)")
@@ -78,11 +88,9 @@ final class FirestoreService {
         }
     }
     
-    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, completion: @escaping (Result<[T]?, Error>) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            
-            let query = dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
+    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type, completion: @escaping (Result<[T]?, Error>) -> Void) {
+        DispatchQueue.global().async {
+            let query = self.dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("Error in query: \(error)")
@@ -96,7 +104,7 @@ final class FirestoreService {
                 } else {
                     var result: [T] = []
                     for document in querySnapshot!.documents {
-                        if let temp = try? document.data(as: T.self) {
+                        if let temp = try? document.data(as: dataType) {
                             result.append(temp)
                         }
                     }

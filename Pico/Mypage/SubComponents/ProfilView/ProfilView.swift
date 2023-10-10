@@ -65,19 +65,16 @@ final class ProfilView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        configView()
+        configBackgroundColor()
         addViews()
         makeConstraints()
         configProgressBarView()
         bindings(viewModel: ProfileViewModel())
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func configView() {
-        backgroundColor = .systemBackground
     }
     
     private func bindings(viewModel: ProfileViewModel) {

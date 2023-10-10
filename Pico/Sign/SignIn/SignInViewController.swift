@@ -62,8 +62,8 @@ final class SignInViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        tappedDismissKeyboard()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
         addSubViews()
         makeConstraints()
         configTextfield()
@@ -91,8 +91,7 @@ extension SignInViewController {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                print("nextbutton")
-                self.tappedButtonAnimation(self.nextButton)
+                nextButton.tappedAnimation()
                 if self.isFullPhoneNumber {
                     let viewController = LoginSuccessViewController()
                     self.navigationController?.pushViewController(viewController, animated: true)
@@ -104,7 +103,7 @@ extension SignInViewController {
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 print("phoneNumberCancleButton")
-                self.tappedButtonAnimation(self.phoneNumberCancleButton)
+                phoneNumberCancleButton.tappedAnimation()
                 self.phoneNumberTextField.text = ""
                 changeViewState(isFull: false)
             })
@@ -185,22 +184,22 @@ extension SignInViewController {
         
         notifyLabel.snp.makeConstraints { make in
             make.top.equalTo(safeArea).offset(10)
-            make.leading.equalToSuperview().offset(Constraint.SignView.padding)
-            make.trailing.equalToSuperview().offset(-Constraint.SignView.padding)
+            make.leading.equalToSuperview().offset(SignView.padding)
+            make.trailing.equalToSuperview().offset(-SignView.padding)
         }
         
         buttonHorizontalStack.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
-            make.leading.equalToSuperview().offset(Constraint.SignView.contentPadding)
-            make.trailing.equalToSuperview().offset(-Constraint.SignView.contentPadding)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(SignView.contentPadding)
+            make.leading.equalToSuperview().offset(SignView.contentPadding)
+            make.trailing.equalToSuperview().offset(-SignView.contentPadding)
             make.height.equalTo(50)
         }
         
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
-            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
-            make.height.equalTo(Constraint.Button.commonHeight)
+            make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
+            make.height.equalTo(CommonConstraints.buttonHeight)
         }
     }
 }

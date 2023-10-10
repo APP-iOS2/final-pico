@@ -20,11 +20,6 @@ final class EntViewController: BaseViewController {
         configRxBinding()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.tabBarController?.tabBar.isHidden = false
-    }
-    
     private func addViews() {
         [collectionView].forEach { item in
             view.addSubview(item)
