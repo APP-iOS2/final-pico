@@ -91,7 +91,7 @@ final class MailReceiveViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var messageView: UITextView = {
+    private let messageView: UITextView = {
         let textView: UITextView = UITextView()
         textView.font = .picoContentFont
         textView.textColor = .picoFontBlack
@@ -115,20 +115,20 @@ final class MailReceiveViewController: UIViewController {
         senderImageView.setCircleImageView()
     }
     
-    private func configNavigationBarItem() {
-        navItem.leftBarButtonItem = leftBarButton
-        navItem.rightBarButtonItem = rightBarButton
-        navigationBar.shadowImage = UIImage()
-        navigationBar.setItems([navItem], animated: true)
-    }
-    
-    private func configSenderStack() {
-        let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
-        senderStack.addGestureRecognizer(stackTap)
+    func getReceiver(mailSender: DummyMailUsers) {
+        
+        viewModel = mailSender
+        navItem.title = mailSender.mailType.rawValue
+        
+        if let imageURL = URL(string: mailSender.messages.imageUrl) {
+            senderImageView.load(url: imageURL)
+        }
+        senderNameLabel.text = mailSender.messages.oppenentName
+        sendDateLabel.text = mailSender.messages.sendedDate
+        messageView.text = mailSender.messages.message
     }
     
     private func addViews() {
-        
         [senderNameLabel, sendDateLabel].forEach { views in
             infoStack.addArrangedSubview(views)
         }
@@ -149,7 +149,6 @@ final class MailReceiveViewController: UIViewController {
     }
     
     private func makeConstraints() {
-        
         let safeArea = view.safeAreaLayoutGuide
         
         navigationBar.snp.makeConstraints { make in
@@ -174,6 +173,18 @@ final class MailReceiveViewController: UIViewController {
         }
     }
     
+    private func configNavigationBarItem() {
+        navItem.leftBarButtonItem = leftBarButton
+        navItem.rightBarButtonItem = rightBarButton
+        navigationBar.shadowImage = UIImage()
+        navigationBar.setItems([navItem], animated: true)
+    }
+    
+    private func configSenderStack() {
+        let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
+        senderStack.addGestureRecognizer(stackTap)
+    }
+    
     // 질문! 단순히 화면 전환을 하는 경우에도 rx 처리를 하는 것이 맞나요?
     private func tappedNavigationButton() {
         rightBarButton.rx.tap
@@ -186,20 +197,6 @@ final class MailReceiveViewController: UIViewController {
                 mailSendView.modalTransitionStyle = .flipHorizontal
                 self.present(mailSendView, animated: true, completion: nil)
             }
-    }
-    
-    func getReceiver(mailSender: DummyMailUsers) {
-        
-        viewModel = mailSender
-        
-        navItem.title = mailSender.mailType.rawValue
-        
-        if let imageURL = URL(string: mailSender.messages.imageUrl) {
-            senderImageView.load(url: imageURL)
-        }
-        senderNameLabel.text = mailSender.messages.oppenentName
-        sendDateLabel.text = mailSender.messages.sendedDate
-        messageView.text = mailSender.messages.message
     }
     
     @objc func tappedBackzButton() {

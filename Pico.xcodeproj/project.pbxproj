@@ -59,6 +59,7 @@
 		6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783D2AC2742400762165 /* MailSendViewController.swift */; };
 		693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783F2AC2745C00762165 /* MailReceiveViewController.swift */; };
 		69B99BE62ACE815600695567 /* MailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B99BE52ACE815600695567 /* MailViewModel.swift */; };
+		69DF1F6B2AD54CF5004028B9 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69DF1F6A2AD54CF5004028B9 /* MailListTableViewCell.swift */; };
 		6A2060482ACD28E100435723 /* CircularProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2060472ACD28E100435723 /* CircularProgressBarView.swift */; };
 		6A20604A2ACD2CF600435723 /* SwitchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2060492ACD2CF600435723 /* SwitchButton.swift */; };
 		6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */; };
@@ -144,7 +145,6 @@
 		B18C1DAC2ACC984400BBB207 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DAB2ACC984400BBB207 /* FirebaseFirestore */; };
 		B18C1DAE2ACC984400BBB207 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DAD2ACC984400BBB207 /* FirebaseFirestoreSwift */; };
 		B18C1DB02ACC984400BBB207 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DAF2ACC984400BBB207 /* FirebaseStorage */; };
-		B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */; };
 		B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */; };
 		BC0D29312ACF1F8C0043554B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */; };
 		BC0D29332ACF1FD70043554B /* HomeUserCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */; };
@@ -222,6 +222,7 @@
 		6937783D2AC2742400762165 /* MailSendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendViewController.swift; sourceTree = "<group>"; };
 		6937783F2AC2745C00762165 /* MailReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveViewController.swift; sourceTree = "<group>"; };
 		69B99BE52ACE815600695567 /* MailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailViewModel.swift; sourceTree = "<group>"; };
+		69DF1F6A2AD54CF5004028B9 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MailListTableViewCell.swift; path = Cell/MailListTableViewCell.swift; sourceTree = "<group>"; };
 		6A2060472ACD28E100435723 /* CircularProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBarView.swift; sourceTree = "<group>"; };
 		6A2060492ACD2CF600435723 /* SwitchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchButton.swift; sourceTree = "<group>"; };
 		6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableView.swift; sourceTree = "<group>"; };
@@ -305,7 +306,6 @@
 		B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoTests.swift; sourceTree = "<group>"; };
 		B1844F752AC0D78000ACFFED /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		B1844F772AC0E3BF00ACFFED /* CommonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonButton.swift; sourceTree = "<group>"; };
-		B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
 		B1D98FA92AC1A9F600C95F03 /* ProfilView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 		BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewModel.swift; sourceTree = "<group>"; };
@@ -729,7 +729,7 @@
 			isa = PBXGroup;
 			children = (
 				B14B59092AC0A644009889DA /* MailViewController.swift */,
-				B1D98FA52AC1A8D800C95F03 /* MailListTableViewCell.swift */,
+				69DF1F6A2AD54CF5004028B9 /* MailListTableViewCell.swift */,
 				6937783D2AC2742400762165 /* MailSendViewController.swift */,
 				6937783F2AC2745C00762165 /* MailReceiveViewController.swift */,
 				69B99BE52ACE815600695567 /* MailViewModel.swift */,
@@ -1277,8 +1277,8 @@
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
 				B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */,
 				B1D98FAA2AC1A9F600C95F03 /* ProfilView.swift in Sources */,
-				B1D98FA62AC1A8D800C95F03 /* MailListTableViewCell.swift in Sources */,
 				B15ABE372AC31DD200529C29 /* UIViewController+Extensions.swift in Sources */,
+				69DF1F6B2AD54CF5004028B9 /* MailListTableViewCell.swift in Sources */,
 				4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */,
 				B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
