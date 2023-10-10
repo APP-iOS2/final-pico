@@ -7,8 +7,11 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class MailListTableViewCell: UITableViewCell {
+    
+    private let disposeBag = DisposeBag()
     
     private let userImage: UIImageView = {
         let imageView = UIImageView()
@@ -84,11 +87,11 @@ final class MailListTableViewCell: UITableViewCell {
     
     // 질문! 받아와서 보여줘야하는 경우 코드를 cell 뷰 파일에 두는 것이 맞나요? 또한 rx 처리를 해줘야하나요?
     func getData(senderUser: DummyMailUsers) {
-        if let imageURL = URL(string: senderUser.messages.imageUrl) {
-            userImage.load(url: imageURL)
-        }
+        
+        userImage.loadImage(url: senderUser.messages.imageUrl, disposeBag: self.disposeBag)
         nameLabel.text = senderUser.messages.oppenentName
         nameLabel.sizeToFit()
+        mbtiLabelView.setMbti(mbti: senderUser.messages.mbti)
         self.message.text = senderUser.messages.message
         dateLabel.text = senderUser.messages.sendedDate
         if !senderUser.messages.isReading {

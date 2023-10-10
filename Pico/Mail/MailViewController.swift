@@ -13,12 +13,14 @@ import RxRelay
 
 final class MailViewController: BaseViewController {
     
-    private let emptyView = EmptyViewController(type: .message)
     private let viewModel = MailViewModel()
     private var disposeBag = DisposeBag()
     
+    private let emptyView = EmptyViewController(type: .message)
+    private let refreshControl = UIRefreshControl()
+    
     private var mailTypeButtons: [UIButton] = []
-    private var mailType: MailType = .receive // 받기
+    private var mailType: MailType = .receive
     
     private let mailText: UILabel = {
         let label = UILabel()
@@ -66,6 +68,7 @@ final class MailViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        initRefresh()
         addViews()
         makeConstraints()
         configTableView()
@@ -137,27 +140,43 @@ final class MailViewController: BaseViewController {
             .disposed(by: disposeBag)
     }
     
-    private func configTableView() {
-        mailListTableView.rowHeight = 100
-        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
-        configTableviewDelegate()
-    }
-    
     private func configMailTypeButtons() {
         sendButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
         receiveButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
     }
     
+    private func configTableView() {
+        mailListTableView.rowHeight = 100
+        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        configTableviewDelegate()
+        
+        refreshControl.endRefreshing()
+        mailListTableView.refreshControl = refreshControl
+    }
+    
+    private func initRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        mailListTableView.refreshControl = refreshControl
+    }
+    
     private func configTableviewDelegate() {
-           mailListTableView.rx.modelSelected(DummyMailUsers.self)
-               .subscribe(onNext: { item in
-                   let mailReceiveView = MailReceiveViewController()
-                   mailReceiveView.modalPresentationStyle = .formSheet
-                   mailReceiveView.getReceiver(mailSender: item)
-                   self.present(mailReceiveView, animated: true, completion: nil)
-               })
-               .disposed(by: disposeBag)
-       }
+        mailListTableView.rx.modelSelected(DummyMailUsers.self)
+            .subscribe(onNext: { item in
+                let mailReceiveView = MailReceiveViewController()
+                mailReceiveView.modalPresentationStyle = .formSheet
+                mailReceiveView.getReceiver(mailSender: item)
+                self.present(mailReceiveView, animated: true, completion: nil)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    @objc func refreshTable(refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.mailListTableView.reloadData()
+            refresh.endRefreshing()
+        }
+    }
     
     @objc func tappedMailTypeButton(_ sender: UIButton) {
         for button in mailTypeButtons {
@@ -168,6 +187,7 @@ final class MailViewController: BaseViewController {
                 sender.backgroundColor = .picoAlphaBlue
                 sender.setTitleColor(.white, for: .normal)
                 mailType = MailType(rawValue: text) ?? .receive
+                
             case false:
                 button.backgroundColor = .picoGray
                 button.setTitleColor(.picoBetaBlue, for: .normal)
