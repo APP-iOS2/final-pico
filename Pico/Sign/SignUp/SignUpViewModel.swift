@@ -35,9 +35,6 @@ final class SignUpViewModel {
     var gender: GenderType = .etc
     var birth: String = ""
     var nickName: String = ""
-    func formatNickName(name: String) -> String {
-        return nickName.replacingOccurrences(of: " ", with: "")
-    }
     var location: Location = Location(address: "", latitude: 0, longitude: 0)
     var imageArray: [UIImage] = []
     var createdDate: Double = 0
@@ -45,7 +42,7 @@ final class SignUpViewModel {
     var isSubscribe: Bool = false
     
     lazy var newUser: User =
-    User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: formatNickName(name: nickName), location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
+    User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
     
     private init() {
         locationSubject.subscribe { location in
@@ -89,7 +86,6 @@ final class SignUpViewModel {
             }
             
             guard documents.first != nil else {
-                print("번호와 맞는게 없는걸?")
                 self.isRightUser = true
                 completion()
                 return
@@ -109,7 +105,6 @@ final class SignUpViewModel {
             }
             
             guard documents.first != nil else {
-                print("이름이 맞는게 없는걸?")
                 self.isRightName = true
                 completion()
                 return
