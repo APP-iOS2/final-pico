@@ -211,11 +211,13 @@ extension SignUpPhoneNumberViewController {
             guard let text = phoneNumberTextField.text else { return }
             viewModel.checkPhoneNumber(userNumber: text) {
                 guard self.viewModel.isRightUser else {
+                    Loading.hideLoading()
                     self.showAlert(message: "이미 등록된 번호입니다.") {
                         self.reset()
                     }
                     return
                 }
+                Loading.hideLoading()
                 self.viewModel.phoneNumber = text
                    
                 let viewController = SignUpGenderViewController()

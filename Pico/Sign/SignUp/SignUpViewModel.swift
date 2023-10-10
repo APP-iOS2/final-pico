@@ -80,6 +80,7 @@ final class SignUpViewModel {
     }
     
     func checkPhoneNumber(userNumber: String, completion: @escaping () -> ()) {
+        Loading.showLoading()
         self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
             guard err == nil, let documents = snapShot?.documents else {
                 print(err ?? "서버오류 비상비상")
@@ -99,7 +100,8 @@ final class SignUpViewModel {
     }
     
     func checkNickName(name: String, completion: @escaping () -> ()) {
-        self.dbRef.collection("users").whereField("nickName", isEqualTo: formatNickName(name: name)).getDocuments { snapShot, err in
+        Loading.showLoading()
+        self.dbRef.collection("users").whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
             guard err == nil, let documents = snapShot?.documents else {
                 print(err ?? "서버오류 비상비상")
                 self.isRightName = false

@@ -13,7 +13,7 @@ final class SignUpNickNameViewController: UIViewController {
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false
-    
+    private var userNickName: String = ""
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -163,15 +163,18 @@ extension SignUpNickNameViewController {
     // MARK: - @objc
     @objc private func tappedCheckButton(_ sender: UIButton) {
         sender.tappedAnimation()
-        guard let text = nickNameTextField.text else { return }
-        showAlert(message: "\(text) 이름으로 설정합니다.", isCancelButton: true) {
-            self.viewModel.checkNickName(name: text) {
+        guard let text = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
+        userNickName = text
+        showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) {
+            self.viewModel.checkNickName(name: self.userNickName) {
                 guard self.viewModel.isRightName else {
+                    Loading.hideLoading()
                     self.showAlert(message: "이미 등록된 이름입니다.") {
                         self.reset()
                     }
                     return
                 }
+                Loading.hideLoading()
             }
             self.updateNextButton(isCheck: true)
         }
@@ -184,12 +187,9 @@ extension SignUpNickNameViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        guard let text = nickNameTextField.text else { return }
-        
-            self.viewModel.nickName = text
-            let viewController = SignUpPictureViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        
+        self.viewModel.nickName = userNickName
+        let viewController = SignUpPictureViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
    
 }
