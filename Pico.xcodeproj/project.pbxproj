@@ -13,6 +13,7 @@
 		363CC4842ACF9CC500C86EDC /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CC4832ACF9CC500C86EDC /* LocationManager.swift */; };
 		3677DBC52AD4DE190026E089 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 3677DBC42AD4DE190026E089 /* YOLOv3.mlmodel */; };
 		3677DBC72AD4E20C0026E089 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3677DBC62AD4E20C0026E089 /* GoogleService-Info.plist */; };
+		3677DBC92AD4EC530026E089 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3677DBC82AD4EC530026E089 /* SignInViewModel.swift */; };
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
 		369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */; };
@@ -181,6 +182,7 @@
 		363CC4832ACF9CC500C86EDC /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		3677DBC42AD4DE190026E089 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
 		3677DBC62AD4E20C0026E089 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../피코/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3677DBC82AD4EC530026E089 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
 		369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceText.swift; sourceTree = "<group>"; };
@@ -707,6 +709,7 @@
 			children = (
 				B17D67832AC0A835006F91DC /* SignInViewController.swift */,
 				36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */,
+				3677DBC82AD4EC530026E089 /* SignInViewModel.swift */,
 			);
 			path = SignIn;
 			sourceTree = "<group>";
@@ -1259,6 +1262,7 @@
 				BCEACEF72AC3DF5F00C93699 /* MBTICollectionViewController.swift in Sources */,
 				BC0D29332ACF1FD70043554B /* HomeUserCardViewModel.swift in Sources */,
 				4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */,
+				3677DBC92AD4EC530026E089 /* SignInViewModel.swift in Sources */,
 				5375E74E2ACD4755001A571D /* LikeMeViewModel.swift in Sources */,
 				36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */,
 				B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */,

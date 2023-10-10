@@ -48,7 +48,6 @@ final class FirestoreService {
         }
     }
     
-
     func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.global().async {
             do {
