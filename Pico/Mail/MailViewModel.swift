@@ -94,6 +94,7 @@ final class MailViewModel {
     /// mailtableviewDatasore
     func configMailTableviewDatasource(tableView: UITableView, type: MailType) {
         
+        Loading.showLoading()
         tableView.delegate = nil
         tableView.dataSource = nil
         
@@ -102,6 +103,7 @@ final class MailViewModel {
                 .bind(to: tableView.rx
                     .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
                         cell.getData(senderUser: item)
+                        Loading.hideLoading()
                     }
                     .disposed(by: disposeBag)
         } else {
@@ -109,6 +111,7 @@ final class MailViewModel {
                 .bind(to: tableView.rx
                     .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
                         cell.getData(senderUser: item)
+                        Loading.hideLoading()
                     }
                     .disposed(by: disposeBag)
         }
