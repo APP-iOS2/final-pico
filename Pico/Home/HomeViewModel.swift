@@ -9,8 +9,6 @@ import RxRelay
 import Foundation
 
 final class HomeViewModel {
-    //    static let shared = HomeViewModel()
-    //    var filterGender: [GenderType] = [.female, .male, .etc]
     var users = BehaviorRelay<[User]>(value: [])
     private let disposeBag = DisposeBag()
     
@@ -19,7 +17,7 @@ final class HomeViewModel {
     }
     
     func loadUsersRx() {
-        FirestoreService().loadDocumentRx(collectionId: .users, dataType: User.self)
+        FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] data in
                 self?.users.accept(data)
@@ -30,7 +28,7 @@ final class HomeViewModel {
     }
     
     func loadUsers() {
-        FirestoreService().loadDocuments(collectionId: .users, dataType: User.self) { result in
+        FirestoreService.shared.loadDocuments(collectionId: .users, dataType: User.self) { result in
             switch result {
             case .success(let data):
                 self.users.accept(data)

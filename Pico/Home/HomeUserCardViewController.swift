@@ -226,7 +226,7 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func loadUserImages() {
-        homeViewController?.startLoading()
+        Loading.showLoading()
         for (index, url) in user.imageURLs.enumerated() {
             
             let imageView = UIImageView()
@@ -251,7 +251,7 @@ final class HomeUserCardViewController: UIViewController {
                 .observe(on: MainScheduler.instance)
                 .subscribe { image in
                     imageView.image = image
-                    self.homeViewController?.stopLoading()
+                    Loading.hideLoading()
                 }
                 .disposed(by: disposeBag)
             
@@ -333,6 +333,7 @@ final class HomeUserCardViewController: UIViewController {
     
     @objc func tappedPickBackButton() {
         if let lastView = homeViewController?.removedView.last {
+            self.viewModel.deleteLikeData(sendUserInfo: viewModel.tempMy)
             UIView.animate(withDuration: 0.3) {
                 lastView.center = self.view.center
                 lastView.transform = CGAffineTransform(rotationAngle: 0)
