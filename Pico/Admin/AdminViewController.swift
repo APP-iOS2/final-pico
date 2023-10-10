@@ -80,7 +80,7 @@ final class AdminViewController: BaseViewController {
 extension AdminViewController {
     
     private func configTableViewDatasource() {
-        viewModel.filteredUsers
+        viewModel.sortedUsers
             .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
                 guard let imageURL = item.imageURLs[safe: 0] else { return }
                 cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate.toString())

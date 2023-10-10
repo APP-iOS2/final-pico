@@ -67,7 +67,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         button.tintColor = .white
         return button
     }()
-  
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
@@ -111,7 +111,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         nameLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(5)
             make.bottom.equalToSuperview().offset(-5)
-
+            
         }
         nameLabel.setContentHuggingPriority(.required, for: .vertical)
         nameLabel.setContentCompressionResistancePriority(.required, for: .vertical)
