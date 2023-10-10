@@ -54,7 +54,7 @@ final class AdminViewModel {
     let userList = BehaviorRelay<[User]>(value: [])
     
     var selectedSortType: BehaviorRelay<SortType> = BehaviorRelay(value: .dateAscending)
-    var selectedFilteredType: BehaviorRelay<FilterType> = BehaviorRelay(value: .name)
+    var selectedFilteredType: BehaviorSubject<FilterType> = BehaviorSubject(value: .name)
     
     var sortedUsers: Observable<[User]> {
         return Observable.combineLatest(selectedSortType, userList)
@@ -110,6 +110,6 @@ final class AdminViewModel {
     }
     
     func updateSelectedFilterType(to filterType: FilterType) {
-        selectedFilteredType.accept(filterType)
+        selectedFilteredType.onNext(filterType)
     }
 }
