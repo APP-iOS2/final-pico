@@ -9,16 +9,59 @@ import Foundation
 import RxSwift
 import RxRelay
 import UIKit
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 final class SignUpViewModel {
-    static var userMbti = "" // mbti타입에 맞게 소문자로 만들어야함
-    static var phoneNumber: String = ""
-    static var gender: GenderType = .etc
-    static var birth: String = ""
-    static var nickName: String = ""
-    static var location: Location = Location(address: "", latitude: 0, longitude: 0)
-    static var imageURLs: [UIImage] = [] // 스토리지에 넣고 돌려야함
-    static var createdDate: Double = 0
-    static var chuCount: Int = 0
-    static var isSubscribe: Bool = false
+    static let shared: SignUpViewModel = SignUpViewModel()
+    private let disposeBag = DisposeBag()
+    let id = UUID().uuidString
+    var userMbti = ""
+    var phoneNumber: String = ""
+    var gender: GenderType = .etc
+    var birth: String = ""
+    var nickName: String = ""
+    var location: Location = Location(address: "", latitude: 0, longitude: 0)
+    var imageArray: [UIImage] = []
+    var createdDate: Double = 0
+    var chuCount: Int = 0
+    var isSubscribe: Bool = false
+    var imagesSubject: PublishSubject<[UIImage]> = PublishSubject()
+    var urlStringsSubject: PublishSubject<[String]> = PublishSubject()
+    var locationSubject: PublishSubject<Location> = PublishSubject()
+    var isSaveSuccess: PublishSubject<Void> = PublishSubject()
+    lazy var newUser: User =
+    User(id: id, mbti: .entp, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
+    
+    private init() {
+        locationSubject.subscribe { location in
+            self.newUser.location = location
+            self.saveImage()
+        }
+        .disposed(by: disposeBag)
+        
+        imagesSubject
+            .flatMap { images -> Observable<[String]> in
+                return StorageService.shared.getUrlStrings(images: images, userId: self.id)
+            }
+            .subscribe(onNext: urlStringsSubject.onNext(_:))
+            .disposed(by: disposeBag)
+        
+        urlStringsSubject
+            .subscribe { strings in
+                print("스트링 저장완료")
+                self.newUser.imageURLs = strings
+                self.saveNewUser()
+            }.disposed(by: disposeBag)
+    }
+    
+    func saveImage() {
+        imagesSubject.onNext(imageArray)
+    }
+    
+    func saveNewUser() {
+        FirestoreService().saveDocumentRx(collectionId: .users, documentId: newUser.id, data: newUser)
+            .subscribe(onNext: isSaveSuccess.onNext(_:))
+            .disposed(by: disposeBag)
+    }
 }

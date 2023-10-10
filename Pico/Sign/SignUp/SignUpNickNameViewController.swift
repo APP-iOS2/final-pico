@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
-    
+    var viewModel: SignUpViewModel = .shared
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false
@@ -153,7 +153,7 @@ extension SignUpNickNameViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        SignUpViewModel.nickName = nickNameTextField.text!
+        viewModel.nickName = nickNameTextField.text!
         let viewController = SignUpPictureViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }

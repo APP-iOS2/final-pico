@@ -8,9 +8,13 @@
 import UIKit
 import SnapKit
 import CoreLocation
+import RxSwift
+import RxRelay
 
 final class SignUpTermsOfServiceViewController: UIViewController {
-    
+    var viewModel: SignUpViewModel = .shared
+
+    private let disposeBag = DisposeBag()
     private var locationManager: CLLocationManager = CLLocationManager()
     private var currentLocation: CLLocationCoordinate2D?
     private var isLoading: Bool = false
@@ -59,10 +63,48 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configTableView()
+        configLocation()
+        viewModel.isSaveSuccess
+            .observe(on: MainScheduler.instance)
+            .bind { _ in
+                print("저장완료")
+                self.navigationController?.popToRootViewController(animated: true)
+            }
+            .disposed(by: disposeBag)
+    }
+}
+// MARK: - 위치관련
+extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
+    private func configLocation() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        DispatchQueue.global().async {
+            if CLLocationManager.locationServicesEnabled() {
+                self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                self.locationManager.startUpdatingLocation()
+            } else {
+                print("이미 했잖아")
+            }
+        }
+    }
+    private func getAddress(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
+        
+        let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
+        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
+            if let error = error {
+                print("Geocoding Error: \(error)")
+                return
+            }
+            if let placemark = placemarks?.first {
+                let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
+                self.viewModel.locationSubject.onNext(Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
+            }
+        }
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        configLocation()
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
     }
 }
 // MARK: - Config
@@ -73,47 +115,24 @@ extension SignUpTermsOfServiceViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
     
-    private func configLocation() {
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        // 위도 경도
-        let space = locationManager.location?.coordinate
-        let lat = space?.latitude
-        let long = space?.longitude
-        getAddressFromCoordinates(latitude: lat, longitude: long)
-        DispatchQueue.global().async {
-            if CLLocationManager.locationServicesEnabled() {
-                self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-                self.locationManager.startUpdatingLocation()
-            } else {
-                print("이미 했잖아")
-            }
+    private func updateNextButton(isCheck: Bool) {
+        switch isCheck {
+        case true:
+            nextButton.isEnabled = true
+            nextButton.backgroundColor = .picoBlue
+        case false:
+            nextButton.isEnabled = false
+            nextButton.backgroundColor = .picoGray
         }
     }
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
-        navigationController?.popToRootViewController(animated: true)
-    }
-}
-// MARK: - 위치관련
-extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
-    func getAddressFromCoordinates(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
-        let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
-        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
-            if let error = error {
-                print("Geocoding Error: \(error)")
-                return
-            }
-            if let placemark = placemarks?.first {
-                let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
-                SignUpViewModel.location = Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-            }
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error)
+        // 위도 경도
+        let space = locationManager.location?.coordinate
+        let lat = space?.latitude
+        let long = space?.longitude
+        getAddress(latitude: lat, longitude: long)
+        
     }
 }
 // MARK: - tableView관련
@@ -128,17 +147,6 @@ extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDa
         cell.textLabel?.text = termsOfServiceTexts[indexPath.row]
         cell.textLabel?.numberOfLines = 0
         return cell
-    }
-    
-    func updateNextButton(isCheck: Bool) {
-        switch isCheck {
-        case true:
-            nextButton.isEnabled = true
-            nextButton.backgroundColor = .picoBlue
-        case false:
-            nextButton.isEnabled = false
-            nextButton.backgroundColor = .picoGray
-        }
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {

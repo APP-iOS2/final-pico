@@ -13,6 +13,11 @@ import Vision
 
 final class SignUpPictureViewController: UIViewController {
     
+    private var isDetectedImage: Bool? = false
+    private var objectDetectionRequest: VNCoreMLRequest?
+    private var userImages: [UIImage] = []
+    let viewModel: SignUpViewModel = .shared
+
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -69,12 +74,7 @@ final class SignUpPictureViewController: UIViewController {
         view.register(cell: ProfileEditCollectionCell.self)
         return view
     }()
-    
-    private var userImages: [UIImage] = []
-    
-    private var isDetectedImage: Bool? = false
-    private var objectDetectionRequest: VNCoreMLRequest?
-    
+
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,6 +105,7 @@ final class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
+
         let detectionGroup = DispatchGroup()
         
         Loading.showLoading()
@@ -128,7 +129,7 @@ final class SignUpPictureViewController: UIViewController {
                 
                 if allImagesDetected {
                     self.showAlert(message: "이미지가 등록되었습니다.") {
-                        SignUpViewModel.imageURLs = self.userImages
+                        self.viewModel.imageArray = self.userImages
                         let viewController = SignUpTermsOfServiceViewController()
                         self.navigationController?.pushViewController(viewController, animated: true)
                     }

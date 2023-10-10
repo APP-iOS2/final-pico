@@ -14,8 +14,8 @@ struct User: Codable {
     let gender: GenderType
     let birth: String
     let nickName: String
-    let location: Location
-    let imageURLs: [String]
+    var location: Location
+    var imageURLs: [String]
     let createdDate: Double
     
     /// 추가정보

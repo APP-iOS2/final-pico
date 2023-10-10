@@ -7,7 +7,7 @@
 
 import Foundation
 
-class LocationManager {
+final class LocationManager {
     static var shared = LocationManager()
     var longitude: Double?
     var latitude: Double?
