@@ -16,7 +16,7 @@ final class SignInViewModel {
     var loginUser: User = UserDummyData.users[0]
     var isRightUser = false
     
-    func signIn(userNumber: String, completion: @escaping () -> ()) {
+    func signIn(userNumber: String, completion: @escaping (User?) -> ()) {
         Loading.showLoading()
         self.isRightUser = false
         DispatchQueue.global().async {
@@ -30,7 +30,7 @@ final class SignInViewModel {
                 guard let document = documents.first else {
                     print("번호와 맞는게 없는걸?")
                     self.isRightUser = false
-                    completion()
+                    completion(nil)
                     return
                 }
                 
@@ -53,7 +53,7 @@ final class SignInViewModel {
                 self.isRightUser = true
                 
                 self.loginUser = retrievedUser
-                completion()
+                completion(retrievedUser)
             }
         }
     }

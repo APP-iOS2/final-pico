@@ -46,7 +46,7 @@ final class HomeViewController: BaseViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] filteredUsers in
                 guard let self = self else { return }
-                var shuffledUsers = filteredUsers.shuffled()
+                let shuffledUsers = filteredUsers.shuffled()
                 for (index, user) in shuffledUsers.enumerated() where index <= numberOfCards - 1 {
                         let tabImageViewController = HomeUserCardViewController(user: user)
                         tabImageViewController.homeViewController = self

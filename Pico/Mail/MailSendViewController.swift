@@ -182,19 +182,12 @@ final class MailSendViewController: UIViewController {
     
     @objc private func tappedSendButton(_ sender: UIButton) {
         sender.tappedAnimation()
-        //sender: 로그인한 사람, recevie 받는 사람
+        // sender: 로그인한 사람, recevie 받는 사람
         viewModel.saveMailData(sendUserInfo: UserDummyData.users[1], receiveUserInfo: UserDummyData.users[0], message: messageView.text)
         presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
     
     @objc func tappedBackzButton() {
         dismiss(animated: true)
-    }
-    
-    func dateFormetter() -> String {
-        var formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        var currentDateString = formatter.string(from: Date())
-        return currentDateString
     }
 }

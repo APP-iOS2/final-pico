@@ -26,6 +26,7 @@ final class LoginSuccessViewController: UIViewController {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.image = UIImage(systemName: "checkmark.circle")
+        imageView.tintColor = .picoBlue
         return imageView
     }()
     
@@ -77,8 +78,7 @@ extension LoginSuccessViewController {
         }
         
         checkImageView.snp.makeConstraints { make in
-            make.centerX.equalTo(safeArea)
-            make.centerY.equalTo(safeArea)
+            make.center.equalToSuperview()
             make.width.height.equalTo(80)
         }
         

@@ -75,7 +75,7 @@ final class MailViewModel {
         var receiveMails: [DummyMailUsers] = []
         var sendMails: [DummyMailUsers] = []
         
-        mailList.value
+        _ = mailList.value
             .map {
                 if $0.mailType == .receive {
                     receiveMails.append($0)
@@ -113,7 +113,7 @@ final class MailViewModel {
         }
     }
     
-    //질문! textView에서 rx 설정하는 아래 코드를 mvvm으로 할 때 여기에 두는 것이 맞나요? 만약 다른 파일을 만들어서 둬야한다면 어떤 식으로 두면 좋을지 모르겠습닏
+    // 질문! textView에서 rx 설정하는 아래 코드를 mvvm으로 할 때 여기에 두는 것이 맞나요? 만약 다른 파일을 만들어서 둬야한다면 어떤 식으로 두면 좋을지 모르겠습닏
     /// textview 변경시 불러지는 함수
     func changeTextView(textView: UITextView, label: UILabel) {
         let textViewPlaceHolder = "메시지를 입력하세요"
@@ -156,19 +156,19 @@ final class MailViewModel {
         
         let dbRef = Firestore.firestore().collection(Collections.mail.name)
         /*
-        firestore.saveDocument(collectionId: .mail,
-                               documentId: UUID().uuidString,
-                               data: Mail(userId: UUID().uuidString, 
+         firestore.saveDocument(collectionId: .mail,
+         documentId: UUID().uuidString,
+         data: Mail(userId: UUID().uuidString,
          mailInfo: [Mail.MailInfo(id: UUID().uuidString, sendedUserId: UUID().uuidString, receivedUserId: UUID().uuidString, messages: [Mail.Message(id: UUID().uuidString, message: messageView.text, sendedDate: dateFormetter())])]) )
          */
         
         let messages: [String: Any] = [
-                "messageId": UUID().uuidString,
-                "message": message,
-                "sendedDate": dateFormetter()
-            ]
+            "messageId": UUID().uuidString,
+            "message": message,
+            "sendedDate": Date().timeIntervalSince1970.toString()
+        ]
         
-        //보내는 사람
+        // 보내는 사람
         dbRef.document(sendUserInfo.id).setData(
             [
                 "userId": sendUserInfo.id,
@@ -185,14 +185,14 @@ final class MailViewModel {
                 }
             }
         
-        //받는 사람
+        // 받는 사람
         dbRef.document(receiveUserInfo.id).setData(
-            [ 
+            [
                 "userId": receiveUserInfo.id,
                 "mailInfo": [
-                  "sendedUserId": sendUserInfo.id,
-                  "receivedUserId": receiveUserInfo.id,
-                  "messages": FieldValue.arrayUnion([messages])
+                    "sendedUserId": sendUserInfo.id,
+                    "receivedUserId": receiveUserInfo.id,
+                    "messages": FieldValue.arrayUnion([messages])
                 ]
             ], merge: true) { error in
                 if let error = error {
@@ -201,12 +201,5 @@ final class MailViewModel {
                     print("평가 업데이트 성공")
                 }
             }
-    }
-    
-    private func dateFormetter() -> String {
-        var formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        var currentDateString = formatter.string(from: Date())
-        return currentDateString
     }
 }

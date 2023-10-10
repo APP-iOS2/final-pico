@@ -13,6 +13,7 @@ import RxCocoa
 final class MailReceiveViewController: UIViewController {
     
     private var viewModel: DummyMailUsers?
+    private var disposeBag = DisposeBag()
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -197,6 +198,7 @@ final class MailReceiveViewController: UIViewController {
                 mailSendView.modalTransitionStyle = .flipHorizontal
                 self.present(mailSendView, animated: true, completion: nil)
             }
+            .disposed(by: disposeBag)
     }
     
     @objc func tappedBackzButton() {

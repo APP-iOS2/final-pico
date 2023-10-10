@@ -97,12 +97,14 @@ extension SignInViewController {
                 nextButton.tappedAnimation()
                 guard self.isFullPhoneNumber else { return }
                 guard let text = self.phoneNumberTextField.text else { return }
-                viewModel.signIn(userNumber: text) {
+                viewModel.signIn(userNumber: text) { user in
                     if self.viewModel.isRightUser {
                         Loading.hideLoading()
-                        let viewController = LoginSuccessViewController()
-                        self.navigationController?.pushViewController(viewController, animated: true)
-                    
+                        if let user = user {
+                            UserDefaultsManager.shared.setUserData(userData: user)
+                            let viewController = LoginSuccessViewController()
+                            self.navigationController?.pushViewController(viewController, animated: true)
+                        }
                     } else {
                         Loading.hideLoading()
                         self.showAlert(message: "등록되지 않은 번호입니다.") {
