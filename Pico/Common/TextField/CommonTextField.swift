@@ -51,7 +51,7 @@ final class CommonTextField: UIView {
         makeConstraints()
         configTextField()
         configButtons()
-        configBorder(color: .picoGray)
+        configBorder(color: .picoGray, width: 1)
     }
     
     @available(*, unavailable)
@@ -75,18 +75,18 @@ final class CommonTextField: UIView {
 
 extension CommonTextField: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        configBorder(color: .picoBlue)
+        configBorder()
         removeAllButton.isHidden = false
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        configBorder(color: .picoGray)
+        configBorder(color: .picoGray, width: 1)
         removeAllButton.isHidden = true
     }
     
-    private func configBorder(color: UIColor) {
+    private func configBorder(color: UIColor = .picoBlue, width: CGFloat = 2) {
         self.layer.borderColor = color.cgColor
-        self.layer.borderWidth = 1
+        self.layer.borderWidth = width
         self.layer.cornerRadius = 5
         self.clipsToBounds = true
     }
