@@ -7,24 +7,13 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class NotificationViewController: UIViewController {
-    struct DummyNoti {
-        let name: String
-        let age: Int
-        let imageUrl: String
-        let notiType: NotiType
-        var title: String {
-            return "\(name), \(age)"
-        }
-    }
-    
     private let tableView = UITableView()
-    private let notifications: [DummyNoti] = [
-        DummyNoti(name: "찐 윈터", age: 21, imageUrl: "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg", notiType: .like),
-        DummyNoti(name: "찐 윈터라니깐여;", age: 21, imageUrl: "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg", notiType: .message),
-        DummyNoti(name: "풍리나", age: 35, imageUrl: "https://flexible.img.hani.co.kr/flexible/normal/640/441/imgdb/original/2023/0525/20230525501996.jpg", notiType: .like)
-    ]
+    private let viewModel = NotificationViewModel()
+    private var disposeBag = DisposeBag()
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.reloadData()
@@ -36,17 +25,18 @@ final class NotificationViewController: UIViewController {
         addViews()
         makeConstraints()
         configTableView()
+        configTableviewDelegate()
+        configTableviewDatasource()
     }
     
     private func configViewController() {
+        view.configBackgroundColor()
+        configNavigationBackButton()
         navigationItem.title = "알림"
-        view.backgroundColor = .systemBackground
     }
     
     private func configTableView() {
-        tableView.register(NotificationTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.notiTableCell)
-        tableView.delegate = self
-        tableView.dataSource = self
+        tableView.register(cell: NotificationTableViewCell.self)
         if #available(iOS 15.0, *) {
             tableView.tableHeaderView = UIView()
         }
@@ -63,20 +53,38 @@ final class NotificationViewController: UIViewController {
     }
 }
 
-extension NotificationViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return notifications.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.notiTableCell, for: indexPath) as? NotificationTableViewCell else {
-            return UITableViewCell()
-        }
-        cell.configData(imageUrl: notifications[indexPath.row].imageUrl, title: notifications[indexPath.row].title, type: notifications[indexPath.row].notiType)
-        return cell
-    }
-    
+extension NotificationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
+    }
+}
+
+// MARK: - UITableView+Rx
+extension NotificationViewController {
+    private func configTableviewDatasource() {
+        viewModel.notifications
+            .bind(to: tableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
+                cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti)
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func configTableviewDelegate() {
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        tableView.rx.modelSelected(Noti.self)
+            .subscribe(onNext: { item in
+                if item.notiType == .like {
+                    let viewController = UserDetailViewController()
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                } else {
+                    if let tabBarController = self.tabBarController as? TabBarController {
+                        tabBarController.selectedIndex = 1
+                        let viewControllers = self.navigationController?.viewControllers
+                        self.navigationController?.setViewControllers(viewControllers ?? [], animated: false)
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }

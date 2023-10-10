@@ -12,7 +12,7 @@
     {
       "identity" : "firebase-ios-sdk",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/firebase/firebase-ios-sdk.git",
+      "location" : "https://github.com/firebase/firebase-ios-sdk",
       "state" : {
         "revision" : "837d4af6ead57cec1fc38007892500d3139c7556",
         "version" : "10.16.0"
@@ -97,6 +97,15 @@
       "state" : {
         "revision" : "e70e889c0196c76d22759eb50d6a0270ca9f1d9e",
         "version" : "2.3.1"
+      }
+    },
+    {
+      "identity" : "rxdatasources",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RxSwiftCommunity/RxDataSources.git",
+      "state" : {
+        "revision" : "90c29b48b628479097fe775ed1966d75ac374518",
+        "version" : "5.0.2"
       }
     },
     {

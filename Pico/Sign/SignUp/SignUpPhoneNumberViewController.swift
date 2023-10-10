@@ -7,9 +7,11 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
-    
+    var viewModel: SignUpViewModel = .shared
+    private var phoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
     private var messageButtons: [UIButton] = []
@@ -28,7 +30,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
         view.progress = 0.284
-        view.layer.cornerRadius = Constraint.SignView.progressViewCornerRadius
+        view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
         return view
     }()
@@ -70,7 +72,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return button
     }()
     
-    private let phoneMessageStackView: UIStackView = {
+    private let phoneMessageHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -90,9 +92,9 @@ final class SignUpPhoneNumberViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
-        tappedDismissKeyboard()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButtons()
@@ -109,8 +111,10 @@ final class SignUpPhoneNumberViewController: UIViewController {
         super.viewWillDisappear(animated)
         unregisterKeyboard()
     }
-    
-    // MARK: - Config
+}
+// MARK: - Config
+extension SignUpPhoneNumberViewController {
+  
     private func configButtons() {
         phoneNumberCheckButton.addTarget(self, action: #selector(tappedPhoneNumberCheckButton), for: .touchUpInside)
         phoneNumberCancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
@@ -121,53 +125,57 @@ final class SignUpPhoneNumberViewController: UIViewController {
         phoneNumberTextField.delegate = self
     }
     
-    // MARK: - Tapped
-    @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
-            self.phoneNumberCheckButton.isEnabled = false
-            self.phoneNumberCheckButton.backgroundColor = .picoGray
-            self.phoneNumberCancleButton.isHidden = true
-            self.phoneNumberTextField.textColor = .picoBlue
-            self.phoneNumberTextField.isEnabled = false
-            
-            self.updateNextButton(isCheck: true)
-        }
-    }
-    
-    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        phoneNumberTextField.text = ""
-        updatePhoneTextField(isFull: false)
-    }
-    
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        if isFullPhoneNumber && isTappedCheckButton {
-            tappedButtonAnimation(sender)
-            let viewController = SignUpGenderViewController()
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-    }
-    
     private func updatePhoneTextField(isFull: Bool) {
-        if isFull {
+        switch isFull {
+        case true:
             phoneNumberCheckButton.isHidden = false
             isFullPhoneNumber = true
-        } else {
+        case false:
             phoneNumberCheckButton.isHidden = true
             isFullPhoneNumber = false
         }
     }
     
     private func updateNextButton(isCheck: Bool) {
-        if isCheck {
-            phoneMessageStackView.isHidden = false
+        switch isCheck {
+        case true:
+            phoneMessageHorizontalStack.isHidden = false
             phoneNumberTextField.textColor = .picoBlue
             nextButton.backgroundColor = .picoBlue
             isTappedCheckButton = true
-        } else {
-            phoneMessageStackView.isHidden = true
+        case false:
+            phoneMessageHorizontalStack.isHidden = true
             isTappedCheckButton = false
+        }
+    }
+    // MARK: - @objc
+    @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
+        sender.tappedAnimation()
+        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
+            self.phoneNumberCheckButton.isEnabled = false
+            self.phoneNumberCheckButton.backgroundColor = .picoGray
+            self.phoneNumberCancleButton.isHidden = true
+            self.phoneNumberTextField.textColor = .picoBlue
+            self.phoneNumberTextField.isEnabled = false
+            self.updateNextButton(isCheck: true)
+        }
+    }
+    
+    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
+        sender.tappedAnimation()
+        phoneNumberTextField.text = ""
+        updatePhoneTextField(isFull: false)
+    }
+    
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        if isFullPhoneNumber && isTappedCheckButton {
+            guard let text = phoneNumberTextField.text else { return }
+
+            viewModel.phoneNumber = text
+            sender.tappedAnimation()
+
+            let viewController = SignUpGenderViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }
@@ -221,13 +229,13 @@ extension SignUpPhoneNumberViewController {
     private func addSubViews() {
         configMessageButtons()
         for pmStkItem in messageButtons {
-            phoneMessageStackView.addArrangedSubview(pmStkItem)
+            phoneMessageHorizontalStack.addArrangedSubview(pmStkItem)
         }
         
         for stackViewItem in [phoneNumberTextField, phoneNumberCancleButton, phoneNumberCheckButton] {
             phoneTextFieldstackView.addArrangedSubview(stackViewItem)
         }
-        for viewItem in [notifyLabel, progressView, phoneTextFieldstackView, nextButton, phoneMessageStackView] {
+        for viewItem in [notifyLabel, progressView, phoneTextFieldstackView, nextButton, phoneMessageHorizontalStack] {
             view.addSubview(viewItem)
         }
     }
@@ -250,22 +258,22 @@ extension SignUpPhoneNumberViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(safeArea).offset(SignView.progressViewTopPadding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
             make.height.equalTo(8)
         }
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(Constraint.SignView.padding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(progressView.snp.bottom).offset(SignView.padding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
         }
         
         phoneTextFieldstackView.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
-            make.leading.equalTo(Constraint.SignView.contentPadding)
-            make.trailing.equalTo(-Constraint.SignView.contentPadding)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(SignView.contentPadding)
+            make.leading.equalTo(SignView.contentPadding)
+            make.trailing.equalTo(-SignView.contentPadding)
             make.height.equalTo(30)
         }
         
@@ -273,18 +281,18 @@ extension SignUpPhoneNumberViewController {
             make.width.equalTo(60)
         }
         
-        phoneMessageStackView.snp.makeConstraints { make in
-            make.top.equalTo(phoneTextFieldstackView.snp.bottom).offset(Constraint.SignView.contentPadding)
-            make.leading.equalTo(Constraint.SignView.contentPadding)
-            make.trailing.equalTo(-Constraint.SignView.contentPadding)
+        phoneMessageHorizontalStack.snp.makeConstraints { make in
+            make.top.equalTo(phoneTextFieldstackView.snp.bottom).offset(SignView.contentPadding)
+            make.leading.equalTo(SignView.contentPadding)
+            make.trailing.equalTo(-SignView.contentPadding)
             make.height.equalTo(50)
         }
         
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
-            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
-            make.height.equalTo(Constraint.Button.commonHeight)
+            make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
+            make.height.equalTo(CommonConstraints.buttonHeight)
         }
     }
 }

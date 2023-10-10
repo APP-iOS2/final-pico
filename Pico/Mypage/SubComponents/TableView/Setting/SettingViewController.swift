@@ -12,10 +12,10 @@ final class SettingViewController: UIViewController {
    
     private let tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .plain)
-        view.register(SettingPrivateTableCell.self, forCellReuseIdentifier: Identifier.TableCell.SettingPrivateTableCell)
-        view.register(SettingNotiTableCell.self, forCellReuseIdentifier: Identifier.TableCell.SettingNotiTableCell)
-        view.register(SettingTableCell.self, forCellReuseIdentifier: Identifier.TableCell.SettingTableCell)
-        view.backgroundColor = .systemBackground
+        view.register(cell: SettingPrivateTableCell.self)
+        view.register(cell: SettingNotiTableCell.self)
+        view.register(cell: SettingTableCell.self)
+        view.configBackgroundColor()
         view.separatorStyle = .none
         return view
     }()
@@ -48,6 +48,19 @@ final class SettingViewController: UIViewController {
             make.edges.equalToSuperview()
         }
     }
+    
+    private func logout() {
+        /*
+        let firebaseAuth = Auth.auth()
+        do {
+          try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+          print("Error signing out: %@", signOutError)
+        }
+         */
+        let signViewController = UINavigationController(rootViewController: SignViewController())
+        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(signViewController, animated: true)
+    }
 }
 
 extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
@@ -60,7 +73,7 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
         case 2:
             return 7
         case 3: 
-            return 1
+            return 2
         default: 
             return 0
         }
@@ -73,16 +86,19 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.SettingPrivateTableCell, for: indexPath) as? SettingPrivateTableCell else { return UITableViewCell() }
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: SettingPrivateTableCell.self)
             
             return cell
         case 1:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.SettingNotiTableCell, for: indexPath) as? SettingNotiTableCell else { return UITableViewCell() }
-            
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: SettingNotiTableCell.self)
+
             return cell
         case 2...3:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.SettingTableCell, for: indexPath) as? SettingTableCell else { return UITableViewCell() }
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: SettingTableCell.self)
             
+            if indexPath.section == 3 {
+                cell.configure(contentLabel: "로그아웃")
+            }
             return cell
 
         default:
@@ -123,10 +139,21 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 0:
+            return 0
+        default:
             return 20.0
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        switch indexPath.section {
+        case 3:
+            logout()
+        default:
+            break
+        }
     }
 }

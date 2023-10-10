@@ -6,60 +6,61 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class LikeUViewController: UIViewController {
     private let emptyView: EmptyViewController = EmptyViewController(type: .iLikeU)
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    private let imageUrls: [String] = []
+    private let viewModel: LikeUViewModel = LikeUViewModel()
+    private let disposeBag: DisposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         addViews()
         makeConstraints()
         configCollectionView()
+        configCollectionviewDatasource()
+        configCollectionviewDelegate()
     }
     
     private func configCollectionView() {
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(LikeCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.CollectionView.likeCell)
+        collectionView.register(cell: LikeCollectionViewCell.self)
     }
     
     private func addViews() {
-        if imageUrls.isEmpty {
-            addChild(emptyView)
-            view.addSubview(emptyView.view)
-            emptyView.didMove(toParent: self)
-        } else {
-            view.addSubview(collectionView)
-        }
+        viewModel.likeUIsEmpty
+            .subscribe(onNext: { [weak self] isEmpty in
+                if isEmpty {
+                    self?.addChild(self?.emptyView ?? UIViewController())
+                    self?.view.addSubview(self?.emptyView.view ?? UIView())
+                    self?.emptyView.didMove(toParent: self)
+                } else {
+                    self?.view.addSubview(self?.collectionView ?? UICollectionView())
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
     private func makeConstraints() {
-        if imageUrls.isEmpty {
-            emptyView.view.snp.makeConstraints { make in
-                make.edges.equalToSuperview()
-            }
-        } else {
-            collectionView.snp.makeConstraints { make in
-                make.top.leading.equalToSuperview().offset(10)
-                make.trailing.bottom.equalToSuperview().offset(-10)
-            }
-        }
+        viewModel.likeUIsEmpty
+            .subscribe(onNext: { [weak self] isEmpty in
+                if isEmpty {
+                    self?.emptyView.view.snp.makeConstraints { make in
+                        make.edges.equalToSuperview()
+                    }
+                } else {
+                    self?.collectionView.snp.makeConstraints { make in
+                        make.top.leading.equalToSuperview().offset(10)
+                        make.trailing.bottom.equalToSuperview().offset(-10)
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }
 
-extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageUrls.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.CollectionView.likeCell, for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
-        cell.configData(imageUrl: imageUrls[indexPath.row], isHiddenDeleteButton: false, isHiddenMessageButton: true)
-        cell.delegate = self
-        return cell
-    }
+extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width / 2 - 17.5
@@ -71,10 +72,33 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
 }
 
-extension LikeUViewController: LikeCollectionViewCellDelegate {
-    func tappedDeleteButton(_ cell: LikeCollectionViewCell) { }
+// MARK: - UITableView+Rx
+extension LikeUViewController {
+    private func configCollectionviewDatasource() {
+        viewModel.likeUUserList
+            .bind(to: collectionView.rx.items(cellIdentifier: LikeCollectionViewCell.reuseIdentifier, cellType: LikeCollectionViewCell.self)) { _, item, cell in
+                cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
+                cell.messageButtonTapObservable
+                    .subscribe(onNext: { [weak self] in
+                        // 메일 뷰 데이터 연결 후 userId 값 넘겨주기
+                        let mailSendView = MailSendViewController()
+                        mailSendView.modalPresentationStyle = .formSheet
+                        self?.present(mailSendView, animated: true, completion: nil)
+                    })
+                    .disposed(by: cell.disposeBag)
+            }
+            .disposed(by: disposeBag)
+    }
     
-    func tappedMessageButton(_ cell: LikeCollectionViewCell) {
-        // 메시지 연결 작성
+    private func configCollectionviewDelegate() {
+        collectionView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        collectionView.rx.modelSelected(Like.LikeInfo.self)
+            .subscribe(onNext: { _ in
+                // 디테일뷰 데이터 연결 후 UserId 값 넘겨주기
+                let viewController = UserDetailViewController()
+                self.navigationController?.pushViewController(viewController, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 }

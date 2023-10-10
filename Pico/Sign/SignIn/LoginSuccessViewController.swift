@@ -7,9 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class LoginSuccessViewController: UIViewController {
-
+    
+    private let disposeBag = DisposeBag()
     private let notifyLabel: UILabel = {
         let label = UILabel()
         label.text = "로그인완료"
@@ -35,25 +38,26 @@ final class LoginSuccessViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        hideBackButton()
+        view.configBackgroundColor()
+        hideNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButton()
     }
-
-    // MARK: - Config
-    private func configButton() {
-        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
-    }
-    
-    // MARK: - Tapped
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(TabBarController(), animated: true)
-    }
 }
 
+// MARK: - Config
+extension LoginSuccessViewController {
+    private func configButton() {
+        nextButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                nextButton.tappedAnimation()
+                (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(TabBarController(), animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+}
 // MARK: - UI 관련
 extension LoginSuccessViewController {
 
@@ -67,9 +71,9 @@ extension LoginSuccessViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(Constraint.SignView.padding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(safeArea).offset(SignView.padding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
         }
         
         checkImageView.snp.makeConstraints { make in
@@ -81,8 +85,8 @@ extension LoginSuccessViewController {
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
-            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
-            make.height.equalTo(Constraint.Button.commonHeight)
+            make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
+            make.height.equalTo(CommonConstraints.buttonHeight)
         }
     }
 }

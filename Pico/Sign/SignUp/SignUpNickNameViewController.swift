@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
-    
+    var viewModel: SignUpViewModel = .shared
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false
@@ -19,7 +19,7 @@ final class SignUpNickNameViewController: UIViewController {
         view.trackTintColor = .picoBetaBlue
         view.progressTintColor = .picoBlue
         view.progress = 0.142 * 5
-        view.layer.cornerRadius = Constraint.SignView.progressViewCornerRadius
+        view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
         return view
     }()
@@ -43,7 +43,7 @@ final class SignUpNickNameViewController: UIViewController {
         return label
     }()
     
-    private let nickNameStackView: UIStackView = {
+    private let nickNameHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
@@ -89,9 +89,9 @@ final class SignUpNickNameViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
-        tappedDismissKeyboard()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
         configButtons()
@@ -109,9 +109,8 @@ final class SignUpNickNameViewController: UIViewController {
         unregisterKeyboard()
     }
 }
-
+// MARK: - Config
 extension SignUpNickNameViewController {
-    // MARK: - Config
     private func configButtons() {
         nickNameCheckButton.addTarget(self, action: #selector(tappedNickNameCheckButton), for: .touchUpInside)
         nickNameCancleButton.addTarget(self, action: #selector(tappedNickNameCancleButton), for: .touchUpInside)
@@ -133,9 +132,9 @@ extension SignUpNickNameViewController {
         updateNextButton(isCheck: false)
     }
     
-    // MARK: - Tapped
+    // MARK: - @objc
     @objc private func tappedNickNameCheckButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         showAlert(message: "\(nickNameTextField.text ?? "") 이름으로 설정합니다.", isCancelButton: true) {
             self.nickNameCheckButton.isEnabled = false
             self.nickNameCheckButton.backgroundColor = .picoGray
@@ -148,30 +147,33 @@ extension SignUpNickNameViewController {
     }
     
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
+        sender.tappedAnimation()
         nickNameTextField.text = ""
         updateNickNameTextField(isFull: false)
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
+        viewModel.nickName = nickNameTextField.text!
         let viewController = SignUpPictureViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func updateNickNameTextField(isFull: Bool) {
-        if isFull {
+        switch isFull {
+        case true:
             nickNameCheckButton.isHidden = false
-        } else {
+        case false:
             nickNameCheckButton.isHidden = true
         }
     }
     
     private func updateNextButton(isCheck: Bool) {
-        if isCheck {
+        switch isCheck {
+        case true:
             nextButton.backgroundColor = .picoBlue
             nextButton.isEnabled = true
             isCheckNickName = true
-        } else {
+        case false:
             nextButton.backgroundColor = .picoGray
             nextButton.isEnabled = false
             isCheckNickName = false
@@ -239,10 +241,10 @@ extension SignUpNickNameViewController {
     
     private func addSubViews() {
         for stackViewItem in [nickNameTextField, nickNameCancleButton, nickNameCheckButton] {
-            nickNameStackView.addArrangedSubview(stackViewItem)
+            nickNameHorizontalStack.addArrangedSubview(stackViewItem)
         }
         
-        for viewItem in [progressView, notifyLabel, subNotifyLabel, nickNameStackView, nextButton] {
+        for viewItem in [progressView, notifyLabel, subNotifyLabel, nickNameHorizontalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -251,28 +253,28 @@ extension SignUpNickNameViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(Constraint.SignView.progressViewTopPadding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(safeArea).offset(SignView.progressViewTopPadding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
             make.height.equalTo(8)
         }
         
         notifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(progressView.snp.bottom).offset(Constraint.SignView.padding)
-            make.leading.equalTo(Constraint.SignView.padding)
-            make.trailing.equalTo(-Constraint.SignView.padding)
+            make.top.equalTo(progressView.snp.bottom).offset(SignView.padding)
+            make.leading.equalTo(SignView.padding)
+            make.trailing.equalTo(-SignView.padding)
         }
         
         subNotifyLabel.snp.makeConstraints { make in
-            make.top.equalTo(notifyLabel.snp.bottom).offset(Constraint.SignView.subPadding)
+            make.top.equalTo(notifyLabel.snp.bottom).offset(SignView.subPadding)
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
         }
         
-        nickNameStackView.snp.makeConstraints { make in
-            make.top.equalTo(subNotifyLabel.snp.bottom).offset(Constraint.SignView.contentPadding)
-            make.leading.equalTo(Constraint.SignView.contentPadding)
-            make.trailing.equalTo(-Constraint.SignView.contentPadding)
+        nickNameHorizontalStack.snp.makeConstraints { make in
+            make.top.equalTo(subNotifyLabel.snp.bottom).offset(SignView.contentPadding)
+            make.leading.equalTo(SignView.contentPadding)
+            make.trailing.equalTo(-SignView.contentPadding)
             make.height.equalTo(30)
         }
         
@@ -283,8 +285,8 @@ extension SignUpNickNameViewController {
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
-            make.bottom.equalTo(safeArea).offset(Constraint.SignView.bottomPadding)
-            make.height.equalTo(Constraint.Button.commonHeight)
+            make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
+            make.height.equalTo(CommonConstraints.buttonHeight)
         }
     }
 }

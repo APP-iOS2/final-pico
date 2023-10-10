@@ -19,7 +19,7 @@ final class MypageViewController: BaseViewController {
         configTapGesture()
         addViews()
         makeConstraints()
-        
+        myPageTableView.myPageCollectionDelegate = self
         myPageTableView.myPageViewDelegate = self
     }
     
@@ -31,11 +31,11 @@ final class MypageViewController: BaseViewController {
     private func resetTableViewScroll() {
         let indexPath = IndexPath(row: 0, section: 0)
         myPageTableView.scrollToRow(at: indexPath, at: .top, animated: false)
-        updateProfileViewLayout(newHeight: Constraint.MypageView.profileViewMaxHeight)
+        updateProfileViewLayout(newHeight: MypageView.profileViewMaxHeight)
     }
     
     private func configBarItem() {
-        let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .done, target: self, action: #selector(tappedBarButton))
+        let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .done, target: self, action: #selector(tappedBarButton))
         setButton.tintColor = .darkGray
     
         navigationItem.rightBarButtonItem = setButton
@@ -68,7 +68,7 @@ final class MypageViewController: BaseViewController {
         profilView.snp.makeConstraints { make in
             make.top.equalTo(safeArea)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(Constraint.MypageView.profileViewHeight)
+            make.height.equalTo(MypageView.profileViewHeight)
         }
         
         myPageTableView.snp.makeConstraints { make in
@@ -85,5 +85,11 @@ extension MypageViewController: MyPageViewDelegate {
         profilView.snp.updateConstraints { make in
             make.height.equalTo(newHeight)
         }
+    }
+}
+extension MypageViewController: MyPageCollectionDelegate {
+    func didSelectItem(item: Int) {
+        let viewController = StoreViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

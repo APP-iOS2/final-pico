@@ -5,31 +5,31 @@
 //  Created by 최하늘 on 2023/09/25.
 //
 
+@testable import Pico
 import XCTest
 
-final class PicoTests: XCTestCase {
+final class StringExtensionTests: XCTestCase {
+    var sut: String?
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        sut = "01000000000"
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        sut = nil
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func test_formattedTextFieldText_함수를_사용해서_전화번호_11자리에_대쉬가_추가되는지() throws {
+//        let expectation = XCTestExpectation()
+        // given - 어떤 환경에서
+        var result = ""
+        
+        // when - 어떤 액션을 했을 때
+        result = sut!.formattedTextFieldText()
+        
+        // then - 어떤 결과가 나오는지
+        XCTAssertEqual(result, "010-0000-0000")
+//        expectation.fulfill()
+//        wait(for: [expectation], timeout: 3)
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }

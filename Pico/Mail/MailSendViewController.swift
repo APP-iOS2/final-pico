@@ -10,6 +10,8 @@ import SnapKit
 
 final class MailSendViewController: UIViewController {
     
+    private let viewModel = MailViewModel()
+    
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
         navigationBar.barTintColor = .systemBackground
@@ -19,6 +21,15 @@ final class MailSendViewController: UIViewController {
     private let navItem: UINavigationItem = {
         let navigationItem = UINavigationItem(title: "쪽지 보내기")
         return navigationItem
+    }()
+    
+    private let leftBarButton: UIBarButtonItem = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+        let barButtonItem = UIBarButtonItem()
+        barButtonItem.image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
+        barButtonItem.tintColor = .picoBlue
+        barButtonItem.action = #selector(tappedBackzButton)
+        return barButtonItem
     }()
     
     private let receiverStack: UIStackView = {
@@ -65,16 +76,12 @@ final class MailSendViewController: UIViewController {
         return stackView
     }()
     
-    private let textViewPlaceHolder = "메시지를 입력하세요"
-    
-    private lazy var messageView: UITextView = {
-        
+    private let messageView: UITextView = {
         let textView: UITextView = UITextView()
-        textView.text = textViewPlaceHolder
+        textView.text = "메시지를 입력하세요"
         textView.font = .picoContentFont
-        textView.textColor = .lightGray
+        textView.textColor = .picoFontGray
         textView.backgroundColor = .clear
-        textView.delegate = self
         return textView
     }()
     
@@ -96,25 +103,26 @@ final class MailSendViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
+        configNavigationBarItem()
         addViews()
         makeConstraints()
-        configNavigationBarItem()
-        tappedDismissKeyboard()
+        viewModel.changeTextView(textView: messageView, label: remainCountLabel)
     }
     
     override func viewDidLayoutSubviews() {
-        setCircleImageView(imageView: receiverImageView)
+        receiverImageView.setCircleImageView()
     }
     
-    func configNavigationBarItem() {
-        navigationBar.shadowImage = UIImage()
-        navigationBar.setItems([navItem], animated: true)
+    func getReceiver(mailReceiver: DummyMailUsers) {
+        if let imageURL = URL(string: mailReceiver.messages.imageUrl) {
+            receiverImageView.load(url: imageURL)
+        }
+        receiverNameLabel.text = mailReceiver.messages.oppenentName
     }
     
     private func addViews() {
-        
         [receiverLabel, receiverImageView, receiverNameLabel].forEach { views in
             receiverStack.addArrangedSubview(views)
         }
@@ -131,7 +139,6 @@ final class MailSendViewController: UIViewController {
     }
     
     private func makeConstraints() {
-        
         let safeArea = view.safeAreaLayoutGuide
         
         navigationBar.snp.makeConstraints { make in
@@ -156,7 +163,7 @@ final class MailSendViewController: UIViewController {
         contentView.snp.makeConstraints { make in
             make.top.equalTo(receiverStack.snp.bottom).offset(20)
             make.leading.trailing.equalTo(receiverStack)
-            make.bottom.equalTo(sendButton.snp.bottom).inset(80)
+            make.bottom.equalTo(sendButton.snp.bottom).offset(-80)
         }
         
         sendButton.snp.makeConstraints { make in
@@ -167,49 +174,27 @@ final class MailSendViewController: UIViewController {
         }
     }
     
-    func getReceiver(image: String, name: String) {
-        if let imageURL = URL(string: image) {
-            receiverImageView.load(url: imageURL)
-        }
-        receiverNameLabel.text = name
+    private func configNavigationBarItem() {
+        navItem.leftBarButtonItem = leftBarButton
+        navigationBar.shadowImage = UIImage()
+        navigationBar.setItems([navItem], animated: true)
     }
     
     @objc private func tappedSendButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        print("send")
+        sender.tappedAnimation()
+        //sender: 로그인한 사람, recevie 받는 사람
+        viewModel.saveMailData(sendUserInfo: UserDummyData.users[1], receiveUserInfo: UserDummyData.users[0], message: messageView.text)
+        presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
     }
     
-    private func updateCountLabel(characterCount: Int) {
-        remainCountLabel.text = "\(characterCount)/300"
-    }
-}
-
-extension MailSendViewController: UITextViewDelegate {
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == textViewPlaceHolder {
-            textView.text = nil
-            textView.textColor = .black
-        }
+    @objc func tappedBackzButton() {
+        dismiss(animated: true)
     }
     
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            textView.text = textViewPlaceHolder
-            textView.textColor = .lightGray
-            updateCountLabel(characterCount: 0)
-        }
-    }
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
-        let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        let characterCount = newString.count
-        guard characterCount <= 300 else { return false }
-        updateCountLabel(characterCount: characterCount)
-        
-        return true
+    func dateFormetter() -> String {
+        var formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        var currentDateString = formatter.string(from: Date())
+        return currentDateString
     }
 }

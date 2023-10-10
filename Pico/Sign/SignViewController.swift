@@ -8,85 +8,110 @@
 import UIKit
 import SwiftUI
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class SignViewController: UIViewController {
+    var viewModel: SignUpViewModel = .shared
+    private let disposeBag = DisposeBag()
+    
+    private lazy var backgroundView: UIView = {
+        let view = UIView()
+//        view.backgroundColor = .picoBlue
+        let gradient: CAGradientLayer = CAGradientLayer()
+        gradient.colors = [UIColor.picoGradientMedium2.cgColor, UIColor.picoGradientMedium.cgColor, UIColor.picoBlue.cgColor]
+        gradient.locations = [0.0, 0.3, 1.0]
+
+        gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradient.endPoint = CGPoint(x: 0.5, y: 1.0)
+
+        view.frame = self.view.bounds
+        gradient.frame = view.bounds
+        view.layer.addSublayer(gradient)
+        return view
+    }()
     
     private let picoLogoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
+        imageView.image = UIImage(named: "logo_white")
         imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
-    private let picoChuImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "chu")
         return imageView
     }()
     
     private let signInButton: CommonButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("로그인", for: .normal)
+        button.backgroundColor = .white
+        button.setTitleColor(.picoBlue, for: .normal)
         return button
     }()
     
     private let signUpButton: CommonButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("회원가입", for: .normal)
+        button.backgroundColor = .clear
+        button.setTitleColor(.white, for: .normal)
+        button.layer.borderColor = UIColor.white.cgColor
+        button.layer.borderWidth = 1
         return button
     }()
     
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        configBackButton()
+        view.configBackgroundColor()
+        configNavigationBackButton()
         addSubViews()
         makeConstraints()
-        configButtons()
-        configBackButton()
+        configRx()
     }
-    
-    private func configButtons() {
-        signInButton.addTarget(self, action: #selector(tappedSignInButton), for: .touchUpInside)
-        signUpButton.addTarget(self, action: #selector(tappedSignUpButton), for: .touchUpInside)
+}
+
+extension SignViewController {
+    private func configRx() {
+        signInButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                signInButton.tappedAnimation()
+                let viewController = SignInViewController()
+                self.navigationController?.pushViewController(viewController, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+        signUpButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                signUpButton.tappedAnimation()
+                let viewController = SignUpViewController()
+                self.navigationController?.pushViewController(viewController, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
+}
+
+// MARK: - UI관련
+extension SignViewController {
     
-    @objc private func tappedSignInButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        let viewController = SignInViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    @objc private func tappedSignUpButton(_ sender: UIButton) {
-        tappedButtonAnimation(sender)
-        let viewController = SignUpViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    // MARK: - UI관련
     private func addSubViews() {
-        for viewItem in [picoLogoImageView, picoChuImageView, signInButton, signUpButton] {
-            view.addSubview(viewItem)
+        view.addSubview(backgroundView)
+        
+        for viewItem in [picoLogoImageView, signInButton, signUpButton] {
+            backgroundView.addSubview(viewItem)
         }
     }
     
     private func makeConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         
-        picoLogoImageView.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(30)
-            make.leading.equalTo(50)
-            make.trailing.equalTo(-50)
-            make.height.equalTo(100)
+        backgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
-        picoChuImageView.snp.makeConstraints { make in
-            make.top.equalTo(picoLogoImageView.snp.bottom).offset(50)
+        picoLogoImageView.snp.makeConstraints { make in
+            make.top.equalTo(safeArea).offset(110)
             make.leading.equalTo(50)
             make.trailing.equalTo(-50)
-            make.height.equalTo(200)
+            make.height.equalTo(60)
         }
         
         signInButton.snp.makeConstraints { make in
@@ -101,7 +126,7 @@ final class SignViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.leading.equalTo(20)
             make.trailing.equalTo(-20)
-            make.bottom.equalTo(safeArea).offset(-100)
+            make.bottom.equalTo(safeArea).offset(-80)
             make.height.equalTo(50)
         }
     }

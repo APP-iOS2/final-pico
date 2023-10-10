@@ -15,8 +15,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
 
-//                let tabBarController = UINavigationController(rootViewController: SignViewController())
-        let tabBarController = TabBarController()
+                let tabBarController = UINavigationController(rootViewController: SignViewController())
+//        let tabBarController = TabBarController()
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
@@ -29,12 +29,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if animated {
             let transition = CATransition()
-            transition.duration = 0.4
+            transition.duration = 0.3
             transition.type = CATransitionType.push
             transition.subtype = CATransitionSubtype.fromRight
             window.layer.add(transition, forKey: kCATransition)
-        }
-        
+        }        
         window.rootViewController = viewController
     }
     

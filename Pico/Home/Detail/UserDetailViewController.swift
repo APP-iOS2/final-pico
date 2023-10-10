@@ -29,7 +29,7 @@ final class UserDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
         addViews()
         makeConstraints()
         configTableView()
@@ -63,10 +63,10 @@ final class UserDetailViewController: UIViewController {
     final private func configTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UserImageTableCell.self, forCellReuseIdentifier: Identifier.TableCell.userImageTableCell)
-        tableView.register(BasicInformationTableCell.self, forCellReuseIdentifier: Identifier.TableCell.basicInformationTableCell)
-        tableView.register(AboutMeTableCell.self, forCellReuseIdentifier: Identifier.TableCell.aboutMeTableCell)
-        tableView.register(SubInfomationTableCell.self, forCellReuseIdentifier: Identifier.TableCell.subInfomationTableCell)
+        tableView.register(cell: UserImageTableCell.self)
+        tableView.register(cell: BasicInformationTableCell.self)
+        tableView.register(cell: AboutMeTableCell.self)
+        tableView.register(cell: SubInfomationTableCell.self)
     }
     
     final private func addViews() {
@@ -97,21 +97,21 @@ extension UserDetailViewController: UITableViewDelegate, UITableViewDataSource {
         switch indexPath.row {
             
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.userImageTableCell, for: indexPath) as? UserImageTableCell else { return UITableViewCell() }
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: UserImageTableCell.self)
             cell.config(images: viewModel.userData.imageURLs)
             cell.selectionStyle = .none
             return cell
         case 1:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.basicInformationTableCell, for: indexPath) as? BasicInformationTableCell else { return UITableViewCell() }
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: BasicInformationTableCell.self)
             cell.config(mbti: .infp, nameAgeText: viewModel.userData.nickName, locationText: viewModel.userData.location.address, heightText: "112")
             cell.selectionStyle = .none
             return cell
         case 2:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.aboutMeTableCell, for: indexPath) as? AboutMeTableCell ?? UITableViewCell()
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: AboutMeTableCell.self)
             cell.selectionStyle = .none
             return cell
         case 3:
-            let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.subInfomationTableCell, for: indexPath) as? SubInfomationTableCell ?? UITableViewCell()
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: SubInfomationTableCell.self)
             cell.selectionStyle = .none
             return cell
         default:

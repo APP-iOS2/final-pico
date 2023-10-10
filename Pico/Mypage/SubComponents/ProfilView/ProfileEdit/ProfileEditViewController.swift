@@ -11,13 +11,13 @@ final class ProfileEditViewController: UIViewController {
     
     private let tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .plain)
-        view.register(ProfileEditImageTableCell.self, forCellReuseIdentifier: Identifier.TableCell.profileEditImageTableCell)
-        view.register(ProfileEditNicknameTabelCell.self, forCellReuseIdentifier: Identifier.TableCell.profileEditNicknameTabelCell)
-        view.register(ProfileEditBirthTableCell.self, forCellReuseIdentifier: Identifier.TableCell.profileEditBirthTableCell)
-        view.register(ProfileEditLoactionTabelCell.self, forCellReuseIdentifier: Identifier.TableCell.profileEditLoactionTabelCell)
-        view.register(ProfileEditIntroTabelCell.self, forCellReuseIdentifier: Identifier.TableCell.profileEditIntroTabelCell)
-        view.register(ProfileEditTextTabelCell.self, forCellReuseIdentifier: Identifier.TableCell.profileEditTextTabelCell)
-        view.backgroundColor = .systemBackground
+        view.register(cell: ProfileEditImageTableCell.self)
+        view.register(cell: ProfileEditNicknameTabelCell.self)
+        view.register(cell: ProfileEditBirthTableCell.self)
+        view.register(cell: ProfileEditLoactionTabelCell.self)
+        view.register(cell: ProfileEditIntroTabelCell.self)
+        view.register(cell: ProfileEditTextTabelCell.self)
+        view.configBackgroundColor()
         view.separatorStyle = .none
         return view
     }()
@@ -73,20 +73,20 @@ extension ProfileEditViewController: UITableViewDataSource, UITableViewDelegate 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.profileEditImageTableCell, for: indexPath) as? ProfileEditImageTableCell else { return UITableViewCell() }
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditImageTableCell.self)
             return cell
         case 1:
             switch indexPath.row {
             case 0:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.profileEditBirthTableCell, for: indexPath) as? ProfileEditBirthTableCell else { return UITableViewCell() }
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditBirthTableCell.self)
                 cell.selectionStyle = .none
                 return cell
             case 1:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.profileEditNicknameTabelCell, for: indexPath) as? ProfileEditNicknameTabelCell else { return UITableViewCell() }
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditNicknameTabelCell.self)
                 cell.selectionStyle = .none
                 return cell
             case 2:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.profileEditLoactionTabelCell, for: indexPath) as? ProfileEditLoactionTabelCell else { return UITableViewCell() }
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditLoactionTabelCell.self)
                 cell.selectionStyle = .none
                 return cell
             default:
@@ -96,11 +96,11 @@ extension ProfileEditViewController: UITableViewDataSource, UITableViewDelegate 
         case 2:
             switch indexPath.row {
             case 0:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.profileEditIntroTabelCell, for: indexPath) as? ProfileEditIntroTabelCell else { return UITableViewCell() }
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditIntroTabelCell.self)
                 cell.selectionStyle = .none
                 return cell
             case 1...4:
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.profileEditTextTabelCell, for: indexPath) as? ProfileEditTextTabelCell else { return UITableViewCell() }
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditTextTabelCell.self)
                 cell.selectionStyle = .none
                 return cell
             case 5...6: return UITableViewCell()

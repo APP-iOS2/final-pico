@@ -7,16 +7,24 @@
 
 import UIKit
 import SnapKit
-
-protocol LikeCollectionViewCellDelegate: AnyObject {
-    func tappedDeleteButton(_ cell: LikeCollectionViewCell)
-    func tappedMessageButton(_ cell: LikeCollectionViewCell)
-}
+import RxSwift
 
 final class LikeCollectionViewCell: UICollectionViewCell {
-    weak var delegate: LikeCollectionViewCellDelegate?
     
-    private lazy var userImageView: UIImageView = {
+    var deleteButtonTapObservable: Observable<Void> {
+        return deleteButton.rx.tap.asObservable()
+    }
+    
+    var messageButtonTapObservable: Observable<Void> {
+        return messageButton.rx.tap.asObservable()
+    }
+    
+    var disposeBag: DisposeBag = DisposeBag()
+    private var likeMeViewModel: LikeMeViewModel?
+    private var likeUViewModel: LikeUViewModel?
+    private var user: User?
+    
+    private let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
@@ -25,11 +33,13 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "찐 윈터임, 21"
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         label.textColor = .white
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
+    
+    private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: .enfj, scale: .small)
     
     private let deleteButton: UIButton = {
         let button = UIButton(configuration: .plain())
@@ -49,31 +59,46 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    private let likeButton: UIButton = {
+        let button = UIButton(configuration: .plain())
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .light)
+        let image = UIImage(systemName: "heart.circle", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        return button
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
         makeConstraints()
-        configButtons()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configData(imageUrl: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool) {
-        guard let url = URL(string: imageUrl) else { return }
-        userImageView.load(url: url)
-        messageButton.isHidden = isHiddenMessageButton
-        deleteButton.isHidden = isHiddenDeleteButton
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+        likeMeViewModel = nil
+        likeUViewModel = nil
+        user = nil
+        userImageView.image = UIImage(named: "chu")
+        nameLabel.text = ""
     }
     
-    private func configButtons() {
-        deleteButton.addTarget(self, action: #selector(tappedDeleteButton), for: .touchUpInside)
-        messageButton.addTarget(self, action: #selector(tappedMessageButton), for: .touchUpInside)
+    func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType) {
+        userImageView.loadImage(url: image, disposeBag: self.disposeBag)
+        nameLabel.text = nameText
+        mbtiLabel.setMbti(mbti: mbti)
+        messageButton.isHidden = isHiddenMessageButton
+        deleteButton.isHidden = isHiddenDeleteButton
+        likeButton.isHidden = isHiddenDeleteButton
     }
     
     private func addViews() {
-        [userImageView, nameLabel, deleteButton, messageButton].forEach { item in
+        [userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton].forEach { item in
             addSubview(item)
         }
     }
@@ -86,6 +111,16 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         nameLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(5)
             make.bottom.equalToSuperview().offset(-5)
+            
+        }
+        nameLabel.setContentHuggingPriority(.required, for: .vertical)
+        nameLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        
+        mbtiLabel.snp.makeConstraints { make in
+            make.leading.equalTo(nameLabel)
+            make.bottom.equalTo(nameLabel.snp.top).offset(-5)
+            make.width.equalTo(mbtiLabel.frame.size.width)
+            make.height.equalTo(mbtiLabel.frame.size.height)
         }
         
         deleteButton.snp.makeConstraints { make in
@@ -94,15 +129,17 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         }
         
         messageButton.snp.makeConstraints { make in
-            make.trailing.bottom.equalToSuperview()
+            make.top.equalTo(nameLabel)
+            make.leading.equalTo(nameLabel.snp.trailing).offset(5)
+            make.trailing.bottom.equalToSuperview().offset(-5)
+            make.width.equalTo(messageButton.snp.height)
         }
-    }
-    
-    @objc private func tappedDeleteButton() {
-        delegate?.tappedDeleteButton(self)
-    }
-    
-    @objc private func tappedMessageButton() {
-        delegate?.tappedMessageButton(self)
+        
+        likeButton.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel)
+            make.leading.equalTo(nameLabel.snp.trailing).offset(5)
+            make.trailing.bottom.equalToSuperview().offset(-5)
+            make.width.equalTo(messageButton.snp.height)
+        }
     }
 }

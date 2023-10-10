@@ -7,98 +7,193 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
+import RxRelay
 
 final class MailViewController: BaseViewController {
     
+    private let viewModel = MailViewModel()
+    private var disposeBag = DisposeBag()
+    
     private let emptyView = EmptyViewController(type: .message)
+    private let refreshControl = UIRefreshControl()
+    
+    private var mailTypeButtons: [UIButton] = []
+    private var mailType: MailType = .receive
     
     private let mailText: UILabel = {
         let label = UILabel()
-        label.text = "쪽지"
-        label.font = UIFont.picoContentBoldFont
+        label.text = "Mail"
+        label.font = UIFont.picoTitleFont
         label.textColor = .picoFontBlack
         return label
     }()
     
+    private let buttonStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        return stackView
+    }()
+    
+    private let receiveButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .picoAlphaBlue
+        button.setTitle("받은 쪽지", for: .normal)
+        button.titleLabel?.font = .picoDescriptionFont
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
+        button.setTitleColor(.white, for: .normal)
+        button.isSelected = true
+        return button
+    }()
+    
+    private let sendButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .picoGray
+        button.setTitle("보낸 쪽지", for: .normal)
+        button.titleLabel?.font = .picoDescriptionFont
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
+        button.setTitleColor(.picoBetaBlue, for: .normal)
+        return button
+    }()
+    
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(MailListTableViewCell.self, forCellReuseIdentifier: Identifier.TableCell.mailTableCell)
+        tableView.register(cell: MailListTableViewCell.self)
         return tableView
     }()
     
-    private let dataCount: Int = 1
-    private let mailCheck: Bool = true // 받은 상태일경우
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        configTableView()
+        initRefresh()
         addViews()
         makeConstraints()
+        configTableView()
+        configMailTypeButtons()
     }
     
-    private func configTableView() {
-        mailListTableView.dataSource = self
-        mailListTableView.rowHeight = 100
-        mailListTableView.delegate = self
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mailListTableView.reloadData()
     }
     
-    func addViews() {
+    private func addViews() {
         view.addSubview(mailText)
         
-        if dataCount < 1 {
-            addChild(emptyView)
-            view.addSubview(emptyView.view)
-            emptyView.didMove(toParent: self)
-        } else {
-            view.addSubview(mailListTableView)
+        [receiveButton, sendButton].forEach { item in
+            mailTypeButtons.append(item)
+            buttonStack.addArrangedSubview(item)
         }
+        
+        view.addSubview(buttonStack)
+        
+        viewModel.mailIsEmpty
+            .subscribe(onNext: { [weak self] isEmpty in
+                if isEmpty {
+                    self?.view.addSubview(self?.emptyView.view ?? UIView())
+                    self?.emptyView.didMove(toParent: self)
+                } else {
+                    self?.view.addSubview(self?.mailListTableView ?? UITableView())
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
         mailText.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(20)
-            make.leading.trailing.equalTo(safeArea).offset(30)
+            make.top.equalTo(safeArea).offset(10)
+            make.leading.equalTo(safeArea).offset(20)
+            make.trailing.equalTo(safeArea).offset(-30)
         }
         
-        if dataCount < 1 {
-            emptyView.view.snp.makeConstraints { make in
-                make.edges.equalTo(safeArea)
-            }
-        } else {
-            mailListTableView.snp.makeConstraints { make in
-                make.top.equalTo(mailText.snp.bottom).offset(10)
-                make.leading.trailing.bottom.equalTo(safeArea).offset(20)
-            }
+        buttonStack.snp.makeConstraints { make in
+            make.top.equalTo(mailText.snp.bottom).offset(10)
+            make.leading.equalTo(safeArea.snp.leading).offset(20)
         }
-    }
-}
-
-extension MailViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.TableCell.mailTableCell, for: indexPath) as? MailListTableViewCell else { return UITableViewCell() }
-        cell.getData(imageString: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", nameText: "강아지는월월", mbti: "ISTP", message: "하이룽", date: "9.26", new: true)
         
-        return cell
+        sendButton.snp.makeConstraints { make in
+            make.width.equalTo(60)
+        }
+        
+        receiveButton.snp.makeConstraints { make in
+            make.width.equalTo(60)
+        }
+        
+        viewModel.mailIsEmpty
+            .subscribe(onNext: { [weak self] isEmpty in
+                if isEmpty {
+                    self?.emptyView.view.snp.makeConstraints { make in
+                        make.edges.equalTo(safeArea)
+                    }
+                } else {
+                    self?.mailListTableView.snp.makeConstraints { make in
+                        make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
+                        make.leading.trailing.bottom.equalTo(safeArea)
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if mailCheck {
-            let mailReceiveView = MailReceiveViewController()
-            mailReceiveView.modalPresentationStyle = .formSheet
-            mailReceiveView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월", message: "하이룽 방가룽", date: "9/25")
-            self.present(mailReceiveView, animated: true, completion: nil)
-            
-        } else {
-            let mailSendView = MailSendViewController()
-            mailSendView.modalPresentationStyle = .formSheet
-            mailSendView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월")
-            self.present(mailSendView, animated: true, completion: nil)
+    private func configMailTypeButtons() {
+        sendButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
+        receiveButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
+    }
+    
+    private func configTableView() {
+        mailListTableView.rowHeight = 100
+        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        configTableviewDelegate()
+        
+        refreshControl.endRefreshing()
+        mailListTableView.refreshControl = refreshControl
+    }
+    
+    private func initRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        mailListTableView.refreshControl = refreshControl
+    }
+    
+    private func configTableviewDelegate() {
+        mailListTableView.rx.modelSelected(DummyMailUsers.self)
+            .subscribe(onNext: { item in
+                let mailReceiveView = MailReceiveViewController()
+                mailReceiveView.modalPresentationStyle = .formSheet
+                mailReceiveView.getReceiver(mailSender: item)
+                self.present(mailReceiveView, animated: true, completion: nil)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    @objc func refreshTable(refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.mailListTableView.reloadData()
+            refresh.endRefreshing()
         }
+    }
+    
+    @objc func tappedMailTypeButton(_ sender: UIButton) {
+        for button in mailTypeButtons {
+            button.isSelected = (button == sender)
+            guard let text = sender.titleLabel?.text else { return }
+            switch button.isSelected {
+            case true:
+                sender.backgroundColor = .picoAlphaBlue
+                sender.setTitleColor(.white, for: .normal)
+                mailType = MailType(rawValue: text) ?? .receive
+                
+            case false:
+                button.backgroundColor = .picoGray
+                button.setTitleColor(.picoBetaBlue, for: .normal)
+            }
+        }
+        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        mailListTableView.reloadData()
     }
 }

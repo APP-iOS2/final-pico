@@ -7,8 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class WorldCupCollectionViewCell: UICollectionViewCell {
+    
+    private let disposeBag = DisposeBag()
     
     lazy var mbtiLabel: UILabel = {
         let label = UILabel()
@@ -41,6 +45,7 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
     
     let userInfoStackView: WorldCupUserInfoStackView = {
         let stackView = WorldCupUserInfoStackView()
+        stackView.backgroundColor = .white
         return stackView
     }()
     
@@ -51,6 +56,7 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
         makeConstraints()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -8,19 +8,34 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import RxSwift
 
-enum Collections: CaseIterable {
+enum Collections {
     case users
+    case likes
+    case notifications
+    case subInfo
+    case mail
     
     var name: String {
         switch self {
         case .users:
             return "users"
+        case .likes:
+            return "likes"
+        case .notifications:
+            return "notifications"
+        case .subInfo:
+            return "subInfo"
+        case .mail:
+            return "mail"
         }
     }
 }
 
 final class FirestoreService {
+    static let shared: FirestoreService = FirestoreService()
+    
     private let dbRef = Firestore.firestore()
     
     func saveDocument<T: Codable>(collectionId: Collections, data: T) {
@@ -36,24 +51,23 @@ final class FirestoreService {
         }
     }
     
-    func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            
+    func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
+        DispatchQueue.global().async {
             do {
-                try dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
+                try self.dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
+                completion(.success(true))
+
                 print("Success to save new document at \(collectionId.name) \(documentId)")
             } catch {
                 print("Error to save new document at \(collectionId.name) \(documentId) \(error)")
+                completion(.failure(error))
             }
         }
     }
     
     func loadDocument<T: Codable>(collectionId: Collections, documentId: String, dataType: T.Type, completion: @escaping (Result<T?, Error>) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            
-            dbRef.collection(collectionId.name).document(documentId).getDocument { (snapshot, error) in
+        DispatchQueue.global().async {
+            self.dbRef.collection(collectionId.name).document(documentId).getDocument { (snapshot, error) in
                 if let error = error {
                     print("Error to load new document at \(collectionId.name) \(documentId) \(error)")
                     completion(.failure(error))
@@ -76,11 +90,9 @@ final class FirestoreService {
         }
     }
     
-    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, completion: @escaping (Result<[T]?, Error>) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            
-            let query = dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
+    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type, completion: @escaping (Result<[T]?, Error>) -> Void) {
+        DispatchQueue.global().async {
+            let query = self.dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("Error in query: \(error)")
@@ -94,13 +106,83 @@ final class FirestoreService {
                 } else {
                     var result: [T] = []
                     for document in querySnapshot!.documents {
-                        if let temp = try? document.data(as: T.self) {
+                        if let temp = try? document.data(as: dataType) {
                             result.append(temp)
                         }
                     }
                     completion(.success(result))
                 }
             }
+        }
+    }
+    
+    func loadDocuments<T: Codable>(collectionId: Collections, dataType: T.Type, completion: @escaping (Result<[T], Error>) -> Void) {
+        DispatchQueue.global().async {
+            
+            self.dbRef.collection(collectionId.name).getDocuments { querySnapshot, error in
+                if let error = error {
+                    print("Error to load new document at \(collectionId.name) \(error)")
+                    completion(.failure(error))
+                    return
+                }
+                
+                if let documents = querySnapshot?.documents {
+                    var result: [T] = []
+                    for document in documents {
+                        if let temp = try? document.data(as: dataType) {
+                            result.append(temp)
+                        }
+                    }
+                    completion(.success(result))
+                }
+            }
+        }
+    }
+    
+    func saveDocumentRx<T: Codable>(collectionId: Collections, documentId: String, data: T) -> Observable<Void> {
+        return Observable.create { emitter in
+            self.saveDocument(collectionId: collectionId, documentId: documentId, data: data) { result in
+                switch result {
+                case .success(let bool):
+                    if bool {
+                        emitter.onNext(())
+                        emitter.onCompleted()
+                    }
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func loadDocumentRx<T: Codable>(collectionId: Collections, dataType: T.Type) -> Observable<[T]> {
+        return Observable.create { emitter in
+            self.loadDocuments(collectionId: collectionId, dataType: dataType) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                    emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func loadDocumentRx<T: Codable>(collectionId: Collections, documentId: String, dataType: T.Type) -> Observable<T?> {
+        return Observable.create { emitter in
+            self.loadDocument(collectionId: collectionId, documentId: documentId, dataType: dataType) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                    emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
         }
     }
 }

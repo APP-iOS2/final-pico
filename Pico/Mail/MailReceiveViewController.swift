@@ -7,8 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class MailReceiveViewController: UIViewController {
+    
+    private var viewModel: DummyMailUsers?
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -21,8 +25,18 @@ final class MailReceiveViewController: UIViewController {
         return navigationItem
     }()
     
+    private let leftBarButton: UIBarButtonItem = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+        let barButtonItem = UIBarButtonItem()
+        barButtonItem.image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
+        barButtonItem.tintColor = .picoBlue
+        barButtonItem.action = #selector(tappedBackzButton)
+        return barButtonItem
+    }()
+    
     private let rightBarButton: UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "paperplane.fill"), style: .plain, target: nil, action: #selector(tappedNavigationButton))
+        let barButtonItem = UIBarButtonItem()
+        barButtonItem.image = UIImage(systemName: "paperplane.fill")
         barButtonItem.tintColor = .picoBlue
         return barButtonItem
     }()
@@ -77,7 +91,7 @@ final class MailReceiveViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var messageView: UITextView = {
+    private let messageView: UITextView = {
         let textView: UITextView = UITextView()
         textView.font = .picoContentFont
         textView.textColor = .picoFontBlack
@@ -88,26 +102,33 @@ final class MailReceiveViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
         addViews()
         makeConstraints()
         configNavigationBarItem()
-        tappedDismissKeyboard()
+        configSenderStack()
+        tappedNavigationButton()
     }
     
     override func viewDidLayoutSubviews() {
-        setCircleImageView(imageView: senderImageView)
+        senderImageView.setCircleImageView()
     }
     
-    func configNavigationBarItem() {
-        navItem.rightBarButtonItem = rightBarButton
-        navigationBar.shadowImage = UIImage()
-        navigationBar.setItems([navItem], animated: true)
+    func getReceiver(mailSender: DummyMailUsers) {
+        
+        viewModel = mailSender
+        navItem.title = mailSender.mailType.rawValue
+        
+        if let imageURL = URL(string: mailSender.messages.imageUrl) {
+            senderImageView.load(url: imageURL)
+        }
+        senderNameLabel.text = mailSender.messages.oppenentName
+        sendDateLabel.text = mailSender.messages.sendedDate
+        messageView.text = mailSender.messages.message
     }
     
     private func addViews() {
-        
         [senderNameLabel, sendDateLabel].forEach { views in
             infoStack.addArrangedSubview(views)
         }
@@ -128,7 +149,6 @@ final class MailReceiveViewController: UIViewController {
     }
     
     private func makeConstraints() {
-        
         let safeArea = view.safeAreaLayoutGuide
         
         navigationBar.snp.makeConstraints { make in
@@ -149,23 +169,42 @@ final class MailReceiveViewController: UIViewController {
         contentView.snp.makeConstraints { make in
             make.top.equalTo(senderStack.snp.bottom).offset(20)
             make.leading.trailing.equalTo(senderStack)
-            make.bottom.equalTo(safeArea.snp.bottom).inset(50)
+            make.bottom.equalTo(safeArea.snp.bottom).offset(-50)
         }
     }
     
-    func getReceiver(image: String, name: String, message: String, date: String) {
-        if let imageURL = URL(string: image) {
-            senderImageView.load(url: imageURL)
-        }
-        senderNameLabel.text = name
-        sendDateLabel.text = date
-        messageView.text = message
+    private func configNavigationBarItem() {
+        navItem.leftBarButtonItem = leftBarButton
+        navItem.rightBarButtonItem = rightBarButton
+        navigationBar.shadowImage = UIImage()
+        navigationBar.setItems([navItem], animated: true)
     }
     
-    @objc func tappedNavigationButton() {
-        let mailSendView = MailSendViewController()
-        mailSendView.modalPresentationStyle = .formSheet
-        mailSendView.getReceiver(image: "https://cdn.topstarnews.net/news/photo/201902/580120_256309_4334.jpg", name: "강아지는월월")
-        self.present(mailSendView, animated: true, completion: nil)
+    private func configSenderStack() {
+        let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
+        senderStack.addGestureRecognizer(stackTap)
+    }
+    
+    // 질문! 단순히 화면 전환을 하는 경우에도 rx 처리를 하는 것이 맞나요?
+    private func tappedNavigationButton() {
+        rightBarButton.rx.tap
+            .bind {
+                let mailSendView = MailSendViewController()
+                if let mailUser = self.viewModel {
+                    mailSendView.getReceiver(mailReceiver: mailUser)
+                }
+                mailSendView.modalPresentationStyle = .formSheet
+                mailSendView.modalTransitionStyle = .flipHorizontal
+                self.present(mailSendView, animated: true, completion: nil)
+            }
+    }
+    
+    @objc func tappedBackzButton() {
+        dismiss(animated: true)
+    }
+    
+    @objc func tappedSenderStack() {
+        let viewController = UserDetailViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

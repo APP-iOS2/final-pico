@@ -21,7 +21,8 @@ class BaseViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configLogoBarItem()
+        configNavigationLogo()
+        self.tabBarController?.tabBar.isHidden = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -31,27 +32,9 @@ class BaseViewController: UIViewController {
     }
     
     private func configUI() {
-        configBgColor()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
         configNavigationBgColor()
-        configBackButton()
-        tappedDismissKeyboard()
-    }
-    
-    private func configBgColor() {
-        view.backgroundColor = .systemBackground
-    }
-    
-    private func configNavigationBgColor() {
-        let navigationBarAppearance = UINavigationBarAppearance()
-        navigationBarAppearance.backgroundColor = .systemBackground
-        navigationBarAppearance.shadowColor = .clear // 밑줄 제거
-        navigationBarAppearance.shadowImage = UIImage() // 밑줄 제거
-        navigationController?.navigationBar.standardAppearance = navigationBarAppearance
-        navigationController?.navigationBar.scrollEdgeAppearance = navigationBarAppearance
-        
-        // 네비게이션 바의 밑줄을 없앱니다.
-//        navigationController?.navigationBar.compactAppearance?.backgroundImage = UIImage()
-//        navigationController?.navigationBar.scrollEdgeAppearance?.backgroundImage = UIImage()
-
+        configNavigationBackButton()
     }
 }
