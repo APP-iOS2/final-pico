@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
-    var viewModel: SignViewModel = .shared
+    var viewModel: SignUpViewModel = .shared
     private var phoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
@@ -172,7 +172,7 @@ extension SignUpPhoneNumberViewController {
             guard let text = phoneNumberTextField.text else { return }
 
             viewModel.phoneNumber = text
-            tappedButtonAnimation(sender)
+            sender.tappedAnimation()
 
             let viewController = SignUpGenderViewController()
             self.navigationController?.pushViewController(viewController, animated: true)

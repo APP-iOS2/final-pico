@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class SignUpGenderViewController: UIViewController {
-    var viewModel: SignViewModel = .shared
+    var viewModel: SignUpViewModel = .shared
     private var gender: String = ""
     private var genderButtons: [UIButton] = []
     private var isTappedGenderButton = false

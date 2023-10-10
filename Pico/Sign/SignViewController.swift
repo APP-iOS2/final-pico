@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 
 final class SignViewController: UIViewController {
-    var viewModel: SignViewModel = .shared
+    var viewModel: SignUpViewModel = .shared
     private let disposeBag = DisposeBag()
     
     private lazy var backgroundView: UIView = {

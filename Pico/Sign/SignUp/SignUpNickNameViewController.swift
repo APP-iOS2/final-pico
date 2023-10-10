@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
-    var viewModel: SignViewModel = .shared
+    var viewModel: SignUpViewModel = .shared
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false

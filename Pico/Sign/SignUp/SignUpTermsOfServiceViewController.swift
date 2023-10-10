@@ -12,7 +12,7 @@ import RxSwift
 import RxRelay
 
 final class SignUpTermsOfServiceViewController: UIViewController {
-    var viewModel: SignViewModel = .shared
+    var viewModel: SignUpViewModel = .shared
 
     private let disposeBag = DisposeBag()
     private var locationManager: CLLocationManager = CLLocationManager()

@@ -12,8 +12,8 @@ import UIKit
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-final class SignViewModel {
-    static let shared: SignViewModel = SignViewModel()
+final class SignUpViewModel {
+    static let shared: SignUpViewModel = SignUpViewModel()
     private let disposeBag = DisposeBag()
     let id = UUID().uuidString
     var userMbti = ""

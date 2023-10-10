@@ -10,7 +10,7 @@ import SnapKit
 
 final class SignUpAgeViewController: UIViewController {
     
-    var viewModel: SignViewModel = .shared
+    var viewModel: SignUpViewModel = .shared
     private var isChoiceAge: Bool = false
     private var selectedYear: Int = 2000
     private var selectedMonth: Int = 1
@@ -107,8 +107,7 @@ extension SignUpAgeViewController {
         if isChoiceAge {
 
             viewModel.birth = userAge
-            tappedButtonAnimation(sender)
-
+            sender.tappedAnimation()
             let viewController = SignUpNickNameViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }

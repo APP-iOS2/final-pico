@@ -17,7 +17,7 @@ final class StorageService {
     private let storageRef = Storage.storage()
     func uploadImages(images: [UIImage], userId: String) -> Observable<[String]> {
         return Observable.create { observer in
-            async {
+            Task.init {
                 var urlStrings: [String] = []
                 
                 for (index, image) in images.enumerated() {
@@ -25,7 +25,7 @@ final class StorageService {
                     let imageRef = self.storageRef.reference().child("userImage/\(userId)/image\(index)")
                     
                     do {
-                        let _ = try await imageRef.putDataAsync(imageData)
+                        _ = try await imageRef.putDataAsync(imageData)
                         let url = try await imageRef.downloadURL()
                         urlStrings.append(url.absoluteString)
                     } catch {
