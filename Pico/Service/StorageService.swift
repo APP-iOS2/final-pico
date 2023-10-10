@@ -21,7 +21,7 @@ final class StorageService {
                 var urlStrings: [String] = []
                 
                 for (index, image) in images.enumerated() {
-                    guard let imageData = image.jpegData(compressionQuality: 0.1) else { continue }
+                    guard let imageData = image.jpegData(compressionQuality: 0.5) else { continue }
                     let imageRef = self.storageRef.reference().child("userImage/\(userId)/image\(index)")
                     
                     do {

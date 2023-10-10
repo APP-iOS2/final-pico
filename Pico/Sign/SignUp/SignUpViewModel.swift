@@ -13,10 +13,18 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 final class SignUpViewModel {
+    private let dbRef = Firestore.firestore()
     static let shared: SignUpViewModel = SignUpViewModel()
+    var isRightUser: Bool = false
     private let disposeBag = DisposeBag()
     let id = UUID().uuidString
     var userMbti = ""
+    lazy var mbti: MBTIType = {
+        guard let mbtiType = MBTIType(rawValue: userMbti.lowercased()) else {
+            return .enfj
+        }
+        return mbtiType
+    }()
     var phoneNumber: String = ""
     var gender: GenderType = .etc
     var birth: String = ""
@@ -31,7 +39,7 @@ final class SignUpViewModel {
     var locationSubject: PublishSubject<Location> = PublishSubject()
     var isSaveSuccess: PublishSubject<Void> = PublishSubject()
     lazy var newUser: User =
-    User(id: id, mbti: .entp, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
+    User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
     
     private init() {
         locationSubject.subscribe { location in
@@ -63,5 +71,24 @@ final class SignUpViewModel {
         FirestoreService().saveDocumentRx(collectionId: .users, documentId: newUser.id, data: newUser)
             .subscribe(onNext: isSaveSuccess.onNext(_:))
             .disposed(by: disposeBag)
+    }
+    
+    func checkPhoneNumber(userNumber: String, completion: @escaping () -> ()) {
+        self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
+            guard err == nil, let documents = snapShot?.documents else {
+                print(err ?? "서버오류 비상비상")
+                self.isRightUser = false
+                return
+            }
+            
+            guard let document = documents.first else {
+                print("번호와 맞는게 없는걸?")
+                self.isRightUser = true
+                completion()
+                return
+            }
+            self.isRightUser = false
+            completion()
+        }
     }
 }

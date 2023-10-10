@@ -110,7 +110,7 @@ final class SignUpPictureViewController: UIViewController {
         
         Loading.showLoading()
         DispatchQueue.global().async {
-            var allImagesDetected = false
+            var allImagesDetected = true
 
             for image in self.userImages {
                 detectionGroup.enter()
@@ -234,6 +234,7 @@ extension SignUpPictureViewController {
                 if label.identifier == "person" {
                     detectedObjects += "\(label.identifier) (\(String(format: "%.2f", label.confidence * 100))%)\n"
                     if label.confidence * 100 >= 80 {
+                        print(label.confidence)
                         return true
                     }
                 }
