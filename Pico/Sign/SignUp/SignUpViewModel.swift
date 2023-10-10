@@ -46,6 +46,7 @@ final class SignUpViewModel {
     
     private init() {
         locationSubject.subscribe { location in
+            Loading.showLoading()
             self.newUser.location = location
             self.saveImage()
         }
@@ -63,6 +64,7 @@ final class SignUpViewModel {
                 print("스트링 저장완료")
                 self.newUser.imageURLs = strings
                 self.saveNewUser()
+                Loading.hideLoading()
             }.disposed(by: disposeBag)
     }
     

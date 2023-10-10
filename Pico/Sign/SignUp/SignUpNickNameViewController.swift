@@ -143,15 +143,7 @@ extension SignUpNickNameViewController {
             isCheckNickName = false
         }
     }
-//    private func reset() {
-//        nickNameTextField.text = ""
-//        nickNameTextField.isEnabled = true
-//        nickNameCancleButton.isHidden = false
-//        nickNameCheckButton.backgroundColor = .picoBlue
-//        
-//        updateCheckButton(isFull: false)
-//        updateNextButton(isCheck: false)
-//    }
+    
     private func reset() {
         self.nickNameTextField.text = ""
         self.nickNameCancleButton.isEnabled = true
