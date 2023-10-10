@@ -9,6 +9,8 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxRelay
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 enum MailType: String {
     case send = "보낸 쪽지"
@@ -40,11 +42,8 @@ struct DummyMail {
 }
 
 final class MailViewModel {
+    
     var mailList = BehaviorRelay<[DummyMailUsers]>(value: [])
-    
-    var sendLinst = [DummyMailUsers].self
-    var recieveLsit = [DummyMailUsers].self
-    
     var mailSendList = BehaviorRelay<[DummyMailUsers]>(value: [])
     var mailRecieveList = BehaviorRelay<[DummyMailUsers]>(value: [])
     
@@ -53,10 +52,7 @@ final class MailViewModel {
             .map { $0.isEmpty }
     }
     
-    let refreshLoading = PublishRelay<Bool>() // ViewModel에 있다고 가정
-    let refreshControl = UIRefreshControl()
-    
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     init() {
         let mail: [DummyMailUsers] = [
@@ -75,7 +71,7 @@ final class MailViewModel {
         divideMail()
     }
     
-    func divideMail() {
+    private func divideMail() {
         var receiveMails: [DummyMailUsers] = []
         var sendMails: [DummyMailUsers] = []
         
@@ -93,8 +89,8 @@ final class MailViewModel {
     
     /// mailtableviewDatasore
     func configMailTableviewDatasource(tableView: UITableView, type: MailType) {
-        
         Loading.showLoading()
+        
         tableView.delegate = nil
         tableView.dataSource = nil
         
@@ -116,22 +112,6 @@ final class MailViewModel {
                     .disposed(by: disposeBag)
         }
     }
-    
-    /*
-     func configTableviewDelegate(tableView: UITableView, type: MailType) {
-     tableView
-     .rx
-     .itemSelected
-     .subscribe(onNext: { indexPath in
-     let mailModel = mailSendList.value[indexPath.item]
-     let mailReceiveView = MailReceiveViewController()
-     mailReceiveView.modalPresentationStyle = .formSheet
-     mailReceiveView.getReceiver(mailSender: mailModel)
-     self.present(mailReceiveView, animated: true, completion: nil)
-     })
-     .disposed(by: disposeBag)
-     }
-     */
     
     //질문! textView에서 rx 설정하는 아래 코드를 mvvm으로 할 때 여기에 두는 것이 맞나요? 만약 다른 파일을 만들어서 둬야한다면 어떤 식으로 두면 좋을지 모르겠습닏
     /// textview 변경시 불러지는 함수
@@ -170,5 +150,63 @@ final class MailViewModel {
     
     private func updateCountLabel(label: UILabel, characterCount: Int) {
         label.text = "\(characterCount)/300"
+    }
+    
+    func saveMailData(sendUserInfo: User, receiveUserInfo: User, message: String) {
+        
+        let dbRef = Firestore.firestore().collection(Collections.mail.name)
+        /*
+        firestore.saveDocument(collectionId: .mail,
+                               documentId: UUID().uuidString,
+                               data: Mail(userId: UUID().uuidString, 
+         mailInfo: [Mail.MailInfo(id: UUID().uuidString, sendedUserId: UUID().uuidString, receivedUserId: UUID().uuidString, messages: [Mail.Message(id: UUID().uuidString, message: messageView.text, sendedDate: dateFormetter())])]) )
+         */
+        
+        let messages: [String: Any] = [
+                "messageId": UUID().uuidString,
+                "message": message,
+                "sendedDate": dateFormetter()
+            ]
+        
+        //보내는 사람
+        dbRef.document(sendUserInfo.id).setData(
+            [
+                "userId": sendUserInfo.id,
+                "mailInfo": [
+                    "sendedUserId": sendUserInfo.id,
+                    "receivedUserId": receiveUserInfo.id,
+                    "messages": FieldValue.arrayUnion([messages])
+                ]
+            ], merge: true) { error in
+                if let error = error {
+                    print("평가 업데이트 에러: \(error)")
+                } else {
+                    print("평가 업데이트 성공")
+                }
+            }
+        
+        //받는 사람
+        dbRef.document(receiveUserInfo.id).setData(
+            [ 
+                "userId": receiveUserInfo.id,
+                "mailInfo": [
+                  "sendedUserId": sendUserInfo.id,
+                  "receivedUserId": receiveUserInfo.id,
+                  "messages": FieldValue.arrayUnion([messages])
+                ]
+            ], merge: true) { error in
+                if let error = error {
+                    print("평가 업데이트 에러: \(error)")
+                } else {
+                    print("평가 업데이트 성공")
+                }
+            }
+    }
+    
+    private func dateFormetter() -> String {
+        var formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        var currentDateString = formatter.string(from: Date())
+        return currentDateString
     }
 }
