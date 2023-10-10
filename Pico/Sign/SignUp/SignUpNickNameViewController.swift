@@ -13,7 +13,7 @@ final class SignUpNickNameViewController: UIViewController {
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false
-    
+    private var userNickName: String = ""
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -112,7 +112,7 @@ final class SignUpNickNameViewController: UIViewController {
 // MARK: - Config
 extension SignUpNickNameViewController {
     private func configButtons() {
-        nickNameCheckButton.addTarget(self, action: #selector(tappedNickNameCheckButton), for: .touchUpInside)
+        nickNameCheckButton.addTarget(self, action: #selector(tappedCheckButton), for: .touchUpInside)
         nickNameCancleButton.addTarget(self, action: #selector(tappedNickNameCancleButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
@@ -122,43 +122,7 @@ extension SignUpNickNameViewController {
         nickNameTextField.becomeFirstResponder()
     }
     
-    private func reset() {
-        nickNameTextField.text = ""
-        nickNameTextField.isEnabled = true
-        nickNameCancleButton.isHidden = false
-        nickNameCheckButton.backgroundColor = .picoBlue
-        
-        updateNickNameTextField(isFull: false)
-        updateNextButton(isCheck: false)
-    }
-    
-    // MARK: - @objc
-    @objc private func tappedNickNameCheckButton(_ sender: UIButton) {
-        sender.tappedAnimation()
-        showAlert(message: "\(nickNameTextField.text ?? "") 이름으로 설정합니다.", isCancelButton: true) {
-            self.nickNameCheckButton.isEnabled = false
-            self.nickNameCheckButton.backgroundColor = .picoGray
-            self.nickNameCancleButton.isHidden = true
-            self.nickNameTextField.textColor = .picoBlue
-            self.nickNameTextField.isEnabled = false
-            
-            self.updateNextButton(isCheck: true)
-        }
-    }
-    
-    @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
-        sender.tappedAnimation()
-        nickNameTextField.text = ""
-        updateNickNameTextField(isFull: false)
-    }
-    
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        viewModel.nickName = nickNameTextField.text!
-        let viewController = SignUpPictureViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    private func updateNickNameTextField(isFull: Bool) {
+    private func updateCheckButton(isFull: Bool) {
         switch isFull {
         case true:
             nickNameCheckButton.isHidden = false
@@ -179,6 +143,47 @@ extension SignUpNickNameViewController {
             isCheckNickName = false
         }
     }
+    
+    private func reset() {
+        self.nickNameTextField.text = ""
+        self.nickNameCancleButton.isEnabled = true
+        self.nickNameTextField.isEnabled = true
+        self.nickNameTextField.becomeFirstResponder()
+        self.updateCheckButton(isFull: false)
+        self.updateNextButton(isCheck: false)
+    }
+    // MARK: - @objc
+    @objc private func tappedCheckButton(_ sender: UIButton) {
+        sender.tappedAnimation()
+        guard let text = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
+        userNickName = text
+        showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) {
+            self.viewModel.checkNickName(name: self.userNickName) {
+                guard self.viewModel.isRightName else {
+                    Loading.hideLoading()
+                    self.showAlert(message: "이미 등록된 이름입니다.") {
+                        self.reset()
+                    }
+                    return
+                }
+                Loading.hideLoading()
+            }
+            self.updateNextButton(isCheck: true)
+        }
+    }
+    
+    @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
+        sender.tappedAnimation()
+        nickNameTextField.text = ""
+        updateCheckButton(isFull: false)
+    }
+    
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        self.viewModel.nickName = userNickName
+        let viewController = SignUpPictureViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+   
 }
 
 // MARK: - 텍스트 필드 관련
@@ -190,17 +195,17 @@ extension SignUpNickNameViewController: UITextFieldDelegate {
         var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
         newText = newText.replacingOccurrences(of: " ", with: "")
         
-        updateNickNameTextField(isFull: false)
+        updateCheckButton(isFull: false)
         
         if newText.count > minNickNameWordCount {
-            updateNickNameTextField(isFull: true)
+            updateCheckButton(isFull: true)
         }
         
         return newText.count < maxNickNameWordCount + 1
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+//        textField.resignFirstResponder()
         return true
     }
 }
