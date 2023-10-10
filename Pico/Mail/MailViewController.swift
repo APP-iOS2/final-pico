@@ -13,12 +13,14 @@ import RxRelay
 
 final class MailViewController: BaseViewController {
     
-    private let emptyView = EmptyViewController(type: .message)
     private let viewModel = MailViewModel()
     private var disposeBag = DisposeBag()
     
+    private let emptyView = EmptyViewController(type: .message)
+    private let refreshControl = UIRefreshControl()
+    
     private var mailTypeButtons: [UIButton] = []
-    private var mailType: MailType = .receive // 받기
+    private var mailType: MailType = .receive
     
     private let mailText: UILabel = {
         let label = UILabel()
@@ -66,6 +68,7 @@ final class MailViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        initRefresh()
         addViews()
         makeConstraints()
         configTableView()
@@ -75,17 +78,6 @@ final class MailViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         mailListTableView.reloadData()
-    }
-    
-    private func configTableView() {
-        mailListTableView.rowHeight = 100
-        configTableviewDatasource()
-        configTableviewDelegate()
-    }
-    
-    private func configMailTypeButtons() {
-        sendButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
-        receiveButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
     }
     
     private func addViews() {
@@ -148,45 +140,24 @@ final class MailViewController: BaseViewController {
             .disposed(by: disposeBag)
     }
     
-    @objc func tappedMailTypeButton(_ sender: UIButton) {
-        for button in mailTypeButtons {
-            button.isSelected = (button == sender)
-            guard let text = sender.titleLabel?.text else { return }
-            switch button.isSelected {
-            case true:
-                sender.backgroundColor = .picoAlphaBlue
-                sender.setTitleColor(.white, for: .normal)
-                mailType = MailType(rawValue: text) ?? .receive
-            case false:
-                button.backgroundColor = .picoGray
-                button.setTitleColor(.picoBetaBlue, for: .normal)
-            }
-        }
-        configTableviewDatasource()
-        mailListTableView.reloadData()
+    private func configMailTypeButtons() {
+        sendButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
+        receiveButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
     }
-}
-
-// MARK: - MailTableView+Rx
-extension MailViewController {
-    private func configTableviewDatasource() {
+    
+    private func configTableView() {
+        mailListTableView.rowHeight = 100
+        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        configTableviewDelegate()
         
-        self.mailListTableView.delegate = nil
-        self.mailListTableView.dataSource = nil
-        
-        if mailType == .receive {
-            viewModel.mailRecieveList
-                .bind(to: mailListTableView.rx.items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
-                    cell.getData(senderUser: item)
-                }
-                .disposed(by: disposeBag)
-        } else {
-            viewModel.mailSendList
-                .bind(to: mailListTableView.rx.items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
-                    cell.getData(senderUser: item)
-                }
-                .disposed(by: disposeBag)
-        }
+        refreshControl.endRefreshing()
+        mailListTableView.refreshControl = refreshControl
+    }
+    
+    private func initRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        mailListTableView.refreshControl = refreshControl
     }
     
     private func configTableviewDelegate() {
@@ -199,8 +170,30 @@ extension MailViewController {
             })
             .disposed(by: disposeBag)
     }
+    
+    @objc func refreshTable(refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.mailListTableView.reloadData()
+            refresh.endRefreshing()
+        }
+    }
+    
+    @objc func tappedMailTypeButton(_ sender: UIButton) {
+        for button in mailTypeButtons {
+            button.isSelected = (button == sender)
+            guard let text = sender.titleLabel?.text else { return }
+            switch button.isSelected {
+            case true:
+                sender.backgroundColor = .picoAlphaBlue
+                sender.setTitleColor(.white, for: .normal)
+                mailType = MailType(rawValue: text) ?? .receive
+                
+            case false:
+                button.backgroundColor = .picoGray
+                button.setTitleColor(.picoBetaBlue, for: .normal)
+            }
+        }
+        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        mailListTableView.reloadData()
+    }
 }
-
-// 밥먹고 해야할 일
-// - 시작시 버튼 받은 메일로 뜨도록
-// - 받는 값 수정에 따른 보이는 값 변경 ( 유빈님 like 코드 확인 )

@@ -19,15 +19,38 @@ extension UIImageView {
         self.clipsToBounds = true
     }
     
+    func showLoadingImageView() {
+        DispatchQueue.main.async {
+            let loadingView = LoadingAnimationView(circleSize: .small)
+            loadingView.frame = self.bounds
+            loadingView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            self.addSubview(loadingView)
+            loadingView.animate()
+        }
+    }
+    
+    func hideLoadingImageView() {
+        DispatchQueue.main.async {
+            for subview in self.subviews {
+                if let loadingView = subview as? LoadingAnimationView {
+                    loadingView.removeFromSuperview()
+                }
+            }
+        }
+    }
+    
     func load(url: URL) {
+        showLoadingImageView()
         DispatchQueue.global().async { [weak self] in
             if let data = try? Data(contentsOf: url) {
                 DispatchQueue.main.async {
                     self?.image = UIImage(data: data)
+                    self?.hideLoadingImageView()
                 }
             } else {
                 DispatchQueue.main.async {
                     self?.image = UIImage(named: "chu")
+                    self?.hideLoadingImageView()
                 }
             }
         }

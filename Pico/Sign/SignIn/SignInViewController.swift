@@ -12,6 +12,7 @@ import RxCocoa
 
 final class SignInViewController: UIViewController {
     
+    private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
     private let phoneNumberSubject = BehaviorSubject<String>(value: "")
     private var isFullPhoneNumber: Bool = false
@@ -28,6 +29,7 @@ final class SignInViewController: UIViewController {
     private let phoneNumberTextField: UITextField = {
         let textField = UITextField()
         textField.font = .picoTitleFont
+        textField.placeholder = "번호를 입력하세요."
         textField.textColor = .gray
         textField.keyboardType = .numberPad
         return textField
@@ -91,11 +93,24 @@ extension SignInViewController {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
+                
                 nextButton.tappedAnimation()
-                if self.isFullPhoneNumber {
-                    let viewController = LoginSuccessViewController()
-                    self.navigationController?.pushViewController(viewController, animated: true)
+                guard self.isFullPhoneNumber else { return }
+                guard let text = self.phoneNumberTextField.text else { return }
+                viewModel.signIn(userNumber: text) {
+                    if self.viewModel.isRightUser {
+                        Loading.hideLoading()
+                        let viewController = LoginSuccessViewController()
+                        self.navigationController?.pushViewController(viewController, animated: true)
+                    
+                    } else {
+                        Loading.hideLoading()
+                        self.showAlert(message: "등록되지 않은 번호입니다.") {
+                            self.phoneNumberTextField.text = ""
+                        }
+                    }
                 }
+                print(viewModel.loginUser, separator: ",")
             })
             .disposed(by: disposeBag)
         
