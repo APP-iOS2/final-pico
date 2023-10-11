@@ -7,10 +7,13 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class MailSendViewController: UIViewController {
     
     private let viewModel = MailViewModel()
+    private let disposeBag = DisposeBag()
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -108,7 +111,7 @@ final class MailSendViewController: UIViewController {
         configNavigationBarItem()
         addViews()
         makeConstraints()
-        viewModel.changeTextView(textView: messageView, label: remainCountLabel)
+        changeTextView()
     }
     
     override func viewDidLayoutSubviews() {
@@ -189,5 +192,43 @@ final class MailSendViewController: UIViewController {
     
     @objc func tappedBackzButton() {
         dismiss(animated: true)
+    }
+    
+    // input output으로 변경하기
+    private func changeTextView() {
+        let textViewPlaceHolder = "메시지를 입력하세요"
+        
+       messageView.rx.didBeginEditing
+            .bind { _ in
+                if self.messageView.text == textViewPlaceHolder {
+                    self.messageView.text = nil
+                    self.messageView.textColor = .black
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        messageView.rx.didEndEditing
+            .bind { _ in
+                if self.messageView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    self.messageView.text = textViewPlaceHolder
+                    self.messageView.textColor = .picoFontGray
+                    self.updateCountLabel(characterCount: 0)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        messageView.rx.text
+            .orEmpty
+            .subscribe(onNext: { changedText in
+                let characterCount = changedText.count
+                if characterCount <= 300 {
+                    self.updateCountLabel(characterCount: characterCount)
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func updateCountLabel(characterCount: Int) {
+        remainCountLabel.text = "\(characterCount)/300"
     }
 }

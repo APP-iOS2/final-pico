@@ -84,10 +84,8 @@ final class MailListTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // 질문! 받아와서 보여줘야하는 경우 코드를 cell 뷰 파일에 두는 것이 맞나요? 또한 rx 처리를 해줘야하나요?
+
     func getData(senderUser: DummyMailUsers) {
-        
         userImage.loadImage(url: senderUser.messages.imageUrl, disposeBag: self.disposeBag)
         nameLabel.text = senderUser.messages.oppenentName
         nameLabel.sizeToFit()

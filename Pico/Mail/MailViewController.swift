@@ -147,7 +147,7 @@ final class MailViewController: BaseViewController {
     
     private func configTableView() {
         mailListTableView.rowHeight = 100
-        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        configMailTableviewDatasource()
         configTableviewDelegate()
         
         refreshControl.endRefreshing()
@@ -158,6 +158,32 @@ final class MailViewController: BaseViewController {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
         mailListTableView.refreshControl = refreshControl
+    }
+    
+    /// mailtableviewDatasore
+    func configMailTableviewDatasource() {
+        Loading.showLoading()
+        
+        mailListTableView.delegate = nil
+        mailListTableView.dataSource = nil
+        
+        if mailType == .receive {
+            viewModel.mailRecieveList
+                .bind(to: mailListTableView.rx
+                    .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
+                        cell.getData(senderUser: item)
+                        Loading.hideLoading()
+                    }
+                    .disposed(by: disposeBag)
+        } else {
+            viewModel.mailSendList
+                .bind(to: mailListTableView.rx
+                    .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
+                        cell.getData(senderUser: item)
+                        Loading.hideLoading()
+                    }
+                    .disposed(by: disposeBag)
+        }
     }
     
     private func configTableviewDelegate() {
@@ -193,7 +219,7 @@ final class MailViewController: BaseViewController {
                 button.setTitleColor(.picoBetaBlue, for: .normal)
             }
         }
-        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        configMailTableviewDatasource()
         mailListTableView.reloadData()
     }
 }
