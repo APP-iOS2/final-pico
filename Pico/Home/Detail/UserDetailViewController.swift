@@ -123,7 +123,7 @@ extension UserDetailViewController: UITableViewDelegate, UITableViewDataSource {
     final func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-            return CGFloat(Screen.height * 0.4)
+            return UserImageTableCellConstraint.height
         case 1:
             return CGFloat(Screen.height * 0.2)
         case 2:
