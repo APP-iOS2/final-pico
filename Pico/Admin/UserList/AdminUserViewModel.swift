@@ -1,5 +1,5 @@
 //
-//  AdminViewModel.swift
+//  AdminUserViewModel.swift
 //  Pico
 //
 //  Created by 최하늘 on 10/6/23.
@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+// 질문: enum 을 여기에서만 쓰는데 어디에다 관리하는 게 좋을까용~?
 enum SortType: CaseIterable {
     case dateAscending
     case dateDescending
@@ -49,7 +50,7 @@ enum FilterType: CaseIterable {
     }
 }
 
-final class AdminViewModel {
+final class AdminUserViewModel {
     private let disposeBag = DisposeBag()
     let userList = BehaviorRelay<[User]>(value: [])
     
@@ -81,8 +82,9 @@ final class AdminViewModel {
             .map { filterType, users in
                 switch filterType {
                 case .name:
+                    Loading.hideLoading()
                     return users.filter { sortedUser in
-                        !sortedUser.nickName.contains("")
+                        sortedUser.nickName.contains("밍키") || sortedUser.phoneNumber.contains("8888")
                     }
                 case .mbti:
                     return users
