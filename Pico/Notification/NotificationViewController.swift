@@ -40,6 +40,7 @@ final class NotificationViewController: UIViewController {
         if #available(iOS 15.0, *) {
             tableView.tableHeaderView = UIView()
         }
+        tableView.rowHeight = 90
     }
     
     private func addViews() {
@@ -53,25 +54,17 @@ final class NotificationViewController: UIViewController {
     }
 }
 
-extension NotificationViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
-    }
-}
-
 // MARK: - UITableView+Rx
 extension NotificationViewController {
     private func configTableviewDatasource() {
         viewModel.notifications
             .bind(to: tableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
-                cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti)
+                cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti, date: item.createDate)
             }
             .disposed(by: disposeBag)
     }
     
     private func configTableviewDelegate() {
-        tableView.rx.setDelegate(self)
-            .disposed(by: disposeBag)
         tableView.rx.modelSelected(Noti.self)
             .subscribe(onNext: { item in
                 if item.notiType == .like {
