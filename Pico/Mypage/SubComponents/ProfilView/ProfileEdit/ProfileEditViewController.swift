@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import SnapKit
+import RxSwift
+import RxDataSources
 
 final class ProfileEditViewController: UIViewController {
     
@@ -13,7 +16,6 @@ final class ProfileEditViewController: UIViewController {
         let view = UITableView(frame: .zero, style: .plain)
         view.register(cell: ProfileEditImageTableCell.self)
         view.register(cell: ProfileEditNicknameTabelCell.self)
-        view.register(cell: ProfileEditBirthTableCell.self)
         view.register(cell: ProfileEditLoactionTabelCell.self)
         view.register(cell: ProfileEditIntroTabelCell.self)
         view.register(cell: ProfileEditTextTabelCell.self)
@@ -22,12 +24,53 @@ final class ProfileEditViewController: UIViewController {
         return view
     }()
     
+    private let profileEditViewModel = ProfileEditViewModel()
+    private let disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configNavigation()
         configTableView()
         addViews()
         makeConstraints()
+        binds()
+    }
+    
+    private func binds() {
+        let dataSource = RxTableViewSectionedReloadDataSource<SectionModel> { _, tableView, indexPath, item in
+            switch item {
+            case .profileEditImageTableCell:
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditImageTableCell.self)
+                return cell
+                
+            case .profileEditNicknameTabelCell:
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditNicknameTabelCell.self)
+                cell.selectionStyle = .none
+                return cell
+                
+            case .profileEditLoactionTabelCell(let location):
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditLoactionTabelCell.self)
+                cell.selectionStyle = .none
+                cell.configure(location: location)
+                return cell
+                
+            case .profileEditIntroTabelCell(let content):
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditIntroTabelCell.self)
+                cell.selectionStyle = .none
+                cell.configure(intro: content)
+                return cell
+                
+            case .profileEditTextTabelCell(let title, let content):
+                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditTextTabelCell.self)
+                cell.configure(titleLabel: title, contentLabel: content)
+               
+                return cell
+            }
+        }
+        
+        profileEditViewModel.sectionsRelay
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
     }
     
     private func configNavigation() {
@@ -35,7 +78,6 @@ final class ProfileEditViewController: UIViewController {
     }
     
     private func configTableView() {
-        tableView.dataSource = self
         tableView.delegate = self
     }
     
@@ -52,67 +94,7 @@ final class ProfileEditViewController: UIViewController {
     }
 }
 
-extension ProfileEditViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return 1
-        case 1:
-            return 3
-        case 2:
-            return 7
-        default:
-            return 0
-        }
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.section {
-        case 0:
-            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditImageTableCell.self)
-            return cell
-        case 1:
-            switch indexPath.row {
-            case 0:
-                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditBirthTableCell.self)
-                cell.selectionStyle = .none
-                return cell
-            case 1:
-                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditNicknameTabelCell.self)
-                cell.selectionStyle = .none
-                return cell
-            case 2:
-                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditLoactionTabelCell.self)
-                cell.selectionStyle = .none
-                return cell
-            default:
-                return UITableViewCell()
-                
-            }
-        case 2:
-            switch indexPath.row {
-            case 0:
-                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditIntroTabelCell.self)
-                cell.selectionStyle = .none
-                return cell
-            case 1...4:
-                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditTextTabelCell.self)
-                cell.selectionStyle = .none
-                return cell
-            case 5...6: return UITableViewCell()
-            default:
-                return UITableViewCell()
-            }
-        default:
-            return UITableViewCell()
-        }
-        
-    }
-    
+extension ProfileEditViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:

@@ -37,6 +37,10 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         makeConstraints()
     }
     
+    func configure(location: String) {
+       
+    }
+    
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
