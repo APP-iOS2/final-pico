@@ -100,7 +100,7 @@ final class MailSendViewController: UIViewController {
     private let sendButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("보내기", for: .normal)
-        button.addTarget(nil, action: #selector(tappedSendButton), for: .touchUpInside)
+        button.backgroundColor = .picoGray
         return button
     }()
     
@@ -112,6 +112,7 @@ final class MailSendViewController: UIViewController {
         addViews()
         makeConstraints()
         changeTextView()
+        configSendButton()
     }
     
     override func viewDidLayoutSubviews() {
@@ -183,11 +184,17 @@ final class MailSendViewController: UIViewController {
         navigationBar.setItems([navItem], animated: true)
     }
     
-    @objc private func tappedSendButton(_ sender: UIButton) {
-        sender.tappedAnimation()
-        // sender: 로그인한 사람, recevie 받는 사람
-        viewModel.saveMailData(sendUserInfo: UserDummyData.users[1], receiveUserInfo: UserDummyData.users[0], message: messageView.text)
-        presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+    private func configSendButton() {
+        sendButton.rx.tap
+            .bind { [weak self] _ in
+                self?.sendButton.tappedAnimation()
+                if let text = self?.messageView.text {
+                    // sender: 로그인한 사람, recevie 받는 사람
+                    self?.viewModel.saveMailData(sendUserInfo: UserDummyData.users[1], receiveUserInfo: UserDummyData.users[0], message: text)
+                    self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     @objc func tappedBackzButton() {
@@ -198,21 +205,23 @@ final class MailSendViewController: UIViewController {
     private func changeTextView() {
         let textViewPlaceHolder = "메시지를 입력하세요"
         
-       messageView.rx.didBeginEditing
-            .bind { _ in
-                if self.messageView.text == textViewPlaceHolder {
-                    self.messageView.text = nil
-                    self.messageView.textColor = .black
+        messageView.rx.didBeginEditing
+            .bind { [weak self] _ in
+                if self?.messageView.text == textViewPlaceHolder {
+                    self?.messageView.text = nil
+                    self?.messageView.textColor = .black
                 }
             }
             .disposed(by: disposeBag)
         
         messageView.rx.didEndEditing
-            .bind { _ in
-                if self.messageView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    self.messageView.text = textViewPlaceHolder
-                    self.messageView.textColor = .picoFontGray
-                    self.updateCountLabel(characterCount: 0)
+            .bind { [weak self] _ in
+                if let text = self?.messageView.text {
+                    if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        self?.messageView.text = textViewPlaceHolder
+                        self?.messageView.textColor = .picoFontGray
+                        self?.updateCountLabel(characterCount: 0)
+                    }
                 }
             }
             .disposed(by: disposeBag)
@@ -220,9 +229,15 @@ final class MailSendViewController: UIViewController {
         messageView.rx.text
             .orEmpty
             .subscribe(onNext: { changedText in
-                let characterCount = changedText.count
-                if characterCount <= 300 {
-                    self.updateCountLabel(characterCount: characterCount)
+                if changedText != textViewPlaceHolder {
+                    let characterCount = changedText.count
+                    if characterCount <= 300 {
+                        self.updateCountLabel(characterCount: characterCount)
+                    }
+                    print(changedText)
+                    self.sendButton.backgroundColor = .picoBlue
+                } else {
+                    self.updateCountLabel(characterCount: 0)
                 }
             })
             .disposed(by: disposeBag)
