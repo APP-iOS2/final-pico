@@ -10,7 +10,7 @@ import SnapKit
 
 final class MypageViewController: BaseViewController {
     
-    private let profilView = ProfilView()
+    private let profileView = ProfileView()
     private let myPageTableView = MyPageTableView()
     
     override func viewDidLoad() {
@@ -43,7 +43,7 @@ final class MypageViewController: BaseViewController {
     
     private func configTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedProfileView))
-        profilView.addGestureRecognizer(tapGesture)
+        profileView.addGestureRecognizer(tapGesture)
     }
     
     @objc private func tappedProfileView(_ sender: UIBarButtonItem) {
@@ -57,7 +57,7 @@ final class MypageViewController: BaseViewController {
     }
     
     private func addViews() {
-        [profilView, myPageTableView].forEach {
+        [profileView, myPageTableView].forEach {
             view.addSubview($0)
         }
     }
@@ -65,14 +65,14 @@ final class MypageViewController: BaseViewController {
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
     
-        profilView.snp.makeConstraints { make in
+        profileView.snp.makeConstraints { make in
             make.top.equalTo(safeArea)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(MypageView.profileViewHeight)
         }
         
         myPageTableView.snp.makeConstraints { make in
-            make.top.equalTo(profilView.snp.bottom)
+            make.top.equalTo(profileView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -82,7 +82,7 @@ final class MypageViewController: BaseViewController {
 extension MypageViewController: MyPageViewDelegate {
     
     func updateProfileViewLayout(newHeight: CGFloat) {
-        profilView.snp.updateConstraints { make in
+        profileView.snp.updateConstraints { make in
             make.height.equalTo(newHeight)
         }
     }
