@@ -14,8 +14,10 @@ final class NotificationViewController: UIViewController {
     private let tableView = UITableView()
     private let viewModel = NotificationViewModel()
     private var disposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         tableView.reloadData()
     }
     
@@ -27,6 +29,7 @@ final class NotificationViewController: UIViewController {
         configTableView()
         configTableviewDelegate()
         configTableviewDatasource()
+        configRefresh()
     }
     
     private func configViewController() {
@@ -43,6 +46,12 @@ final class NotificationViewController: UIViewController {
         tableView.rowHeight = 90
     }
     
+    private func configRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        tableView.refreshControl = refreshControl
+    }
+    
     private func addViews() {
         view.addSubview(tableView)
     }
@@ -50,6 +59,16 @@ final class NotificationViewController: UIViewController {
     private func makeConstraints() {
         tableView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+    
+    @objc func refreshTable(refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            viewModel.notifications = []
+            viewModel.lastDocumentSnapshot = nil
+            viewModel.loadNextPage()
+            refresh.endRefreshing()
         }
     }
 }
