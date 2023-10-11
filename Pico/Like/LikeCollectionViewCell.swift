@@ -19,6 +19,10 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return messageButton.rx.tap.asObservable()
     }
     
+    var likeBurttonTapObservalbe: Observable<Void> {
+        return likeButton.rx.tap.asObservable()
+    }
+    
     var disposeBag: DisposeBag = DisposeBag()
     private var likeMeViewModel: LikeMeViewModel?
     private var likeUViewModel: LikeUViewModel?
