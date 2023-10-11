@@ -21,13 +21,13 @@ struct SubInfo: Codable {
     let favoriteMBTIs: [MBTIType]
 }
 
-enum FrequencyType: Codable {
+enum FrequencyType: String, Codable {
     case usually
     case nomal
     case never
 }
 
-enum ReligionType: Codable {
+enum ReligionType: String, Codable {
     /// 무교
     case none
     /// 기독교
@@ -48,7 +48,7 @@ enum ReligionType: Codable {
     case etc
 }
 
-enum EducationType: Codable {
+enum EducationType: String, Codable {
     case middle
     case high
     case college

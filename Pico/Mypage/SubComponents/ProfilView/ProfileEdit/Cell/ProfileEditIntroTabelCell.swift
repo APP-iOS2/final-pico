@@ -30,6 +30,10 @@ final class ProfileEditIntroTabelCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(intro: String) {
+        
+    }
+    
     private func addSubView() {
         [titleLabel, textfield].forEach {
             contentView.addSubview($0)
