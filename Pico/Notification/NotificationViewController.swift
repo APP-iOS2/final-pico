@@ -57,7 +57,7 @@ final class NotificationViewController: UIViewController {
 // MARK: - UITableView+Rx
 extension NotificationViewController {
     private func configTableviewDatasource() {
-        viewModel.notifications
+        viewModel.notificationsRx
             .bind(to: tableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
                 cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti, date: item.createDate)
             }
@@ -65,6 +65,8 @@ extension NotificationViewController {
     }
     
     private func configTableviewDelegate() {
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
         tableView.rx.modelSelected(Noti.self)
             .subscribe(onNext: { item in
                 if item.notiType == .like {
@@ -79,5 +81,17 @@ extension NotificationViewController {
                 }
             })
             .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - 페이징처리
+extension NotificationViewController: UIScrollViewDelegate {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let contentOffsetY = scrollView.contentOffset.y
+        let tableViewContentSizeY = tableView.contentSize.height
+        
+        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
+            viewModel.loadNextPage()
+        }
     }
 }
