@@ -17,9 +17,10 @@ extension UIViewController {
         logoButton.setImage(image?.withRenderingMode(.alwaysOriginal), for: .normal)
         
         let leftItem = UIBarButtonItem(customView: logoButton)
+        let height: CGFloat = 24
         leftItem.customView?.snp.makeConstraints({ make in
-            make.height.equalTo(28)
-            make.width.equalTo(image?.getRatio(height: 28) ?? 0)
+            make.height.equalTo(height)
+            make.width.equalTo(image?.getRatio(height: height) ?? 0)
         })
         leftItem.isEnabled = false
         self.navigationItem.leftBarButtonItem = leftItem
@@ -43,9 +44,9 @@ extension UIViewController {
     }
     
     /// 네비게이션 safeArea 까지의 배경색 설정
-    func configNavigationBgColor() {
+    func configNavigationBgColor(backgroundColor: UIColor = .systemBackground) {
         let navigationBarAppearance = UINavigationBarAppearance()
-        navigationBarAppearance.backgroundColor = .systemBackground
+        navigationBarAppearance.backgroundColor = backgroundColor
         navigationBarAppearance.shadowColor = .clear // 밑줄 제거
         navigationBarAppearance.shadowImage = UIImage() // 밑줄 제거
         navigationController?.navigationBar.standardAppearance = navigationBarAppearance
@@ -66,5 +67,15 @@ extension UIViewController {
         alert.addAction(yes)
         
         present(alert, animated: true, completion: nil)
+    }
+}
+
+extension UIViewController {
+    func configAdminSubViewConroller() {
+        navigationItem.leftBarButtonItem = nil
+        navigationItem.hidesBackButton = true
+        configNavigationBackButton()
+        view.configBackgroundColor()
+        view.tappedDismissKeyboard()
     }
 }

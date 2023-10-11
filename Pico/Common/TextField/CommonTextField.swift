@@ -51,7 +51,7 @@ final class CommonTextField: UIView {
         makeConstraints()
         configTextField()
         configButtons()
-        configBorder(color: .picoGray, width: 1)
+        configBorder(color: .picoGray, width: 0)
     }
     
     @available(*, unavailable)
@@ -80,7 +80,7 @@ extension CommonTextField: UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        configBorder(color: .picoGray, width: 1)
+        configBorder(color: .picoGray, width: 0)
         removeAllButton.isHidden = true
     }
     

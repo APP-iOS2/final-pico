@@ -19,6 +19,10 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return messageButton.rx.tap.asObservable()
     }
     
+    var likeBurttonTapObservalbe: Observable<Void> {
+        return likeButton.rx.tap.asObservable()
+    }
+    
     var disposeBag: DisposeBag = DisposeBag()
     private var likeMeViewModel: LikeMeViewModel?
     private var likeUViewModel: LikeUViewModel?
@@ -74,6 +78,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         makeConstraints()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
