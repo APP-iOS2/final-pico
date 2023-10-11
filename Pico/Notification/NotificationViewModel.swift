@@ -22,7 +22,7 @@ final class NotificationViewModel {
 
 func loadNotiRx() -> Observable<[Noti]> {
     return Observable.create { emitter in
-        FirestoreService().searchDocumentWithEqualField(collectionId: .notifications, field: "receiveId", compareWith: "qQ7WuQsq8vs6KrhVpFPe", dataType: Noti.self) { result in
+        FirestoreService().searchDocumentWithEqualField(collectionId: .notifications, field: "receiveId", compareWith: UserDefaultsManager.shared.getUserData().userId, dataType: Noti.self) { result in
             switch result {
             case .success(let data):
                 guard let data = data else {

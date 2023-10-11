@@ -19,7 +19,7 @@ final class LikeMeViewModel {
     private let disposeBag = DisposeBag()
     
     init() {
-        FirestoreService.shared.loadDocumentRx(collectionId: .likes, documentId: "cJDnaz3Yn6lQBa9nZSpH", dataType: Like.self)
+        FirestoreService.shared.loadDocumentRx(collectionId: .likes, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Like.self)
             .map { like -> [Like.LikeInfo] in
                 if let like = like {
                     return like.recivedlikes ?? []
