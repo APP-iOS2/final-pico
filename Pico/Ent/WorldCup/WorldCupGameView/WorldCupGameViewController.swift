@@ -78,27 +78,27 @@ final class WorldCupGameViewController: UIViewController {
     }
     
     private func bindViewModel() {
-        let dataSource = RxCollectionViewSectionedReloadDataSource<SectionModel<String, User>>(
-            configureCell: { [weak self] _, collectionView, indexPath, item in
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WorldCupCollectionViewCell", for: indexPath) as? WorldCupCollectionViewCell else { return UICollectionViewCell() }
-                let dataLabelTexts = self?.viewModel.addDataLabels(item) ?? []
-                cell.mbtiLabel.text = "\(item.mbti)"
-                cell.userNickname.text = item.nickName
-                cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
-                return cell
-            }
-        )
-
-        viewModel.items
-            .map { [SectionModel(model: "", items: [$0[self.viewModel.index], $0[self.viewModel.index + 1]])] }
-            .bind(to: collectionView.rx.items(dataSource: dataSource))
-            .disposed(by: disposeBag)
-
-        collectionView.rx.itemSelected
-            .subscribe(onNext: { [weak self] indexPath in
-                self?.tappedGameCell(indexPath: indexPath)
-            })
-            .disposed(by: disposeBag)
+//        let dataSource = RxCollectionViewSectionedReloadDataSource<SectionModel<String, User>>(
+//            configureCell: { [weak self] _, collectionView, indexPath, item in
+//                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WorldCupCollectionViewCell", for: indexPath) as? WorldCupCollectionViewCell else { return UICollectionViewCell() }
+//                let dataLabelTexts = self?.viewModel.addDataLabels(item) ?? []
+//                cell.mbtiLabel.text = "\(item.mbti)"
+//                cell.userNickname.text = item.nickName
+//                cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
+//                return cell
+//            }
+//        )
+//
+//        viewModel.items
+//            .map { [SectionModel(model: "", items: [$0[self.viewModel.index], $0[self.viewModel.index + 1]])] }
+//            .bind(to: collectionView.rx.items(dataSource: dataSource))
+//            .disposed(by: disposeBag)
+//
+//        collectionView.rx.itemSelected
+//            .subscribe(onNext: { [weak self] indexPath in
+//                self?.tappedGameCell(indexPath: indexPath)
+//            })
+//            .disposed(by: disposeBag)
     }
 
     private func tappedGameCell(indexPath: IndexPath) {
