@@ -2,8 +2,11 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import RxDataSources
 
 final class EntViewController: BaseViewController {
+    
+    private let disposeBag = DisposeBag()
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()

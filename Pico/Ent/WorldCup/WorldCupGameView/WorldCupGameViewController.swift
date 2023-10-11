@@ -88,13 +88,23 @@ final class WorldCupGameViewController: UIViewController {
                 return cell
             }
         )
-        
+
         viewModel.items
-            .map { [SectionModel(model: "", items: Array($0.prefix(2)))] }
+            .map { [SectionModel(model: "", items: [$0[self.viewModel.index], $0[self.viewModel.index + 1]])] }
             .bind(to: collectionView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
+
+        collectionView.rx.itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                self?.tappedGameCell(indexPath: indexPath)
+            })
+            .disposed(by: disposeBag)
     }
-    
+
+    private func tappedGameCell(indexPath: IndexPath) {
+        viewModel.tappedGameCell(indexPath: indexPath)
+    }
+
     private func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
         collectionView.layer.masksToBounds = false
         collectionView.layer.shadowColor = UIColor.black.cgColor
@@ -141,20 +151,4 @@ final class WorldCupGameViewController: UIViewController {
             make.height.equalTo(25)
         }
     }
-    
-    private func addDataLabels(_ currentItem: User) -> [String] {
-        var dataLabelTexts: [String] = []
-        
-        if let height = currentItem.subInfo?.height {
-            dataLabelTexts.append("\(height)")
-        }
-        
-        if let job = currentItem.subInfo?.job {
-            dataLabelTexts.append("\(job)")
-        }
-        
-        dataLabelTexts.append("\(currentItem.location.address)")
-        return dataLabelTexts
-    }
 }
-

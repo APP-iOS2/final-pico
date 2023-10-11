@@ -17,7 +17,7 @@ class WorldCupViewModel {
     var strong2: BehaviorRelay<[User]> = BehaviorRelay(value: [])
     var round: BehaviorRelay<Int> = BehaviorRelay(value: 16)
     
-    private var index = 0
+    var index = 0
     
     init() {
         items.accept(DummyUserData.users)
@@ -39,6 +39,32 @@ class WorldCupViewModel {
         return dataLabelTexts
     }
     
-    func handleSelection(indexPath: IndexPath) {
+    func tappedGameCell(indexPath: IndexPath) {
+        guard let item = items.value[safe: indexPath.item] else {
+            return
+        }
+        print(index)
+
+        switch round.value {
+        case 16:
+            strong8.accept(strong8.value + [item])
+        case 8:
+            strong4.accept(strong4.value + [item])
+        case 4:
+            strong2.accept(strong2.value + [item])
+        case 2:
+            break
+        default:
+            break
+        }
+        
+        index += 1
+        round.accept(round.value / 2)
+        
+        if round.value == 0 {
+            items.accept(strong2.value)
+        } else {
+            items.accept(items.value.dropFirst(2).map { $0 })
+        }
     }
 }

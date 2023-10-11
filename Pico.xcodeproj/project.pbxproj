@@ -34,6 +34,7 @@
 		4B89E1292AD526E000BFBAA3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B89E1282AD526E000BFBAA3 /* GoogleService-Info.plist */; };
 		4B89E12B2AD528BB00BFBAA3 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B89E12A2AD528BB00BFBAA3 /* YOLOv3.mlmodel */; };
 		4B89E12D2AD528E500BFBAA3 /* WorldCupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */; };
+		4B89E12F2AD698B000BFBAA3 /* EntViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B89E12E2AD698B000BFBAA3 /* EntViewModel.swift */; };
 		5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */; };
 		531C4ED82AC26BA300ADC614 /* CustomTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
@@ -204,6 +205,7 @@
 		4B89E1282AD526E000BFBAA3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4B89E12A2AD528BB00BFBAA3 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
 		4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupViewModel.swift; sourceTree = "<group>"; };
+		4B89E12E2AD698B000BFBAA3 /* EntViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntViewModel.swift; sourceTree = "<group>"; };
 		5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransitionAnimator.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -764,6 +766,7 @@
 			isa = PBXGroup;
 			children = (
 				B14B590D2AC0A658009889DA /* EntViewController.swift */,
+				4B89E12E2AD698B000BFBAA3 /* EntViewModel.swift */,
 				4B26655C2ACF8B6F0074D4E2 /* Cell */,
 				4B2665332AC3E2EC0074D4E2 /* WorldCup */,
 				4B2665322AC3E2E70074D4E2 /* RandomBox */,
@@ -1185,6 +1188,7 @@
 				6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */,
 				BCEACEF52AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
+				4B89E12F2AD698B000BFBAA3 /* EntViewModel.swift in Sources */,
 				362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */,
 				362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */,
 				5471384C2AC3621000CFE88D /* MbtiCollectionViewCell.swift in Sources */,
