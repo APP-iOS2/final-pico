@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		360854F12AD04C7900F28168 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360854F02AD04C7900F28168 /* StorageService.swift */; };
-		361322CD2AD7EE6300AB8E09 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 361322CB2AD7EE5B00AB8E09 /* GoogleService-Info.plist */; };
-		361322D02AD7F2D800AB8E09 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 361322CF2AD7F2D800AB8E09 /* YOLOv3.mlmodel */; };
 		362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */; };
 		362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */; };
 		363CC4842ACF9CC500C86EDC /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CC4832ACF9CC500C86EDC /* LocationManager.swift */; };
@@ -188,8 +186,6 @@
 
 /* Begin PBXFileReference section */
 		360854F02AD04C7900F28168 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
-		361322CB2AD7EE5B00AB8E09 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Pico/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		361322CF2AD7F2D800AB8E09 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
 		362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpAgeViewController.swift; sourceTree = "<group>"; };
 		362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpNickNameViewController.swift; sourceTree = "<group>"; };
 		363CC4832ACF9CC500C86EDC /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -689,8 +685,6 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				361322CB2AD7EE5B00AB8E09 /* GoogleService-Info.plist */,
-				361322CF2AD7F2D800AB8E09 /* YOLOv3.mlmodel */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -1209,7 +1203,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				361322CD2AD7EE6300AB8E09 /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1288,7 +1281,6 @@
 				6ADDE2F72AC3BA7E00CE4482 /* ProfileEditLoactionTabelCell.swift in Sources */,
 				BC5DE6662ACCFFB70082D18D /* UserDummyData.swift in Sources */,
 				53389AEF2AC16D120076DA9B /* EmptyViewController.swift in Sources */,
-				361322D02AD7F2D800AB8E09 /* YOLOv3.mlmodel in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
 				6ADDE2F12AC3BA2500CE4482 /* ProfileEditImageTableCell.swift in Sources */,
 				B16394C52ACDC7EF00D9252F /* AboutMeTableCell.swift in Sources */,

@@ -110,9 +110,6 @@ final class SignUpViewModel {
                 print("Error: \(error.localizedDescription)")
                 return
             }
-
-            print(response ?? "해윙")
-
             if let data = data {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
