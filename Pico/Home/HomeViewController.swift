@@ -17,9 +17,9 @@ final class HomeViewController: BaseViewController {
     lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
     lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
     
-    private let numberOfCards: Int = 7
+    private let numberOfCards: Int = 5
+    private let toggle: UISwitch = UISwitch()
     private let emptyView: HomeEmptyView = HomeEmptyView()
-    private let tempUser = BehaviorRelay<[User]>(value: [])
     private let disposeBag = DisposeBag()
     private let viewModel = HomeViewModel()
     
@@ -30,19 +30,16 @@ final class HomeViewController: BaseViewController {
         makeConstraints()
         configNavigationBarItem()
         configButtons()
-        
-        viewModel.users
-            .bind(to: tempUser)
-            .disposed(by: disposeBag)
     }
     
     private func addSubView() {
-        tempUser
-            .map { users in
-                return users.filter { user in
-                    return self.filterGender.contains(user.gender)
+        Observable.combineLatest(viewModel.users, viewModel.myLikes)
+                .map { users, myLikes in
+                    let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
+                    return users.filter { user in
+                        return self.filterGender.contains(user.gender) && user.id != UserDefaultsManager.shared.getUserData().userId && !myLikedUserIds.contains(user.id)
+                    }
                 }
-            }
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] filteredUsers in
                 guard let self = self else { return }

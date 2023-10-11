@@ -9,7 +9,7 @@ import Foundation
 
 final class UserDefaultsManager {
     enum Key: String, CaseIterable {
-        case userId, nickName, mbti, imageURL
+        case userId, nickName, mbti, imageURL, birth
         case latitude, longitude
     }
     
@@ -29,6 +29,7 @@ final class UserDefaultsManager {
         if let imageURL = userData.imageURLs[safe: 0] {
             UserDefaults.standard.setValue(imageURL, forKey: Key.imageURL.rawValue)
         }
+        UserDefaults.standard.setValue(userData.birth, forKey: Key.mbti.rawValue)
         UserDefaults.standard.setValue(userData.location.latitude, forKey: Key.latitude.rawValue)
         UserDefaults.standard.setValue(userData.location.longitude, forKey: Key.longitude.rawValue)
     }
@@ -38,9 +39,9 @@ final class UserDefaultsManager {
         let nickName = UserDefaults.standard.string(forKey: Key.nickName.rawValue) ?? "없음"
         let mbti = UserDefaults.standard.string(forKey: Key.mbti.rawValue) ?? "없음"
         let imageURL = UserDefaults.standard.string(forKey: Key.imageURL.rawValue) ?? "없음"
+        let birth = UserDefaults.standard.string(forKey: Key.birth.rawValue) ?? "없음"
         let latitude = UserDefaults.standard.double(forKey: Key.latitude.rawValue)
         let longitude = UserDefaults.standard.double(forKey: Key.longitude.rawValue)
-        
-        return CurrentUser(userId: userId, nickName: nickName, mbti: mbti, imageURL: imageURL, latitude: latitude, longitude: longitude)
+        return CurrentUser(userId: userId, nickName: nickName, mbti: mbti, imageURL: imageURL, birth: birth, latitude: latitude, longitude: longitude)
     }
 }

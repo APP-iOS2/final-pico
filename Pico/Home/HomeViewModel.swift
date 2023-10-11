@@ -10,10 +10,12 @@ import Foundation
 
 final class HomeViewModel {
     var users = BehaviorRelay<[User]>(value: [])
+    var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
     private let disposeBag = DisposeBag()
     
     init() {
         loadUsersRx()
+        loadMyLikesRx()
     }
     
     func loadUsersRx() {
@@ -24,6 +26,18 @@ final class HomeViewModel {
             }, onError: { error in
                 print("오류: \(error)")
             })
+            .disposed(by: disposeBag)
+    }
+    
+    func loadMyLikesRx() {
+        FirestoreService.shared.loadDocumentRx(collectionId: .likes, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Like.self)
+            .map { like -> [Like.LikeInfo] in
+                if let like = like {
+                    return like.sendedlikes ?? []
+                }
+                return []
+            }
+            .bind(to: myLikes)
             .disposed(by: disposeBag)
     }
     

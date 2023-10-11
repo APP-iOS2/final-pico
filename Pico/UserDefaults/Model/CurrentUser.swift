@@ -12,6 +12,7 @@ struct CurrentUser {
     let nickName: String
     let mbti: String
     let imageURL: String
+    let birth: String
     let latitude: Double
     let longitude: Double
 }
