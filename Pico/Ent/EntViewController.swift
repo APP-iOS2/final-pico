@@ -2,8 +2,11 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import RxDataSources
 
 final class EntViewController: BaseViewController {
+    
+    private let disposeBag = DisposeBag()
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -60,7 +63,7 @@ extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSourc
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "RandomBoxView", for: indexPath) as! RandomBoxView
+            guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "RandomBoxView", for: indexPath) as? RandomBoxView else { return UICollectionViewCell() }
             return headerView
         default:
             fatalError("Unexpected element kind")
