@@ -1,5 +1,5 @@
 //
-//  ProfilViewController.swift
+//  Profile.swift
 //  Pico
 //
 //  Created by 김민기 on 2023/09/25.
@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class ProfilView: UIView {
+final class ProfileView: UIView {
     
     private let userImage: UIImageView = {
         let imageView = UIImageView()
