@@ -186,17 +186,16 @@ final class MailReceiveViewController: UIViewController {
         senderStack.addGestureRecognizer(stackTap)
     }
     
-    // 질문! 단순히 화면 전환을 하는 경우에도 rx 처리를 하는 것이 맞나요?
     private func tappedNavigationButton() {
         rightBarButton.rx.tap
-            .bind {
+            .bind { [weak self] in
                 let mailSendView = MailSendViewController()
-                if let mailUser = self.viewModel {
+                if let mailUser = self?.viewModel {
                     mailSendView.getReceiver(mailReceiver: mailUser)
                 }
                 mailSendView.modalPresentationStyle = .formSheet
                 mailSendView.modalTransitionStyle = .flipHorizontal
-                self.present(mailSendView, animated: true, completion: nil)
+                self?.present(mailSendView, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
     }

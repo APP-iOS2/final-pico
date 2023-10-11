@@ -52,8 +52,6 @@ final class MailViewModel {
             .map { $0.isEmpty }
     }
     
-    private let disposeBag = DisposeBag()
-    
     init() {
         let mail: [DummyMailUsers] = [
             DummyMailUsers(userName: "오점순", age: 26, mbti: .enfj, mailType: .receive, messages:
@@ -85,71 +83,6 @@ final class MailViewModel {
             }
         mailSendList.accept(sendMails)
         mailRecieveList.accept(receiveMails)
-    }
-    
-    /// mailtableviewDatasore
-    func configMailTableviewDatasource(tableView: UITableView, type: MailType) {
-        Loading.showLoading()
-        
-        tableView.delegate = nil
-        tableView.dataSource = nil
-        
-        if type == .receive {
-            mailRecieveList
-                .bind(to: tableView.rx
-                    .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
-                        cell.getData(senderUser: item)
-                        Loading.hideLoading()
-                    }
-                    .disposed(by: disposeBag)
-        } else {
-            mailSendList
-                .bind(to: tableView.rx
-                    .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, cellType: MailListTableViewCell.self)) { _, item, cell in
-                        cell.getData(senderUser: item)
-                        Loading.hideLoading()
-                    }
-                    .disposed(by: disposeBag)
-        }
-    }
-    
-    // 질문! textView에서 rx 설정하는 아래 코드를 mvvm으로 할 때 여기에 두는 것이 맞나요? 만약 다른 파일을 만들어서 둬야한다면 어떤 식으로 두면 좋을지 모르겠습닏
-    /// textview 변경시 불러지는 함수
-    func changeTextView(textView: UITextView, label: UILabel) {
-        let textViewPlaceHolder = "메시지를 입력하세요"
-        
-        textView.rx.didBeginEditing
-            .bind { _ in
-                if textView.text == textViewPlaceHolder {
-                    textView.text = nil
-                    textView.textColor = .black
-                }
-            }
-            .disposed(by: disposeBag)
-        
-        textView.rx.didEndEditing
-            .bind { _ in
-                if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    textView.text = textViewPlaceHolder
-                    textView.textColor = .picoFontGray
-                    self.updateCountLabel(label: label, characterCount: 0)
-                }
-            }
-            .disposed(by: disposeBag)
-        
-        textView.rx.text
-            .orEmpty
-            .subscribe(onNext: { changedText in
-                let characterCount = changedText.count
-                if characterCount <= 300 {
-                    self.updateCountLabel(label: label, characterCount: characterCount)
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func updateCountLabel(label: UILabel, characterCount: Int) {
-        label.text = "\(characterCount)/300"
     }
     
     func saveMailData(sendUserInfo: User, receiveUserInfo: User, message: String) {
