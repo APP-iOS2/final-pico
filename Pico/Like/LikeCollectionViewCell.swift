@@ -19,6 +19,10 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return messageButton.rx.tap.asObservable()
     }
     
+    var likeBurttonTapObservalbe: Observable<Void> {
+        return likeButton.rx.tap.asObservable()
+    }
+    
     var disposeBag: DisposeBag = DisposeBag()
     private var likeMeViewModel: LikeMeViewModel?
     private var likeUViewModel: LikeUViewModel?
@@ -67,13 +71,14 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         button.tintColor = .white
         return button
     }()
-  
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
         makeConstraints()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -111,7 +116,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         nameLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(5)
             make.bottom.equalToSuperview().offset(-5)
-
+            
         }
         nameLabel.setContentHuggingPriority(.required, for: .vertical)
         nameLabel.setContentCompressionResistancePriority(.required, for: .vertical)

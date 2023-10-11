@@ -186,7 +186,7 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func configLabels() {
-        infoNameAgeLabel.text = "\(user.nickName) \(user.birth)"
+        infoNameAgeLabel.text = "\(user.nickName) \(user.age)"
         infoLocationLabel.text = user.location.address
     }
     
@@ -226,7 +226,7 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func loadUserImages() {
-        homeViewController?.startLoading()
+        Loading.showLoading()
         for (index, url) in user.imageURLs.enumerated() {
             
             let imageView = UIImageView()
@@ -234,6 +234,8 @@ final class HomeUserCardViewController: UIViewController {
             imageView.clipsToBounds = true
             imageView.layer.cornerRadius = 10
             imageView.configBackgroundColor()
+            imageView.layer.borderWidth = 1
+            imageView.layer.borderColor = UIColor.picoGray.cgColor
             scrollView.addSubview(imageView)
             
             imageView.snp.makeConstraints { make in
@@ -242,16 +244,17 @@ final class HomeUserCardViewController: UIViewController {
                 make.width.equalTo(view).offset(-20)
                 make.height.equalTo(scrollView).offset(-20)
             }
+            Loading.hideLoading()
             Observable.just(url)
                 .map { URL(string: $0)}
                 .compactMap { $0 }
                 .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
                 .map { try Data(contentsOf: $0)}
                 .map { UIImage(data: $0)}
+                .catchAndReturn(UIImage(named: "chu"))
                 .observe(on: MainScheduler.instance)
                 .subscribe { image in
                     imageView.image = image
-                    self.homeViewController?.stopLoading()
                 }
                 .disposed(by: disposeBag)
             
@@ -282,14 +285,14 @@ final class HomeUserCardViewController: UIViewController {
         case .ended:
             if translation.x > 100 {
                 UIView.animate(withDuration: 0.5) { [self] in
-                    viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .like)
+                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                     homeViewController?.removedView.append(view)
                     view.center.x += 1000
                     homeViewController?.likeLabel.alpha = 0
                 } completion: { _ in
                 }
             } else if translation.x < -100 {
-                self.viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .dislike)
+                self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
                 UIView.animate(withDuration: 0.5) { [self] in
                     homeViewController?.removedView.append(view)
                     view.center.x -= 1000
@@ -312,7 +315,7 @@ final class HomeUserCardViewController: UIViewController {
     @objc func tappedLikeButton() {
         homeViewController?.removedView.append(self.view)
         self.homeViewController?.likeLabel.alpha = 1
-        self.viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .like)
+        self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
         UIView.animate(withDuration: 0.3) {
             self.view.center.x += 1000
         } completion: { _ in
@@ -323,7 +326,7 @@ final class HomeUserCardViewController: UIViewController {
     @objc func tappedDisLikeButton() {
         homeViewController?.removedView.append(self.view)
         self.homeViewController?.passLabel.alpha = 1
-        self.viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .dislike)
+        self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
         UIView.animate(withDuration: 0.3) {
             self.view.center.x -= 1000
         } completion: { _ in
@@ -333,6 +336,7 @@ final class HomeUserCardViewController: UIViewController {
     
     @objc func tappedPickBackButton() {
         if let lastView = homeViewController?.removedView.last {
+            self.viewModel.deleteLikeData()
             UIView.animate(withDuration: 0.3) {
                 lastView.center = self.view.center
                 lastView.transform = CGAffineTransform(rotationAngle: 0)

@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxCocoa
 import RxSwift
+import Kingfisher
 
 class NotificationTableViewCell: UITableViewCell {
     
@@ -119,7 +120,7 @@ extension NotificationTableViewCell {
     
     func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: String) {
         guard let url = URL(string: imageUrl) else { return }
-        profileImageView.load(url: url)
+        profileImageView.kf.setImage(with: url)
         iconImageView.image = UIImage()
         nameLabel.text = "\(nickName), \(age)"
         mbitLabel.setMbti(mbti: mbti)

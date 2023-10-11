@@ -8,7 +8,28 @@
 import UIKit
 
 final class LoadingAnimationView: UIView {
-    private let circleSize = 15
+    enum CircleSize {
+        case large
+        case small
+        
+        var value: Int {
+            switch self {
+            case .large:
+                return 15
+            case .small:
+                return 9
+            }
+        }
+        
+        var alphaValue: CGFloat {
+            switch self {
+            case .large:
+                return 0.3
+            case .small:
+                return 0.2
+            }
+        }
+    }
     
     private let dotStackView: UIStackView = {
         let stackView = UIStackView()
@@ -24,9 +45,14 @@ final class LoadingAnimationView: UIView {
     private let circleC = UIView()
     private lazy var circles = [circleA, circleB, circleC]
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .black.withAlphaComponent(0.3)
+    private var circleSize: CircleSize
+    
+    init(circleSize: CircleSize = .large) {
+        self.circleSize = circleSize
+        
+        super.init(frame: .zero)
+        
+        backgroundColor = .black.withAlphaComponent(circleSize.alphaValue)
         addViews()
         makeConstraints()
         configCircle()
@@ -62,7 +88,7 @@ final class LoadingAnimationView: UIView {
     
     private func configCircle() {
         circles.forEach {
-            $0.layer.cornerRadius = CGFloat(circleSize / 2)
+            $0.layer.cornerRadius = CGFloat(circleSize.value / 2)
             $0.layer.masksToBounds = true
             $0.backgroundColor = .picoBlue
         }
@@ -81,10 +107,11 @@ final class LoadingAnimationView: UIView {
         dotStackView.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+        
         circles.forEach {
             $0.snp.makeConstraints { make in
-                make.width.equalTo(circleSize)
-                make.height.equalTo(circleSize)
+                make.width.equalTo(circleSize.value)
+                make.height.equalTo(circleSize.value)
             }
         }
     }

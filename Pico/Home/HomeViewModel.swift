@@ -9,17 +9,17 @@ import RxRelay
 import Foundation
 
 final class HomeViewModel {
-    //    static let shared = HomeViewModel()
-    //    var filterGender: [GenderType] = [.female, .male, .etc]
     var users = BehaviorRelay<[User]>(value: [])
+    var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
     private let disposeBag = DisposeBag()
     
     init() {
         loadUsersRx()
+        loadMyLikesRx()
     }
     
     func loadUsersRx() {
-        FirestoreService().loadDocumentRx(collectionId: .users, dataType: User.self)
+        FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] data in
                 self?.users.accept(data)
@@ -29,8 +29,20 @@ final class HomeViewModel {
             .disposed(by: disposeBag)
     }
     
+    func loadMyLikesRx() {
+        FirestoreService.shared.loadDocumentRx(collectionId: .likes, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Like.self)
+            .map { like -> [Like.LikeInfo] in
+                if let like = like {
+                    return like.sendedlikes ?? []
+                }
+                return []
+            }
+            .bind(to: myLikes)
+            .disposed(by: disposeBag)
+    }
+    
     func loadUsers() {
-        FirestoreService().loadDocuments(collectionId: .users, dataType: User.self) { result in
+        FirestoreService.shared.loadDocuments(collectionId: .users, dataType: User.self) { result in
             switch result {
             case .success(let data):
                 self.users.accept(data)

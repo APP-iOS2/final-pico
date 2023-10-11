@@ -6,6 +6,13 @@
 //
 
 import UIKit
+import SnapKit
+import Kingfisher
+
+struct UserImageTableCellConstraint {
+    static let height: CGFloat = Screen.height * 0.6
+}
+
 final class UserImageTableCell: UITableViewCell {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -44,16 +51,19 @@ final class UserImageTableCell: UITableViewCell {
     }
     
     func config(images: [String]) {
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width * CGFloat(images.count), height: scrollView.bounds.height)
+        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width * CGFloat(images.count), height: UserImageTableCellConstraint.height)
         pageControl.numberOfPages = images.count
+        
         for (index, image) in images.enumerated() {
             let imageView = UIImageView()
-            if let image = URL(string: image) {
-                imageView.load(url: image)
+            if let imageUrl = URL(string: image) {
+                imageView.kf.setImage(with: imageUrl)
             }
-            imageView.contentMode = .scaleAspectFit
-            imageView.frame = UIScreen.main.bounds
-            imageView.frame.origin.x = UIScreen.main.bounds.width * CGFloat(index)
+            imageView.contentMode = .scaleAspectFill
+            imageView.frame = CGRect(x: UIScreen.main.bounds.width * CGFloat(index),
+                                     y: 0,
+                                     width: UIScreen.main.bounds.width,
+                                     height: UserImageTableCellConstraint.height)
             scrollView.addSubview(imageView)
         }
     }
@@ -64,11 +74,12 @@ final class UserImageTableCell: UITableViewCell {
     
     private func makeConstraints() {
         scrollView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(UserImageTableCellConstraint.height)
         }
         
         pageControl.snp.makeConstraints { make in
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(scrollView.snp.bottom)
             make.centerX.equalToSuperview()
             make.height.equalTo(50)
         }

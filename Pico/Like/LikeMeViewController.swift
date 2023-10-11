@@ -89,6 +89,14 @@ extension LikeMeViewController {
                         self?.viewModel.deleteUser(userId: item.likedUserId)
                     })
                     .disposed(by: cell.disposeBag)
+                
+                cell.likeBurttonTapObservalbe
+                    .subscribe(onNext: { [weak self] in
+                        self?.showAlert(message: "\(item.nickName)님께 좋아요를 보냅니다.\n 바로 매칭되어 쪽지가 가능합니다.", isCancelButton: true, yesAction: {
+                            self?.viewModel.likeUser(userId: item.likedUserId)
+                        })
+                    })
+                    .disposed(by: cell.disposeBag)
             }
             .disposed(by: disposeBag)
     }

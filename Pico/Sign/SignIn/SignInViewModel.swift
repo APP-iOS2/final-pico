@@ -6,10 +6,55 @@
 //
 
 import Foundation
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 final class SignInViewModel {
-    /*
-     뭘 해야할까
-     1. 번호를 입력받으면 
-     */
+    
+    private let dbRef = Firestore.firestore()
+    static var shared: SignInViewModel = SignInViewModel()
+    var loginUser: User = UserDummyData.users[0]
+    var isRightUser = false
+    
+    func signIn(userNumber: String, completion: @escaping (User?) -> ()) {
+        Loading.showLoading()
+        self.isRightUser = false
+        DispatchQueue.global().async {
+            self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
+                guard err == nil, let documents = snapShot?.documents else {
+                    print(err ?? "서버오류 비상비상")
+                    self.isRightUser = false
+                    return
+                }
+                
+                guard let document = documents.first else {
+                    print("번호와 맞는게 없는걸?")
+                    self.isRightUser = false
+                    completion(nil)
+                    return
+                }
+                
+                let data = document.data()
+                let id = document.documentID
+                let mbti = data["mbti"] as? MBTIType ?? .enfj
+                let phoneNumber = data["phoneNumber"] as? String ?? ""
+                let gender = data["gender"] as? GenderType ?? .etc
+                let birth = data["birth"] as? String ?? ""
+                let nickName = data["nickName"] as? String ?? ""
+                let location = data["location"] as? Location ?? Location(address: "", latitude: 0.0, longitude: 0.0)
+                let imageURLs = data["imageURLs"] as? [String] ?? []
+                let createdDate = data["createdDate"] as? Double ?? 0.0
+                let subInfo = data["subInfo"] as? SubInfo ?? SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [""], personalities: [""], favoriteMBTIs: [.enfj])
+                let reports = data["reports"] as? Report ?? Report(id: id, reportedId: "", reason: "", reportedDate: 0)
+                let blocks = data["blocks"] as? Block ?? Block(id: id, blockedId: "", blockedDate: 0)
+                let chuCount = data["chuCount"] as? Int ?? 0
+                let isSubscribe = data["isSubscribe"] as? Bool ?? false
+                let retrievedUser = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfo, reports: [reports], blocks: [blocks], chuCount: chuCount, isSubscribe: isSubscribe)
+                self.isRightUser = true
+                
+                self.loginUser = retrievedUser
+                completion(retrievedUser)
+            }
+        }
+    }
 }
