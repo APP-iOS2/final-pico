@@ -317,7 +317,6 @@
 		BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewModel.swift; sourceTree = "<group>"; };
 		BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyView.swift; sourceTree = "<group>"; };
 		BC5DE6652ACCFFB70082D18D /* UserDummyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummyData.swift; sourceTree = "<group>"; };
-		BC6F61542AD533EE0067F500 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFilterViewController.swift; sourceTree = "<group>"; };
 		BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTILabelCollectionViewCell.swift; sourceTree = "<group>"; };
 		BCEACEF62AC3DF5F00C93699 /* MBTICollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTICollectionViewController.swift; sourceTree = "<group>"; };
@@ -628,7 +627,6 @@
 				B1844F5A2AC0CD9B00ACFFED /* PicoUITests */,
 				B14B58C72AC0A230009889DA /* Products */,
 				B17D67AF2AC0BF02006F91DC /* Frameworks */,
-				B1E30BE52AD5EBE400F95C66 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1003,14 +1001,6 @@
 				6ADDE2EC2AC3B95A00CE4482 /* ProfileEdit */,
 			);
 			path = ProfilView;
-			sourceTree = "<group>";
-		};
-		B1E30BE52AD5EBE400F95C66 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				BC6F61542AD533EE0067F500 /* GoogleService-Info.plist */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		B1E30BEE2AD5F16900F95C66 /* Model */ = {
