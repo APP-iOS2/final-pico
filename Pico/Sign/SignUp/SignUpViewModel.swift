@@ -32,6 +32,7 @@ final class SignUpViewModel {
         return mbtiType
     }()
     var phoneNumber: String = ""
+    var authText: String = ""
     var gender: GenderType = .etc
     var birth: String = ""
     var nickName: String = ""

@@ -14,7 +14,9 @@ final class SignUpPhoneNumberViewController: UIViewController {
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
-    private var messageButtons: [UIButton] = []
+    private var isAuth: Bool = false
+    private var authTextFields: [UITextField] = []
+    private var authText: String = ""
     
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -50,7 +52,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return textField
     }()
     
-    private let phoneNumberCheckButton: UIButton = {
+    private let authButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("  인증  ", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
@@ -72,7 +74,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return button
     }()
     
-    private let phoneMessageHorizontalStack: UIStackView = {
+    private let authTextFieldStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
@@ -116,8 +118,8 @@ final class SignUpPhoneNumberViewController: UIViewController {
 extension SignUpPhoneNumberViewController {
   
     private func configButtons() {
-        phoneNumberCheckButton.addTarget(self, action: #selector(tappedPhoneNumberCheckButton), for: .touchUpInside)
-        cancleButton.addTarget(self, action: #selector(tappedPhoneNumberCancleButton), for: .touchUpInside)
+        authButton.addTarget(self, action: #selector(tappedCheckButton), for: .touchUpInside)
+        cancleButton.addTarget(self, action: #selector(tappedCancleButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
@@ -125,73 +127,18 @@ extension SignUpPhoneNumberViewController {
         phoneNumberTextField.delegate = self
     }
     
-    private func updateNextButton(isCheck: Bool) {
-        switch isCheck {
-        case true:
-            phoneMessageHorizontalStack.isHidden = false
-            phoneNumberTextField.textColor = .picoBlue
-            nextButton.backgroundColor = .picoBlue
-            isTappedCheckButton = true
-        case false:
-            phoneMessageHorizontalStack.isHidden = true
-            isTappedCheckButton = false
-            nextButton.backgroundColor = .picoGray
+    func configAuthText() {
+        var authStrings: [String] = []
+        for text in authTextFields {
+            authStrings.append(text.text ?? "")
         }
+        self.authText = authStrings.joined()
+        print(authText)
+        // 임시로 넘어가게 함
+        self.isAuth = true
     }
     
-    private func updateCheckButton(isFull: Bool) {
-        switch isFull {
-        case true:
-            phoneNumberCheckButton.isHidden = false
-            isFullPhoneNumber = true
-        case false:
-            phoneNumberCheckButton.isHidden = true
-            isFullPhoneNumber = false
-        }
-    }
-    
-    private func updateCancleButton(isTrue: Bool) {
-        // 참일 때 버튼이 사라짐
-        switch isTrue {
-        case true:
-            self.phoneNumberCheckButton.isEnabled = false
-            self.phoneNumberCheckButton.backgroundColor = .picoGray
-            self.cancleButton.isHidden = true
-        case false:
-            self.phoneNumberCheckButton.isEnabled = true
-            self.phoneNumberCheckButton.backgroundColor = .picoBlue
-            self.cancleButton.isHidden = false
-        }
-    }
-    
-    private func updatePhoneNumberTextField(isTrue: Bool) {
-        // 참일 때 텍스트 필드가 비활성화 되고 텍스트가 파래짐
-        switch isTrue {
-        case true:
-            self.phoneNumberTextField.isEnabled = false
-            self.phoneNumberTextField.textColor = .picoBlue
-        case false:
-            self.phoneNumberTextField.isEnabled = true
-            self.phoneNumberTextField.textColor = .gray
-        }
-    }
-    // MARK: - @objc
-    @objc private func tappedPhoneNumberCheckButton(_ sender: UIButton) {
-        sender.tappedAnimation()
-        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
-            self.updateCancleButton(isTrue: true)
-            self.updatePhoneNumberTextField(isTrue: true)
-            self.updateNextButton(isCheck: true)
-        }
-    }
-    
-    @objc private func tappedPhoneNumberCancleButton(_ sender: UIButton) {
-        sender.tappedAnimation()
-        phoneNumberTextField.text = ""
-        updateCheckButton(isFull: false)
-    }
-    
-    private func reset() {
+    private func configReset() {
         // 초기상태로 가는거임
         self.registerKeyboard()
         self.phoneNumberTextField.becomeFirstResponder()
@@ -201,41 +148,144 @@ extension SignUpPhoneNumberViewController {
         self.isTappedCheckButton = false
         self.updatePhoneNumberTextField(isTrue: false)
         self.updateCancleButton(isTrue: false)
-        self.updateCheckButton(isFull: false)
+        self.updateAuthButton(isFull: false)
         self.updateNextButton(isCheck: false)
+        self.updateAuthTextFieldStack(false)
     }
     
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        if isFullPhoneNumber && isTappedCheckButton {
-            sender.tappedAnimation()
-            guard let text = phoneNumberTextField.text else { return }
-            viewModel.checkPhoneNumber(userNumber: text) {
+    // MARK: - Update 관련 Number, cancle, auth, authField, next
+    private func updatePhoneNumberTextField(isTrue: Bool) {
+        switch isTrue {
+        case true:
+            self.phoneNumberTextField.isEnabled = false
+            self.phoneNumberTextField.textColor = .picoBlue
+        case false:
+            self.phoneNumberTextField.isEnabled = true
+            self.phoneNumberTextField.textColor = .gray
+        }
+    }
+
+    private func updateCancleButton(isTrue: Bool) {
+        switch isTrue {
+        case true:
+            self.cancleButton.isHidden = true
+        case false:
+            self.cancleButton.isHidden = false
+        }
+    }
+    
+    private func updateAuthButton(isFull: Bool, isHidden: Bool = false) {
+        switch isFull {
+        case true:
+            authButton.isEnabled = true
+            authButton.backgroundColor = .picoBlue
+            authButton.isHidden = false
+            isFullPhoneNumber = true
+            print("updateCheckButton: 트루")
+        case false:
+            authButton.isEnabled = false
+            authButton.backgroundColor = .picoGray
+            authButton.isHidden = isHidden
+            isFullPhoneNumber = false
+            print("updateCheckButton: false")
+        }
+    }
+    
+    private func updateAuthTextFieldStack(_ isTrue: Bool) {
+        switch isTrue {
+        case true:
+            authTextFieldStack.isHidden = false
+        case false:
+            authTextFieldStack.isHidden = true
+        }
+    }
+    
+    private func updateNextButton(isCheck: Bool) {
+        switch isCheck {
+        case true:
+            nextButton.backgroundColor = .picoBlue
+        case false:
+            nextButton.backgroundColor = .picoGray
+        }
+    }
+    // MARK: - @objc
+    @objc private func tappedCancleButton(_ sender: UIButton) {
+        sender.tappedAnimation()
+        phoneNumberTextField.text = ""
+        updateAuthButton(isFull: false)
+    }
+    
+    @objc private func tappedCheckButton(_ sender: UIButton) {
+        sender.tappedAnimation()
+        isTappedCheckButton = true
+        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
+            
+            self.updatePhoneNumberTextField(isTrue: true)
+            self.updateCancleButton(isTrue: true)
+            self.updateAuthButton(isFull: false, isHidden: false)
+            self.updateAuthTextFieldStack(true)
+            print("isFullPhoneNumber : \(self.isFullPhoneNumber)\nisTappedCheckButton : \(self.isTappedCheckButton) ")
+            // MARK: - 문자인증 시작하면 건드려야해용
+//            self.updateNextButton(isCheck: true)
+            
+            guard let text = self.phoneNumberTextField.text else { return }
+            self.viewModel.checkPhoneNumber(userNumber: text) {
                 guard self.viewModel.isRightUser else {
                     Loading.hideLoading()
                     self.showAlert(message: "이미 등록된 번호입니다.") {
-                        self.reset()
+                        self.configReset()
                     }
                     return
                 }
                 Loading.hideLoading()
                 self.viewModel.phoneNumber = text
-                   
-                let viewController = SignUpGenderViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
+                self.authTextFields[0].becomeFirstResponder()
             }
         }
     }
+   
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        guard isFullPhoneNumber && isTappedCheckButton else { return }
+        sender.tappedAnimation()
+        // MARK: - 문자인증 시작하면 건드려야해용
+        // 이자리에 isAuth를 변경시켜줄 인증 함수를 넣어야함
+        configAuthText()
+        guard isAuth else {
+            self.showAlert(message: "비상비상 인증실패") { self.configReset() }
+            return
+        }
+        self.showAlert(message: "인증에 성공하셨습니다.") {
+            let viewController = SignUpGenderViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+    
 }
-
 // MARK: - 텍스트필드 관련
 extension SignUpPhoneNumberViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isFull in
-            updateCheckButton(isFull: isFull)
+        guard isTappedCheckButton else {
+            let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isFull in
+                updateAuthButton(isFull: isFull, isHidden: true)
+            }
+            return isChangeValue
         }
         
-        return isChangeValue
+        let currentText = textField.text ?? ""
+        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        
+        guard CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: string)) && updatedText.count <= 1 else { return false }
+        
+        if let currentIndex = authTextFields.firstIndex(of: textField), currentIndex < authTextFields.count - 1 {
+            if updatedText.isEmpty {
+                authTextFields[currentIndex].text = updatedText
+            } else {
+                authTextFields[currentIndex].text = updatedText
+                authTextFields[currentIndex + 1].becomeFirstResponder()
+            }
+        }
+        return true
     }
 }
 
@@ -274,30 +324,33 @@ extension SignUpPhoneNumberViewController {
 extension SignUpPhoneNumberViewController {
     
     private func addSubViews() {
-        configMessageButtons()
-        for pmStkItem in messageButtons {
-            phoneMessageHorizontalStack.addArrangedSubview(pmStkItem)
+        configAuthTextField()
+        for pmStkItem in authTextFields {
+            authTextFieldStack.addArrangedSubview(pmStkItem)
         }
         
-        for stackViewItem in [phoneNumberTextField, cancleButton, phoneNumberCheckButton] {
+        for stackViewItem in [phoneNumberTextField, cancleButton, authButton] {
             phoneTextFieldstackView.addArrangedSubview(stackViewItem)
         }
-        for viewItem in [notifyLabel, progressView, phoneTextFieldstackView, nextButton, phoneMessageHorizontalStack] {
+        for viewItem in [notifyLabel, progressView, phoneTextFieldstackView, nextButton, authTextFieldStack] {
             view.addSubview(viewItem)
         }
     }
     
-    private func configMessageButtons() {
+    private func configAuthTextField() {
         for tag in 0...5 {
-            let button = UIButton()
-            button.titleLabel?.font = .systemFont(ofSize: 25, weight: .bold)
-            button.setTitleColor(.picoFontBlack, for: .normal)
-            button.layer.borderWidth = 1
-            button.layer.cornerRadius = 10
-            button.layer.borderColor = UIColor.picoGray.cgColor
-            button.tag = tag
-            button.clipsToBounds = true
-            messageButtons.append(button)
+            let textField = UITextField()
+            textField.layer.borderWidth = 1
+            textField.layer.cornerRadius = 10
+            textField.textAlignment = .center
+            textField.font = .picoTitleFont
+            textField.textColor = .picoBlue
+            textField.keyboardType = .numberPad
+            textField.delegate = self
+            textField.layer.borderColor = UIColor.picoGray.cgColor
+            textField.tag = tag
+            textField.clipsToBounds = true
+            authTextFields.append(textField)
         }
     }
     
@@ -324,11 +377,11 @@ extension SignUpPhoneNumberViewController {
             make.height.equalTo(30)
         }
         
-        phoneNumberCheckButton.snp.makeConstraints { make in
+        authButton.snp.makeConstraints { make in
             make.width.equalTo(60)
         }
         
-        phoneMessageHorizontalStack.snp.makeConstraints { make in
+        authTextFieldStack.snp.makeConstraints { make in
             make.top.equalTo(phoneTextFieldstackView.snp.bottom).offset(SignView.contentPadding)
             make.leading.equalTo(SignView.contentPadding)
             make.trailing.equalTo(-SignView.contentPadding)
