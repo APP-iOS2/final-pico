@@ -11,7 +11,10 @@ import RxSwift
 
 final class MailListTableViewCell: UITableViewCell {
     
+    private let viewModel = MailViewModel()
     private let disposeBag = DisposeBag()
+    
+    private var mailInfo: Mail.MailInfo?
     
     private let userImage: UIImageView = {
         let imageView = UIImageView()
@@ -84,18 +87,25 @@ final class MailListTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // 질문! 받아와서 보여줘야하는 경우 코드를 cell 뷰 파일에 두는 것이 맞나요? 또한 rx 처리를 해줘야하나요?
-    func getData(senderUser: DummyMailUsers) {
+
+    func getData(senderUser: Mail.MailInfo, type: MailType) {
+        self.mailInfo = senderUser
         
-        userImage.loadImage(url: senderUser.messages.imageUrl, disposeBag: self.disposeBag)
-        nameLabel.text = senderUser.messages.oppenentName
-        nameLabel.sizeToFit()
-        mbtiLabelView.setMbti(mbti: senderUser.messages.mbti)
-        self.message.text = senderUser.messages.message
-        dateLabel.text = senderUser.messages.sendedDate
-        if !senderUser.messages.isReading {
-            newLabel.text = "new"
+        viewModel.getUser(userId: senderUser.sendedUserId) {
+            guard (self.viewModel.user != nil) else { return }
+            guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }
+            self.userImage.kf.setImage(with: url)
+            self.nameLabel.text = self.viewModel.user?.nickName
+            self.nameLabel.sizeToFit()
+            self.mbtiLabelView.setMbti(mbti: self.viewModel.user?.mbti ?? .infj)
+            self.message.text = senderUser.message
+            self.dateLabel.text = senderUser.sendedDate
+            
+            if type == .receive {
+                if !senderUser.isReading {
+                    self.newLabel.text = "new"
+                }
+            }
         }
     }
     
