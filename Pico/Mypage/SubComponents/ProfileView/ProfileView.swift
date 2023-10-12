@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 final class ProfileView: UIView {
     
@@ -97,7 +98,6 @@ final class ProfileView: UIView {
             }
             .bind(to: profilPercentLabel.rx.text)
             .disposed(by: disposeBag)
-        
     }
     
     private func configProgressBarView() {

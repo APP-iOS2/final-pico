@@ -29,9 +29,13 @@ final class UserDefaultsManager {
         if let imageURL = userData.imageURLs[safe: 0] {
             UserDefaults.standard.setValue(imageURL, forKey: Key.imageURL.rawValue)
         }
-        UserDefaults.standard.setValue(userData.birth, forKey: Key.mbti.rawValue)
+        UserDefaults.standard.setValue(userData.birth, forKey: Key.birth.rawValue)
         UserDefaults.standard.setValue(userData.location.latitude, forKey: Key.latitude.rawValue)
         UserDefaults.standard.setValue(userData.location.longitude, forKey: Key.longitude.rawValue)
+    }
+    
+    func isLogin() -> Bool {
+        UserDefaults.standard.string(forKey: Key.userId.rawValue) == nil ? true : false
     }
     
     func getUserData() -> CurrentUser {
