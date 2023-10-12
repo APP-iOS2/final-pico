@@ -15,6 +15,11 @@ final class LikeUViewController: UIViewController {
     private let viewModel: LikeUViewModel = LikeUViewModel()
     private let disposeBag: DisposeBag = DisposeBag()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addViews()
