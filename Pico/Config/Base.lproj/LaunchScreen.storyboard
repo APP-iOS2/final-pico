@@ -17,18 +17,37 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="1vz-84-3wG">
-                                <rect key="frame" x="-306.66666666666669" y="401" width="1006.3333333333335" height="50"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WM9-DF-nqH">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="7gO-jW-yX5">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                    </imageView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo_white" translatesAutoresizingMaskIntoConstraints="NO" id="1vz-84-3wG">
+                                        <rect key="frame" x="-333.66666666666669" y="401" width="1060.3333333333333" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="mtz-5Z-3G1"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="mtz-5Z-3G1"/>
+                                    <constraint firstItem="7gO-jW-yX5" firstAttribute="top" secondItem="WM9-DF-nqH" secondAttribute="top" id="5Oy-SQ-qEw"/>
+                                    <constraint firstItem="1vz-84-3wG" firstAttribute="centerY" secondItem="WM9-DF-nqH" secondAttribute="centerY" id="82B-N8-WK6"/>
+                                    <constraint firstItem="7gO-jW-yX5" firstAttribute="leading" secondItem="WM9-DF-nqH" secondAttribute="leading" id="Qa5-X2-bqz"/>
+                                    <constraint firstItem="1vz-84-3wG" firstAttribute="centerX" secondItem="WM9-DF-nqH" secondAttribute="centerX" id="VMq-L9-Mvy"/>
+                                    <constraint firstAttribute="trailing" secondItem="7gO-jW-yX5" secondAttribute="trailing" id="jFr-v1-7A3"/>
+                                    <constraint firstAttribute="bottom" secondItem="7gO-jW-yX5" secondAttribute="bottom" id="syt-na-eT6"/>
                                 </constraints>
-                            </imageView>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="1vz-84-3wG" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="16g-lm-H66"/>
-                            <constraint firstItem="1vz-84-3wG" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="jnF-r2-ioz"/>
+                            <constraint firstItem="WM9-DF-nqH" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="2mW-iB-OXz"/>
+                            <constraint firstAttribute="bottom" secondItem="WM9-DF-nqH" secondAttribute="bottom" id="9hj-FF-qSu"/>
+                            <constraint firstItem="WM9-DF-nqH" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="KaK-V8-ytS"/>
+                            <constraint firstAttribute="trailing" secondItem="WM9-DF-nqH" secondAttribute="trailing" id="OPg-Se-rz5"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -38,7 +57,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="logo" width="1006" height="376"/>
+        <image name="background" width="1179" height="2347"/>
+        <image name="logo_white" width="1060" height="416"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

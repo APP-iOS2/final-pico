@@ -35,7 +35,7 @@ final class AdminUserViewController: UIViewController {
     private lazy var filteredButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("이름", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+        button.setTitleColor(.picoFontBlack, for: .normal)
         button.menu = UIMenu(title: "정렬", options: [.singleSelection], children: filteredMenuItems)
         button.showsMenuAsPrimaryAction = true
         return button
