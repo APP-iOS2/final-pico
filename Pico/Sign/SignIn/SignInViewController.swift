@@ -16,6 +16,10 @@ final class SignInViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let phoneNumberSubject = BehaviorSubject<String>(value: "")
     private var isFullPhoneNumber: Bool = false
+    private var isTappedAuthButton: Bool = false
+    private var isAuth: Bool = false
+    private var authTextFields: [UITextField] = []
+    private var authText: String = ""
     
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -35,7 +39,7 @@ final class SignInViewController: UIViewController {
         return textField
     }()
     
-    private let phoneNumberCancleButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "x.circle"), for: .normal)
         button.tintColor = .black
@@ -45,12 +49,33 @@ final class SignInViewController: UIViewController {
         return button
     }()
     
+    private let authButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("  인증  ", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 13
+        button.backgroundColor = .picoBlue
+        button.isHidden = true
+        return button
+    }()
+    
     private let buttonHorizontalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .fill
         stackView.spacing = 8
+        return stackView
+    }()
+    
+    private let authTextFieldStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+        stackView.spacing = 8
+        stackView.isHidden = true
         return stackView
     }()
     
@@ -70,6 +95,7 @@ final class SignInViewController: UIViewController {
         makeConstraints()
         configTextfield()
         configButton()
+        configAuthTextField()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -85,73 +111,151 @@ final class SignInViewController: UIViewController {
 }
 // MARK: - Config
 extension SignInViewController {
+    
     private func configTextfield() {
         phoneNumberTextField.delegate = self
     }
-    
+    private func configAuthText() {
+        var authStrings: [String] = []
+        for text in authTextFields {
+            authStrings.append(text.text ?? "")
+        }
+        authText = authStrings.joined()
+    }
+    private func configReset() {
+        registerKeyboard()
+        isFullPhoneNumber = false
+        isTappedAuthButton = false
+        isAuth = false
+        for authTextField in authTextFields {
+            authTextField.text = ""
+        }
+        authText = ""
+        
+        phoneNumberTextField.becomeFirstResponder()
+        phoneNumberTextField.text = ""
+        updatePhoneNumberTextField(isFull: false)
+        updateCancelButton(isHidden: false)
+        updateAuthButton(isEnable: false, isHidden: true)
+        updateAuthTextFieldStack(isShow: false)
+        updateNextButton(isEnabled: false)
+    }
     private func configButton() {
-        nextButton.rx.tap
+        authButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                
-                nextButton.tappedAnimation()
+                authButton.tappedAnimation()
                 guard self.isFullPhoneNumber else { return }
                 guard let text = self.phoneNumberTextField.text else { return }
-                viewModel.signIn(userNumber: text) { user in
-                    if self.viewModel.isRightUser {
-                        Loading.hideLoading()
+                showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
+                    self.viewModel.signIn(userNumber: text) { user in
+                        guard self.viewModel.isRightUser else {
+                            Loading.hideLoading()
+                            self.showAlert(message: "등록되지 않은 번호입니다.") {
+                                self.configReset()
+                            }
+                            return
+                        }
                         if let user = user {
                             UserDefaultsManager.shared.setUserData(userData: user)
-                            let viewController = LoginSuccessViewController()
-                            self.navigationController?.pushViewController(viewController, animated: true)
                         }
-                    } else {
                         Loading.hideLoading()
-                        self.showAlert(message: "등록되지 않은 번호입니다.") {
-                            self.phoneNumberTextField.text = ""
-                        }
+                        self.authTextFields[0].becomeFirstResponder()
+                        self.isTappedAuthButton = true
+                        self.updatePhoneNumberTextField(isFull: true)
+                        self.updateCancelButton(isHidden: true)
+                        self.updateAuthButton(isEnable: false, isHidden: false)
+                        self.updateAuthTextFieldStack(isShow: true)
+                        self.updateNextButton(isEnabled: true)
                     }
                 }
-                print(viewModel.loginUser, separator: ",")
             })
             .disposed(by: disposeBag)
         
-        phoneNumberCancleButton.rx.tap
+        cancelButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                print("phoneNumberCancleButton")
-                phoneNumberCancleButton.tappedAnimation()
+                cancelButton.tappedAnimation()
                 self.phoneNumberTextField.text = ""
-                changeViewState(isFull: false)
+                updateAuthButton(isEnable: false, isHidden: true)
+                phoneNumberTextField.becomeFirstResponder()
+            })
+            .disposed(by: disposeBag)
+        
+        nextButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.configAuthText()
+                guard let self = self else { return }
+                isAuth = true
+                guard isAuth else {
+                    showAlert(message: "비상비상 인증실패") { self.configReset() }
+                    return
+                }
+                showAlert(message: "인증에 성공하셨습니다.") {
+                    print("\(self.authText)")
+                    let viewController = LoginSuccessViewController()
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                }
             })
             .disposed(by: disposeBag)
     }
-    
-    private func changeViewState(isFull: Bool) {
-        switch isFull {
-        case true:
-            phoneNumberTextField.textColor = .picoBlue
-            nextButton.backgroundColor = .picoBlue
-            isFullPhoneNumber = true
-        case false:
-            phoneNumberTextField.textColor = .gray
-            nextButton.backgroundColor = .picoGray
-            isFullPhoneNumber = false
-        }
+    // MARK: - Update
+    private func updatePhoneNumberTextField(isFull: Bool) {
+        phoneNumberTextField.isEnabled = !isFull
+        phoneNumberTextField.textColor = isFull ? .picoBlue : .gray
     }
+
+    private func updateCancelButton(isHidden: Bool) {
+        cancelButton.isHidden = isHidden
+    }
+    
+    private func updateAuthButton(isEnable: Bool, isHidden: Bool = false) {
+        authButton.isEnabled = isEnable
+        authButton.backgroundColor = isEnable ? .picoBlue : .picoGray
+        authButton.isHidden = isHidden
+        isFullPhoneNumber = isEnable
+    }
+    
+    private func updateAuthTextFieldStack(isShow: Bool) {
+        authTextFieldStack.isHidden = isShow ? false : true
+    }
+    
+    private func updateNextButton(isEnabled: Bool) {
+        nextButton.backgroundColor = isEnabled ? .picoBlue : .picoGray
+        nextButton.isEnabled = isEnabled
+    }
+  
 }
 // MARK: - 텍스트필드 관련
 extension SignInViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isFull in
-            changeViewState(isFull: isFull)
+        guard isTappedAuthButton else {
+            let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isEnable in
+                let isHidden = !isEnable
+                updateAuthButton(isEnable: isEnable, isHidden: isHidden)
+            }
+            return isChangeValue
         }
         
-        return isChangeValue
+        let currentText = textField.text ?? ""
+        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        
+        guard CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: string)) && updatedText.count <= 1 else { return false }
+        
+        if let currentIndex = authTextFields.firstIndex(of: textField), currentIndex < authTextFields.count - 1 {
+            if updatedText.isEmpty {
+                authTextFields[currentIndex].text = updatedText
+            } else {
+                authTextFields[currentIndex].text = updatedText
+                if currentIndex < authTextFields.count - 1 {
+                    authTextFields[currentIndex + 1].becomeFirstResponder()
+                }
+            }
+        }
+        return false
     }
 }
-
 // MARK: - 키보드 관련
 extension SignInViewController {
     
@@ -187,12 +291,32 @@ extension SignInViewController {
 extension SignInViewController {
     
     private func addSubViews() {
-        for stackViewItem in [phoneNumberTextField, phoneNumberCancleButton] {
+        configAuthTextField()
+        for stackViewItem in [phoneNumberTextField, cancelButton, authButton] {
             buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
-        
-        for viewItem in [notifyLabel, buttonHorizontalStack, nextButton] {
+        for pmStkItem in authTextFields {
+            authTextFieldStack.addArrangedSubview(pmStkItem)
+        }
+        for viewItem in [notifyLabel, buttonHorizontalStack, nextButton, authTextFieldStack] {
             view.addSubview(viewItem)
+        }
+    }
+    
+    private func configAuthTextField() {
+        for tag in 0...5 {
+            let textField = UITextField()
+            textField.layer.borderWidth = 1
+            textField.layer.cornerRadius = 10
+            textField.textAlignment = .center
+            textField.font = .picoTitleFont
+            textField.textColor = .picoBlue
+            textField.keyboardType = .numberPad
+            textField.delegate = self
+            textField.layer.borderColor = UIColor.picoGray.cgColor
+            textField.tag = tag
+            textField.clipsToBounds = true
+            authTextFields.append(textField)
         }
     }
     
@@ -209,14 +333,24 @@ extension SignInViewController {
             make.top.equalTo(notifyLabel.snp.bottom).offset(SignView.contentPadding)
             make.leading.equalToSuperview().offset(SignView.contentPadding)
             make.trailing.equalToSuperview().offset(-SignView.contentPadding)
-            make.height.equalTo(50)
+            make.height.equalTo(30)
         }
         
+        authButton.snp.makeConstraints { make in
+            make.width.equalTo(60)
+        }
+        authTextFieldStack.snp.makeConstraints { make in
+            make.top.equalTo(buttonHorizontalStack.snp.bottom).offset(SignView.contentPadding)
+            make.leading.equalTo(SignView.contentPadding)
+            make.trailing.equalTo(-SignView.contentPadding)
+            make.height.equalTo(50)
+        }
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(notifyLabel.snp.leading)
             make.trailing.equalTo(notifyLabel.snp.trailing)
             make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
             make.height.equalTo(CommonConstraints.buttonHeight)
         }
+        
     }
 }
