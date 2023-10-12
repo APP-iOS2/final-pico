@@ -10,7 +10,9 @@ import SnapKit
 import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
+    
     var viewModel: SignUpViewModel = .shared
+    
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
@@ -118,8 +120,8 @@ final class SignUpPhoneNumberViewController: UIViewController {
 extension SignUpPhoneNumberViewController {
   
     private func configButtons() {
-        authButton.addTarget(self, action: #selector(tappedCheckButton), for: .touchUpInside)
         cancleButton.addTarget(self, action: #selector(tappedCancleButton), for: .touchUpInside)
+        authButton.addTarget(self, action: #selector(tappedCheckButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
@@ -127,107 +129,71 @@ extension SignUpPhoneNumberViewController {
         phoneNumberTextField.delegate = self
     }
     
-    func configAuthText() {
+    private func configAuthText() {
         var authStrings: [String] = []
         for text in authTextFields {
             authStrings.append(text.text ?? "")
         }
-        self.authText = authStrings.joined()
-        print(authText)
-        // 임시로 넘어가게 함
-        self.isAuth = true
+        authText = authStrings.joined()
     }
     
     private func configReset() {
-        // 초기상태로 가는거임
-        self.registerKeyboard()
-        self.phoneNumberTextField.becomeFirstResponder()
-        self.phoneNumberTextField.text = ""
-        self.userPhoneNumber = ""
-        self.isFullPhoneNumber = false
-        self.isTappedCheckButton = false
-        self.updatePhoneNumberTextField(isTrue: false)
-        self.updateCancleButton(isTrue: false)
-        self.updateAuthButton(isFull: false)
-        self.updateNextButton(isCheck: false)
-        self.updateAuthTextFieldStack(false)
+        registerKeyboard()
+        userPhoneNumber = ""
+        isFullPhoneNumber = false
+        isTappedCheckButton = false
+        isAuth = false
+        for authTextField in authTextFields {
+            authTextField.text = ""
+        }
+        authText = ""
+        
+        phoneNumberTextField.becomeFirstResponder()
+        phoneNumberTextField.text = ""
+        updatePhoneNumberTextField(isFull: false)
+        updateCancleButton(isHidden: false)
+        updateAuthButton(isEnable: false, isHidden: true)
+        updateAuthTextFieldStack(isShow: false)
+        updateNextButton(isEnabled: false)
     }
     
     // MARK: - Update 관련 Number, cancle, auth, authField, next
-    private func updatePhoneNumberTextField(isTrue: Bool) {
-        switch isTrue {
-        case true:
-            self.phoneNumberTextField.isEnabled = false
-            self.phoneNumberTextField.textColor = .picoBlue
-        case false:
-            self.phoneNumberTextField.isEnabled = true
-            self.phoneNumberTextField.textColor = .gray
-        }
+    private func updatePhoneNumberTextField(isFull: Bool) {
+        phoneNumberTextField.isEnabled = !isFull
+        phoneNumberTextField.textColor = isFull ? .picoBlue : .gray
     }
 
-    private func updateCancleButton(isTrue: Bool) {
-        switch isTrue {
-        case true:
-            self.cancleButton.isHidden = true
-        case false:
-            self.cancleButton.isHidden = false
-        }
+    private func updateCancleButton(isHidden: Bool) {
+        cancleButton.isHidden = isHidden
     }
     
-    private func updateAuthButton(isFull: Bool, isHidden: Bool = false) {
-        switch isFull {
-        case true:
-            authButton.isEnabled = true
-            authButton.backgroundColor = .picoBlue
-            authButton.isHidden = false
-            isFullPhoneNumber = true
-            print("updateCheckButton: 트루")
-        case false:
-            authButton.isEnabled = false
-            authButton.backgroundColor = .picoGray
-            authButton.isHidden = isHidden
-            isFullPhoneNumber = false
-            print("updateCheckButton: false")
-        }
+    private func updateAuthButton(isEnable: Bool, isHidden: Bool = false) {
+        authButton.isEnabled = isEnable
+        authButton.backgroundColor = isEnable ? .picoBlue : .picoGray
+        authButton.isHidden = isHidden
+        isFullPhoneNumber = isEnable
     }
     
-    private func updateAuthTextFieldStack(_ isTrue: Bool) {
-        switch isTrue {
-        case true:
-            authTextFieldStack.isHidden = false
-        case false:
-            authTextFieldStack.isHidden = true
-        }
+    private func updateAuthTextFieldStack(isShow: Bool) {
+        authTextFieldStack.isHidden = isShow ? false : true
     }
     
-    private func updateNextButton(isCheck: Bool) {
-        switch isCheck {
-        case true:
-            nextButton.backgroundColor = .picoBlue
-        case false:
-            nextButton.backgroundColor = .picoGray
-        }
+    private func updateNextButton(isEnabled: Bool) {
+        nextButton.backgroundColor = isEnabled ? .picoBlue : .picoGray
+        nextButton.isEnabled = isEnabled
     }
     // MARK: - @objc
     @objc private func tappedCancleButton(_ sender: UIButton) {
         sender.tappedAnimation()
         phoneNumberTextField.text = ""
-        updateAuthButton(isFull: false)
+        updateAuthButton(isEnable: false, isHidden: true)
+        phoneNumberTextField.becomeFirstResponder()
     }
     
     @objc private func tappedCheckButton(_ sender: UIButton) {
         sender.tappedAnimation()
         isTappedCheckButton = true
         showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
-            
-            self.updatePhoneNumberTextField(isTrue: true)
-            self.updateCancleButton(isTrue: true)
-            self.updateAuthButton(isFull: false, isHidden: false)
-            self.updateAuthTextFieldStack(true)
-            print("isFullPhoneNumber : \(self.isFullPhoneNumber)\nisTappedCheckButton : \(self.isTappedCheckButton) ")
-            // MARK: - 문자인증 시작하면 건드려야해용
-//            self.updateNextButton(isCheck: true)
-            
             guard let text = self.phoneNumberTextField.text else { return }
             self.viewModel.checkPhoneNumber(userNumber: text) {
                 guard self.viewModel.isRightUser else {
@@ -240,34 +206,41 @@ extension SignUpPhoneNumberViewController {
                 Loading.hideLoading()
                 self.viewModel.phoneNumber = text
                 self.authTextFields[0].becomeFirstResponder()
+                self.updatePhoneNumberTextField(isFull: true)
+                self.updateCancleButton(isHidden: true)
+                self.updateAuthButton(isEnable: false, isHidden: false)
+                self.updateAuthTextFieldStack(isShow: true)
+                self.updateNextButton(isEnabled: true)
             }
         }
     }
-   
+    
     @objc private func tappedNextButton(_ sender: UIButton) {
-        guard isFullPhoneNumber && isTappedCheckButton else { return }
         sender.tappedAnimation()
-        // MARK: - 문자인증 시작하면 건드려야해용
-        // 이자리에 isAuth를 변경시켜줄 인증 함수를 넣어야함
+        // 문자인증 시작하면 건드려야해용
+        // 문자인증 기능이 완료 될 때 까지는 넘어가세요 :)
         configAuthText()
+        isAuth = true
         guard isAuth else {
+            print("비상비상")
             self.showAlert(message: "비상비상 인증실패") { self.configReset() }
             return
         }
+        print("성공성공")
         self.showAlert(message: "인증에 성공하셨습니다.") {
             let viewController = SignUpGenderViewController()
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
-    
 }
 // MARK: - 텍스트필드 관련
 extension SignUpPhoneNumberViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard isTappedCheckButton else {
-            let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isFull in
-                updateAuthButton(isFull: isFull, isHidden: true)
+            let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isEnable in
+                let isHidden = !isEnable
+                updateAuthButton(isEnable: isEnable, isHidden: isHidden)
             }
             return isChangeValue
         }
