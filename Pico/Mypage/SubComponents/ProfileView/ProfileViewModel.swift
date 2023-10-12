@@ -9,7 +9,7 @@ import RxSwift
 import RxCocoa
 import Foundation
 
-class ProfileViewModel {
+final class ProfileViewModel {
     
     private let disposeBag = DisposeBag()
     private let userDefaultsManager = UserDefaultsManager.shared.getUserData()
