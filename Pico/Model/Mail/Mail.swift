@@ -13,7 +13,7 @@ struct Mail: Codable {
     var receiveMailInfo: [MailInfo]?
     
     struct MailInfo: Codable {
-        let id: String = UUID().uuidString
+        var id: String = UUID().uuidString
         let sendedUserId: String
         let receivedUserId: String
         let message: String
@@ -41,4 +41,3 @@ struct Mail: Codable {
      }
      }
      */
-

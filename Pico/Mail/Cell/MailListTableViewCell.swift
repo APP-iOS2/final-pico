@@ -14,6 +14,8 @@ final class MailListTableViewCell: UITableViewCell {
     private let viewModel = MailViewModel()
     private let disposeBag = DisposeBag()
     
+    private var mailInfo: Mail.MailInfo?
+    
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -87,6 +89,8 @@ final class MailListTableViewCell: UITableViewCell {
     }
 
     func getData(senderUser: Mail.MailInfo, type: MailType) {
+        self.mailInfo = senderUser
+        
         viewModel.getUser(userId: senderUser.sendedUserId) {
             guard (self.viewModel.user != nil) else { return }
             guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }

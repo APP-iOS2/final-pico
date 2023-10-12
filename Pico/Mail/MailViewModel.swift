@@ -12,9 +12,18 @@ import RxRelay
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-enum MailType: String {
-    case send = "보낸 쪽지"
-    case receive = "받은 쪽지"
+enum MailType: String, Codable {
+    case send
+    case receive
+    
+    var typeString: String {
+        switch self {
+        case .receive:
+            return "받은 쪽지"
+        case .send:
+            return "보낸 쪽지"
+        }
+    }
 }
 
 final class MailViewModel {
@@ -35,9 +44,6 @@ final class MailViewModel {
     private let dbRef = Firestore.firestore()
     private let disposeBag = DisposeBag()
     
-    
-    private var itemsPerPage: Int = 10
-    var lastDocumentSnapshot: DocumentSnapshot?
     var user: User?
     
     init() {
@@ -46,12 +52,24 @@ final class MailViewModel {
     
     func saveMailData(receiveUserId: String, message: String) {
         let senderUserId: String = UserDefaultsManager.shared.getUserData().userId
-        let messages: [String: Any] = [
+        
+        let sendMessages: [String: Any] = [
             "messageId": UUID().uuidString,
             "sendedUserId": senderUserId,
             "receivedUserId": receiveUserId,
             "message": message,
             "sendedDate": Date().timeIntervalSince1970.toString(),
+            "mailType": "send",
+            "isReading": true
+        ]
+        
+        let receiveMessages: [String: Any] = [
+            "messageId": UUID().uuidString,
+            "sendedUserId": senderUserId,
+            "receivedUserId": receiveUserId,
+            "message": message,
+            "sendedDate": Date().timeIntervalSince1970.toString(),
+            "mailType": "receive",
             "isReading": false
         ]
         
@@ -59,9 +77,7 @@ final class MailViewModel {
         dbRef.collection(Collections.mail.name).document(senderUserId).setData(
             [
                 "userId": senderUserId,
-                "sendMailInfo": [
-                    "messages": FieldValue.arrayUnion([messages])
-                ]
+                "sendMailInfo": FieldValue.arrayUnion([sendMessages])
             ], merge: true) { error in
                 if let error = error {
                     print("평가 업데이트 에러: \(error)")
@@ -74,9 +90,7 @@ final class MailViewModel {
         dbRef.collection(Collections.mail.name).document(receiveUserId).setData(
             [
                 "userId": receiveUserId,
-                "receiveMailInfo": [
-                    "messages": FieldValue.arrayUnion([messages])
-                ]
+                "receiveMailInfo": FieldValue.arrayUnion([receiveMessages])
             ], merge: true) { error in
                 if let error = error {
                     print("평가 업데이트 에러: \(error)")
@@ -88,7 +102,9 @@ final class MailViewModel {
     
     func loadMail() {
         
-        FirestoreService.shared.loadDocumentRx(collectionId: .mail, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Mail.self)
+        FirestoreService.shared.loadDocumentRx(collectionId: .mail, 
+                                               documentId: UserDefaultsManager.shared.getUserData().userId,
+                                               dataType: Mail.self)
             .map { mail -> [Mail.MailInfo] in
                 if let mail = mail {
                     return mail.sendMailInfo ?? []
@@ -96,12 +112,15 @@ final class MailViewModel {
                 return []
             }
             .map({ mailInfos in
+                print("mailInfos: \(mailInfos.filter { $0.mailType == .send })")
                 return mailInfos.filter { $0.mailType == .send }
             })
             .bind(to: mailSendList)
             .disposed(by: disposeBag)
         
-        FirestoreService.shared.loadDocumentRx(collectionId: .mail, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Mail.self)
+        FirestoreService.shared.loadDocumentRx(collectionId: .mail, 
+                                               documentId: UserDefaultsManager.shared.getUserData().userId,
+                                               dataType: Mail.self)
             .map { mail -> [Mail.MailInfo] in
                 if let mail = mail {
                     return mail.receiveMailInfo ?? []
@@ -109,6 +128,7 @@ final class MailViewModel {
                 return []
             }
             .map({ mailInfos in
+                print("mailInfos: \(mailInfos.filter { $0.mailType == .receive })")
                 return mailInfos.filter { $0.mailType == .receive }
             })
             .bind(to: mailRecieveList)
