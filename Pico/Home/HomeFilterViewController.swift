@@ -51,13 +51,13 @@ final class HomeFilterViewController: UIViewController {
         addSubView()
         makeConstraints()
         
-        manButton.isSelected = self.homeViewController?.filterGender.contains(.male) ?? false
+        manButton.isSelected = HomeFilterViewController.filterGender.contains(.male)
         updateButtonAppearance(manButton)
         
-        womanButton.isSelected = self.homeViewController?.filterGender.contains(.female) ?? false
+        womanButton.isSelected = HomeFilterViewController.filterGender.contains(.female)
         updateButtonAppearance(womanButton)
         
-        etcButton.isSelected = self.homeViewController?.filterGender.contains(.etc) ?? false
+        etcButton.isSelected = HomeFilterViewController.filterGender.contains(.etc)
         updateButtonAppearance(etcButton)
     }
     
