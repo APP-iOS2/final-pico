@@ -37,7 +37,7 @@ final class SignUpViewModel {
     var nickName: String = ""
     var location: Location = Location(address: "", latitude: 0, longitude: 0)
     var imageArray: [UIImage] = []
-    var createdDate: Double = 0
+    var createdDate: Double = Date().timeIntervalSince1970
     var chuCount: Int = 0
     var isSubscribe: Bool = false
     
