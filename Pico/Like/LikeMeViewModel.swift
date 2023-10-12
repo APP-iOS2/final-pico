@@ -62,8 +62,28 @@ final class LikeMeViewModel {
     }
     
     func likeUser(userId: String) {
+        guard let index = likeMeUserList.value.firstIndex(where: {
+            $0.likedUserId == userId
+        }) else {
+            return
+        }
+        guard let likeData: Like.LikeInfo = likeMeUserList.value[safe: index] else { return }
+        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL)
+        
+        dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
+            "recivedlikes": FieldValue.arrayRemove([likeData.asDictionary()])
+        ])
+        dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
+            "recivedlikes": FieldValue.arrayUnion([updateData.asDictionary()])
+        ])
+        dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
+            "sendedlikes": FieldValue.arrayUnion([updateData.asDictionary()])
+        ])
+        let updatedDatas = likeMeUserList.value.filter { $0.likedUserId != userId }
+        likeMeUserList.accept(updatedDatas)
+
         var tempLike: Like?
-        FirestoreService.shared.loadDocument(collectionId: .likes, documentId: currentUser.userId, dataType: Like.self) { [weak self] result in
+        FirestoreService.shared.loadDocument(collectionId: .likes, documentId: likeData.likedUserId, dataType: Like.self) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let data):
@@ -71,18 +91,25 @@ final class LikeMeViewModel {
                 guard let tempLike = tempLike else {
                     return
                 }
-                var newLikeInfos: [Like.LikeInfo] = tempLike.recivedlikes ?? []
-                let index = newLikeInfos.firstIndex { $0.likedUserId == userId }
-                guard let index = index else { return }
-                let tempLikeInfo = newLikeInfos[index]
-                let updateLikeInfo = Like.LikeInfo(likedUserId: tempLikeInfo.likedUserId, likeType: .matching, birth: tempLikeInfo.birth, nickName: tempLikeInfo.nickName, mbti: tempLikeInfo.mbti, imageURL: tempLikeInfo.imageURL)
-                newLikeInfos = newLikeInfos.filter { $0.likedUserId != userId }
                 
-                likeMeUserList.accept(likeMeUserList.value.filter { $0.likedUserId != userId })
+                guard let sendedlikes = tempLike.sendedlikes else { return }
+                guard let sendIndex = sendedlikes.firstIndex(where: {
+                    $0.likedUserId == self.currentUser.userId
+                }) else {
+                    return
+                }
                 
-                newLikeInfos.append(updateLikeInfo)
-                let newLike = Like(userId: currentUser.userId, sendedlikes: tempLike.sendedlikes, recivedlikes: newLikeInfos)
-                dbRef.collection(Collections.likes.name).document(currentUser.userId).setData(newLike.asDictionary())
+                guard let tempSendLike = sendedlikes[safe: sendIndex] else { return }
+                let updateSendLike = Like.LikeInfo(likedUserId: tempSendLike.likedUserId, likeType: .matching, birth: tempSendLike.birth, nickName: tempSendLike.nickName, mbti: tempSendLike.mbti, imageURL: tempSendLike.imageURL)
+                dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
+                    "sendedlikes": FieldValue.arrayRemove([tempSendLike.asDictionary()])
+                ])
+                dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
+                    "sendedlikes": FieldValue.arrayUnion([updateSendLike.asDictionary()])
+                ])
+                dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
+                    "recivedlikes": FieldValue.arrayUnion([updateSendLike.asDictionary()])
+                ])
             case .failure(let error):
                 print(error)
                 return
