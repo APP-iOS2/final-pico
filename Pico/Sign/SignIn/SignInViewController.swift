@@ -111,8 +111,16 @@ final class SignInViewController: UIViewController {
 }
 // MARK: - Config
 extension SignInViewController {
+    
     private func configTextfield() {
         phoneNumberTextField.delegate = self
+    }
+    private func configAuthText() {
+        var authStrings: [String] = []
+        for text in authTextFields {
+            authStrings.append(text.text ?? "")
+        }
+        authText = authStrings.joined()
     }
     private func configReset() {
         registerKeyboard()
@@ -133,23 +141,6 @@ extension SignInViewController {
         updateNextButton(isEnabled: false)
     }
     private func configButton() {
-        nextButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                isAuth = true
-                guard isAuth else {
-                    print("비상비상")
-                    self.showAlert(message: "비상비상 인증실패") { self.configReset() }
-                    return
-                }
-                print("성공성공")
-                self.showAlert(message: "인증에 성공하셨습니다.") {
-                    let viewController = LoginSuccessViewController()
-                    self.navigationController?.pushViewController(viewController, animated: true)
-                }
-            })
-            .disposed(by: disposeBag)
-        
         authButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
@@ -158,7 +149,7 @@ extension SignInViewController {
                 guard let text = self.phoneNumberTextField.text else { return }
                 showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
                     self.viewModel.signIn(userNumber: text) { user in
-                        guard self.viewModel.isRightUser  else {
+                        guard self.viewModel.isRightUser else {
                             Loading.hideLoading()
                             self.showAlert(message: "등록되지 않은 번호입니다.") {
                                 self.configReset()
@@ -178,35 +169,37 @@ extension SignInViewController {
                         self.updateNextButton(isEnabled: true)
                     }
                 }
-                print(viewModel.loginUser, separator: ",")
             })
             .disposed(by: disposeBag)
         
         cancleButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                print("phoneNumberCancleButton")
                 cancleButton.tappedAnimation()
                 self.phoneNumberTextField.text = ""
                 updateAuthButton(isEnable: false, isHidden: true)
                 phoneNumberTextField.becomeFirstResponder()
             })
             .disposed(by: disposeBag)
+        
+        nextButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.configAuthText()
+                guard let self = self else { return }
+                isAuth = true
+                guard isAuth else {
+                    showAlert(message: "비상비상 인증실패") { self.configReset() }
+                    return
+                }
+                showAlert(message: "인증에 성공하셨습니다.") {
+                    print("\(self.authText)")
+                    let viewController = LoginSuccessViewController()
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                }
+            })
+            .disposed(by: disposeBag)
     }
-    
-    private func changeViewState(isFull: Bool) {
-        switch isFull {
-        case true:
-            phoneNumberTextField.textColor = .picoBlue
-            nextButton.backgroundColor = .picoBlue
-            isFullPhoneNumber = true
-        case false:
-            phoneNumberTextField.textColor = .gray
-            nextButton.backgroundColor = .picoGray
-            isFullPhoneNumber = false
-        }
-    }
-    
+    // MARK: - Update
     private func updatePhoneNumberTextField(isFull: Bool) {
         phoneNumberTextField.isEnabled = !isFull
         phoneNumberTextField.textColor = isFull ? .picoBlue : .gray
@@ -224,7 +217,6 @@ extension SignInViewController {
     }
     
     private func updateAuthTextFieldStack(isShow: Bool) {
-        print("여긴왔어?")
         authTextFieldStack.isHidden = isShow ? false : true
     }
     
@@ -232,6 +224,7 @@ extension SignInViewController {
         nextButton.backgroundColor = isEnabled ? .picoBlue : .picoGray
         nextButton.isEnabled = isEnabled
     }
+  
 }
 // MARK: - 텍스트필드 관련
 extension SignInViewController: UITextFieldDelegate {
@@ -255,13 +248,14 @@ extension SignInViewController: UITextFieldDelegate {
                 authTextFields[currentIndex].text = updatedText
             } else {
                 authTextFields[currentIndex].text = updatedText
-                authTextFields[currentIndex + 1].becomeFirstResponder()
+                if currentIndex < authTextFields.count - 1 {
+                    authTextFields[currentIndex + 1].becomeFirstResponder()
+                }
             }
         }
-        return true
+        return false
     }
 }
-
 // MARK: - 키보드 관련
 extension SignInViewController {
     
@@ -325,6 +319,7 @@ extension SignInViewController {
             authTextFields.append(textField)
         }
     }
+    
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
