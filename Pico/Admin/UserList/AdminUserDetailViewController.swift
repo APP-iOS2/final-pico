@@ -8,8 +8,12 @@
 import UIKit
 import SnapKit
 
+struct UserImage {
+    static let height: CGFloat = Screen.height * 0.6
+}
+
 final class AdminUserDetailViewController: UIViewController {
-    
+
     private let topView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -51,7 +55,7 @@ final class AdminUserDetailViewController: UIViewController {
     private func configTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(cell: UserImageTableCell.self)
+//        tableView.register(cell: UserImageTableCell.self)
         tableView.register(cell: DetailUserInfoTableViewCell.self)
         tableView.register(cell: NotificationTableViewCell.self)
         tableView.separatorStyle = .none
@@ -95,10 +99,11 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
 
         switch tableViewCase {
         case .image:
-            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: UserImageTableCell.self)
-            cell.config(images: user.imageURLs)
-            cell.selectionStyle = .none
-            return cell
+            return UITableViewCell()
+//            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: UserImageTableCell.self)
+//            cell.config(images: user.imageURLs)
+//            cell.selectionStyle = .none
+//            return cell
 
         case .info:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: DetailUserInfoTableViewCell.self)
@@ -120,7 +125,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         
         switch tableViewCase {
         case .image:
-            return UserImageTableCellConstraint.height
+            return UserImage.height
         case .info:
             return UITableView.automaticDimension
         case .record:
@@ -151,7 +156,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offset = scrollView.contentOffset.y
         let maxAlpha = 0.7
-        let maxHeight = UserImageTableCellConstraint.height
+        let maxHeight = UserImage.height
         
         switch offset {
         case ...0:

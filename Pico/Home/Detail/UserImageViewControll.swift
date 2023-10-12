@@ -6,14 +6,15 @@
 //
 
 import UIKit
-import SnapKit
-import Kingfisher
+import RxSwift
+import RxCocoa
 
-struct UserImageTableCellConstraint {
+struct UserImageViewControllConstraint {
     static let height: CGFloat = Screen.height * 0.6
 }
 
-final class UserImageTableCell: UITableViewCell {
+final class UserImageViewControll: UIViewController {
+    private let disposeBag = DisposeBag()
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
@@ -26,24 +27,17 @@ final class UserImageTableCell: UITableViewCell {
         let pageControl = UIPageControl()
         pageControl.currentPage = 0
         pageControl.pageIndicatorTintColor = UIColor.lightGray
-        pageControl.currentPageIndicatorTintColor = UIColor.black
+        pageControl.currentPageIndicatorTintColor = UIColor.white
         return pageControl
     }()
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         addViews()
         makeConstraints()
         configScrollView()
     }
     
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     private func configScrollView() {
-        scrollView.frame = UIScreen.main.bounds
         scrollView.delegate = self
         scrollView.alwaysBounceVertical = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -51,43 +45,43 @@ final class UserImageTableCell: UITableViewCell {
     }
     
     func config(images: [String]) {
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width * CGFloat(images.count), height: UserImageTableCellConstraint.height)
-        pageControl.numberOfPages = images.count
         
+        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width * CGFloat(images.count), height: scrollView.bounds.height)
+        pageControl.numberOfPages = images.count
         for (index, image) in images.enumerated() {
             let imageView = UIImageView()
-            if let imageUrl = URL(string: image) {
-                imageView.kf.setImage(with: imageUrl)
+            if let image = URL(string: image) {
+                imageView.kf.setImage(with: image)
             }
             imageView.contentMode = .scaleAspectFill
             imageView.frame = CGRect(x: UIScreen.main.bounds.width * CGFloat(index),
                                      y: 0,
                                      width: UIScreen.main.bounds.width,
-                                     height: UserImageTableCellConstraint.height)
+                                     height: UserImageViewControllConstraint.height)
             scrollView.addSubview(imageView)
         }
     }
     
     private func addViews() {
-        [scrollView, pageControl].forEach { contentView.addSubview($0) }
+        [scrollView, pageControl].forEach { view.addSubview($0) }
     }
     
     private func makeConstraints() {
         scrollView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(UserImageTableCellConstraint.height)
+            make.edges.equalToSuperview()
         }
         
         pageControl.snp.makeConstraints { make in
-            make.bottom.equalTo(scrollView.snp.bottom)
+            make.bottom.equalToSuperview()
             make.centerX.equalToSuperview()
             make.height.equalTo(50)
         }
     }
 }
 
-extension UserImageTableCell: UIScrollViewDelegate {
+extension UserImageViewControll: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        pageControl.currentPage = Int(floor(scrollView.contentOffset.x / UIScreen.main.bounds.width))
+        self.pageControl.currentPage = Int(floor(scrollView.contentOffset.x / UIScreen.main.bounds.width))
+        
     }
 }
