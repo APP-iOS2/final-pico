@@ -35,8 +35,8 @@ final class UserDefaultsManager {
     }
     
     func isLogin() -> Bool {
-        UserDefaults.standard.string(forKey: Key.userId.rawValue) == nil ? true : false
-    }
+           UserDefaults.standard.string(forKey: Key.userId.rawValue) != nil ? true : false
+       }
     
     func getUserData() -> CurrentUser {
         let userId = UserDefaults.standard.string(forKey: Key.userId.rawValue) ?? "없음"

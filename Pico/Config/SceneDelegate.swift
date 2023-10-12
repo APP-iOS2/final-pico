@@ -14,14 +14,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-//        if UserDefaultsManager.shared.isLogin() {
+        if UserDefaultsManager.shared.isLogin() {
+            let rootViewController = TabBarController()
+            window?.rootViewController = rootViewController
+        } else {
             let rootViewController = UINavigationController(rootViewController: SignViewController())
             window?.rootViewController = rootViewController
-//        } else {
-//            let rootViewController = TabBarController()
-//            window?.rootViewController = rootViewController
-//        }
-        
+        }
         window?.makeKeyAndVisible()
     }
     
@@ -37,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             transition.type = CATransitionType.push
             transition.subtype = CATransitionSubtype.fromRight
             window.layer.add(transition, forKey: kCATransition)
-        }        
+        }
         window.rootViewController = viewController
     }
     
