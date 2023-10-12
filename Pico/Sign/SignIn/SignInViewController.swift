@@ -135,7 +135,7 @@ extension SignInViewController {
         phoneNumberTextField.becomeFirstResponder()
         phoneNumberTextField.text = ""
         updatePhoneNumberTextField(isFull: false)
-        updateCancleButton(isHidden: false)
+        updateCancelButton(isHidden: false)
         updateAuthButton(isEnable: false, isHidden: true)
         updateAuthTextFieldStack(isShow: false)
         updateNextButton(isEnabled: false)
@@ -163,7 +163,7 @@ extension SignInViewController {
                         self.authTextFields[0].becomeFirstResponder()
                         self.isTappedAuthButton = true
                         self.updatePhoneNumberTextField(isFull: true)
-                        self.updateCancleButton(isHidden: true)
+                        self.updateCancelButton(isHidden: true)
                         self.updateAuthButton(isEnable: false, isHidden: false)
                         self.updateAuthTextFieldStack(isShow: true)
                         self.updateNextButton(isEnabled: true)
@@ -205,7 +205,7 @@ extension SignInViewController {
         phoneNumberTextField.textColor = isFull ? .picoBlue : .gray
     }
 
-    private func updateCancleButton(isHidden: Bool) {
+    private func updateCancelButton(isHidden: Bool) {
         cancelButton.isHidden = isHidden
     }
     

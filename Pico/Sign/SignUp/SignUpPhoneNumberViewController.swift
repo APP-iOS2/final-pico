@@ -120,7 +120,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
 extension SignUpPhoneNumberViewController {
   
     private func configButtons() {
-        cancelButton.addTarget(self, action: #selector(tappedCancleButton), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(tappedCancelButton), for: .touchUpInside)
         authButton.addTarget(self, action: #selector(tappedCheckButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
@@ -151,7 +151,7 @@ extension SignUpPhoneNumberViewController {
         phoneNumberTextField.becomeFirstResponder()
         phoneNumberTextField.text = ""
         updatePhoneNumberTextField(isFull: false)
-        updateCancleButton(isHidden: false)
+        updateCancelButton(isHidden: false)
         updateAuthButton(isEnable: false, isHidden: true)
         updateAuthTextFieldStack(isShow: false)
         updateNextButton(isEnabled: false)
@@ -163,7 +163,7 @@ extension SignUpPhoneNumberViewController {
         phoneNumberTextField.textColor = isFull ? .picoBlue : .gray
     }
 
-    private func updateCancleButton(isHidden: Bool) {
+    private func updateCancelButton(isHidden: Bool) {
         cancelButton.isHidden = isHidden
     }
     
@@ -183,7 +183,7 @@ extension SignUpPhoneNumberViewController {
         nextButton.isEnabled = isEnabled
     }
     // MARK: - @objc
-    @objc private func tappedCancleButton(_ sender: UIButton) {
+    @objc private func tappedCancelButton(_ sender: UIButton) {
         sender.tappedAnimation()
         phoneNumberTextField.text = ""
         updateAuthButton(isEnable: false, isHidden: true)
@@ -207,7 +207,7 @@ extension SignUpPhoneNumberViewController {
                 self.viewModel.phoneNumber = text
                 self.authTextFields[0].becomeFirstResponder()
                 self.updatePhoneNumberTextField(isFull: true)
-                self.updateCancleButton(isHidden: true)
+                self.updateCancelButton(isHidden: true)
                 self.updateAuthButton(isEnable: false, isHidden: false)
                 self.updateAuthTextFieldStack(isShow: true)
                 self.updateNextButton(isEnabled: true)
