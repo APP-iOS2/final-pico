@@ -9,18 +9,16 @@ import Foundation
 
 struct Mail: Codable {
     let userId: String
-    let mailInfo: [MailInfo]
+    var sendMailInfo: [MailInfo]?
+    var receiveMailInfo: [MailInfo]?
     
     struct MailInfo: Codable {
         var id: String = UUID().uuidString
         let sendedUserId: String
         let receivedUserId: String
-        let messages: [Message]
-    }
-    
-    struct Message: Codable {
-        var id: String = UUID().uuidString
+        let mailType: MailType
         let message: String
         let sendedDate: String
+        let isReading: Bool
     }
 }
