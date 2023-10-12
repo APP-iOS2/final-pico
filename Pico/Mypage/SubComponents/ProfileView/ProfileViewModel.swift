@@ -38,6 +38,7 @@ final class ProfileViewModel {
         profilePerfection.accept(20)
         userName.accept(userDefaultsManager.nickName)
         userAge.accept("\(ageComponents.year ?? 0)")
+        imageUrl.accept(userDefaultsManager.imageURL)
     }
     
 }
