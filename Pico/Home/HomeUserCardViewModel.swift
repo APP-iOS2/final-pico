@@ -16,6 +16,7 @@ final class HomeUserCardViewModel {
     private let docRef = Firestore.firestore().collection(Collections.likes.name)
     static var passedMyData: [[String: Any]] = []
     static var passedUserData: [[String: Any]] = []
+    static var cardCounting: Int = 0
     
     func saveLikeData(receiveUserInfo: User, likeType: Like.LikeType) {
         let myLikeUser: Like.LikeInfo = Like.LikeInfo(likedUserId: receiveUserInfo.id,
