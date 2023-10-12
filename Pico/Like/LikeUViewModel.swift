@@ -21,7 +21,7 @@ final class LikeUViewModel {
     private let disposeBag = DisposeBag()
     
     init() {
-        FirestoreService.shared.loadDocumentRx(collectionId: .likes, documentId: "UserDefaultsManager.shared.getUserData().userId", dataType: Like.self)
+        FirestoreService.shared.loadDocumentRx(collectionId: .likes, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Like.self)
             .map { like -> [Like.LikeInfo] in
                 if let like = like {
                     return like.sendedlikes ?? []

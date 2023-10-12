@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import Kingfisher
 
-class NotificationTableViewCell: UITableViewCell {
+final class NotificationTableViewCell: UITableViewCell {
     
     private var notiType: NotiType = .like
     
