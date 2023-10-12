@@ -12,13 +12,12 @@ import RxDataSources
 
 final class WorldCupGameViewController: UIViewController {
     
-    private let viewModel = WorldCupViewModel()
+    private var worldCupViewModel = WorldCupViewModel()
     private let disposeBag = DisposeBag()
-    
-    private var items: [User] = DummyUserData.users
-    private var strong8: [User] = []
+    private var users = BehaviorRelay<[User]>(value: [])
     private var strong4: [User] = []
     private var strong2: [User] = []
+    private var winner: [User] = []
     private var index = 0
     
     private let backgroundImageView: UIImageView = {
@@ -61,50 +60,32 @@ final class WorldCupGameViewController: UIViewController {
         addViews()
         makeConstraints()
         configCollectionView()
-        bindViewModel()
+        configUserData()
     }
     
     private func configCollectionView() {
+        collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.register(WorldCupCollectionViewCell.self, forCellWithReuseIdentifier: "WorldCupCollectionViewCell")
         collectionView.backgroundColor = .clear
         collectionView.layer.cornerRadius = 5
+        addShadow()
         
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            let cellWidth = (UIScreen.main.bounds.width - 40 - 20) / 2
-            layout.itemSize = CGSize(width: cellWidth, height: cellWidth * 1.2)
-            layout.minimumInteritemSpacing = 20
-            layout.minimumLineSpacing = 20
+        if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            flowLayout.minimumInteritemSpacing = 20
         }
     }
     
-    private func bindViewModel() {
-//        let dataSource = RxCollectionViewSectionedReloadDataSource<SectionModel<String, User>>(
-//            configureCell: { [weak self] _, collectionView, indexPath, item in
-//                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WorldCupCollectionViewCell", for: indexPath) as? WorldCupCollectionViewCell else { return UICollectionViewCell() }
-//                let dataLabelTexts = self?.viewModel.addDataLabels(item) ?? []
-//                cell.mbtiLabel.text = "\(item.mbti)"
-//                cell.userNickname.text = item.nickName
-//                cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
-//                return cell
-//            }
-//        )
-//
-//        viewModel.items
-//            .map { [SectionModel(model: "", items: [$0[self.viewModel.index], $0[self.viewModel.index + 1]])] }
-//            .bind(to: collectionView.rx.items(dataSource: dataSource))
-//            .disposed(by: disposeBag)
-//
-//        collectionView.rx.itemSelected
-//            .subscribe(onNext: { [weak self] indexPath in
-//                self?.tappedGameCell(indexPath: indexPath)
-//            })
-//            .disposed(by: disposeBag)
+    private func configUserData() {
+        worldCupViewModel.users
+            .map { $0.prefix(8).map { $0 } }
+            .subscribe(onNext: { [weak self] fetchedUsers in
+                self?.users.accept(Array(fetchedUsers))
+                self?.collectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
     }
-
-    private func tappedGameCell(indexPath: IndexPath) {
-        viewModel.tappedGameCell(indexPath: indexPath)
-    }
-
+    
     private func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
         collectionView.layer.masksToBounds = false
         collectionView.layer.shadowColor = UIColor.black.cgColor
@@ -141,7 +122,7 @@ final class WorldCupGameViewController: UIViewController {
             make.top.equalTo(contentLabel.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
-            make.height.equalTo(view.snp.width).multipliedBy(1.2) // Assuming 1.2 aspect ratio
+            make.height.equalTo(view.snp.width).multipliedBy(1.2)
         }
         
         vsImageView.snp.makeConstraints { make in
@@ -151,4 +132,59 @@ final class WorldCupGameViewController: UIViewController {
             make.height.equalTo(25)
         }
     }
+}
+
+extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return users.value.count / 4
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WorldCupCollectionViewCell", for: indexPath) as? WorldCupCollectionViewCell else { return UICollectionViewCell() }
+        
+        let index1 = indexPath.item * 2
+        let index2 = indexPath.item * 2 + 1
+        let user1 = users.value[index1]
+        let user2 = users.value[index2]
+
+        worldCupViewModel.configure(cell: cell, with: user1)
+        worldCupViewModel.configure(cell: cell, with: user2)
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let padding: CGFloat = 10
+        let collectionViewWidth = collectionView.frame.width
+        let itemWidth = (collectionViewWidth - (padding * 2)) / 2
+
+        return CGSize(width: itemWidth, height: Screen.height * 2 / 5)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let index1 = indexPath.item * 2
+        let index2 = indexPath.item * 2 + 1
+        let user1 = users.value[index1]
+        let user2 = users.value[index2]
+        
+        if let cell1 = collectionView.cellForItem(at: IndexPath(item: indexPath.item * 2, section: indexPath.section)) as? WorldCupCollectionViewCell,
+           let cell2 = collectionView.cellForItem(at: IndexPath(item: indexPath.item * 2 + 1, section: indexPath.section)) as? WorldCupCollectionViewCell {
+            
+            worldCupViewModel.configure(cell: cell1, with: user1)
+            worldCupViewModel.configure(cell: cell2, with: user2)
+        }
+
+        index += 1
+
+        if index == 4 {
+            index = 0
+            strong4.removeAll()
+        } else if index == 2 {
+            index = 0
+            strong2.removeAll()
+        } else if index == 1 {
+            print(users)
+        }
+        collectionView.reloadData()
+    }
+
 }

@@ -8,63 +8,58 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import Firebase
 
-class WorldCupViewModel {
+final class WorldCupViewModel {
     
-    var items: BehaviorRelay<[User]> = BehaviorRelay(value: [])
-    var strong8: BehaviorRelay<[User]> = BehaviorRelay(value: [])
-    var strong4: BehaviorRelay<[User]> = BehaviorRelay(value: [])
-    var strong2: BehaviorRelay<[User]> = BehaviorRelay(value: [])
-    var round: BehaviorRelay<Int> = BehaviorRelay(value: 16)
-    
-    var index = 0
+    var users: BehaviorRelay<[User]> = BehaviorRelay(value: [])
+    private let disposeBag = DisposeBag()
     
     init() {
-        items.accept(DummyUserData.users)
+        loadUsersRx()
     }
     
-    func addDataLabels(_ currentItem: User) -> [String] {
-        var dataLabelTexts: [String] = []
+    func loadUsersRx() {
+        FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] data in
+                guard let self = self else { return }
+                
+                let shuffledData = data.shuffled()
+                
+                let randomUsers = Array(shuffledData.prefix(8))
+                
+                self.users.accept(randomUsers)
+            }, onError: { error in
+                print("오류: \(error)")
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func configure(cell: WorldCupCollectionViewCell, with user: User) {
+        cell.mbtiLabel.text = user.mbti.rawValue
+        cell.userNickname.text = user.nickName
+        cell.userAge.text = "\(user.age)세"
         
+        var modifiedUser = user
+        let dataLabelTexts = addDataLabels(&modifiedUser)
+        cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
+        
+        if let imageURL = URL(string: user.imageURLs.first ?? "") {
+            cell.userImage.load(url: imageURL)
+        }
+    }
+
+    private func addDataLabels(_ currentItem: inout User) -> [String] {
+        var dataLabelTexts: [String] = []
+
         if let height = currentItem.subInfo?.height {
             dataLabelTexts.append("\(height)")
         }
-        
         if let job = currentItem.subInfo?.job {
-            dataLabelTexts.append(job)
+            dataLabelTexts.append("\(job)")
         }
-        
-        dataLabelTexts.append(currentItem.location.address)
-        
+        dataLabelTexts.append("\(currentItem.location.address)")
         return dataLabelTexts
-    }
-    
-    func tappedGameCell(indexPath: IndexPath) {
-        guard let item = items.value[safe: indexPath.item] else {
-            return
-        }
-        print(index)
-
-        switch round.value {
-        case 16:
-            strong8.accept(strong8.value + [item])
-        case 8:
-            strong4.accept(strong4.value + [item])
-        case 4:
-            strong2.accept(strong2.value + [item])
-        case 2:
-            break
-        default:
-            break
-        }
-        
-        index += 1
-        round.accept(round.value / 2)
-        
-        if round.value == 0 {
-            items.accept(strong2.value)
-        } else {
-            items.accept(items.value.dropFirst(2).map { $0 })
-        }
     }
 }
