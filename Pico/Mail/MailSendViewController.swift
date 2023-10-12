@@ -15,6 +15,8 @@ final class MailSendViewController: UIViewController {
     private let viewModel = MailViewModel()
     private let disposeBag = DisposeBag()
     
+    private var receiverId: String = ""
+    
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
         navigationBar.barTintColor = .systemBackground
@@ -71,7 +73,7 @@ final class MailSendViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = 20
         stackView.alignment = .fill
-        stackView.backgroundColor = .picoGray
+        stackView.backgroundColor = .picoLightGray
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 20
         stackView.isLayoutMarginsRelativeArrangement = true
@@ -119,11 +121,14 @@ final class MailSendViewController: UIViewController {
         receiverImageView.setCircleImageView()
     }
     
-    func getReceiver(mailReceiver: DummyMailUsers) {
-        if let imageURL = URL(string: mailReceiver.messages.imageUrl) {
-            receiverImageView.load(url: imageURL)
+    func getReceiver(mailReceiver: Mail.MailInfo) {
+        viewModel.getUser(userId: mailReceiver.receivedUserId) {
+            guard (self.viewModel.user != nil) else { return }
+            self.receiverId = self.viewModel.user?.id ?? ""
+            guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }
+            self.receiverImageView.kf.setImage(with: url)
+            self.receiverNameLabel.text = self.viewModel.user?.nickName
         }
-        receiverNameLabel.text = mailReceiver.messages.oppenentName
     }
     
     private func addViews() {
@@ -190,7 +195,7 @@ final class MailSendViewController: UIViewController {
                 self?.sendButton.tappedAnimation()
                 if let text = self?.messageView.text {
                     // sender: 로그인한 사람, recevie 받는 사람
-                    self?.viewModel.saveMailData(sendUserInfo: UserDummyData.users[1], receiveUserInfo: UserDummyData.users[0], message: text)
+                    self?.viewModel.saveMailData(receiveUserId: self?.receiverId ?? "", message: text)
                     self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
                 }
             }

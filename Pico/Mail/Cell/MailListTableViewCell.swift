@@ -11,6 +11,7 @@ import RxSwift
 
 final class MailListTableViewCell: UITableViewCell {
     
+    private let viewModel = MailViewModel()
     private let disposeBag = DisposeBag()
     
     private let userImage: UIImageView = {
@@ -85,15 +86,22 @@ final class MailListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func getData(senderUser: DummyMailUsers) {
-        userImage.loadImage(url: senderUser.messages.imageUrl, disposeBag: self.disposeBag)
-        nameLabel.text = senderUser.messages.oppenentName
-        nameLabel.sizeToFit()
-        mbtiLabelView.setMbti(mbti: senderUser.messages.mbti)
-        self.message.text = senderUser.messages.message
-        dateLabel.text = senderUser.messages.sendedDate
-        if !senderUser.messages.isReading {
-            newLabel.text = "new"
+    func getData(senderUser: Mail.MailInfo, type: MailType) {
+        viewModel.getUser(userId: senderUser.sendedUserId) {
+            guard (self.viewModel.user != nil) else { return }
+            guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }
+            self.userImage.kf.setImage(with: url)
+            self.nameLabel.text = self.viewModel.user?.nickName
+            self.nameLabel.sizeToFit()
+            self.mbtiLabelView.setMbti(mbti: self.viewModel.user?.mbti ?? .infj)
+            self.message.text = senderUser.message
+            self.dateLabel.text = senderUser.sendedDate
+            
+            if type == .receive {
+                if !senderUser.isReading {
+                    self.newLabel.text = "new"
+                }
+            }
         }
     }
     
