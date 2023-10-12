@@ -77,6 +77,58 @@ final class SignUpViewModel {
             .subscribe(onNext: isSaveSuccess.onNext(_:))
             .disposed(by: disposeBag)
     }
+   
+    func sendSMS() {
+        let urlString = "https://api.ncloud-docs.com/sens/sms"
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("YOUR_ACCESS_KEY", forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
+        request.setValue("YOUR_SECRET_KEY", forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let parameters: [String: Any] = [
+            "type": "sms",
+            "from": "YOUR_PHONE_NUMBER",
+            "to": ["RECIPIENT_PHONE_NUMBER"],
+            "content": "Your verification code is: 123456"
+        ]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
+        } catch let error {
+            print("Error serializing JSON: \(error.localizedDescription)")
+        }
+        
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+
+            print(response ?? "해윙")
+
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    print("Response JSON: \(json ?? [:])")
+                } catch let error {
+                    print("Error parsing JSON: \(error.localizedDescription)")
+                }
+            }
+        }
+        
+        task.resume()
+    }
+ 
+    func loadCheckMessage() {
+        
+    }
     
     func checkPhoneNumber(userNumber: String, completion: @escaping () -> ()) {
         Loading.showLoading()
