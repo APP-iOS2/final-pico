@@ -122,12 +122,18 @@ extension SignUpNickNameViewController {
         nickNameTextField.becomeFirstResponder()
     }
     
-    private func updateCheckButton(isFull: Bool) {
+    private func updateCheckButton(isFull: Bool, ischeck: Bool = false) {
         switch isFull {
         case true:
             nickNameCheckButton.isHidden = false
         case false:
             nickNameCheckButton.isHidden = true
+        }
+        switch ischeck {
+        case true:
+            nickNameCheckButton.backgroundColor = .picoGray
+        case false:
+            nickNameCheckButton.backgroundColor = .picoBlue
         }
     }
     
@@ -168,13 +174,16 @@ extension SignUpNickNameViewController {
                 }
                 Loading.hideLoading()
             }
+            self.updateCheckButton(isFull: true, ischeck: true)
             self.updateNextButton(isCheck: true)
+            self.nickNameTextField.textColor = .picoBlue
         }
     }
     
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
         sender.tappedAnimation()
         nickNameTextField.text = ""
+        self.nickNameTextField.textColor = .gray
         updateCheckButton(isFull: false)
     }
     
