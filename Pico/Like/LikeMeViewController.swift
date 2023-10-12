@@ -18,6 +18,7 @@ final class LikeMeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 //        collectionView.reloadData()
+        viewModel.fetchLikeInfo()
     }
     
     override func viewDidLoad() {
