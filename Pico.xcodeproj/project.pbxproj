@@ -236,7 +236,7 @@
 		6937783D2AC2742400762165 /* MailSendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendViewController.swift; sourceTree = "<group>"; };
 		6937783F2AC2745C00762165 /* MailReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveViewController.swift; sourceTree = "<group>"; };
 		69B99BE52ACE815600695567 /* MailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailViewModel.swift; sourceTree = "<group>"; };
-		69DF1F6A2AD54CF5004028B9 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MailListTableViewCell.swift; path = Cell/MailListTableViewCell.swift; sourceTree = "<group>"; };
+		69DF1F6A2AD54CF5004028B9 /* MailListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
 		6A2060472ACD28E100435723 /* CircularProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBarView.swift; sourceTree = "<group>"; };
 		6A2060492ACD2CF600435723 /* SwitchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchButton.swift; sourceTree = "<group>"; };
 		6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableView.swift; sourceTree = "<group>"; };
@@ -480,6 +480,27 @@
 				547C4C1C2AD8369D00028AFB /* ViewModel */,
 			);
 			path = Detail;
+			sourceTree = "<group>";
+		};
+		54B441332AC2C4CC00EC8846 /* UserDetailViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				54A56C632ACC9CA40003C7BD /* UserImageTableCell.swift */,
+				54B4412D2AC2C36C00EC8846 /* BasicInformationTableCell.swift */,
+				B16394C42ACDC7EF00D9252F /* AboutMeTableCell.swift */,
+				54B4412E2AC2C36C00EC8846 /* SubInfomationTableCell.swift */,
+				547138492AC361A300CFE88D /* HobbyCollectionViewCell.swift */,
+				5471384B2AC3621000CFE88D /* MbtiCollectionViewCell.swift */,
+			);
+			path = UserDetailViewCell;
+			sourceTree = "<group>";
+		};
+		698521F22AD83E7A0051A29A /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				69DF1F6A2AD54CF5004028B9 /* MailListTableViewCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		6A7378492AC26A970047DE35 /* TableView */ = {
@@ -763,10 +784,10 @@
 			isa = PBXGroup;
 			children = (
 				B14B59092AC0A644009889DA /* MailViewController.swift */,
-				69DF1F6A2AD54CF5004028B9 /* MailListTableViewCell.swift */,
 				6937783D2AC2742400762165 /* MailSendViewController.swift */,
 				6937783F2AC2745C00762165 /* MailReceiveViewController.swift */,
 				69B99BE52ACE815600695567 /* MailViewModel.swift */,
+				698521F22AD83E7A0051A29A /* Cell */,
 			);
 			path = Mail;
 			sourceTree = "<group>";
