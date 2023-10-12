@@ -19,6 +19,7 @@ final class LikeMeViewModel {
     
     private let disposeBag = DisposeBag()
     private let currentUser: CurrentUser = UserDefaultsManager.shared.getUserData()
+    private let dbRef = Firestore.firestore()
     
     init() {
         fetchLikeInfo()
@@ -40,13 +41,27 @@ final class LikeMeViewModel {
     }
     
     func deleteUser(userId: String) {
-        let updatedUsers = likeMeUserList.value.filter { $0.likedUserId != userId }
-        likeMeUserList.accept(updatedUsers)
+        guard let index = likeMeUserList.value.firstIndex(where: {
+            $0.likedUserId == userId
+        }) else {
+            return
+        }
+        guard let removeData: Like.LikeInfo = likeMeUserList.value[safe: index] else { return }
+        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: removeData.likedUserId, likeType: .dislike, birth: removeData.birth, nickName: removeData.nickName, mbti: removeData.mbti, imageURL: removeData.imageURL)
+        
+        dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
+            "recivedlikes": FieldValue.arrayRemove([removeData.asDictionary()])
+        ])
+        dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
+            "recivedlikes": FieldValue.arrayUnion([updateData.asDictionary()])
+        ])
+        
+        let updatedDatas = likeMeUserList.value.filter { $0.likedUserId != userId }
+        likeMeUserList.accept(updatedDatas)
         
     }
     
     func likeUser(userId: String) {
-        let dbRef = Firestore.firestore()
         var tempLike: Like?
         FirestoreService.shared.loadDocument(collectionId: .likes, documentId: currentUser.userId, dataType: Like.self) { [weak self] result in
             guard let self = self else { return }
