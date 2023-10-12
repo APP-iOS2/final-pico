@@ -1545,7 +1545,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pico/Config/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "피코";
+				INFOPLIST_KEY_CFBundleDisplayName = PICO;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 접근 권한 허용 설정";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "갤러리 접근 권한 허용 설정";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1579,7 +1579,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pico/Config/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "피코";
+				INFOPLIST_KEY_CFBundleDisplayName = PICO;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "위치 접근 권한 허용 설정";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "갤러리 접근 권한 허용 설정";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -111,7 +111,7 @@ extension SignViewController {
             make.top.equalTo(safeArea).offset(110)
             make.leading.equalTo(50)
             make.trailing.equalTo(-50)
-            make.height.equalTo(60)
+            make.height.equalTo(50)
         }
         
         signInButton.snp.makeConstraints { make in

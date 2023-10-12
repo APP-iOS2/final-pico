@@ -29,6 +29,6 @@ class AdminBaseViewController: UIViewController {
     private func configUI() {
         view.configBackgroundColor()
         view.tappedDismissKeyboard()
-        configNavigationBgColor(backgroundColor: .clear)
+        configNavigationBgColor()
     }
 }
