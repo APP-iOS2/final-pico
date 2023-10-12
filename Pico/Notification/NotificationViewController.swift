@@ -14,8 +14,10 @@ final class NotificationViewController: UIViewController {
     private let tableView = UITableView()
     private let viewModel = NotificationViewModel()
     private var disposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         tableView.reloadData()
     }
     
@@ -27,6 +29,7 @@ final class NotificationViewController: UIViewController {
         configTableView()
         configTableviewDelegate()
         configTableviewDatasource()
+        configRefresh()
     }
     
     private func configViewController() {
@@ -40,6 +43,13 @@ final class NotificationViewController: UIViewController {
         if #available(iOS 15.0, *) {
             tableView.tableHeaderView = UIView()
         }
+        tableView.rowHeight = 90
+    }
+    
+    private func configRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        tableView.refreshControl = refreshControl
     }
     
     private func addViews() {
@@ -51,20 +61,24 @@ final class NotificationViewController: UIViewController {
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
-}
-
-extension NotificationViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
+    
+    @objc func refreshTable(refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            viewModel.notifications = []
+            viewModel.lastDocumentSnapshot = nil
+            viewModel.loadNextPage()
+            refresh.endRefreshing()
+        }
     }
 }
 
 // MARK: - UITableView+Rx
 extension NotificationViewController {
     private func configTableviewDatasource() {
-        viewModel.notifications
+        viewModel.notificationsRx
             .bind(to: tableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
-                cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti)
+                cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti, date: item.createDate)
             }
             .disposed(by: disposeBag)
     }
@@ -86,5 +100,17 @@ extension NotificationViewController {
                 }
             })
             .disposed(by: disposeBag)
+    }
+}
+
+// MARK: - 페이징처리
+extension NotificationViewController: UIScrollViewDelegate {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let contentOffsetY = scrollView.contentOffset.y
+        let tableViewContentSizeY = tableView.contentSize.height
+        
+        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
+            viewModel.loadNextPage()
+        }
     }
 }

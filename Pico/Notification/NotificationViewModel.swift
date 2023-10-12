@@ -8,34 +8,51 @@
 import Foundation
 import RxSwift
 import RxRelay
+import FirebaseFirestore
 
 final class NotificationViewModel {
-    var notifications = BehaviorRelay<[Noti]>(value: [])
+    var notifications: [Noti] = []
+    var notificationsRx = BehaviorRelay<[Noti]>(value: [])
     private let disposBag: DisposeBag = DisposeBag()
+    private var itemsPerPage: Int = 10
+    var lastDocumentSnapshot: DocumentSnapshot?
     
     init() {
-        loadNotiRx()
-            .bind(to: notifications)
-            .disposed(by: disposBag)
+        loadNextPage()
     }
-}
-
-func loadNotiRx() -> Observable<[Noti]> {
-    return Observable.create { emitter in
-        FirestoreService().searchDocumentWithEqualField(collectionId: .notifications, field: "receiveId", compareWith: UserDefaultsManager.shared.getUserData().userId, dataType: Noti.self) { result in
-            switch result {
-            case .success(let data):
-                guard let data = data else {
-                    emitter.onNext([])
-                    emitter.onCompleted()
-                    break
-                }
-                emitter.onNext(data)
-                emitter.onCompleted()
-            case .failure(let error):
-                emitter.onError(error)
-            }
+    
+    func loadNextPage() {
+        let dbRef = Firestore.firestore()
+        
+        var query = dbRef.collection(Collections.notifications.name)
+            .whereField("receiveId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
+            .order(by: "createDate", descending: true)
+            .limit(to: itemsPerPage)
+        
+        if let lastSnapshot = lastDocumentSnapshot {
+            query = query.start(afterDocument: lastSnapshot)
         }
-        return Disposables.create()
+        
+        query.getDocuments { [weak self] snapshot, error in
+            guard let self = self else { return }
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let documents = snapshot?.documents else { return }
+            
+            if documents.isEmpty {
+                return
+            }
+            
+            lastDocumentSnapshot = documents.last
+            
+            for document in documents {
+                if let data = try? document.data(as: Noti.self) {
+                    notifications.append(data)
+                }
+            }
+            notificationsRx.accept(notifications)
+        }
     }
 }

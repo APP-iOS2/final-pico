@@ -18,4 +18,14 @@ extension Double {
         let formattedDate = dateFormatter.string(from: date)
         return formattedDate
     }
+    
+    func toStringTime() -> String {
+        let date = Date(timeIntervalSince1970: self)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        
+        let formattedDate = dateFormatter.string(from: date)
+        return formattedDate
+    }
 }

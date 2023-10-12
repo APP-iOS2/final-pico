@@ -34,6 +34,14 @@ class NotificationTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let createDateLabel: UILabel = {
+        let label = UILabel()
+        label.font = .picoDescriptionFont
+        label.textColor = .picoFontGray
+        label.isHidden = true
+        return label
+    }()
+    
     private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
     
     private let contentLabel: UILabel = UILabel()
@@ -62,7 +70,7 @@ class NotificationTableViewCell: UITableViewCell {
             contentView.addSubview(item)
         }
         
-        [nameLabel, mbitLabel, contentLabel].forEach { item in
+        [nameLabel, mbitLabel, contentLabel, createDateLabel].forEach { item in
             labelView.addSubview(item)
         }
     }
@@ -101,21 +109,29 @@ class NotificationTableViewCell: UITableViewCell {
             make.top.equalTo(nameLabel.snp.bottom).offset(5)
             make.leading.equalTo(nameLabel)
             make.trailing.equalToSuperview()
+        }
+        
+        createDateLabel.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(5)
+            make.leading.equalTo(nameLabel)
+            make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
     }
 }
 
 extension NotificationTableViewCell {
-    func configData(notitype: NotiType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType) {
+    func configData(notitype: NotiType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, date: Double) {
         guard let url = URL(string: imageUrl) else { return }
-        profileImageView.load(url: url)
+        profileImageView.kf.setImage(with: url)
         notiType = notitype
         iconImageView.image = notitype == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
         iconImageView.tintColor = notitype == .like ? .systemPink : .picoBlue
         contentLabel.text = notitype == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
         nameLabel.text = "\(nickName), \(age)"
         mbitLabel.setMbti(mbti: mbti)
+        createDateLabel.isHidden = false
+        createDateLabel.text = date.toStringTime()
     }
     
     func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: String) {
