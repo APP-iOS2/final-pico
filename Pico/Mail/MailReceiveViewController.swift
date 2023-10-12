@@ -12,8 +12,10 @@ import RxCocoa
 
 final class MailReceiveViewController: UIViewController {
     
-    private var viewModel: DummyMailUsers?
+    private let viewModel = MailViewModel()
     private var disposeBag = DisposeBag()
+    
+    private var sendMailInfo: Mail.MailInfo?
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -84,9 +86,10 @@ final class MailReceiveViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = 20
         stackView.alignment = .fill
-        stackView.backgroundColor = .picoGray
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 20
+        stackView.layer.borderColor = UIColor.picoBlue.cgColor
+        stackView.layer.borderWidth = 3
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
         return stackView
@@ -116,17 +119,20 @@ final class MailReceiveViewController: UIViewController {
         senderImageView.setCircleImageView()
     }
     
-    func getReceiver(mailSender: DummyMailUsers) {
+    func getReceiver(mailSender: Mail.MailInfo, type: MailType) {
         
-        viewModel = mailSender
-        navItem.title = mailSender.mailType.rawValue
+        sendMailInfo = mailSender
         
-        if let imageURL = URL(string: mailSender.messages.imageUrl) {
-            senderImageView.load(url: imageURL)
+        navItem.title = type.rawValue
+        
+        viewModel.getUser(userId: mailSender.sendedUserId) {
+            guard (self.viewModel.user != nil) else { return }
+            guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }
+            self.senderImageView.kf.setImage(with: url)
+            self.senderNameLabel.text = self.viewModel.user?.nickName
+            self.sendDateLabel.text = mailSender.sendedDate
+            self.messageView.text = mailSender.message
         }
-        senderNameLabel.text = mailSender.messages.oppenentName
-        sendDateLabel.text = mailSender.messages.sendedDate
-        messageView.text = mailSender.messages.message
     }
     
     private func addViews() {
@@ -190,7 +196,7 @@ final class MailReceiveViewController: UIViewController {
         rightBarButton.rx.tap
             .bind { [weak self] in
                 let mailSendView = MailSendViewController()
-                if let mailUser = self?.viewModel {
+                if let mailUser = self?.sendMailInfo {
                     mailSendView.getReceiver(mailReceiver: mailUser)
                 }
                 mailSendView.modalPresentationStyle = .formSheet
