@@ -239,7 +239,6 @@ final class MailSendViewController: UIViewController {
                     if characterCount <= 300 {
                         self.updateCountLabel(characterCount: characterCount)
                     }
-                    print(changedText)
                     self.sendButton.backgroundColor = .picoBlue
                 } else {
                     self.updateCountLabel(characterCount: 0)

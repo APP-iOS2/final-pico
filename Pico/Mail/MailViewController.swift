@@ -203,40 +203,39 @@ final class MailViewController: BaseViewController {
         
         mailListTableView.delegate = nil
         mailListTableView.dataSource = nil
-        
-        if isEmpty {
-            Loading.hideLoading()
-        } else {
-            if mailType == .receive {
-                viewModel.mailRecieveList.bind(to: mailListTableView.rx
-                    .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, 
-                           cellType: MailListTableViewCell.self)) { _, item, cell in
-                        print("receive Item : --- \(item)")
-                        //cell.getData(senderUser: item)
-                        cell.selectionStyle = .none
-                        Loading.hideLoading()
-                    }
-                    .disposed(by: disposeBag)
-            } else {
-                viewModel.mailSendList.bind(to: mailListTableView.rx
-                    .items(cellIdentifier: MailListTableViewCell.reuseIdentifier, 
-                           cellType: MailListTableViewCell.self)) { _, item, cell in
-                        print("send Item : --- \(item)")
-                        //cell.getData(senderUser: item)
-                        cell.selectionStyle = .none
-                        Loading.hideLoading()
-                    }
-                    .disposed(by: disposeBag)
+        if mailType == .receive {
+            if isEmpty {
+                Loading.hideLoading()
             }
+            viewModel.mailRecieveList.bind(to: mailListTableView.rx
+                .items(cellIdentifier: MailListTableViewCell.reuseIdentifier,
+                       cellType: MailListTableViewCell.self)) { _, item, cell in
+                cell.getData(senderUser: item, type: .receive)
+                cell.selectionStyle = .none
+                Loading.hideLoading()
+            }
+                       .disposed(by: disposeBag)
+        } else {
+            if isEmpty {
+                Loading.hideLoading()
+            }
+            viewModel.mailSendList.bind(to: mailListTableView.rx
+                .items(cellIdentifier: MailListTableViewCell.reuseIdentifier,
+                       cellType: MailListTableViewCell.self)) { _, item, cell in
+                cell.getData(senderUser: item, type: .send)
+                cell.selectionStyle = .none
+                Loading.hideLoading()
+            }
+                       .disposed(by: disposeBag)
         }
     }
     
     private func configTableviewDelegate() {
         mailListTableView.rx.modelSelected(Mail.MailInfo.self)
             .subscribe(onNext: { item in
-                let mailReceiveView = MailSendViewController()
+                let mailReceiveView = MailReceiveViewController()
                 mailReceiveView.modalPresentationStyle = .formSheet
-                mailReceiveView.getReceiver(mailReceiver: item)
+                mailReceiveView.getReceiver(mailSender: item)
                 self.present(mailReceiveView, animated: true, completion: nil)
             })
             .disposed(by: disposeBag)

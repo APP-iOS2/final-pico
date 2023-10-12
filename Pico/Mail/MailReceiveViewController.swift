@@ -119,12 +119,11 @@ final class MailReceiveViewController: UIViewController {
         senderImageView.setCircleImageView()
     }
     
-    func getReceiver(mailSender: Mail.MailInfo, type: MailType) {
+    func getReceiver(mailSender: Mail.MailInfo) {
         
         sendMailInfo = mailSender
         
-        navItem.title = type.rawValue
-        
+        navItem.title = mailSender.mailType.typeString
         viewModel.getUser(userId: mailSender.sendedUserId) {
             guard (self.viewModel.user != nil) else { return }
             guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }
