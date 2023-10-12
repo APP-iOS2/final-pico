@@ -21,6 +21,7 @@ final class MailViewController: BaseViewController {
     
     private var mailTypeButtons: [UIButton] = []
     private var mailType: MailType = .receive
+    private var isEmpty: Bool = true
     
     private let mailText: UILabel = {
         let label = UILabel()
@@ -90,16 +91,29 @@ final class MailViewController: BaseViewController {
         
         view.addSubview(buttonStack)
         
-        viewModel.mailIsEmpty
-            .subscribe(onNext: { [weak self] isEmpty in
-                if isEmpty {
-                    self?.view.addSubview(self?.emptyView.view ?? UIView())
-                    self?.emptyView.didMove(toParent: self)
-                } else {
-                    self?.view.addSubview(self?.mailListTableView ?? UITableView())
-                }
-            })
-            .disposed(by: disposeBag)
+        if mailType == .receive {
+            viewModel.isMailReceiveEmpty
+                .subscribe(onNext: { [weak self] isEmpty in
+                    if isEmpty {
+                        self?.view.addSubview(self?.emptyView.view ?? UIView())
+                        self?.emptyView.didMove(toParent: self)
+                    } else {
+                        self?.view.addSubview(self?.mailListTableView ?? UITableView())
+                    }
+                })
+                .disposed(by: disposeBag)
+        } else {
+            viewModel.isMailSendEmpty
+                .subscribe(onNext: { [weak self] isEmpty in
+                    if isEmpty {
+                        self?.view.addSubview(self?.emptyView.view ?? UIView())
+                        self?.emptyView.didMove(toParent: self)
+                    } else {
+                        self?.view.addSubview(self?.mailListTableView ?? UITableView())
+                    }
+                })
+                .disposed(by: disposeBag)
+        }
     }
     
     private func makeConstraints() {
@@ -124,20 +138,43 @@ final class MailViewController: BaseViewController {
             make.width.equalTo(60)
         }
         
-        viewModel.mailIsEmpty
-            .subscribe(onNext: { [weak self] isEmpty in
-                if isEmpty {
-                    self?.emptyView.view.snp.makeConstraints { make in
-                        make.edges.equalTo(safeArea)
+        if mailType == .receive {
+            viewModel.isMailReceiveEmpty
+                .subscribe(onNext: { [weak self] isEmpty in
+                    if isEmpty {
+                        self?.emptyView.view.snp.makeConstraints { make in
+                            make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView())
+                            make.leading.trailing.bottom.equalTo(safeArea)
+                            self?.isEmpty = true
+                        }
+                    } else {
+                        self?.mailListTableView.snp.makeConstraints { make in
+                            make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView())
+                            make.leading.trailing.bottom.equalTo(safeArea)
+                            self?.isEmpty = false
+                        }
                     }
-                } else {
-                    self?.mailListTableView.snp.makeConstraints { make in
-                        make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
-                        make.leading.trailing.bottom.equalTo(safeArea)
+                })
+                .disposed(by: disposeBag)
+        } else {
+            viewModel.isMailSendEmpty
+                .subscribe(onNext: { [weak self] isEmpty in
+                    if isEmpty {
+                        self?.emptyView.view.snp.makeConstraints { make in
+                            make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
+                            make.leading.trailing.bottom.equalTo(safeArea)
+                            self?.isEmpty = true
+                        }
+                    } else {
+                        self?.mailListTableView.snp.makeConstraints { make in
+                            make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
+                            make.leading.trailing.bottom.equalTo(safeArea)
+                            self?.isEmpty = false
+                        }
                     }
-                }
-            })
-            .disposed(by: disposeBag)
+                })
+                .disposed(by: disposeBag)
+        }
     }
     
     private func configMailTypeButtons() {
@@ -147,7 +184,7 @@ final class MailViewController: BaseViewController {
     
     private func configTableView() {
         mailListTableView.rowHeight = 100
-        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        configMailTableviewDatasource()
         configTableviewDelegate()
         
         refreshControl.endRefreshing()
@@ -160,8 +197,41 @@ final class MailViewController: BaseViewController {
         mailListTableView.refreshControl = refreshControl
     }
     
+    /// mailtableviewDatasore
+    func configMailTableviewDatasource() {
+        Loading.showLoading()
+        
+        mailListTableView.delegate = nil
+        mailListTableView.dataSource = nil
+        if mailType == .receive {
+            if isEmpty {
+                Loading.hideLoading()
+            }
+            viewModel.mailRecieveList.bind(to: mailListTableView.rx
+                .items(cellIdentifier: MailListTableViewCell.reuseIdentifier,
+                       cellType: MailListTableViewCell.self)) { _, item, cell in
+                cell.getData(senderUser: item, type: .receive)
+                cell.selectionStyle = .none
+                Loading.hideLoading()
+            }
+                       .disposed(by: disposeBag)
+        } else {
+            if isEmpty {
+                Loading.hideLoading()
+            }
+            viewModel.mailSendList.bind(to: mailListTableView.rx
+                .items(cellIdentifier: MailListTableViewCell.reuseIdentifier,
+                       cellType: MailListTableViewCell.self)) { _, item, cell in
+                cell.getData(senderUser: item, type: .send)
+                cell.selectionStyle = .none
+                Loading.hideLoading()
+            }
+                       .disposed(by: disposeBag)
+        }
+    }
+    
     private func configTableviewDelegate() {
-        mailListTableView.rx.modelSelected(DummyMailUsers.self)
+        mailListTableView.rx.modelSelected(Mail.MailInfo.self)
             .subscribe(onNext: { item in
                 let mailReceiveView = MailReceiveViewController()
                 mailReceiveView.modalPresentationStyle = .formSheet
@@ -193,7 +263,7 @@ final class MailViewController: BaseViewController {
                 button.setTitleColor(.picoBetaBlue, for: .normal)
             }
         }
-        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
+        configMailTableviewDatasource()
         mailListTableView.reloadData()
     }
 }

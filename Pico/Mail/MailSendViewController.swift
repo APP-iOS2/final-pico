@@ -7,10 +7,15 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class MailSendViewController: UIViewController {
     
     private let viewModel = MailViewModel()
+    private let disposeBag = DisposeBag()
+    
+    private var receiverId: String = ""
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -68,7 +73,7 @@ final class MailSendViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = 20
         stackView.alignment = .fill
-        stackView.backgroundColor = .picoGray
+        stackView.backgroundColor = .picoLightGray
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 20
         stackView.isLayoutMarginsRelativeArrangement = true
@@ -97,7 +102,7 @@ final class MailSendViewController: UIViewController {
     private let sendButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("보내기", for: .normal)
-        button.addTarget(nil, action: #selector(tappedSendButton), for: .touchUpInside)
+        button.backgroundColor = .picoGray
         return button
     }()
     
@@ -108,18 +113,22 @@ final class MailSendViewController: UIViewController {
         configNavigationBarItem()
         addViews()
         makeConstraints()
-        viewModel.changeTextView(textView: messageView, label: remainCountLabel)
+        changeTextView()
+        configSendButton()
     }
     
     override func viewDidLayoutSubviews() {
         receiverImageView.setCircleImageView()
     }
     
-    func getReceiver(mailReceiver: DummyMailUsers) {
-        if let imageURL = URL(string: mailReceiver.messages.imageUrl) {
-            receiverImageView.load(url: imageURL)
+    func getReceiver(mailReceiver: Mail.MailInfo) {
+        viewModel.getUser(userId: mailReceiver.receivedUserId) {
+            guard (self.viewModel.user != nil) else { return }
+            self.receiverId = self.viewModel.user?.id ?? ""
+            guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }
+            self.receiverImageView.kf.setImage(with: url)
+            self.receiverNameLabel.text = self.viewModel.user?.nickName
         }
-        receiverNameLabel.text = mailReceiver.messages.oppenentName
     }
     
     private func addViews() {
@@ -180,14 +189,65 @@ final class MailSendViewController: UIViewController {
         navigationBar.setItems([navItem], animated: true)
     }
     
-    @objc private func tappedSendButton(_ sender: UIButton) {
-        sender.tappedAnimation()
-        // sender: 로그인한 사람, recevie 받는 사람
-        viewModel.saveMailData(sendUserInfo: UserDummyData.users[1], receiveUserInfo: UserDummyData.users[0], message: messageView.text)
-        presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+    private func configSendButton() {
+        sendButton.rx.tap
+            .bind { [weak self] _ in
+                self?.sendButton.tappedAnimation()
+                if let text = self?.messageView.text {
+                    // sender: 로그인한 사람, recevie 받는 사람
+                    self?.viewModel.saveMailData(receiveUserId: self?.receiverId ?? "", message: text)
+                    self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     @objc func tappedBackzButton() {
         dismiss(animated: true)
+    }
+    
+    // input output으로 변경하기
+    private func changeTextView() {
+        let textViewPlaceHolder = "메시지를 입력하세요"
+        
+        messageView.rx.didBeginEditing
+            .bind { [weak self] _ in
+                if self?.messageView.text == textViewPlaceHolder {
+                    self?.messageView.text = nil
+                    self?.messageView.textColor = .black
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        messageView.rx.didEndEditing
+            .bind { [weak self] _ in
+                if let text = self?.messageView.text {
+                    if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        self?.messageView.text = textViewPlaceHolder
+                        self?.messageView.textColor = .picoFontGray
+                        self?.updateCountLabel(characterCount: 0)
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        messageView.rx.text
+            .orEmpty
+            .subscribe(onNext: { changedText in
+                if changedText != textViewPlaceHolder {
+                    let characterCount = changedText.count
+                    if characterCount <= 300 {
+                        self.updateCountLabel(characterCount: characterCount)
+                    }
+                    self.sendButton.backgroundColor = .picoBlue
+                } else {
+                    self.updateCountLabel(characterCount: 0)
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func updateCountLabel(characterCount: Int) {
+        remainCountLabel.text = "\(characterCount)/300"
     }
 }
