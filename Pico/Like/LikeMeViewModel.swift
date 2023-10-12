@@ -11,42 +11,65 @@ import RxRelay
 import FirebaseFirestore
 
 final class LikeMeViewModel {
-    var likeMeUserList = BehaviorRelay<[Like.LikeInfo]>(value: [])
+    var likeMeList: [Like.LikeInfo] = []
+    var likeMeListRx = BehaviorRelay<[Like.LikeInfo]>(value: [])
     var likeMeIsEmpty: Observable<Bool> {
-        return likeMeUserList
+        return likeMeListRx
             .map { $0.isEmpty }
     }
     
     private let disposeBag = DisposeBag()
     private let currentUser: CurrentUser = UserDefaultsManager.shared.getUserData()
     private let dbRef = Firestore.firestore()
+    private let pageSize = 6
+    var startIndex = 0
     
     init() {
-        fetchLikeInfo()
+        loadNextPage()
     }
     
-    func fetchLikeInfo() {
-        FirestoreService.shared.loadDocumentRx(collectionId: .likes, documentId: currentUser.userId, dataType: Like.self)
-            .map { like -> [Like.LikeInfo] in
-                if let like = like {
-                    return like.recivedlikes ?? []
-                }
-                return []
+    func loadNextPage() {
+        let dbRef = Firestore.firestore()
+        let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
+        let endIndex = startIndex + pageSize
+        
+        ref.getDocument { [weak self] document, error in
+            guard let self = self else { return }
+            if let error = error {
+                print(error)
+                return
             }
-            .map({ likeInfos in
-                return likeInfos.filter { $0.likeType == .like }
-            })
-            .bind(to: likeMeUserList)
-            .disposed(by: disposeBag)
+            
+            if let document = document, document.exists {
+                if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType == .like }) {
+                    if startIndex > datas.count - 1 {
+                        return
+                    }
+                    let currentPageDatas: [Like.LikeInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
+                    likeMeList.append(contentsOf: currentPageDatas)
+                    startIndex += currentPageDatas.count
+                    likeMeListRx.accept(likeMeList)
+                }
+            } else {
+                print("문서를 찾을 수 없습니다.")
+            }
+        }
     }
     
+    func refrsh() {
+        likeMeList = []
+        startIndex = 0
+        loadNextPage()
+    }
+ 
     func deleteUser(userId: String) {
-        guard let index = likeMeUserList.value.firstIndex(where: {
+        guard let index = likeMeListRx.value.firstIndex(where: {
             $0.likedUserId == userId
         }) else {
             return
         }
-        guard let removeData: Like.LikeInfo = likeMeUserList.value[safe: index] else { return }
+        likeMeList.remove(at: index)
+        guard let removeData: Like.LikeInfo = likeMeListRx.value[safe: index] else { return }
         let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: removeData.likedUserId, likeType: .dislike, birth: removeData.birth, nickName: removeData.nickName, mbti: removeData.mbti, imageURL: removeData.imageURL)
         
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
@@ -56,18 +79,19 @@ final class LikeMeViewModel {
             "recivedlikes": FieldValue.arrayUnion([updateData.asDictionary()])
         ])
         
-        let updatedDatas = likeMeUserList.value.filter { $0.likedUserId != userId }
-        likeMeUserList.accept(updatedDatas)
+        let updatedDatas = likeMeListRx.value.filter { $0.likedUserId != userId }
+        likeMeListRx.accept(updatedDatas)
         
     }
     
     func likeUser(userId: String) {
-        guard let index = likeMeUserList.value.firstIndex(where: {
+        guard let index = likeMeListRx.value.firstIndex(where: {
             $0.likedUserId == userId
         }) else {
             return
         }
-        guard let likeData: Like.LikeInfo = likeMeUserList.value[safe: index] else { return }
+        likeMeList.remove(at: index)
+        guard let likeData: Like.LikeInfo = likeMeListRx.value[safe: index] else { return }
         let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL)
         
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
@@ -79,8 +103,8 @@ final class LikeMeViewModel {
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
             "sendedlikes": FieldValue.arrayUnion([updateData.asDictionary()])
         ])
-        let updatedDatas = likeMeUserList.value.filter { $0.likedUserId != userId }
-        likeMeUserList.accept(updatedDatas)
+        let updatedDatas = likeMeListRx.value.filter { $0.likedUserId != userId }
+        likeMeListRx.accept(updatedDatas)
 
         var tempLike: Like?
         FirestoreService.shared.loadDocument(collectionId: .likes, documentId: likeData.likedUserId, dataType: Like.self) { [weak self] result in

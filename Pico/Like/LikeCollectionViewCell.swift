@@ -95,7 +95,8 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     }
     
     func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType) {
-        userImageView.loadImage(url: image, disposeBag: self.disposeBag)
+        guard let url = URL(string: image) else { return }
+        userImageView.kf.setImage(with: url)
         nameLabel.text = nameText
         mbtiLabel.setMbti(mbti: mbti)
         messageButton.isHidden = isHiddenMessageButton
