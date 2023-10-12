@@ -206,7 +206,6 @@
 		4B2665402AC3F4830074D4E2 /* UserDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummy.swift; sourceTree = "<group>"; };
 		4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewController.swift; sourceTree = "<group>"; };
 		4B2665482ACD76F00074D4E2 /* ResultUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultUserView.swift; sourceTree = "<group>"; };
-		4B89E12A2AD528BB00BFBAA3 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
 		4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupViewModel.swift; sourceTree = "<group>"; };
 		4B89E12E2AD698B000BFBAA3 /* EntViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntViewModel.swift; sourceTree = "<group>"; };
 		5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
@@ -641,7 +640,6 @@
 				B1844F5A2AC0CD9B00ACFFED /* PicoUITests */,
 				B14B58C72AC0A230009889DA /* Products */,
 				B17D67AF2AC0BF02006F91DC /* Frameworks */,
-				B19ED9F02AD71D050089D0A1 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -999,14 +997,6 @@
 				B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */,
 			);
 			path = PicoTests;
-			sourceTree = "<group>";
-		};
-		B19ED9F02AD71D050089D0A1 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				4B89E12A2AD528BB00BFBAA3 /* YOLOv3.mlmodel */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		B1BFE1942AD707A10094253A /* UserList */ = {

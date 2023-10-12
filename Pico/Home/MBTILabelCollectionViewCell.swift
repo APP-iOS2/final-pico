@@ -17,6 +17,12 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    private let mbtiButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(.white, for: .normal)
+        return button
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
@@ -32,14 +38,30 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
         layer.cornerRadius = 10
         clipsToBounds = true
         
-        addSubview(textLabel)
-        textLabel.snp.makeConstraints { make in
+        addSubview(mbtiButton)
+        mbtiButton.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
         }
+        
     }
     
     func configureWithMBTI(_ mbti: MBTIType) {
-        textLabel.text = mbti.rawValue.uppercased()
-        backgroundColor = UIColor(hex: mbti.colorName)
+        mbtiButton.setTitle(mbti.rawValue.uppercased(), for: .normal)
+        mbtiButton.titleLabel?.font = .picoMBTILabelFont
+        mbtiButton.isUserInteractionEnabled = true
+        mbtiButton.addTarget(self, action: #selector(buttonTouch), for: .touchUpInside)
     }
+//    private func updateButtonAppearance(_ button: UIButton) {
+//        guard let mbti = button.titleLabel?.text?.lowercased() as? MBTIType else { return }
+//        button.setTitleColor(button.isSelected ? .white : .picoFontGray, for: .normal)
+//    }
+    @objc func buttonTouch() {
+        mbtiButton.isSelected.toggle()
+        if let buttonText = mbtiButton.titleLabel?.text?.lowercased() {
+            if let mbti = MBTIType(rawValue: buttonText) {
+                backgroundColor = mbtiButton.isSelected ? UIColor(hex: mbti.colorName) : .picoGray
+            }
+        }
+    }
+
 }

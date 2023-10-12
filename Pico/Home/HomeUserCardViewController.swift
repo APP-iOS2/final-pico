@@ -242,8 +242,8 @@ final class HomeUserCardViewController: UIViewController {
                 make.width.equalTo(view).offset(-20)
                 make.height.equalTo(scrollView).offset(-20)
             }
-            imageView.loadImage(url: url, disposeBag: disposeBag)
-            
+            guard let url = URL(string: url) else { return }
+            imageView.load(url: url)
             if index == user.imageURLs.count - 1 {
                 scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(user.imageURLs.count), height: scrollView.frame.height)
             }
