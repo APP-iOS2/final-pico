@@ -18,7 +18,7 @@ final class ProfileView: UIView {
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 70
         imageView.backgroundColor = .black
-        imageView.contentMode = .scaleToFill
+        imageView.contentMode = .scaleAspectFill
         imageView.image = UIImage(named: "chu")
         return imageView
     }()
@@ -98,6 +98,16 @@ final class ProfileView: UIView {
             }
             .bind(to: profilPercentLabel.rx.text)
             .disposed(by: disposeBag)
+        
+        viewModel.imageUrl
+                   .observe(on: MainScheduler.instance)
+                   .subscribe(onNext: { [weak self] urlString in
+                       if let url = URL(string: urlString) {
+                           self?.userImage.kf.setImage(with: url)
+                       }
+                   })
+                   .disposed(by: disposeBag)
+
     }
     
     private func configProgressBarView() {
