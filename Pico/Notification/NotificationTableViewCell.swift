@@ -21,12 +21,7 @@ final class NotificationTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    private let iconImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "heart.fill")
-        imageView.tintColor = .picoBlue
-        return imageView
-    }()
+    private let iconImageView: UIImageView = UIImageView()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
@@ -44,7 +39,11 @@ final class NotificationTableViewCell: UITableViewCell {
     
     private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
     
-    private let contentLabel: UILabel = UILabel()
+    private let contentLabel: UILabel = {
+        let label = UILabel()
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
     private let labelView: UIView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -125,9 +124,20 @@ extension NotificationTableViewCell {
         guard let url = URL(string: imageUrl) else { return }
         profileImageView.kf.setImage(with: url)
         notiType = notitype
-        iconImageView.image = notitype == .like ? UIImage(systemName: "heart.fill") : UIImage(systemName: "message.fill")
-        iconImageView.tintColor = notitype == .like ? .systemPink : .picoBlue
-        contentLabel.text = notitype == .like ? "좋아요를 누르셨습니다." : "쪽지를 보냈습니다."
+        switch notitype {
+        case .like:
+            iconImageView.image = UIImage(systemName: "heart.fill")
+            iconImageView.tintColor = .systemPink
+            contentLabel.text = "좋아요를 누르셨습니다."
+        case .message:
+            iconImageView.image = UIImage(systemName: "message.fill")
+            iconImageView.tintColor = .picoBlue
+            contentLabel.text = "쪽지를 보냈습니다."
+        case .matching:
+            iconImageView.image = UIImage(systemName: "bolt.heart.fill")?.withRenderingMode(.alwaysOriginal)
+            iconImageView.tintColor = .systemPink
+            contentLabel.text = "매칭이 되었습니다. 쪽지를 보내보세요."
+        }
         nameLabel.text = "\(nickName), \(age)"
         mbitLabel.setMbti(mbti: mbti)
         createDateLabel.isHidden = false

@@ -14,6 +14,12 @@ final class LikeUViewController: UIViewController {
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let viewModel: LikeUViewModel = LikeUViewModel()
     private let disposeBag: DisposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView.reloadData()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,10 +28,17 @@ final class LikeUViewController: UIViewController {
         configCollectionView()
         configCollectionviewDatasource()
         configCollectionviewDelegate()
+        configRefresh()
     }
     
     private func configCollectionView() {
         collectionView.register(cell: LikeCollectionViewCell.self)
+    }
+    
+    private func configRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        collectionView.refreshControl = refreshControl
     }
     
     private func addViews() {
@@ -58,6 +71,14 @@ final class LikeUViewController: UIViewController {
             })
             .disposed(by: disposeBag)
     }
+    
+    @objc func refreshTable(refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            viewModel.refresh()
+            refresh.endRefreshing()
+        }
+    }
 }
 
 extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -72,10 +93,22 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
     }
 }
 
+// MARK: - 페이징 처리
+extension LikeUViewController: UIScrollViewDelegate {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let contentOffsetY = scrollView.contentOffset.y
+        let collectionViewContentSizeY = collectionView.contentSize.height
+        
+        if contentOffsetY > collectionViewContentSizeY - scrollView.frame.size.height {
+            viewModel.loadNextPage()
+        }
+    }
+}
+
 // MARK: - UITableView+Rx
 extension LikeUViewController {
     private func configCollectionviewDatasource() {
-        viewModel.likeUUserList
+        viewModel.likeUListRx
             .bind(to: collectionView.rx.items(cellIdentifier: LikeCollectionViewCell.reuseIdentifier, cellType: LikeCollectionViewCell.self)) { _, item, cell in
                 cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
                 cell.messageButtonTapObservable

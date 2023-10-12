@@ -23,6 +23,7 @@ import Foundation
 enum NotiType: String, Codable {
     case like
     case message
+    case matching
 }
 
 struct Noti: Codable {

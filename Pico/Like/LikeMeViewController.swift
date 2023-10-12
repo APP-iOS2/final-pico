@@ -14,10 +14,11 @@ final class LikeMeViewController: UIViewController {
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let viewModel: LikeMeViewModel = LikeMeViewModel()
     private let disposeBag: DisposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        collectionView.reloadData()
+        collectionView.reloadData()
     }
     
     override func viewDidLoad() {
@@ -27,11 +28,17 @@ final class LikeMeViewController: UIViewController {
         configCollectionView()
         configCollectionviewDatasource()
         configCollectionviewDelegate()
-
+        configRefresh()
     }
     
     private func configCollectionView() {
         collectionView.register(cell: LikeCollectionViewCell.self)
+    }
+    
+    private func configRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        collectionView.refreshControl = refreshControl
     }
     
     private func addViews() {
@@ -64,6 +71,14 @@ final class LikeMeViewController: UIViewController {
             })
             .disposed(by: disposeBag)
     }
+    
+    @objc func refreshTable(refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            viewModel.refrsh()
+            refresh.endRefreshing()
+        }
+    }
 }
 
 extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -80,13 +95,15 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
 // MARK: - UITableView+Rx
 extension LikeMeViewController {
     private func configCollectionviewDatasource() {
-        viewModel.likeMeUserList
+        viewModel.likeMeListRx
             .bind(to: collectionView.rx.items(cellIdentifier: LikeCollectionViewCell.reuseIdentifier, cellType: LikeCollectionViewCell.self)) { _, item, cell in
                 cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true, mbti: item.mbti)
                 
                 cell.deleteButtonTapObservable
                     .subscribe(onNext: { [weak self] in
-                        self?.viewModel.deleteUser(userId: item.likedUserId)
+                        self?.showAlert(message: "\(item.nickName)님을 disLike합니다.", isCancelButton: true, yesAction: {
+                            self?.viewModel.deleteUser(userId: item.likedUserId)
+                        })
                     })
                     .disposed(by: cell.disposeBag)
                 
