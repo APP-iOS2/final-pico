@@ -483,8 +483,8 @@
 		6A7378492AC26A970047DE35 /* TableView */ = {
 			isa = PBXGroup;
 			children = (
-				6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */,
 				6A7378562AC2A4EF0047DE35 /* Cell */,
+				6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */,
 			);
 			path = TableView;
 			sourceTree = "<group>";
@@ -800,7 +800,6 @@
 			isa = PBXGroup;
 			children = (
 				B14B590F2AC0A666009889DA /* MypageViewController.swift */,
-				6A7378492AC26A970047DE35 /* TableView */,
 				B1D98FA72AC1A9F600C95F03 /* SubComponents */,
 				6ADDE2EC2AC3B95A00CE4482 /* ProfileEdit */,
 				6ADDE2DF2AC30EDE00CE4482 /* Setting */,
@@ -1044,6 +1043,7 @@
 			isa = PBXGroup;
 			children = (
 				B1D98FA82AC1A9F600C95F03 /* ProfileView */,
+				6A7378492AC26A970047DE35 /* TableView */,
 			);
 			path = SubComponents;
 			sourceTree = "<group>";
