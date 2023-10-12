@@ -7,14 +7,20 @@
 
 import UIKit
 
-final class AboutMeTableCell: UITableViewCell {
+final class AboutMeViewController: UIViewController {
+    
+    private let introLabelContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .picoGray
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 10
+        return view
+    }()
+    
     private let introLabel: UILabel = {
         let label = UILabel()
-        label.text = "저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가실래요??가실래요??래요??가실래요??래요??가실래요??"
-        label.textAlignment = .center
-        label.layer.masksToBounds = true
-        label.layer.cornerRadius = 10
-        label.backgroundColor = .picoGray
+        label.text = "저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가가실래요??래실래요??래실래요??래실래요??래실래요??래실래요??래실래요??래요??가실래요??"
+        label.textAlignment = .left
         label.numberOfLines = 0
         return label
     }()
@@ -22,7 +28,7 @@ final class AboutMeTableCell: UITableViewCell {
     private let educationImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "graduationcap.fill")
-        imageView.tintColor = .black
+        imageView.tintColor = .gray
         return imageView
     }()
     
@@ -35,7 +41,7 @@ final class AboutMeTableCell: UITableViewCell {
     private let religionImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "hands.sparkles.fill")
-        imageView.tintColor = .black
+        imageView.tintColor = .gray
         return imageView
     }()
     
@@ -48,7 +54,7 @@ final class AboutMeTableCell: UITableViewCell {
     private let smokeImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "smoke")
-        imageView.tintColor = .black
+        imageView.tintColor = .gray
         return imageView
     }()
     
@@ -61,7 +67,7 @@ final class AboutMeTableCell: UITableViewCell {
     private let jobImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "building.columns.fill")
-        imageView.tintColor = .black
+        imageView.tintColor = .gray
         return imageView
     }()
     
@@ -74,7 +80,7 @@ final class AboutMeTableCell: UITableViewCell {
     private let drinkImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "wineglass.fill")
-        imageView.tintColor = .black
+        imageView.tintColor = .gray
         return imageView
     }()
     
@@ -84,18 +90,14 @@ final class AboutMeTableCell: UITableViewCell {
         return label
     }()
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         addViews()
         makeConstraints()
     }
     
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func config(eduText: String, religionText: String, smokeText: String, jobText: String, drinkText: String) {
+    func config(intro: String, eduText: String, religionText: String, smokeText: String, jobText: String, drinkText: String) {
+        introLabel.text = intro
         educationLabel.text = eduText
         religionLabel.text = religionText
         smokeLabel.text = smokeText
@@ -104,20 +106,26 @@ final class AboutMeTableCell: UITableViewCell {
     }
     
     private func addViews() {
-        let views = [introLabel, educationImageView, educationLabel, religionImageView, religionLabel, smokeImageView, smokeLabel, jobImageView, jobLabel, drinkImageView, drinkLabel]
-        views.forEach { self.addSubview($0) }
+        let views = [introLabelContainerView, educationImageView, educationLabel, religionImageView, religionLabel, smokeImageView, smokeLabel, jobImageView, jobLabel, drinkImageView, drinkLabel]
+        views.forEach {  view.addSubview($0) }
+        introLabelContainerView.addSubview(introLabel)
     }
     
     private func makeConstraints() {
-        introLabel.snp.makeConstraints { make in
+        introLabelContainerView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(30)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }
         
+        introLabel.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 15, left: 10, bottom: 15, right: 10))
+        }
+        
         educationImageView.snp.makeConstraints { make in
-            make.top.equalTo(introLabel.snp.bottom).offset(30)
+            make.top.equalTo(introLabelContainerView.snp.bottom).offset(30)
             make.leading.equalToSuperview().offset(20)
+            make.width.equalTo(25)
         }
         
         educationLabel.snp.makeConstraints { make in
@@ -162,7 +170,7 @@ final class AboutMeTableCell: UITableViewCell {
         
         drinkLabel.snp.makeConstraints { make in
             make.top.equalTo(drinkImageView.snp.top)
-            make.leading.equalTo(drinkImageView.snp.trailing).offset(5)
+            make.leading.equalTo(jobLabel.snp.leading)
         }
     }
 }

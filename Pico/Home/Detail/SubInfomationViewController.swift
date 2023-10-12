@@ -6,32 +6,33 @@
 //
 
 import UIKit
-import SnapKit
+import RxSwift
 
-final class SubInfomationTableCell: UITableViewCell {
-    private let viewModel = UserDetailViewModel()
+final class SubInfomationViewController: BaseViewController {
+    private let disposeBag = DisposeBag()
+    private let viewModel = UserDetailViewModel(user: User.userData)
+    private var hobbies: [String] = []
+    private var personalities: [String] = []
+    private var likeMbtis: [MBTIType] = []
     
     private let hobbyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        layout.minimumInteritemSpacing = 5
+        layout.minimumInteritemSpacing = 3
         return collectionView
     }()
     
     private let personalCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        layout.minimumInteritemSpacing = 5
+        layout.minimumInteritemSpacing = 3
         return collectionView
     }()
     
     private let mbtiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        layout.minimumInteritemSpacing = 5
+        layout.minimumInteritemSpacing = 3
         return collectionView
     }()
     
@@ -56,66 +57,76 @@ final class SubInfomationTableCell: UITableViewCell {
         return label
     }()
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         addViews()
         makeConstraints()
         configCollectionView()
+        bind()
+    }
+    func bind() {
+        viewModel.userObservable
+            .subscribe(onNext: { user in
+                guard let subInfo = user.subInfo else { return }
+                self.hobbies = subInfo.hobbies
+            })
+            .disposed(by: disposeBag)
     }
     
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func config(hobbies: [String], personalities: [String], likeMbtis: [MBTIType]) {
+        self.hobbies = hobbies
+        self.personalities = personalities
+        self.likeMbtis = likeMbtis
     }
     
     private func configCollectionView() {
-        hobbyCollectionView.register(cell: HobbyCollectionViewCell.self)
+        hobbyCollectionView.register(HobbyCollectionViewCell.self, forCellWithReuseIdentifier: "hobbyCollectionCell")
         hobbyCollectionView.delegate = self
         hobbyCollectionView.dataSource = self
         
-        personalCollectionView.register(cell: HobbyCollectionViewCell.self)
+        personalCollectionView.register(HobbyCollectionViewCell.self, forCellWithReuseIdentifier: "hobbyCollectionCell")
         personalCollectionView.delegate = self
         personalCollectionView.dataSource = self
         
-        mbtiCollectionView.register(cell: MbtiCollectionViewCell.self)
+        mbtiCollectionView.register(MbtiCollectionViewCell.self, forCellWithReuseIdentifier: "mbtiCollectionCell")
         mbtiCollectionView.delegate = self
         mbtiCollectionView.dataSource = self
     }
     
     private func addViews() {
         [hobbyLabel, personalLabel, hobbyCollectionView, personalCollectionView, likeMbtiLable, mbtiCollectionView].forEach {
-            self.addSubview($0)
+            view.addSubview($0)
         }
     }
     
     private func makeConstraints() {
-        hobbyLabel.snp.makeConstraints { make in
-            make.leading.top.equalToSuperview().offset(20)
-        }
-        
-        hobbyCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(hobbyLabel.snp.bottom).offset(20)
-            make.leading.equalTo(hobbyLabel.snp.leading)
-            make.trailing.equalToSuperview().offset(-10)
-            
-            make.height.equalTo(Screen.height * 0.1)
-        }
-        
         personalLabel.snp.makeConstraints { make in
-            make.top.equalTo(hobbyCollectionView.snp.bottom).offset(20)
-            make.leading.equalTo(hobbyLabel.snp.leading)
-            make.trailing.equalToSuperview()
+            make.leading.top.equalToSuperview().offset(20)
         }
         
         personalCollectionView.snp.makeConstraints { make in
             make.top.equalTo(personalLabel.snp.bottom).offset(20)
             make.leading.equalTo(personalLabel.snp.leading)
-            make.trailing.equalToSuperview().offset(-10)
-            make.height.equalTo(Screen.height * 0.1)
+            make.trailing.equalToSuperview().offset(-20)
+            
+            make.height.equalTo(Screen.height * 0.2)
+        }
+        
+        hobbyLabel.snp.makeConstraints { make in
+            make.top.equalTo(personalCollectionView.snp.bottom).offset(20)
+            make.leading.equalTo(personalLabel.snp.leading)
+            make.trailing.equalToSuperview()
+        }
+        
+        hobbyCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(hobbyLabel.snp.bottom).offset(20)
+            make.leading.equalTo(hobbyLabel.snp.leading)
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(Screen.height * 0.2)
         }
         
         likeMbtiLable.snp.makeConstraints { make in
-            make.top.equalTo(personalCollectionView.snp.bottom).offset(20)
+            make.top.equalTo(hobbyCollectionView.snp.bottom).offset(20)
             make.leading.equalTo(hobbyLabel.snp.leading)
             make.trailing.equalToSuperview()
             
@@ -124,28 +135,26 @@ final class SubInfomationTableCell: UITableViewCell {
         mbtiCollectionView.snp.makeConstraints { make in
             make.top.equalTo(likeMbtiLable.snp.bottom).offset(20)
             make.leading.equalTo(likeMbtiLable.snp.leading)
-            make.trailing.bottom.equalToSuperview()
+            make.trailing.equalToSuperview()
+            make.height.equalTo(Screen.height * 0.2)
             
         }
     }
 }
 
-extension SubInfomationTableCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SubInfomationViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let hobbys = viewModel.userData.subInfo?.hobbies else { return 0 }
-        guard let personal = viewModel.userData.subInfo?.personalities else { return 0 }
-        guard let mbtis = viewModel.userData.subInfo?.favoriteMBTIs else { return 0 }
         
         switch collectionView {
         case hobbyCollectionView:
-            return hobbys.count
+            return hobbies.count
             
         case personalCollectionView:
-            return personal.count
+            return personalities.count
             
         case mbtiCollectionView:
-            return mbtis.count
+            return likeMbtis.count
         default:
             return 0
         }
@@ -155,24 +164,22 @@ extension SubInfomationTableCell: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         switch collectionView {
-            
         case hobbyCollectionView:
-            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: HobbyCollectionViewCell.self)
-            guard let hobbys = viewModel.userData.subInfo?.hobbies else { return UICollectionViewCell() }
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hobbyCollectionCell", for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
             
-            cell.config(labelText: hobbys[indexPath.row])
+            cell.config(labelText: hobbies[indexPath.row])
             return cell
             
         case personalCollectionView:
-            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: HobbyCollectionViewCell.self)
-            guard let personal = viewModel.userData.subInfo?.personalities else { return UICollectionViewCell() }
-            cell.config(labelText: personal[indexPath.row])
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hobbyCollectionCell", for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
+            
+            cell.config(labelText: personalities[indexPath.row])
             return cell
             
         case mbtiCollectionView:
-            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: MbtiCollectionViewCell.self)
-            guard let mbtis = viewModel.userData.subInfo?.favoriteMBTIs else { return UICollectionViewCell() }
-            cell.config(mbtiType: mbtis[indexPath.row])
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "mbtiCollectionCell", for: indexPath) as? MbtiCollectionViewCell else { return UICollectionViewCell() }
+            
+            cell.config(mbtiType: likeMbtis[indexPath.row])
             return cell
             
         default:
@@ -185,14 +192,14 @@ extension SubInfomationTableCell: UICollectionViewDelegate, UICollectionViewData
         switch collectionView {
             
         case hobbyCollectionView:
-            let hobby = viewModel.userData.subInfo?.hobbies[indexPath.row]
+            let hobby = hobbies[indexPath.row]
             label.text = hobby
             label.sizeToFit()
             let size = label.frame.size
             return CGSize(width: size.width + 5, height: size.height + 8)
             
         case personalCollectionView:
-            let personal = viewModel.userData.subInfo?.personalities[indexPath.row]
+            let personal = personalities[indexPath.row]
             label.text = personal
             label.sizeToFit()
             let size = label.frame.size
