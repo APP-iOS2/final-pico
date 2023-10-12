@@ -19,12 +19,7 @@ final class NotificationTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    private let iconImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "heart.fill")
-        imageView.tintColor = .picoBlue
-        return imageView
-    }()
+    private let iconImageView: UIImageView = UIImageView()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
@@ -42,7 +37,11 @@ final class NotificationTableViewCell: UITableViewCell {
     
     private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
     
-    private let contentLabel: UILabel = UILabel()
+    private let contentLabel: UILabel = {
+        let label = UILabel()
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
     private let labelView: UIView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
