@@ -39,7 +39,7 @@ final class SignInViewController: UIViewController {
         return textField
     }()
     
-    private let cancleButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "x.circle"), for: .normal)
         button.tintColor = .black
@@ -172,10 +172,10 @@ extension SignInViewController {
             })
             .disposed(by: disposeBag)
         
-        cancleButton.rx.tap
+        cancelButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                cancleButton.tappedAnimation()
+                cancelButton.tappedAnimation()
                 self.phoneNumberTextField.text = ""
                 updateAuthButton(isEnable: false, isHidden: true)
                 phoneNumberTextField.becomeFirstResponder()
@@ -206,7 +206,7 @@ extension SignInViewController {
     }
 
     private func updateCancleButton(isHidden: Bool) {
-        cancleButton.isHidden = isHidden
+        cancelButton.isHidden = isHidden
     }
     
     private func updateAuthButton(isEnable: Bool, isHidden: Bool = false) {
@@ -292,7 +292,7 @@ extension SignInViewController {
     
     private func addSubViews() {
         configAuthTextField()
-        for stackViewItem in [phoneNumberTextField, cancleButton, authButton] {
+        for stackViewItem in [phoneNumberTextField, cancelButton, authButton] {
             buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
         for pmStkItem in authTextFields {

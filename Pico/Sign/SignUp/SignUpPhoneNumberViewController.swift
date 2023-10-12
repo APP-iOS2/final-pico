@@ -65,7 +65,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return button
     }()
     
-    private let cancleButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "x.circle"), for: .normal)
         button.tintColor = .black
@@ -120,7 +120,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
 extension SignUpPhoneNumberViewController {
   
     private func configButtons() {
-        cancleButton.addTarget(self, action: #selector(tappedCancleButton), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(tappedCancleButton), for: .touchUpInside)
         authButton.addTarget(self, action: #selector(tappedCheckButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
@@ -157,14 +157,14 @@ extension SignUpPhoneNumberViewController {
         updateNextButton(isEnabled: false)
     }
     
-    // MARK: - Update 관련 Number, cancle, auth, authField, next
+    // MARK: - Update 관련 Number, cancel, auth, authField, next
     private func updatePhoneNumberTextField(isFull: Bool) {
         phoneNumberTextField.isEnabled = !isFull
         phoneNumberTextField.textColor = isFull ? .picoBlue : .gray
     }
 
     private func updateCancleButton(isHidden: Bool) {
-        cancleButton.isHidden = isHidden
+        cancelButton.isHidden = isHidden
     }
     
     private func updateAuthButton(isEnable: Bool, isHidden: Bool = false) {
@@ -302,7 +302,7 @@ extension SignUpPhoneNumberViewController {
             authTextFieldStack.addArrangedSubview(pmStkItem)
         }
         
-        for stackViewItem in [phoneNumberTextField, cancleButton, authButton] {
+        for stackViewItem in [phoneNumberTextField, cancelButton, authButton] {
             phoneTextFieldstackView.addArrangedSubview(stackViewItem)
         }
         for viewItem in [notifyLabel, progressView, phoneTextFieldstackView, nextButton, authTextFieldStack] {
