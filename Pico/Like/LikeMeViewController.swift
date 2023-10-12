@@ -86,7 +86,9 @@ extension LikeMeViewController {
                 
                 cell.deleteButtonTapObservable
                     .subscribe(onNext: { [weak self] in
-                        self?.viewModel.deleteUser(userId: item.likedUserId)
+                        self?.showAlert(message: "\(item.nickName)님을 disLike합니다.", isCancelButton: true, yesAction: {
+                            self?.viewModel.deleteUser(userId: item.likedUserId)
+                        })
                     })
                     .disposed(by: cell.disposeBag)
                 
