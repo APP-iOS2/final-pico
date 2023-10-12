@@ -226,14 +226,12 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func loadUserImages() {
-        Loading.showLoading()
         for (index, url) in user.imageURLs.enumerated() {
-            
             let imageView = UIImageView()
+            imageView.configBackgroundColor()
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
             imageView.layer.cornerRadius = 10
-            imageView.configBackgroundColor()
             imageView.layer.borderWidth = 1
             imageView.layer.borderColor = UIColor.picoGray.cgColor
             scrollView.addSubview(imageView)
@@ -244,19 +242,7 @@ final class HomeUserCardViewController: UIViewController {
                 make.width.equalTo(view).offset(-20)
                 make.height.equalTo(scrollView).offset(-20)
             }
-            Loading.hideLoading()
-            Observable.just(url)
-                .map { URL(string: $0)}
-                .compactMap { $0 }
-                .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
-                .map { try Data(contentsOf: $0)}
-                .map { UIImage(data: $0)}
-                .catchAndReturn(UIImage(named: "chu"))
-                .observe(on: MainScheduler.instance)
-                .subscribe { image in
-                    imageView.image = image
-                }
-                .disposed(by: disposeBag)
+            imageView.loadImage(url: url, disposeBag: disposeBag)
             
             if index == user.imageURLs.count - 1 {
                 scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(user.imageURLs.count), height: scrollView.frame.height)
@@ -284,20 +270,28 @@ final class HomeUserCardViewController: UIViewController {
             }
         case .ended:
             if translation.x > 100 {
+                HomeUserCardViewModel.cardCounting += 1
+                if HomeUserCardViewModel.cardCounting == 3 {
+                    HomeUserCardViewModel.cardCounting = -1
+                    homeViewController?.addUserCards()
+                }
                 UIView.animate(withDuration: 0.5) { [self] in
                     viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                     homeViewController?.removedView.append(view)
                     view.center.x += 1000
                     homeViewController?.likeLabel.alpha = 0
-                } completion: { _ in
                 }
             } else if translation.x < -100 {
+                HomeUserCardViewModel.cardCounting += 1
+                if HomeUserCardViewModel.cardCounting == 3 {
+                    HomeUserCardViewModel.cardCounting = -1
+                    homeViewController?.addUserCards()
+                }
                 self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
                 UIView.animate(withDuration: 0.5) { [self] in
                     homeViewController?.removedView.append(view)
                     view.center.x -= 1000
                     homeViewController?.passLabel.alpha = 0
-                } completion: { _ in
                 }
             } else {
                 UIView.animate(withDuration: 0.3) {
@@ -311,12 +305,17 @@ final class HomeUserCardViewController: UIViewController {
             break
         }
     }
-    
     @objc func tappedLikeButton() {
-        homeViewController?.removedView.append(self.view)
+        self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.likeLabel.alpha = 1
         self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
-        UIView.animate(withDuration: 0.3) {
+        
+        HomeUserCardViewModel.cardCounting += 1
+        if HomeUserCardViewModel.cardCounting == 3 {
+            HomeUserCardViewModel.cardCounting = -1
+            homeViewController?.addUserCards()
+        }
+        UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
         } completion: { _ in
             self.homeViewController?.likeLabel.alpha = 0
@@ -324,10 +323,15 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     @objc func tappedDisLikeButton() {
-        homeViewController?.removedView.append(self.view)
+        self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.passLabel.alpha = 1
         self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
-        UIView.animate(withDuration: 0.3) {
+        HomeUserCardViewModel.cardCounting += 1
+        if HomeUserCardViewModel.cardCounting == 3 {
+            HomeUserCardViewModel.cardCounting = -1
+            homeViewController?.addUserCards()
+        }
+        UIView.animate(withDuration: 0.5) {
             self.view.center.x -= 1000
         } completion: { _ in
             self.homeViewController?.passLabel.alpha = 0
@@ -335,6 +339,7 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     @objc func tappedPickBackButton() {
+        HomeUserCardViewModel.cardCounting -= 1
         if let lastView = homeViewController?.removedView.last {
             self.viewModel.deleteLikeData()
             UIView.animate(withDuration: 0.3) {

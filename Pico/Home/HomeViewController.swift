@@ -13,13 +13,14 @@ import RxCocoa
 final class HomeViewController: BaseViewController {
     
     var removedView: [UIView] = []
-    var filterGender: [GenderType] = HomeFilterViewController.filterGender
+    var userCards: [User] = []
+    var users = BehaviorRelay<[User]>(value: [])
+    var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
     lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
     lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
     
-    private let numberOfCards: Int = 5
-    private let toggle: UISwitch = UISwitch()
-    private let emptyView: HomeEmptyView = HomeEmptyView()
+    private let numberOfCards: Int = 4
+    private let emptyView = HomeEmptyView()
     private let disposeBag = DisposeBag()
     private let viewModel = HomeViewModel()
     
@@ -30,31 +31,54 @@ final class HomeViewController: BaseViewController {
         makeConstraints()
         configNavigationBarItem()
         configButtons()
+        loadCards()
+        viewModel.users
+            .bind(to: users)
+            .disposed(by: disposeBag)
+        viewModel.myLikes
+            .bind(to: myLikes)
+            .disposed(by: disposeBag)
     }
     
     private func addSubView() {
-        Observable.combineLatest(viewModel.users, viewModel.myLikes)
-                .map { users, myLikes in
-                    let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
-                    return users.filter { user in
-                        return self.filterGender.contains(user.gender) && user.id != UserDefaultsManager.shared.getUserData().userId && !myLikedUserIds.contains(user.id)
-                    }
+        view.addSubview(emptyView)
+        view.addSubview(likeLabel)
+        view.addSubview(passLabel)
+    }
+    private func loadCards() {
+        Observable.combineLatest(users, myLikes)
+            .map { users, myLikes in
+                let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
+                return users.filter { user in
+                    return !myLikedUserIds.contains(user.id)
                 }
+            }
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] filteredUsers in
                 guard let self = self else { return }
-                let shuffledUsers = filteredUsers.shuffled()
-                for (index, user) in shuffledUsers.enumerated() where index <= numberOfCards - 1 {
-                        let tabImageViewController = HomeUserCardViewController(user: user)
-                        tabImageViewController.homeViewController = self
-                        self.addChild(tabImageViewController)
-                        self.view.insertSubview(tabImageViewController.view, at: 1)
+                userCards = filteredUsers
+                for user in filteredUsers.prefix(self.numberOfCards) {
+                    let tabImageViewController = HomeUserCardViewController(user: user)
+                    tabImageViewController.homeViewController = self
+                    self.addChild(tabImageViewController)
+                    self.view.insertSubview(tabImageViewController.view, at: 1)
+                    userCards.removeFirst()
                 }
-                self.view.insertSubview(emptyView, at: 0)
+                Loading.hideLoading()
+            }, onError: { error in
+                print(error)
             })
             .disposed(by: disposeBag)
-        view.addSubview(likeLabel)
-        view.addSubview(passLabel)
+    }
+    
+    func addUserCards() {
+        for user in userCards.prefix(self.numberOfCards) {
+            let tabImageViewController = HomeUserCardViewController(user: user)
+            tabImageViewController.homeViewController = self
+            self.addChild(tabImageViewController)
+            self.view.insertSubview(tabImageViewController.view, at: 1)
+            userCards.removeFirst()
+        }
     }
     
     private func makeConstraints() {
@@ -110,7 +134,7 @@ final class HomeViewController: BaseViewController {
         HomeUserCardViewModel.passedMyData.removeAll()
         HomeUserCardViewModel.passedUserData.removeAll()
     }
-
+    
     @objc func tappedFilterButton() {
         let viewController = HomeFilterViewController()
         viewController.homeViewController = self
