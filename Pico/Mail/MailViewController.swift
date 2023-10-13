@@ -72,6 +72,8 @@ final class MailViewController: BaseViewController {
         initRefresh()
         addViews()
         makeConstraints()
+        configMailTableviewDatasource()
+        configTableviewDelegate()
         configTableView()
         configMailTypeButtons()
     }
@@ -145,13 +147,11 @@ final class MailViewController: BaseViewController {
                         self?.emptyView.view.snp.makeConstraints { make in
                             make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView())
                             make.leading.trailing.bottom.equalTo(safeArea)
-                            self?.isEmpty = true
                         }
                     } else {
                         self?.mailListTableView.snp.makeConstraints { make in
                             make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView())
                             make.leading.trailing.bottom.equalTo(safeArea)
-                            self?.isEmpty = false
                         }
                     }
                 })
@@ -163,13 +163,11 @@ final class MailViewController: BaseViewController {
                         self?.emptyView.view.snp.makeConstraints { make in
                             make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
                             make.leading.trailing.bottom.equalTo(safeArea)
-                            self?.isEmpty = true
                         }
                     } else {
                         self?.mailListTableView.snp.makeConstraints { make in
                             make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
                             make.leading.trailing.bottom.equalTo(safeArea)
-                            self?.isEmpty = false
                         }
                     }
                 })
@@ -184,8 +182,6 @@ final class MailViewController: BaseViewController {
     
     private func configTableView() {
         mailListTableView.rowHeight = 100
-        configMailTableviewDatasource()
-        configTableviewDelegate()
         
         refreshControl.endRefreshing()
         mailListTableView.refreshControl = refreshControl
@@ -198,36 +194,40 @@ final class MailViewController: BaseViewController {
     }
     
     /// mailtableviewDatasore
-    func configMailTableviewDatasource() {
+    // 자고 일어나서 해야할일 - 화면에 왜 안뜨는지 해결하기 / 페이징 하기 
+    // 알아냄 - send 내용만 가지면 처음에 로딩 뜨면서 오래걸림
+    // 있는지 확인하고 있으면 띄우고 없으면 안띄우도록하기 ~> 뷰와 연계
+    private func configMailTableviewDatasource() {
         Loading.showLoading()
         
         mailListTableView.delegate = nil
         mailListTableView.dataSource = nil
+        
+        print("a")
         if mailType == .receive {
-            if isEmpty {
-                Loading.hideLoading()
-            }
-            viewModel.mailRecieveList.bind(to: mailListTableView.rx
+            viewModel.mailRecieveListRx.bind(to: mailListTableView.rx
                 .items(cellIdentifier: MailListTableViewCell.reuseIdentifier,
                        cellType: MailListTableViewCell.self)) { _, item, cell in
                 cell.getData(senderUser: item, type: .receive)
                 cell.selectionStyle = .none
                 Loading.hideLoading()
+                print("b")
             }
                        .disposed(by: disposeBag)
+            print("c")
         } else {
-            if isEmpty {
-                Loading.hideLoading()
-            }
-            viewModel.mailSendList.bind(to: mailListTableView.rx
+            viewModel.mailSendListRx.bind(to: mailListTableView.rx
                 .items(cellIdentifier: MailListTableViewCell.reuseIdentifier,
                        cellType: MailListTableViewCell.self)) { _, item, cell in
                 cell.getData(senderUser: item, type: .send)
                 cell.selectionStyle = .none
                 Loading.hideLoading()
+                print("d")
             }
                        .disposed(by: disposeBag)
+            print("e")
         }
+        print("f")
     }
     
     private func configTableviewDelegate() {

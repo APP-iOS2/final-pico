@@ -27,17 +27,18 @@ enum MailType: String, Codable {
 }
 
 final class MailViewModel {
-    
-    var mailSendList = BehaviorRelay<[Mail.MailInfo]>(value: [])
-    var mailRecieveList = BehaviorRelay<[Mail.MailInfo]>(value: [])
+    var mailSendList: [Mail.MailInfo] = []
+    var mailRecieveList: [Mail.MailInfo] = []
+    var mailSendListRx = BehaviorRelay<[Mail.MailInfo]>(value: [])
+    var mailRecieveListRx = BehaviorRelay<[Mail.MailInfo]>(value: [])
     
     var isMailSendEmpty: Observable<Bool> {
-        return mailSendList
+        return mailSendListRx
             .map { $0.isEmpty }
     }
     
     var isMailReceiveEmpty: Observable<Bool> {
-        return mailSendList
+        return mailSendListRx
             .map { $0.isEmpty }
     }
     
@@ -45,16 +46,18 @@ final class MailViewModel {
     private let disposeBag = DisposeBag()
     
     var user: User?
+    private let pageSize = 8
+    var startIndex = 0
     
     init() {
-        loadMail()
+        loadNextPage()
     }
     
     func saveMailData(receiveUserId: String, message: String) {
         let senderUserId: String = UserDefaultsManager.shared.getUserData().userId
         
         let sendMessages: [String: Any] = [
-            "messageId": UUID().uuidString,
+            "id": UUID().uuidString,
             "sendedUserId": senderUserId,
             "receivedUserId": receiveUserId,
             "message": message,
@@ -64,7 +67,7 @@ final class MailViewModel {
         ]
         
         let receiveMessages: [String: Any] = [
-            "messageId": UUID().uuidString,
+            "id": UUID().uuidString,
             "sendedUserId": senderUserId,
             "receivedUserId": receiveUserId,
             "message": message,
@@ -100,56 +103,56 @@ final class MailViewModel {
             }
     }
     
-    func loadMail() {
+    func loadNextPage() {
+        let ref = dbRef.collection(Collections.mail.name).document(UserDefaultsManager.shared.getUserData().userId)
+        let endIndex = startIndex + pageSize
         
-        FirestoreService.shared.loadDocumentRx(collectionId: .mail,
-                                               documentId: UserDefaultsManager.shared.getUserData().userId,
-                                               dataType: Mail.self)
-            .map { mail -> [Mail.MailInfo] in
-                if let mail = mail {
-                    return mail.sendMailInfo ?? []
-                }
-                return []
+        ref.getDocument { [weak self] document, error in
+            guard let self = self else { return }
+            if let error = error {
+                print(error)
+                return
             }
-            .map({ mailInfos in
-                print("mailInfos: \(mailInfos.filter { $0.mailType == .send })")
-                return mailInfos.filter { $0.mailType == .send }
-            })
-            .bind(to: mailSendList)
-            .disposed(by: disposeBag)
-        
-        FirestoreService.shared.loadDocumentRx(collectionId: .mail,
-                                               documentId: UserDefaultsManager.shared.getUserData().userId,
-                                               dataType: Mail.self)
-            .map { mail -> [Mail.MailInfo] in
-                if let mail = mail {
-                    return mail.receiveMailInfo ?? []
+            
+            if let document = document, document.exists {
+                if let datas = try? document.data(as: Mail.self).sendMailInfo?.filter({ $0.mailType == .send }) {
+                    
+                    if startIndex > datas.count - 1 { return}
+                    
+                    let currentPageDatas: [Mail.MailInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
+                    mailSendList.append(contentsOf: currentPageDatas)
+                    startIndex += currentPageDatas.count
+                    mailSendListRx.accept(mailSendList)
+                    print(mailSendListRx.value)
+                    
+                } else if let datas = try? document.data(as: Mail.self).receiveMailInfo?.filter({ $0.mailType == .receive }) {
+                    
+                    if startIndex > datas.count - 1 { return }
+                    
+                    let currentPageDatas: [Mail.MailInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
+                    mailRecieveList.append(contentsOf: currentPageDatas)
+                    startIndex += currentPageDatas.count
+                    mailRecieveListRx.accept(mailRecieveList)
+                    print(mailRecieveListRx.value)
+                } else {
+                    print("문서를 찾을 수 없습니다.")
                 }
-                return []
             }
-            .map({ mailInfos in
-                print("mailInfos: \(mailInfos.filter { $0.mailType == .receive })")
-                return mailInfos.filter { $0.mailType == .receive }
-            })
-            .bind(to: mailRecieveList)
-            .disposed(by: disposeBag)
-        
-        print("sendlist: \(mailSendList.value)")
-        print("receivelist:\(mailRecieveList.value)")
+        }
     }
     
     func getUser(userId: String, completion: @escaping () -> ()) {
         DispatchQueue.global().async {
             self.dbRef.collection(Collections.users.name).document(userId)
                 .getDocument(as: User.self) { result in
-                switch result {
-                case .success(let user):
-                    self.user = user
-                    completion()
-                case .failure(let error):
-                    print("Error decoding room: \(error)")
+                    switch result {
+                    case .success(let user):
+                        self.user = user
+                        completion()
+                    case .failure(let error):
+                        print("Error decoding room: \(error)")
+                    }
                 }
-            }
         }
     }
 }
