@@ -151,6 +151,8 @@
 		B1BFE18F2AD6BAED0094253A /* AdminReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE18E2AD6BAED0094253A /* AdminReportViewController.swift */; };
 		B1BFE1912AD6F5CB0094253A /* AdminUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE1902AD6F5CB0094253A /* AdminUserDetailViewController.swift */; };
 		B1BFE1932AD6F6960094253A /* AdminBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE1922AD6F6960094253A /* AdminBaseViewController.swift */; };
+		B1DFF1352AD7957200610519 /* DetailUserInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */; };
+		B1DFF1392AD8905E00610519 /* RecordHeaderCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DFF1382AD8905E00610519 /* RecordHeaderCollectionView.swift */; };
 		B1E30BDD2AD5E21A00F95C66 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BDC2AD5E21A00F95C66 /* ViewModelType.swift */; };
 		B1E30BE02AD5E7B500F95C66 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B1E30BDF2AD5E7B500F95C66 /* Kingfisher */; };
 		B1E30BEB2AD5EE3300F95C66 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */; };
@@ -322,6 +324,8 @@
 		B1BFE18E2AD6BAED0094253A /* AdminReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminReportViewController.swift; sourceTree = "<group>"; };
 		B1BFE1902AD6F5CB0094253A /* AdminUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUserDetailViewController.swift; sourceTree = "<group>"; };
 		B1BFE1922AD6F6960094253A /* AdminBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminBaseViewController.swift; sourceTree = "<group>"; };
+		B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailUserInfoTableViewCell.swift; sourceTree = "<group>"; };
+		B1DFF1382AD8905E00610519 /* RecordHeaderCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordHeaderCollectionView.swift; sourceTree = "<group>"; };
 		B1E30BDC2AD5E21A00F95C66 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
 		B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		B1E30BEC2AD5EE8400F95C66 /* HomeUserCardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewController.swift; sourceTree = "<group>"; };
@@ -1015,6 +1019,8 @@
 				B148052B2ACD2A900009FF71 /* AdminUserViewController.swift */,
 				B1BFE1902AD6F5CB0094253A /* AdminUserDetailViewController.swift */,
 				B130BB4B2ACF207A0039A1FA /* AdminUserViewModel.swift */,
+				B1DFF13A2AD8906900610519 /* HeaderView */,
+				B1DFF1332AD7954800610519 /* Cell */,
 			);
 			path = UserList;
 			sourceTree = "<group>";
@@ -1045,6 +1051,22 @@
 				6ABA9E532ACE8F4100DC6570 /* CircularProgressBarViewModel.swift */,
 			);
 			path = ProfileView;
+			sourceTree = "<group>";
+		};
+		B1DFF1332AD7954800610519 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		B1DFF13A2AD8906900610519 /* HeaderView */ = {
+			isa = PBXGroup;
+			children = (
+				B1DFF1382AD8905E00610519 /* RecordHeaderCollectionView.swift */,
+			);
+			path = HeaderView;
 			sourceTree = "<group>";
 		};
 		B1E30BEE2AD5F16900F95C66 /* Model */ = {
@@ -1310,6 +1332,7 @@
 				B146A3CA2AD456D2003143DD /* MypageViewConstraints.swift in Sources */,
 				693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */,
 				B11D2B8C2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift in Sources */,
+				B1DFF1392AD8905E00610519 /* RecordHeaderCollectionView.swift in Sources */,
 				B146A3CE2AD45795003143DD /* UITableView+Extensions.swift in Sources */,
 				B17D679F2AC0B116006F91DC /* UserDefaultsManager.swift in Sources */,
 				B15ABE392AC31E0800529C29 /* UIButton+Extensions.swift in Sources */,
@@ -1359,6 +1382,7 @@
 				B146A3BD2AD4399D003143DD /* UIImage+Extensions.swift in Sources */,
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
 				54B4412C2AC2C36300EC8846 /* UserDetailViewController.swift in Sources */,
+				B1DFF1352AD7957200610519 /* DetailUserInfoTableViewCell.swift in Sources */,
 				367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */,
 				B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */,
 				6AC31B2F2AD67CA600F111B2 /* SectionModel.swift in Sources */,

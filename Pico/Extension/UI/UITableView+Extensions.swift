@@ -28,15 +28,11 @@ extension UITableView {
         else {
             fatalError("Could not cellForItemAt at \(T.reuseIdentifier) cell")
         }
-        
         return cell
     }
     
     func dequeueReusableCell<T: UITableViewCell>(forIndexPath indexPath: IndexPath, cellType: T.Type = T.self) -> T {
-        guard let cell = dequeueReusableCell(
-            withIdentifier: T.reuseIdentifier,
-            for: indexPath
-        ) as? T else {
+        guard let cell = dequeueReusableCell(withIdentifier: T.reuseIdentifier, for: indexPath) as? T else {
             fatalError("Fail to dequeue: \(T.reuseIdentifier) cell")
         }
         return cell
@@ -48,17 +44,12 @@ extension UITableView {
         }
         return cell
     }
-
-    func register<T>(
-        cell: T.Type
-    ) where T: UITableViewCell {
+    
+    func register<T>(cell: T.Type) where T: UITableViewCell {
         register(cell, forCellReuseIdentifier: cell.reuseIdentifier)
     }
     
-    func register<T>(
-        headerFooterView: T.Type,
-        forCellReuseIdentifier reuseIdentifier: String = T.reuseIdentifier
-    ) where T: UITableViewHeaderFooterView {
+    func register<T>(headerFooterView: T.Type, forCellReuseIdentifier reuseIdentifier: String = T.reuseIdentifier) where T: UITableViewHeaderFooterView {
         register(headerFooterView, forHeaderFooterViewReuseIdentifier: reuseIdentifier)
     }
 }

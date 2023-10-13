@@ -16,25 +16,17 @@ extension UICollectionView {
         else {
             fatalError("Could not cellForItemAt at indexPath: \(T.reuseIdentifier)")
         }
-
         return cell
     }
 
     func dequeueReusableCell<T: UICollectionViewCell>(forIndexPath indexPath: IndexPath, cellType: T.Type = T.self) -> T {
-        guard
-            let cell = dequeueReusableCell(
-                withReuseIdentifier: T.reuseIdentifier,
-                for: indexPath
-            ) as? T
-        else {
+        guard let cell = dequeueReusableCell(withReuseIdentifier: T.reuseIdentifier, for: indexPath) as? T else {
             fatalError("Could not dequeue cell with identifier: \(T.reuseIdentifier)")
         }
         return cell
     }
 
-    func register<T>(
-        cell: T.Type
-    ) where T: UICollectionViewCell {
+    func register<T>(cell: T.Type) where T: UICollectionViewCell {
         register(cell, forCellWithReuseIdentifier: cell.reuseIdentifier)
     }
 }

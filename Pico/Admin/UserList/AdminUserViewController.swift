@@ -73,7 +73,6 @@ final class AdminUserViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configAdminSubViewConroller()
         addViews()
         makeConstraints()
         configTableView()
@@ -83,11 +82,6 @@ final class AdminUserViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.isNavigationBarHidden = false
     }
     
     // MARK: - config
@@ -101,12 +95,12 @@ final class AdminUserViewController: UIViewController {
 extension AdminUserViewController {
     
     private func configTableViewDatasource() {
-        // 이거 안먹음 살려주셈살려주셈
+        // 로딩뷰 이거 안먹음 살려주셈살려주셈
         Loading.showLoading()
         viewModel.filteredUsers
             .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
                 guard let imageURL = item.imageURLs[safe: 0] else { return }
-                cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate.toString())
+                cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
             }
             .disposed(by: disposeBag)
         
