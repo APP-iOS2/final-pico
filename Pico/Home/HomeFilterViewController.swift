@@ -10,7 +10,7 @@ import SnapKit
 
 final class HomeFilterViewController: UIViewController {
     
-    static var filterGender: [GenderType] = [.female, .male, .etc]
+    static var filterGender: [GenderType] = []
     weak var homeViewController: HomeViewController?
     private let mbtiCollectionViewController = MBTICollectionViewController()
     private var filterChangeState: Bool = false
@@ -23,19 +23,8 @@ final class HomeFilterViewController: UIViewController {
     private lazy var womanButton: UIButton = createFilterButton(title: "여자")
     private lazy var etcButton: UIButton = createFilterButton(title: "기타")
     
-    private let ageSlider: UISlider = {
-        let slider = UISlider()
-        slider.minimumValue = 20
-        slider.maximumValue = 40
-        return slider
-    }()
-
-    private let distanceSlider: UISlider = {
-        let slider = UISlider()
-        slider.minimumValue = 0
-        slider.maximumValue = 100
-        return slider
-    }()
+    private let ageSlider = RangeSlider()
+    private let distanceSlider = RangeSlider()
     
     // MARK: - 스택
     private lazy var genderHStack: UIStackView = createFilterStack(axis: .horizontal, spacing: 5, distribution: .fillEqually)
@@ -61,7 +50,7 @@ final class HomeFilterViewController: UIViewController {
         updateButtonAppearance(etcButton)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         if filterChangeState == true {
             self.homeViewController?.reloadView()
             filterChangeState = false
@@ -102,7 +91,7 @@ final class HomeFilterViewController: UIViewController {
         }
         
         ageVStack.snp.makeConstraints { make in
-            make.top.equalTo(genderHStack.snp.bottom).offset(5)
+            make.top.equalTo(genderHStack.snp.bottom).offset(25)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
             make.bottom.equalTo(genderHStack.snp.bottom).offset(100)
@@ -150,16 +139,14 @@ final class HomeFilterViewController: UIViewController {
     private func createFilterButton(title: String) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: .normal)
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.picoBlue.cgColor
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
         return button
     }
     
     private func updateButtonAppearance(_ button: UIButton) {
-        button.backgroundColor = button.isSelected ? .picoBlue : .white
-        button.setTitleColor(button.isSelected ? .white : .picoFontGray, for: .normal)
+        button.backgroundColor = button.isSelected ? .picoBlue : .picoGray
+        button.setTitleColor(.white, for: .normal)
     }
     
     @objc func tappedButton(_ sender: UIButton) {

@@ -28,10 +28,10 @@ final class HomeViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubView()
+        loadCards()
         makeConstraints()
         configNavigationBarItem()
         configButtons()
-        loadCards()
         viewModel.users
             .bind(to: users)
             .disposed(by: disposeBag)
@@ -64,7 +64,6 @@ final class HomeViewController: BaseViewController {
                     self.view.insertSubview(tabImageViewController.view, at: 1)
                     userCards.removeFirst()
                 }
-                Loading.hideLoading()
             }, onError: { error in
                 print(error)
             })
