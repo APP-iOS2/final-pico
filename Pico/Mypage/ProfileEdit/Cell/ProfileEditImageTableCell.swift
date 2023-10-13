@@ -24,8 +24,11 @@ final class ProfileEditImageTableCell: UITableViewCell {
         view.contentInset = .zero
         view.backgroundColor = .clear
         view.register(cell: ProfileEditCollectionCell.self)
+        view.register(cell: ProfileEditEmptyCollectionCell.self)
         return view
     }()
+    
+    private var images = [String]()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -45,6 +48,11 @@ final class ProfileEditImageTableCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    func config(images: [String]) {
+        self.images = images
+        collectionView.reloadData()
+    }
+    
     private func configCollectionView() {
         collectionView.configBackgroundColor()
         collectionView.dataSource = self
@@ -59,7 +67,7 @@ final class ProfileEditImageTableCell: UITableViewCell {
     
     private func makeConstraints() {
         collectionView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(10)
+            make.leading.trailing.equalToSuperview().inset(15)
             make.top.bottom.equalToSuperview()
         }
     }
@@ -68,16 +76,20 @@ final class ProfileEditImageTableCell: UITableViewCell {
 extension ProfileEditImageTableCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return images.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditCollectionCell.self)
-        cell.configure(imageName: "chu")
-        cell.backgroundColor = .lightGray
-        cell.layer.masksToBounds = true
-        cell.layer.cornerRadius = 10
-        return cell
+        if indexPath.row < images.count {
+            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditCollectionCell.self)
+            cell.configure(imageName: self.images[indexPath.row])
+            cell.cellConfigure()
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditEmptyCollectionCell.self)
+            cell.cellConfigure()
+            return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

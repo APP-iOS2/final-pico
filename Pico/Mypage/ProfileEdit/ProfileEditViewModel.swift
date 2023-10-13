@@ -47,7 +47,7 @@ final class ProfileEditViewModel {
     
     private let userId = UserDefaultsManager.shared.getUserData().userId
     let sectionsRelay = BehaviorRelay<[SectionModel]>(value: [
-        SectionModel(items: [.profileEditImageTableCell]),
+        SectionModel(items: [.profileEditImageTableCell(images: [])]),
         SectionModel(items: [.profileEditNicknameTabelCell, .profileEditLoactionTabelCell(location: "")]),
         SectionModel(items: [
             .profileEditIntroTabelCell(content: ""),
@@ -75,7 +75,7 @@ final class ProfileEditViewModel {
                 guard let data else { return }
                 let result =
                 [
-                    SectionModel(items: [.profileEditImageTableCell]),
+                    SectionModel(items: [.profileEditImageTableCell(images: data.imageURLs)]),
                     SectionModel(items: [.profileEditNicknameTabelCell, .profileEditLoactionTabelCell(location: data.location.address)]),
                     SectionModel(items: [
                         .profileEditIntroTabelCell(content: data.subInfo?.intro ?? ""),

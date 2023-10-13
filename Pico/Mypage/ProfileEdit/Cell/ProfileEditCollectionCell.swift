@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 final class ProfileEditCollectionCell: UICollectionViewCell {
     
@@ -15,6 +16,15 @@ final class ProfileEditCollectionCell: UICollectionViewCell {
         imageView.image = .add
         imageView.contentMode = .scaleAspectFill
         return imageView
+    }()
+    
+    private let deleteButton: UIButton = {
+        let button = UIButton(configuration: .plain())
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .light)
+        let image = UIImage(systemName: "xmark.circle.fill", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .white.withAlphaComponent(0.8)
+        return button
     }()
     
     override init(frame: CGRect) {
@@ -29,18 +39,27 @@ final class ProfileEditCollectionCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        imageView.image = .add
+        imageView.image = UIImage(systemName: "plus")
     }
     
     func configure(imageName: String) {
+        guard let url = URL(string: imageName) else { return }
+        imageView.kf.setImage(with: url)
+        imageView.contentMode = .scaleAspectFill
     }
     
     func configure(image: UIImage) {
         imageView.image = image
     }
     
+    func cellConfigure() {
+        contentView.backgroundColor = .picoLightGray
+        contentView.layer.masksToBounds = true
+        contentView.layer.cornerRadius = 10
+    }
+    
     private func addSubView() {
-        [imageView].forEach {
+        [imageView, deleteButton].forEach {
             contentView.addSubview($0)
         }
     }
@@ -48,6 +67,11 @@ final class ProfileEditCollectionCell: UICollectionViewCell {
     private func makeConstraints() {
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+        
+        deleteButton.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.trailing.equalToSuperview().offset(7)
         }
     }
 }

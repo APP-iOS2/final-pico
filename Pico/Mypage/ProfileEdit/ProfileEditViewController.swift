@@ -39,8 +39,9 @@ final class ProfileEditViewController: UIViewController {
     private func binds() {
         let dataSource = RxTableViewSectionedReloadDataSource<SectionModel> { _, tableView, indexPath, item in
             switch item {
-            case .profileEditImageTableCell:
+            case .profileEditImageTableCell(let images):
                 let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditImageTableCell.self)
+                cell.config(images: images)
                 return cell
                 
             case .profileEditNicknameTabelCell:
