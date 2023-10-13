@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 
 final class AdminUserDetailViewController: UIViewController {
-    
-    private let tableView: UITableView = UITableView()
+    // 뷰컨트롤러로 변경해서 수정했습니다.
+    private let userImageViewContoller: UIViewController = UserImageViewControll()
     
     private var user: User!
     
@@ -29,38 +29,16 @@ final class AdminUserDetailViewController: UIViewController {
         view.configBackgroundColor()
         addViews()
         makeConstraints()
-        configTableView()
-    }
-    
-    private func configTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(cell: UserImageTableCell.self)
-        tableView.rowHeight = UserImageTableCellConstraint.height
-    }
-}
-
-extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: UserImageTableCell.self)
-        cell.config(images: user.imageURLs)
-        cell.selectionStyle = .none
-        return cell
     }
 }
 
 extension AdminUserDetailViewController {
     private func addViews() {
-        view.addSubview(tableView)
+        view.addSubview(userImageViewContoller.view)
     }
     
     private func makeConstraints() {
-        tableView.snp.makeConstraints { make in
+        userImageViewContoller.view.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
