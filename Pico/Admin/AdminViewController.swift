@@ -23,7 +23,7 @@ final class AdminViewController: AdminBaseViewController {
         segment.insertSegment(withTitle: "회원 목록", at: 0, animated: true)
         segment.insertSegment(withTitle: "신고 목록", at: 1, animated: true)
         segment.selectedSegmentIndex = 0
-        let font = UIFont.systemFont(ofSize: 20, weight: .heavy)
+        let font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.picoFontGray], for: .normal)
         segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.picoFontBlack], for: .selected)
         return segment
@@ -110,7 +110,7 @@ extension AdminViewController {
         contentsView.snp.makeConstraints { make in
             make.top.equalTo(segmentView.snp.bottom)
             make.leading.trailing.equalTo(segmentView)
-            make.bottom.equalTo(safeArea)
+            make.bottom.equalToSuperview()
         }
         
         underLineBackgroundView.snp.makeConstraints { make in

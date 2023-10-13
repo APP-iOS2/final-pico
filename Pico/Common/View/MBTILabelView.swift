@@ -29,7 +29,7 @@ final class MBTILabelView: UIView {
         var frameSize: CGRect {
             switch self {
             case .large:
-                return CGRect(x: 0, y: 0, width: 80, height: 40)
+                return CGRect(x: 0, y: 0, width: 80, height: 34)
             case .small:
                 return CGRect(x: 0, y: 0, width: 50, height: 20)
             }

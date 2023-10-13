@@ -75,7 +75,6 @@ final class UserDetailViewModel {
     }
     // document 에 들어가는 ID만 수정
     func blockUser(block: Block, completion: @escaping () -> () ) {
-        let dbRef = Firestore.firestore()
         DispatchQueue.global().async {
             self.dbRef.collection("users").document("01B118D9-4626-46F3-96D8-6D4229DACFDD").updateData([
                 "blocks": FieldValue.arrayUnion([block.asDictionary()])

@@ -17,7 +17,7 @@ extension UIViewController {
         logoButton.setImage(image?.withRenderingMode(.alwaysOriginal), for: .normal)
         
         let leftItem = UIBarButtonItem(customView: logoButton)
-        let height: CGFloat = 24
+        let height: CGFloat = 26
         leftItem.customView?.snp.makeConstraints({ make in
             make.height.equalTo(height)
             make.width.equalTo(image?.getRatio(height: height) ?? 0)
@@ -67,15 +67,5 @@ extension UIViewController {
         alert.addAction(yes)
         
         present(alert, animated: true, completion: nil)
-    }
-}
-
-extension UIViewController {
-    func configAdminSubViewConroller() {
-        navigationItem.leftBarButtonItem = nil
-        navigationItem.hidesBackButton = true
-        configNavigationBackButton()
-        view.configBackgroundColor()
-        view.tappedDismissKeyboard()
     }
 }

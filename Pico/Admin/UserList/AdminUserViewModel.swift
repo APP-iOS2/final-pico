@@ -84,7 +84,7 @@ final class AdminUserViewModel {
                 case .name:
                     Loading.hideLoading()
                     return users.filter { sortedUser in
-                        sortedUser.nickName.contains("밍키") || sortedUser.phoneNumber.contains("8888")
+                        !sortedUser.nickName.contains("") || sortedUser.phoneNumber.contains("8888")
                     }
                 case .mbti:
                     return users
