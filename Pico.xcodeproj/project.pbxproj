@@ -56,8 +56,6 @@
 		547C4C2B2AD8393700028AFB /* UserImageViewControll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C262AD8393700028AFB /* UserImageViewControll.swift */; };
 		547C4C2C2AD8393700028AFB /* BasicInformationViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C272AD8393700028AFB /* BasicInformationViewContoller.swift */; };
 		547C4C2D2AD8393700028AFB /* AboutMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C282AD8393700028AFB /* AboutMeViewController.swift */; };
-		547C4C3E2AD83CBB00028AFB /* HobbyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C3C2AD83CBB00028AFB /* HobbyCollectionViewCell.swift */; };
-		547C4C3F2AD83CBB00028AFB /* MbtiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C3D2AD83CBB00028AFB /* MbtiCollectionViewCell.swift */; };
 		6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783D2AC2742400762165 /* MailSendViewController.swift */; };
 		693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783F2AC2745C00762165 /* MailReceiveViewController.swift */; };
 		698521F42AD841510051A29A /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698521F32AD841510051A29A /* MailListTableViewCell.swift */; };
@@ -110,6 +108,8 @@
 		B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590D2AC0A658009889DA /* EntViewController.swift */; };
 		B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590F2AC0A666009889DA /* MypageViewController.swift */; };
 		B14D2AAC2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */; };
+		B14D2AB42AD8E10F0014DE29 /* HobbyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AB22AD8E10F0014DE29 /* HobbyCollectionViewCell.swift */; };
+		B14D2AB52AD8E10F0014DE29 /* MbtiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AB32AD8E10F0014DE29 /* MbtiCollectionViewCell.swift */; };
 		B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE1A2AC2672300529C29 /* MBTILabelView.swift */; };
 		B15ABE282AC2721200529C29 /* MBTI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE272AC2721200529C29 /* MBTI.swift */; };
 		B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE2A2AC276A900529C29 /* BaseViewController.swift */; };
@@ -233,8 +233,6 @@
 		547C4C262AD8393700028AFB /* UserImageViewControll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageViewControll.swift; sourceTree = "<group>"; };
 		547C4C272AD8393700028AFB /* BasicInformationViewContoller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInformationViewContoller.swift; sourceTree = "<group>"; };
 		547C4C282AD8393700028AFB /* AboutMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMeViewController.swift; sourceTree = "<group>"; };
-		547C4C3C2AD83CBB00028AFB /* HobbyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HobbyCollectionViewCell.swift; path = Pico/Home/Detail/UserDetailViewCell/HobbyCollectionViewCell.swift; sourceTree = SOURCE_ROOT; };
-		547C4C3D2AD83CBB00028AFB /* MbtiCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MbtiCollectionViewCell.swift; path = Pico/Home/Detail/UserDetailViewCell/MbtiCollectionViewCell.swift; sourceTree = SOURCE_ROOT; };
 		6937783D2AC2742400762165 /* MailSendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendViewController.swift; sourceTree = "<group>"; };
 		6937783F2AC2745C00762165 /* MailReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveViewController.swift; sourceTree = "<group>"; };
 		698521F32AD841510051A29A /* MailListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
@@ -289,6 +287,8 @@
 		B14B590D2AC0A658009889DA /* EntViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntViewController.swift; sourceTree = "<group>"; };
 		B14B590F2AC0A666009889DA /* MypageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageViewController.swift; sourceTree = "<group>"; };
 		B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailUserImageTableViewCell.swift; sourceTree = "<group>"; };
+		B14D2AB22AD8E10F0014DE29 /* HobbyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HobbyCollectionViewCell.swift; sourceTree = "<group>"; };
+		B14D2AB32AD8E10F0014DE29 /* MbtiCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MbtiCollectionViewCell.swift; sourceTree = "<group>"; };
 		B15ABE1A2AC2672300529C29 /* MBTILabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTILabelView.swift; sourceTree = "<group>"; };
 		B15ABE272AC2721200529C29 /* MBTI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTI.swift; sourceTree = "<group>"; };
 		B15ABE2A2AC276A900529C29 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
@@ -454,16 +454,6 @@
 			path = Notification;
 			sourceTree = "<group>";
 		};
-		547C4C112AD8368400028AFB /* UserDetailViewCell */ = {
-			isa = PBXGroup;
-			children = (
-				547C4C3C2AD83CBB00028AFB /* HobbyCollectionViewCell.swift */,
-				547C4C3D2AD83CBB00028AFB /* MbtiCollectionViewCell.swift */,
-			);
-			name = UserDetailViewCell;
-			path = ../../../../../Detail/UserDetailViewCell;
-			sourceTree = "<group>";
-		};
 		547C4C1C2AD8369D00028AFB /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -480,18 +470,10 @@
 				547C4C272AD8393700028AFB /* BasicInformationViewContoller.swift */,
 				547C4C282AD8393700028AFB /* AboutMeViewController.swift */,
 				547C4C252AD8393700028AFB /* SubInfomationViewController.swift */,
-				547C4C112AD8368400028AFB /* UserDetailViewCell */,
+				B14D2AB12AD8E10F0014DE29 /* UserDetailViewCell */,
 				547C4C1C2AD8369D00028AFB /* ViewModel */,
 			);
 			path = Detail;
-			sourceTree = "<group>";
-		};
-		698521F52AD841540051A29A /* Cell */ = {
-			isa = PBXGroup;
-			children = (
-				698521F32AD841510051A29A /* MailListTableViewCell.swift */,
-			);
-			path = Cell;
 			sourceTree = "<group>";
 		};
 		698521F52AD841540051A29A /* Cell */ = {
@@ -885,6 +867,16 @@
 				B14B59072AC0A4FD009889DA /* TabBarController.swift */,
 			);
 			path = TabBar;
+			sourceTree = "<group>";
+		};
+		B14D2AB12AD8E10F0014DE29 /* UserDetailViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				B14D2AB22AD8E10F0014DE29 /* HobbyCollectionViewCell.swift */,
+				B14D2AB32AD8E10F0014DE29 /* MbtiCollectionViewCell.swift */,
+			);
+			name = UserDetailViewCell;
+			path = ../../../../../../UserDetailViewCell;
 			sourceTree = "<group>";
 		};
 		B15ABE262AC271FF00529C29 /* MBTI */ = {
@@ -1293,6 +1285,7 @@
 				6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */,
 				53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */,
 				53836F552ACC90FC00D98F77 /* Loading.swift in Sources */,
+				B14D2AB42AD8E10F0014DE29 /* HobbyCollectionViewCell.swift in Sources */,
 				6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */,
 				BCEACEF52AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
@@ -1341,7 +1334,6 @@
 				B1E30BDD2AD5E21A00F95C66 /* ViewModelType.swift in Sources */,
 				6ADDE2EE2AC3B98000CE4482 /* ProfileEditViewController.swift in Sources */,
 				6ADDE2E82AC31C6000CE4482 /* SettingPrivateTableCell.swift in Sources */,
-				547C4C3E2AD83CBB00028AFB /* HobbyCollectionViewCell.swift in Sources */,
 				6ADDE2F32AC3BA4700CE4482 /* ProfileEditNicknameTabelCell.swift in Sources */,
 				B1BFE18F2AD6BAED0094253A /* AdminReportViewController.swift in Sources */,
 				534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */,
@@ -1405,7 +1397,7 @@
 				4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */,
 				B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
-				547C4C3F2AD83CBB00028AFB /* MbtiCollectionViewCell.swift in Sources */,
+				B14D2AB52AD8E10F0014DE29 /* MbtiCollectionViewCell.swift in Sources */,
 				B17D67902AC0AC15006F91DC /* Block.swift in Sources */,
 				6A2060482ACD28E100435723 /* CircularProgressBarView.swift in Sources */,
 				4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */,
