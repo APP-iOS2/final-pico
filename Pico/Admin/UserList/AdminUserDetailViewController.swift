@@ -176,7 +176,7 @@ extension AdminUserDetailViewController {
     }
     
     private func makeConstraints() {
-        userImageViewContoller.view.snp.makeConstraints { make in
+        tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
