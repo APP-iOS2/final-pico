@@ -9,14 +9,6 @@ import UIKit
 
 final class MBTILabelCollectionViewCell: UICollectionViewCell {
     
-    private let textLabel: UILabel = {
-        let label = UILabel()
-        label.text = ""
-        label.font = .picoMBTILabelFont
-        label.textColor = .white
-        return label
-    }()
-    
     private let mbtiButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(.white, for: .normal)

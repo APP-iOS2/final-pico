@@ -26,10 +26,11 @@ final class HomeViewModel {
     private func loadUsers() {
         DispatchQueue.global().async {
             let dbRef = Firestore.firestore()
-            let query = dbRef.collection("users")
-                .whereField("gender", in: self.filterGender.map { $0.rawValue })
+            var query = dbRef.collection("users")
                 .whereField("id", isNotEqualTo: self.loginUser.userId)
-            
+            if !self.filterGender.isEmpty {
+                query = query.whereField("gender", in: self.filterGender.map { $0.rawValue })
+            }
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print(error)

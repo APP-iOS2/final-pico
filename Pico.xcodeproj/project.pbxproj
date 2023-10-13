@@ -160,6 +160,7 @@
 		BC0D29332ACF1FD70043554B /* HomeUserCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */; };
 		BC5DE6642AC6EFB00082D18D /* HomeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */; };
 		BC5DE6662ACCFFB70082D18D /* UserDummyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5DE6652ACCFFB70082D18D /* UserDummyData.swift */; };
+		BC6F61922AD834160067F500 /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6F61912AD834160067F500 /* RangeSlider.swift */; };
 		BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */; };
 		BCEACEF52AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */; };
 		BCEACEF72AC3DF5F00C93699 /* MBTICollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEF62AC3DF5F00C93699 /* MBTICollectionViewController.swift */; };
@@ -329,6 +330,7 @@
 		BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewModel.swift; sourceTree = "<group>"; };
 		BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyView.swift; sourceTree = "<group>"; };
 		BC5DE6652ACCFFB70082D18D /* UserDummyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummyData.swift; sourceTree = "<group>"; };
+		BC6F61912AD834160067F500 /* RangeSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
 		BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFilterViewController.swift; sourceTree = "<group>"; };
 		BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTILabelCollectionViewCell.swift; sourceTree = "<group>"; };
 		BCEACEF62AC3DF5F00C93699 /* MBTICollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTICollectionViewController.swift; sourceTree = "<group>"; };
@@ -739,6 +741,7 @@
 				BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */,
 				BCEACEF62AC3DF5F00C93699 /* MBTICollectionViewController.swift */,
 				BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */,
+				BC6F61912AD834160067F500 /* RangeSlider.swift */,
 				BC5DE6652ACCFFB70082D18D /* UserDummyData.swift */,
 			);
 			path = Home;
@@ -1244,6 +1247,7 @@
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
 				54B441302AC2C36C00EC8846 /* BasicInformationTableCell.swift in Sources */,
 				B130BB4C2ACF207A0039A1FA /* AdminUserViewModel.swift in Sources */,
+				BC6F61922AD834160067F500 /* RangeSlider.swift in Sources */,
 				6ABA9E542ACE8F4100DC6570 /* CircularProgressBarViewModel.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				6ADDE2F72AC3BA7E00CE4482 /* ProfileEditLoactionTabelCell.swift in Sources */,
