@@ -55,7 +55,7 @@ final class AdminUserDetailViewController: UIViewController {
     private func configTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-//        tableView.register(cell: UserImageTableCell.self)
+        tableView.register(cell: DetailUserImageTableViewCell.self)
         tableView.register(cell: DetailUserInfoTableViewCell.self)
         tableView.register(cell: NotificationTableViewCell.self)
         tableView.separatorStyle = .none
@@ -99,11 +99,10 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
 
         switch tableViewCase {
         case .image:
-            return UITableViewCell()
-//            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: UserImageTableCell.self)
-//            cell.config(images: user.imageURLs)
-//            cell.selectionStyle = .none
-//            return cell
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: DetailUserImageTableViewCell.self)
+            cell.config(images: user.imageURLs)
+            cell.selectionStyle = .none
+            return cell
 
         case .info:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: DetailUserInfoTableViewCell.self)

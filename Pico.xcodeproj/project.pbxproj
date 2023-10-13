@@ -108,6 +108,7 @@
 		B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590B2AC0A64C009889DA /* LikeViewController.swift */; };
 		B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590D2AC0A658009889DA /* EntViewController.swift */; };
 		B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590F2AC0A666009889DA /* MypageViewController.swift */; };
+		B14D2AAC2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */; };
 		B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE1A2AC2672300529C29 /* MBTILabelView.swift */; };
 		B15ABE282AC2721200529C29 /* MBTI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE272AC2721200529C29 /* MBTI.swift */; };
 		B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE2A2AC276A900529C29 /* BaseViewController.swift */; };
@@ -285,6 +286,7 @@
 		B14B590B2AC0A64C009889DA /* LikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeViewController.swift; sourceTree = "<group>"; };
 		B14B590D2AC0A658009889DA /* EntViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntViewController.swift; sourceTree = "<group>"; };
 		B14B590F2AC0A666009889DA /* MypageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageViewController.swift; sourceTree = "<group>"; };
+		B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailUserImageTableViewCell.swift; sourceTree = "<group>"; };
 		B15ABE1A2AC2672300529C29 /* MBTILabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTILabelView.swift; sourceTree = "<group>"; };
 		B15ABE272AC2721200529C29 /* MBTI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTI.swift; sourceTree = "<group>"; };
 		B15ABE2A2AC276A900529C29 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
@@ -1086,6 +1088,7 @@
 		B1DFF1332AD7954800610519 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */,
 				B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */,
 			);
 			path = Cell;
@@ -1321,6 +1324,7 @@
 				6ABA9E522ACE8EF800DC6570 /* ProfileViewModel.swift in Sources */,
 				531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */,
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
+				B14D2AAC2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift in Sources */,
 				4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,

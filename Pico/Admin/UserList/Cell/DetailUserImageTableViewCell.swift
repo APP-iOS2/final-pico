@@ -1,21 +1,14 @@
 //
-//  UserImageTableViewCell.swift
+//  DetailUserImageTableViewCell.swift
 //  Pico
 //
-//  Created by 신희권 on 2023/10/04.
+//  Created by 최하늘 on 10/13/23.
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
+import SnapKit
 
-struct UserImageViewControllConstraint {
-    static let height: CGFloat = Screen.height * 0.6
-}
-
-final class UserImageViewControll: UIViewController {
-    
-    private let disposeBag = DisposeBag()
+final class DetailUserImageTableViewCell: UITableViewCell {
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -33,11 +26,17 @@ final class UserImageViewControll: UIViewController {
         return pageControl
     }()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    // MARK: - initializer
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
         makeConstraints()
         configScrollView()
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func configScrollView() {
@@ -65,7 +64,7 @@ final class UserImageViewControll: UIViewController {
     }
     
     private func addViews() {
-        view.addSubview([scrollView, pageControl])
+        contentView.addSubview([scrollView, pageControl])
     }
     
     private func makeConstraints() {
@@ -81,7 +80,7 @@ final class UserImageViewControll: UIViewController {
     }
 }
 
-extension UserImageViewControll: UIScrollViewDelegate {
+extension DetailUserImageTableViewCell: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.pageControl.currentPage = Int(floor(scrollView.contentOffset.x / UIScreen.main.bounds.width))
     }
