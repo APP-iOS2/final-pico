@@ -120,6 +120,7 @@ final class NotificationTableViewCell: UITableViewCell {
 extension NotificationTableViewCell {
     func configData(notitype: NotiType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, date: Double) {
         guard let url = URL(string: imageUrl) else { return }
+        profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         profileImageView.kf.setImage(with: url)
         iconImageView.image = UIImage(systemName: notitype.iconSystemImageName)
         iconImageView.tintColor = notitype.iconColor

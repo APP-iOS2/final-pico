@@ -107,9 +107,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     }
     
     private func addViews() {
-        [userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton].forEach { item in
-            addSubview(item)
-        }
+        addSubview([userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton])
     }
     
     private func makeConstraints() {
