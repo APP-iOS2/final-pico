@@ -56,7 +56,6 @@ final class ProfileEditCollectionModalViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("디드로드타이미")
         view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()

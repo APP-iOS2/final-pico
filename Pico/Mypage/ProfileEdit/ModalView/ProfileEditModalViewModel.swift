@@ -23,7 +23,7 @@ final class ProfileEditModalViewModel {
     let name = BehaviorRelay<String>(value: "아맞다ㅡㅡ")
     var type: TableCase?
     init() {
-        print("타이밍")
+    
     }
  
     func updateData() {

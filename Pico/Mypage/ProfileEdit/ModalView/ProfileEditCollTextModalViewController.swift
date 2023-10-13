@@ -145,8 +145,6 @@ extension ProfileEditCollTextModalViewController: UICollectionViewDelegateFlowLa
         _ = profileEditModalViewModel.data.subscribe(onNext: {
             data = $0
         })
-        print("???")
-        print(data)
         let text = data[indexPath.row]
         label.text = text
         label.sizeToFit()
