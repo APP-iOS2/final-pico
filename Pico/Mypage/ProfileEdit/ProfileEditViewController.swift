@@ -83,9 +83,7 @@ final class ProfileEditViewController: UIViewController {
     }
     
     private func addViews() {
-        [tableView].forEach {
-            view.addSubview($0)
-        }
+        view.addSubview([tableView])
     }
     
     private func makeConstraints() {
@@ -140,6 +138,46 @@ extension ProfileEditViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            break
+        case 1:
+            let modalViewController = ProfileEditTextModalViewController()
+            if let sheet = modalViewController.sheetPresentationController {
+                sheet.prefersGrabberVisible = true
+                if #available(iOS 16.0, *) {
+                    sheet.detents = [ .custom { _ in
+                            return 250 } ]
+                } else { sheet.detents = [.medium()] }
+            }
+            modalViewController.modalPresentationStyle = .formSheet
+            present(modalViewController, animated: true)
+        case 2:
+            let modalViewController = ProfileEditCollectionModalViewController()
+            switch indexPath.row {
+            case 0:
+                let viewModel = modalViewController.profileEditModalViewModel
+                viewModel.data.accept(viewModel.educationType)
+                viewModel.name.accept("담배")
+            case 1:
+                let viewModel = modalViewController.profileEditModalViewModel
+                viewModel.data.accept(viewModel.frequencyType)
+            case 2:
+                break
+            default:
+                break
+            }
+            if let sheet = modalViewController.sheetPresentationController {
+                sheet.prefersGrabberVisible = true
+                if #available(iOS 16.0, *) {
+                    sheet.detents = [ .custom { _ in
+                        return 250 } ]
+                } else { sheet.detents = [.medium()] }
+            }
+            modalViewController.modalPresentationStyle = .formSheet
+            present(modalViewController, animated: true)
+        default: break
+        }
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
