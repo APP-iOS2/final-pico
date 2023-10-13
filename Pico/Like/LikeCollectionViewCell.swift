@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import RxSwift
+import Kingfisher
 
 final class LikeCollectionViewCell: UICollectionViewCell {
     
@@ -96,6 +97,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     
     func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType) {
         guard let url = URL(string: image) else { return }
+        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         userImageView.kf.setImage(with: url)
         nameLabel.text = nameText
         mbtiLabel.setMbti(mbti: mbti)

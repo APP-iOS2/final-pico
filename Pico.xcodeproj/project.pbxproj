@@ -38,6 +38,7 @@
 		531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784E2AC26AEA0047DE35 /* MyPageMatchingTableCell.swift */; };
 		53389AED2AC15AFA0076DA9B /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67B52AC0C09C006F91DC /* Screen.swift */; };
 		53389AEF2AC16D120076DA9B /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53389AEE2AC16D120076DA9B /* EmptyViewController.swift */; };
+		533D5D2E2AD9169A0074F767 /* CustomIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D5D2D2AD9169A0074F767 /* CustomIndicator.swift */; };
 		534172F82AC129730035E41A /* LikeUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F72AC129730035E41A /* LikeUViewController.swift */; };
 		534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F92AC129830035E41A /* LikeMeViewController.swift */; };
 		534790C22AC3B2F20028610D /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C12AC3B2F20028610D /* NotificationViewController.swift */; };
@@ -224,6 +225,7 @@
 		531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransitionAnimator.swift; sourceTree = "<group>"; };
 		531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCollectionViewCell.swift; sourceTree = "<group>"; };
 		53389AEE2AC16D120076DA9B /* EmptyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
+		533D5D2D2AD9169A0074F767 /* CustomIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomIndicator.swift; sourceTree = "<group>"; };
 		534172F72AC129730035E41A /* LikeUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewController.swift; sourceTree = "<group>"; };
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
 		534790C12AC3B2F20028610D /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
@@ -645,6 +647,7 @@
 				53836F542ACC90FC00D98F77 /* Loading.swift */,
 				53836F522ACC903800D98F77 /* LoadingAnimationView.swift */,
 				B161B8712AC414DD00257A9C /* PopupViewController.swift */,
+				533D5D2D2AD9169A0074F767 /* CustomIndicator.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1350,6 +1353,7 @@
 				6ADDE2F12AC3BA2500CE4482 /* ProfileEditImageTableCell.swift in Sources */,
 				534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */,
 				6ABA9E522ACE8EF800DC6570 /* ProfileViewModel.swift in Sources */,
+				533D5D2E2AD9169A0074F767 /* CustomIndicator.swift in Sources */,
 				531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */,
 				6A9F73532AD8E575002F13AC /* ProfileEditTextModalCollectionCell.swift in Sources */,
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
