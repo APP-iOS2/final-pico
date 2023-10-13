@@ -19,6 +19,9 @@ final class LikeMeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collectionView.reloadData()
+        if viewModel.likeMeList.isEmpty {
+            viewModel.refresh()
+        }
     }
     
     override func viewDidLoad() {
@@ -75,7 +78,7 @@ final class LikeMeViewController: UIViewController {
     @objc func refreshTable(refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            viewModel.refrsh()
+            viewModel.refresh()
             refresh.endRefreshing()
         }
     }

@@ -56,7 +56,7 @@ final class LikeMeViewModel {
         }
     }
     
-    func refrsh() {
+    func refresh() {
         likeMeList = []
         startIndex = 0
         loadNextPage()

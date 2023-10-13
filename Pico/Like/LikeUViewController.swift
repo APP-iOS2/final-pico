@@ -19,6 +19,9 @@ final class LikeUViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collectionView.reloadData()
+        if viewModel.likeUList.isEmpty {
+            viewModel.refresh()
+        }
     }
     
     override func viewDidLoad() {
