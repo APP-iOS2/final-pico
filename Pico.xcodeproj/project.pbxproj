@@ -484,17 +484,12 @@
 			path = Detail;
 			sourceTree = "<group>";
 		};
-		54B441332AC2C4CC00EC8846 /* UserDetailViewCell */ = {
+		698521F52AD841540051A29A /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				54A56C632ACC9CA40003C7BD /* UserImageTableCell.swift */,
-				54B4412D2AC2C36C00EC8846 /* BasicInformationTableCell.swift */,
-				B16394C42ACDC7EF00D9252F /* AboutMeTableCell.swift */,
-				54B4412E2AC2C36C00EC8846 /* SubInfomationTableCell.swift */,
-				547138492AC361A300CFE88D /* HobbyCollectionViewCell.swift */,
-				5471384B2AC3621000CFE88D /* MbtiCollectionViewCell.swift */,
+				698521F32AD841510051A29A /* MailListTableViewCell.swift */,
 			);
-			path = UserDetailViewCell;
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		698521F52AD841540051A29A /* Cell */ = {

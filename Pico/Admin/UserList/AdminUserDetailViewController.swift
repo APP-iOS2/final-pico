@@ -13,7 +13,7 @@ struct UserImage {
 }
 
 final class AdminUserDetailViewController: UIViewController {
-
+  
     private let topView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -176,7 +176,7 @@ extension AdminUserDetailViewController {
     }
     
     private func makeConstraints() {
-        tableView.snp.makeConstraints { make in
+        userImageViewContoller.view.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         

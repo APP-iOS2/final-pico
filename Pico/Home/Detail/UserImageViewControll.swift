@@ -16,7 +16,7 @@ struct UserImageViewControllConstraint {
 final class UserImageViewControll: UIViewController {
     
     private let disposeBag = DisposeBag()
-    
+
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
@@ -32,7 +32,7 @@ final class UserImageViewControll: UIViewController {
         pageControl.currentPageIndicatorTintColor = UIColor.white
         return pageControl
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         addViews()
