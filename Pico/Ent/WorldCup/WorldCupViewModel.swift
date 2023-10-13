@@ -41,24 +41,25 @@ final class WorldCupViewModel {
         cell.userNickname.text = user.nickName
         cell.userAge.text = "\(user.age)세"
         
-        var modifiedUser = user
-        let dataLabelTexts = addDataLabels(&modifiedUser)
+        let dataLabelTexts = addDataLabels(user)
         cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
         
         if let imageURL = URL(string: user.imageURLs.first ?? "") {
             cell.userImage.load(url: imageURL)
         }
     }
-
-    private func addDataLabels(_ currentItem: inout User) -> [String] {
+    
+    private func addDataLabels(_ currentItem: User) -> [String] {
         var dataLabelTexts: [String] = []
-
+        
         if let height = currentItem.subInfo?.height {
             dataLabelTexts.append("\(height)")
         }
+        
         if let job = currentItem.subInfo?.job {
             dataLabelTexts.append("\(job)")
         }
+        
         dataLabelTexts.append("\(currentItem.location.address)")
         return dataLabelTexts
     }

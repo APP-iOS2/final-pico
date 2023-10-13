@@ -15,8 +15,8 @@ final class WorldCupGameViewController: UIViewController {
     private var worldCupViewModel = WorldCupViewModel()
     private let disposeBag = DisposeBag()
     private var users = BehaviorRelay<[User]>(value: [])
-    private var strong4: [User] = []
-    private var strong2: [User] = []
+    private var semifinals: [User] = []
+    private var finals: [User] = []
     private var winner: [User] = []
     private var index = 0
     
@@ -138,53 +138,57 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return users.value.count / 4
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WorldCupCollectionViewCell", for: indexPath) as? WorldCupCollectionViewCell else { return UICollectionViewCell() }
         
-        let index1 = indexPath.item * 2
-        let index2 = indexPath.item * 2 + 1
-        let user1 = users.value[index1]
-        let user2 = users.value[index2]
-
-        worldCupViewModel.configure(cell: cell, with: user1)
-        worldCupViewModel.configure(cell: cell, with: user2)
+        let round: Int
+        let currentUser: User
+        
+        switch index {
+        case 0..<8:
+            round = 8
+            currentUser = users.value[index + indexPath.item]
+            worldCupViewModel.configure(cell: cell, with: currentUser)
+        case 8..<12:
+            round = 4
+            currentUser = semifinals[index - 8 + indexPath.item]
+            worldCupViewModel.configure(cell: cell, with: currentUser)
+        case 12:
+            round = 2
+            currentUser = finals[index - 12 + indexPath.item]
+            worldCupViewModel.configure(cell: cell, with: currentUser)
+        default:
+            round = 0
+            currentUser = winner[0]
+        }
+        self.roundLabel.text = round == 2 ? "결승" : "\(round)강"
         return cell
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let padding: CGFloat = 10
         let collectionViewWidth = collectionView.frame.width
         let itemWidth = (collectionViewWidth - (padding * 2)) / 2
-
+        
         return CGSize(width: itemWidth, height: Screen.height * 2 / 5)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let index1 = indexPath.item * 2
-        let index2 = indexPath.item * 2 + 1
-        let user1 = users.value[index1]
-        let user2 = users.value[index2]
-        
-        if let cell1 = collectionView.cellForItem(at: IndexPath(item: indexPath.item * 2, section: indexPath.section)) as? WorldCupCollectionViewCell,
-           let cell2 = collectionView.cellForItem(at: IndexPath(item: indexPath.item * 2 + 1, section: indexPath.section)) as? WorldCupCollectionViewCell {
-            
-            worldCupViewModel.configure(cell: cell1, with: user1)
-            worldCupViewModel.configure(cell: cell2, with: user2)
+        switch index {
+        case 0..<8:
+            let selectedItem = users.value[index + indexPath.item]
+            semifinals.append(selectedItem)
+            index += 2
+            collectionView.reloadData()
+        case 8..<12:
+            let selectedItem = semifinals[index - 8 + indexPath.item]
+            finals.append(selectedItem)
+            index += 2
+            collectionView.reloadData()
+        default:
+            let selectedItem = finals[index - 12 + indexPath.item]
+            winner.append(selectedItem)
         }
-
-        index += 1
-
-        if index == 4 {
-            index = 0
-            strong4.removeAll()
-        } else if index == 2 {
-            index = 0
-            strong2.removeAll()
-        } else if index == 1 {
-            print(users)
-        }
-        collectionView.reloadData()
     }
-
 }

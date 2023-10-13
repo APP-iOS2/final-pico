@@ -27,7 +27,6 @@
 		4B26653B2AC3E3250074D4E2 /* WorldCupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */; };
 		4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */; };
 		4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */; };
-		4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665402AC3F4830074D4E2 /* UserDummy.swift */; };
 		4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */; };
 		4B2665492ACD76F00074D4E2 /* ResultUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665482ACD76F00074D4E2 /* ResultUserView.swift */; };
 		4B89E12D2AD528E500BFBAA3 /* WorldCupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */; };
@@ -205,7 +204,6 @@
 		4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupViewController.swift; sourceTree = "<group>"; };
 		4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewController.swift; sourceTree = "<group>"; };
 		4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewModel.swift; sourceTree = "<group>"; };
-		4B2665402AC3F4830074D4E2 /* UserDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummy.swift; sourceTree = "<group>"; };
 		4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewController.swift; sourceTree = "<group>"; };
 		4B2665482ACD76F00074D4E2 /* ResultUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultUserView.swift; sourceTree = "<group>"; };
 		4B89E12A2AD528BB00BFBAA3 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
@@ -405,7 +403,6 @@
 			children = (
 				4B26653A2AC3E3250074D4E2 /* WorldCupViewController.swift */,
 				4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */,
-				4B2665402AC3F4830074D4E2 /* UserDummy.swift */,
 				4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */,
 				4B2665522ACF857E0074D4E2 /* WorldCupGameView */,
 			);
@@ -1375,7 +1372,6 @@
 				5471384A2AC361A300CFE88D /* HobbyCollectionViewCell.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
 				B1701F922AD4351A0014850D /* Array+Extensions.swift in Sources */,
-				4B2665412AC3F4830074D4E2 /* UserDummy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
