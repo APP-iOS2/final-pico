@@ -14,7 +14,7 @@ final class NotificationViewModel {
     var notifications: [Noti] = []
     var notificationsRx = BehaviorRelay<[Noti]>(value: [])
     private let disposBag: DisposeBag = DisposeBag()
-    private var itemsPerPage: Int = 10
+    private var itemsPerPage: Int = Int(Screen.height * 1.5 / 90)
     var lastDocumentSnapshot: DocumentSnapshot?
     
     init() {
