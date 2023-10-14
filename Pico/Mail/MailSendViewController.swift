@@ -106,6 +106,7 @@ final class MailSendViewController: UIViewController {
         return button
     }()
     
+    // MARK: - MailSend +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.configBackgroundColor()
@@ -121,30 +122,29 @@ final class MailSendViewController: UIViewController {
         receiverImageView.setCircleImageView()
     }
     
+    // MARK: - MailSend +UI
     func getReceiver(mailReceiver: Mail.MailInfo) {
-        viewModel.getUser(userId: mailReceiver.receivedUserId) {
-            guard (self.viewModel.user != nil) else { return }
-            self.receiverId = self.viewModel.user?.id ?? ""
-            guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }
-            self.receiverImageView.kf.setImage(with: url)
-            self.receiverNameLabel.text = self.viewModel.user?.nickName
+        if mailReceiver.mailType == .receive {
+            viewModel.getUser(userId: mailReceiver.sendedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
+                }
+            }
+        } else {
+            viewModel.getUser(userId: mailReceiver.receivedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
+                }
+            }
         }
     }
     
     private func addViews() {
-        [receiverLabel, receiverImageView, receiverNameLabel].forEach { views in
-            receiverStack.addArrangedSubview(views)
-        }
-        
-        [messageView, remainCountLabel].forEach { views in
-            contentView.addArrangedSubview(views)
-        }
+        receiverStack.addArrangedSubview( [receiverLabel, receiverImageView, receiverNameLabel])
+        contentView.addArrangedSubview( [messageView, remainCountLabel])
         
         view.addSubview(navigationBar)
-        
-        [receiverStack, contentView, sendButton].forEach { views in
-            view.addSubview(views)
-        }
+        view.addSubview([receiverStack, contentView, sendButton])
     }
     
     private func makeConstraints() {
@@ -183,6 +183,14 @@ final class MailSendViewController: UIViewController {
         }
     }
     
+    // MARK: - MailSend +Config
+    private func configViews(user: User) {
+        receiverId = user.id
+        guard let url = URL(string: user.imageURLs[0]) else { return }
+        receiverImageView.kf.setImage(with: url)
+        receiverNameLabel.text = user.nickName
+    }
+    
     private func configNavigationBarItem() {
         navItem.leftBarButtonItem = leftBarButton
         navigationBar.shadowImage = UIImage()
@@ -202,11 +210,13 @@ final class MailSendViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
+    // MARK: - MailSend +objc
     @objc func tappedBackzButton() {
         dismiss(animated: true)
     }
-    
-    // input output으로 변경하기
+}
+// MARK: - MailSend +textView
+extension MailSendViewController {
     private func changeTextView() {
         let textViewPlaceHolder = "메시지를 입력하세요"
         

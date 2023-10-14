@@ -22,3 +22,17 @@ struct Mail: Codable {
         let isReading: Bool
     }
 }
+
+enum MailType: String, Codable {
+    case send
+    case receive
+    
+    var typeString: String {
+        switch self {
+        case .receive:
+            return "받은 쪽지"
+        case .send:
+            return "보낸 쪽지"
+        }
+    }
+}

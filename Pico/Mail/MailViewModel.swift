@@ -7,54 +7,80 @@
 
 import UIKit
 import RxSwift
-import RxCocoa
 import RxRelay
 import FirebaseFirestore
-import FirebaseFirestoreSwift
-
-enum MailType: String, Codable {
-    case send
-    case receive
-    
-    var typeString: String {
-        switch self {
-        case .receive:
-            return "받은 쪽지"
-        case .send:
-            return "보낸 쪽지"
-        }
-    }
-}
 
 final class MailViewModel {
-    
-    var mailSendList = BehaviorRelay<[Mail.MailInfo]>(value: [])
-    var mailRecieveList = BehaviorRelay<[Mail.MailInfo]>(value: [])
-    
+    var mailSendList: [Mail.MailInfo] = []
+    var mailSendListRx = BehaviorRelay<[Mail.MailInfo]>(value: [])
     var isMailSendEmpty: Observable<Bool> {
-        return mailSendList
+        return mailSendListRx
             .map { $0.isEmpty }
     }
     
+    var mailRecieveList: [Mail.MailInfo] = []
+    var mailRecieveListRx = BehaviorRelay<[Mail.MailInfo]>(value: [])
     var isMailReceiveEmpty: Observable<Bool> {
-        return mailSendList
+        return mailRecieveListRx
             .map { $0.isEmpty }
     }
-    
     private let dbRef = Firestore.firestore()
-    private let disposeBag = DisposeBag()
+    
+    private let pageSize = 6
+    var startIndex = 0
     
     var user: User?
     
     init() {
-        loadMail()
+        loadNextMailPage()
+    }
+    
+    func loadNextMailPage() {
+        let ref = dbRef.collection(Collections.mail.name).document(UserDefaultsManager.shared.getUserData().userId)
+        let endIndex = startIndex + pageSize
+        
+        ref.getDocument { [weak self] document, error in
+            guard let self = self else { return }
+            if let error = error {
+                print(error)
+                return
+            }
+            
+            if let document = document, document.exists {
+                if let datas = try? document.data(as: Mail.self).sendMailInfo?.filter({ $0.mailType == .send }) {
+                    
+                    if startIndex > datas.count - 1 { return }
+                    
+                    let currentPageDatas: [Mail.MailInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
+                    mailSendList.append(contentsOf: currentPageDatas)
+                    startIndex += currentPageDatas.count
+                    mailSendListRx.accept(mailSendList)
+                } else if let datas = try? document.data(as: Mail.self).receiveMailInfo?.filter({ $0.mailType == .receive }) {
+                    
+                    if startIndex > datas.count - 1 { return }
+                    
+                    let currentPageDatas: [Mail.MailInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
+                    mailRecieveList.append(contentsOf: currentPageDatas)
+                    startIndex += currentPageDatas.count
+                    mailRecieveListRx.accept(mailRecieveList)
+                } else {
+                    print("문서를 찾을 수 없습니다.")
+                }
+            }
+        }
+    }
+    
+    func refresh() {
+        mailSendList = []
+        mailRecieveList = []
+        loadNextMailPage()
     }
     
     func saveMailData(receiveUserId: String, message: String) {
         let senderUserId: String = UserDefaultsManager.shared.getUserData().userId
         
         let sendMessages: [String: Any] = [
-            "messageId": UUID().uuidString,
+            "id": UUID().uuidString,
             "sendedUserId": senderUserId,
             "receivedUserId": receiveUserId,
             "message": message,
@@ -64,7 +90,7 @@ final class MailViewModel {
         ]
         
         let receiveMessages: [String: Any] = [
-            "messageId": UUID().uuidString,
+            "id": UUID().uuidString,
             "sendedUserId": senderUserId,
             "receivedUserId": receiveUserId,
             "message": message,
@@ -100,56 +126,29 @@ final class MailViewModel {
             }
     }
     
-    func loadMail() {
-        
-        FirestoreService.shared.loadDocumentRx(collectionId: .mail,
-                                               documentId: UserDefaultsManager.shared.getUserData().userId,
-                                               dataType: Mail.self)
-            .map { mail -> [Mail.MailInfo] in
-                if let mail = mail {
-                    return mail.sendMailInfo ?? []
-                }
-                return []
-            }
-            .map({ mailInfos in
-                print("mailInfos: \(mailInfos.filter { $0.mailType == .send })")
-                return mailInfos.filter { $0.mailType == .send }
-            })
-            .bind(to: mailSendList)
-            .disposed(by: disposeBag)
-        
-        FirestoreService.shared.loadDocumentRx(collectionId: .mail,
-                                               documentId: UserDefaultsManager.shared.getUserData().userId,
-                                               dataType: Mail.self)
-            .map { mail -> [Mail.MailInfo] in
-                if let mail = mail {
-                    return mail.receiveMailInfo ?? []
-                }
-                return []
-            }
-            .map({ mailInfos in
-                print("mailInfos: \(mailInfos.filter { $0.mailType == .receive })")
-                return mailInfos.filter { $0.mailType == .receive }
-            })
-            .bind(to: mailRecieveList)
-            .disposed(by: disposeBag)
-        
-        print("sendlist: \(mailSendList.value)")
-        print("receivelist:\(mailRecieveList.value)")
-    }
-    
     func getUser(userId: String, completion: @escaping () -> ()) {
         DispatchQueue.global().async {
             self.dbRef.collection(Collections.users.name).document(userId)
                 .getDocument(as: User.self) { result in
-                switch result {
-                case .success(let user):
-                    self.user = user
-                    completion()
-                case .failure(let error):
-                    print("Error decoding room: \(error)")
+                    switch result {
+                    case .success(let user):
+                        self.user = user
+                        completion()
+                    case .failure(let error):
+                        print("Error decoding room: \(error)")
+                    }
                 }
-            }
+        }
+    }
+    
+    func toType (text: String) -> MailType {
+        switch text {
+        case "받은 쪽지":
+            return .receive
+        case "보낸 쪽지":
+            return .send
+        default:
+            return .receive
         }
     }
 }
