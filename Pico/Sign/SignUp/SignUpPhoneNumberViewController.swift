@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
-    private let authManager: AuthManager = AuthManager()
+    private let authManager = SmsAuthManager()
     var viewModel: SignUpViewModel = .shared
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
