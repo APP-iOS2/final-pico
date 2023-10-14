@@ -77,6 +77,7 @@ final class MailListTableViewCell: UITableViewCell {
         return label
     }()
     
+    // MARK: - MailCell +LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
@@ -87,44 +88,44 @@ final class MailListTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    // MARK: - MailCell +UI
     func getData(senderUser: Mail.MailInfo, type: MailType) {
         self.mailInfo = senderUser
         
-        viewModel.getUser(userId: senderUser.sendedUserId) {
-            guard (self.viewModel.user != nil) else { return }
-            guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }
-            self.userImage.kf.setImage(with: url)
-            self.nameLabel.text = self.viewModel.user?.nickName
-            self.nameLabel.sizeToFit()
-            self.mbtiLabelView.setMbti(mbti: self.viewModel.user?.mbti ?? .infj)
-            self.message.text = senderUser.message
-            self.dateLabel.text = senderUser.sendedDate
-            
-            if type == .receive {
-                if !senderUser.isReading {
-                    self.newLabel.text = "new"
+        if senderUser.mailType == .receive {
+            viewModel.getUser(userId: senderUser.sendedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
                 }
+            }
+        } else {
+            viewModel.getUser(userId: senderUser.receivedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
+                }
+            }
+        }
+        self.message.text = senderUser.message
+        
+        let date = senderUser.sendedDate
+        let startIndex = date.index(date.startIndex, offsetBy: 5)
+        let range = startIndex...
+        self.dateLabel.text = "\(date[range])"
+        
+        if type == .receive {
+            if !senderUser.isReading {
+                self.newLabel.text = "new"
             }
         }
     }
     
     private func addViews() {
-        [nameLabel, mbtiLabelView].forEach {
-            nameStackView.addArrangedSubview($0)
-        }
+        nameStackView.addArrangedSubview([nameLabel, mbtiLabelView])
+        infoStackView.addArrangedSubview([nameStackView, message])
+        dateStackView.addArrangedSubview([dateLabel, newLabel])
         
-        [nameStackView, message].forEach {
-            infoStackView.addArrangedSubview($0)
-        }
-        
-        [dateLabel, newLabel].forEach {
-            dateStackView.addArrangedSubview($0)
-        }
-        
-        [userImage, infoStackView, dateStackView].forEach {
-            contentView.addSubview($0)
-        }
+        contentView.addSubview([userImage, infoStackView, dateStackView])
     }
     
     private func makeConstraints() {
@@ -158,5 +159,14 @@ final class MailListTableViewCell: UITableViewCell {
             make.trailing.equalTo(contentView.snp.trailing).offset(-10)
             make.width.equalTo(50)
         }
+    }
+    
+    // MARK: - MailCell +config
+    private func configViews (user: User) {
+        guard let url = URL(string: user.imageURLs[0]) else { return }
+        userImage.kf.setImage(with: url)
+        nameLabel.text = user.nickName
+        nameLabel.sizeToFit()
+        mbtiLabelView.setMbti(mbti: user.mbti)
     }
 }

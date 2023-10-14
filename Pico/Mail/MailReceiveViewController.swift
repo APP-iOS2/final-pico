@@ -33,7 +33,7 @@ final class MailReceiveViewController: UIViewController {
         let barButtonItem = UIBarButtonItem()
         barButtonItem.image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
         barButtonItem.tintColor = .picoBlue
-        barButtonItem.action = #selector(tappedBackzButton)
+        barButtonItem.action = #selector(tappedBackButton)
         return barButtonItem
     }()
     
@@ -64,6 +64,7 @@ final class MailReceiveViewController: UIViewController {
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.spacing = 10
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
         return stackView
     }()
     
@@ -104,6 +105,7 @@ final class MailReceiveViewController: UIViewController {
         return textView
     }()
     
+    // MARK: - MailReceive +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.configBackgroundColor()
@@ -119,39 +121,35 @@ final class MailReceiveViewController: UIViewController {
         senderImageView.setCircleImageView()
     }
     
+    // MARK: - MailReceive +UI
     func getReceiver(mailSender: Mail.MailInfo) {
-        
         sendMailInfo = mailSender
-        
         navItem.title = mailSender.mailType.typeString
-        viewModel.getUser(userId: mailSender.sendedUserId) {
-            guard (self.viewModel.user != nil) else { return }
-            guard let url = URL(string: self.viewModel.user?.imageURLs[0] ?? "") else { return }
-            self.senderImageView.kf.setImage(with: url)
-            self.senderNameLabel.text = self.viewModel.user?.nickName
-            self.sendDateLabel.text = mailSender.sendedDate
-            self.messageView.text = mailSender.message
+        
+        if mailSender.mailType == .receive {
+            viewModel.getUser(userId: mailSender.sendedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
+                }
+            }
+        } else {
+            viewModel.getUser(userId: mailSender.receivedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
+                }
+            }
         }
+        self.sendDateLabel.text = mailSender.sendedDate
+        self.messageView.text = mailSender.message
     }
-    
+
     private func addViews() {
-        [senderNameLabel, sendDateLabel].forEach { views in
-            infoStack.addArrangedSubview(views)
-        }
-        
-        [senderImageView, infoStack].forEach { views in
-            senderStack.addArrangedSubview(views)
-        }
-        
-        [messageView].forEach { views in
-            contentView.addArrangedSubview(views)
-        }
+        infoStack.addArrangedSubview( [senderNameLabel, sendDateLabel])
+        senderStack.addArrangedSubview([senderImageView, infoStack])
+        contentView.addArrangedSubview(messageView)
         
         view.addSubview(navigationBar)
-        
-        [senderStack, contentView].forEach { views in
-            view.addSubview(views)
-        }
+        view.addSubview([senderStack, contentView])
     }
     
     private func makeConstraints() {
@@ -179,18 +177,6 @@ final class MailReceiveViewController: UIViewController {
         }
     }
     
-    private func configNavigationBarItem() {
-        navItem.leftBarButtonItem = leftBarButton
-        navItem.rightBarButtonItem = rightBarButton
-        navigationBar.shadowImage = UIImage()
-        navigationBar.setItems([navItem], animated: true)
-    }
-    
-    private func configSenderStack() {
-        let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
-        senderStack.addGestureRecognizer(stackTap)
-    }
-    
     private func tappedNavigationButton() {
         rightBarButton.rx.tap
             .bind { [weak self] in
@@ -205,12 +191,34 @@ final class MailReceiveViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    @objc func tappedBackzButton() {
+    // MARK: - MailReceive + config
+    private func configViews(user: User) {
+        guard let url = URL(string: user.imageURLs[0]) else { return }
+        senderImageView.kf.setImage(with: url)
+        senderNameLabel.text = user.nickName
+    }
+    
+    private func configNavigationBarItem() {
+        navItem.leftBarButtonItem = leftBarButton
+        navItem.rightBarButtonItem = rightBarButton
+        navigationBar.shadowImage = UIImage()
+        navigationBar.setItems([navItem], animated: true)
+    }
+    
+    private func configSenderStack() {
+        let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
+        senderStack.addGestureRecognizer(stackTap)
+    }
+    
+    // MARK: - MailReceive +objc
+    @objc func tappedBackButton() {
         dismiss(animated: true)
     }
     
     @objc func tappedSenderStack() {
+        dismiss(animated: true)
         let viewController = UserDetailViewController()
         self.navigationController?.pushViewController(viewController, animated: true)
+        print("tap senderStack")
     }
 }
