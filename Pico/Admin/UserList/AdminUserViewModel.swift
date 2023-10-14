@@ -11,27 +11,27 @@ import RxCocoa
 
 // 질문: enum 을 여기에서만 쓰는데 어디에다 관리하는 게 좋을까용~?
 enum SortType: CaseIterable {
-    case dateAscending
     case dateDescending
-    case nameAscending
+    case dateAscending
     case nameDescending
-    case ageAscending
+    case nameAscending
     case ageDescending
+    case ageAscending
     
     var name: String {
         switch self {
-        case .dateAscending:
-            return "가입일 오름차순"
         case .dateDescending:
             return "가입일 내림차순"
-        case .nameAscending:
-            return "이름 오름차순"
+        case .dateAscending:
+            return "가입일 오름차순"
         case .nameDescending:
             return "이름 내림차순"
-        case .ageAscending:
-            return "나이 오름차순"
+        case .nameAscending:
+            return "이름 오름차순"
         case .ageDescending:
             return "나이 내림차순"
+        case .ageAscending:
+            return "나이 오름차순"
         }
     }
 }
@@ -50,68 +50,69 @@ enum FilterType: CaseIterable {
     }
 }
 
-final class AdminUserViewModel {
-    private let disposeBag = DisposeBag()
-    let userList = BehaviorRelay<[User]>(value: [])
+final class AdminUserViewModel: ViewModelType {
     
-    var selectedSortType: BehaviorRelay<SortType> = BehaviorRelay(value: .dateAscending)
-    var selectedFilteredType: BehaviorSubject<FilterType> = BehaviorSubject(value: .name)
-    
-    var sortedUsers: Observable<[User]> {
-        return Observable.combineLatest(selectedSortType, userList)
-            .map { sortType, users in
-                switch sortType {
-                case .dateAscending:
-                    return users.sorted { $0.createdDate < $1.createdDate }
-                case .dateDescending:
-                    return users.sorted { $0.createdDate > $1.createdDate }
-                case .nameAscending:
-                    return users.sorted { $0.nickName < $1.nickName }
-                case .nameDescending:
-                    return users.sorted { $0.nickName > $1.nickName }
-                case .ageAscending:
-                    return users.sorted { $0.age < $1.age }
-                case .ageDescending:
-                    return users.sorted { $0.age > $1.age }
-                }
-            }
+    private(set) var userList: [User] = []
+    private(set) var sortedList: [User] = []
+    private(set) var filteredList: [User] = [] {
+        didSet {
+            reloadPublisher.onNext(())
+        }
+    }
+    private let reloadPublisher = PublishSubject<Void>()
+
+    struct Input {
+        let viewDidLoad: Observable<Void>
+        let sortedTpye: Observable<SortType>
+        let filteredType: Observable<FilterType>
+        let resultTextField: Observable<String>
     }
     
-    var filteredUsers: Observable<[User]> {
-        return Observable.combineLatest(selectedFilteredType, sortedUsers)
-            .map { filterType, users in
-                switch filterType {
-                case .name:
-                    Loading.hideLoading()
-                    return users.filter { sortedUser in
-                        !sortedUser.nickName.contains("") || sortedUser.phoneNumber.contains("8888")
+    struct Output {
+        let resultToViewDidLoad: Observable<[User]>
+        let needToReload: Observable<Void>
+    }
+    
+    func transform(input: Input) -> Output {
+        let responseViewDidLoad = Observable.combineLatest(input.sortedTpye, input.viewDidLoad)
+            .flatMapLatest { sortedType, _ in
+                return FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
+                    .withUnretained(self)
+                    .map { viewModel, userList in
+                        viewModel.userList = userList
+                        viewModel.sortedList = viewModel.sortUserList(userList, by: sortedType)
+                        return viewModel.sortedList
                     }
-                case .mbti:
-                    return users
-                }
             }
+
+        return Output(
+            resultToViewDidLoad: responseViewDidLoad,
+            needToReload: reloadPublisher.asObservable()
+        )
     }
     
-    init() {
-        FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
-            .subscribe { [weak self] event in
-                switch event {
-                case .next(let users):
-                    self?.userList.accept(users)
-                case .error(let error):
-                    print(error)
-                default:
-                    break
-                }
-            }
-            .disposed(by: disposeBag)
+    private func sortUserList(_ userList: [User], by sortType: SortType) -> [User] {
+        switch sortType {
+        case .dateDescending:
+            return userList.sorted { $0.createdDate > $1.createdDate }
+        case .dateAscending:
+            return userList.sorted { $0.createdDate < $1.createdDate }
+        case .nameDescending:
+            return userList.sorted { $0.nickName > $1.nickName }
+        case .nameAscending:
+            return userList.sorted { $0.nickName < $1.nickName }
+        case .ageDescending:
+            return userList.sorted { $0.age > $1.age }
+        case .ageAscending:
+            return userList.sorted { $0.age < $1.age }
+        }
     }
     
-    func updateSelectedSortType(to sortType: SortType) {
-        selectedSortType.accept(sortType)
-    }
-    
-    func updateSelectedFilterType(to filterType: FilterType) {
-        selectedFilteredType.onNext(filterType)
+    private func filterUserList(_ userList: [User], _ text: String, by filterType: FilterType) -> [User] {
+        print("adf \(text)")
+        let users = userList.filter { sortedUser in
+            sortedUser.nickName.contains(text) || sortedUser.phoneNumber.contains("8888")
+        }
+        return users
     }
 }

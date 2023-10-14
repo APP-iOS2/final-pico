@@ -27,7 +27,7 @@ final class AdminUserViewController: UIViewController {
             
             return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
                 guard let self = self else { return }
-                viewModel.updateSelectedSortType(to: sortType)
+                sortedTpyeBehavior.onNext(sortType)
             })
         }
     }()
@@ -48,7 +48,7 @@ final class AdminUserViewController: UIViewController {
             return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
                 guard let self = self else { return }
                 filteredButton.setTitle(title, for: .normal)
-                viewModel.updateSelectedFilterType(to: filterType)
+                filteredTypeBehavior.onNext(filterType)
             })
         }
     }()
@@ -59,6 +59,11 @@ final class AdminUserViewController: UIViewController {
     // 질문: 이니셜라이저에서 받는건데 ! 써도 되는 지 ? (깃허브에는 !로 되어있어서요)
     private var viewModel: AdminUserViewModel!
     private let disposeBag: DisposeBag = DisposeBag()
+    
+    private let viewDidLoadPublisher = PublishSubject<Void>()
+    private let sortedTpyeBehavior = BehaviorSubject(value: SortType.dateDescending)
+    private let filteredTypeBehavior = BehaviorSubject(value: FilterType.name)
+    private let resultTextFieldPublisher = PublishSubject<String>()
     
     init(viewModel: AdminUserViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -77,6 +82,8 @@ final class AdminUserViewController: UIViewController {
         makeConstraints()
         configTableView()
         configTableViewDatasource()
+        bind()
+        viewDidLoadPublisher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -89,24 +96,46 @@ final class AdminUserViewController: UIViewController {
         userListTableView.register(cell: NotificationTableViewCell.self)
         userListTableView.rowHeight = 80
     }
+    
+    private func bind() {
+        let input = AdminUserViewModel.Input(
+            viewDidLoad: viewDidLoadPublisher.asObservable(),
+            sortedTpye: sortedTpyeBehavior.asObservable(),
+            filteredType: filteredTypeBehavior.asObservable(),
+            resultTextField: resultTextFieldPublisher.asObserver()
+        )
+        let output = viewModel.transform(input: input)
+
+        output.resultToViewDidLoad
+            .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
+                guard let imageURL = item.imageURLs[safe: 0] else { return }
+                cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
+            }
+            .disposed(by: disposeBag)
+
+        textField.textInputPublisher.asObservable()
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, text in
+                viewController.resultTextFieldPublisher.onNext(text)
+            })
+            .disposed(by: disposeBag)
+        
+        output.needToReload
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, _ in
+                viewController.userListTableView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
 }
 
 // MARK: - 테이블뷰관련
 extension AdminUserViewController {
     
     private func configTableViewDatasource() {
-        // 로딩뷰 이거 안먹음 살려주셈살려주셈
-        Loading.showLoading()
-        viewModel.filteredUsers
-            .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
-                guard let imageURL = item.imageURLs[safe: 0] else { return }
-                cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
-            }
-            .disposed(by: disposeBag)
-        
         userListTableView.rx.modelSelected(User.self)
             .subscribe { [weak self] user in
-                let viewController = AdminUserDetailViewController(user: user)
+                let viewController = AdminUserDetailViewController(viewModel: AdminUserDetailViewModel(selectedUser: user))
                 self?.navigationController?.pushViewController(viewController, animated: true)
             }
             .disposed(by: disposeBag)

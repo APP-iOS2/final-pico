@@ -10,9 +10,9 @@ import SnapKit
 
 final class DetailUserInfoTableViewCell: UITableViewCell {
     
-    private lazy var mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .enfj, scale: .large)
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .enfj, scale: .large)
     
-    private lazy var nameAgeLabel: UILabel = {
+    private let nameAgeLabel: UILabel = {
         let label = UILabel()
         label.font = .picoTitleFont
         return label
@@ -77,9 +77,9 @@ final class DetailUserInfoTableViewCell: UITableViewCell {
     }
     
     func config(user: User) {
-        mbtiLabelView = MBTILabelView(mbti: user.mbti, scale: .large)
+        mbtiLabelView.setMbti(mbti: user.mbti)
         nameAgeLabel.text = "\(user.nickName), \(user.age)"
-        locationLabel.text = "init(coder:) has not been implementedinit(coder:) has not been implementedinit(coder:) has not been implementedinit(coder:) has not been implementedinit(coder:) has not been implementedinit(coder:) has not been implementedinit(coder:) has not been implemented"
+        locationLabel.text = user.location.address
         
         if let height = user.subInfo?.height {
             heightImageView.isHidden = false
@@ -103,7 +103,7 @@ final class DetailUserInfoTableViewCell: UITableViewCell {
     }
     
     @objc private func tappedMoreButton(_ sender: UIButton) {
-        print("zz")
+        print("더보기")
     }
     
     private func addViews() {
