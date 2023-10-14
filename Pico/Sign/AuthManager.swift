@@ -7,13 +7,13 @@
 import Foundation
 import CryptoKit
 
-final class AuthManager {
+class AuthManager {
     // 네이버 클라우드 API에 접근하기 위한 키 및 서비스 ID와 발신자, 수신자 전화번호 설정
-    let accessKey = "YOUR_NAVER_CLOUD_ACCESS_KEY" // 네이버 클라우드 Access Key
-    let secretKey = "YOUR_NAVER_CLOUD_SECRET_KEY" // 네이버 클라우드 Secret Key
-    let serviceId = "YOUR_NAVER_CLOUD_SERVICE_ID" // 네이버 클라우드 서비스 ID
-    let senderPhoneNumber = "YOUR_SENDER_PHONE_NUMBER" // 발신자 전화번호
-    let receiverPhoneNumber = "RECEIVER_PHONE_NUMBER" // 수신자 전화번호 (SMS를 받을 사용자의 번호)
+    let accessKey = "It6dUNEFLjbAFQsJ3ZTU" // 네이버 클라우드 Access Key
+    let secretKey = "SEDWWDp225KhSCzC6c0C6D4fF20VqPsCQLKQxxU6" // 네이버 클라우드 Secret Key
+    let serviceId = "ncp:sms:kr:312998324468:pico" // 네이버 클라우드 서비스 ID
+    let senderPhoneNumber = "01095570253" // 발신자 전화번호
+    let receiverPhoneNumber = "01094863904" // 수신자 전화번호 (SMS를 받을 사용자의 번호)
     
     // SMS 인증 메시지 전송 함수
     func sendVerificationCode() {
@@ -26,7 +26,7 @@ final class AuthManager {
         
         // SMS 메시지 내용 설정
         let message = """
-        인증번호 입니다: \(randomCode)
+        인증번호 테스트 입니다: \(randomCode)
         """
         
         // API 요청 바디를 JSON 형태로 구성
