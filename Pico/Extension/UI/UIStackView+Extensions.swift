@@ -8,7 +8,6 @@
 import UIKit
 
 extension UIStackView {
-    
     /// [UIView] 배열을 stackView에 추가하기
     func addArrangedSubview(_ views: [UIView]) {
        views.forEach { item in
