@@ -32,28 +32,22 @@ final class AdminUserViewController: UIViewController {
         }
     }()
     
-    private lazy var filteredButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("이름", for: .normal)
-        button.setTitleColor(.picoFontBlack, for: .normal)
-        button.menu = UIMenu(title: "정렬", options: [.singleSelection], children: filteredMenuItems)
-        button.showsMenuAsPrimaryAction = true
+    private let textField: CommonTextField = {
+        let textField = CommonTextField()
+        textField.textField.placeholder = "이름을 검색하세요."
+        return textField
+    }()
+    
+    private let searchButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("검색", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .picoButtonFont
+        button.backgroundColor = .picoBlue
+        button.layer.cornerRadius = 10
         return button
     }()
     
-    private lazy var filteredMenuItems: [UIAction] = {
-        return FilterType.allCases.map { filterType in
-            let title = filterType.name
-            
-            return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
-                guard let self = self else { return }
-                filteredButton.setTitle(title, for: .normal)
-                filteredTypeBehavior.onNext(filterType)
-            })
-        }
-    }()
-    
-    private let textField = CommonTextField()
     private let userListTableView = UITableView()
     
     // 질문: 이니셜라이저에서 받는건데 ! 써도 되는 지 ? (깃허브에는 !로 되어있어서요)
@@ -62,7 +56,6 @@ final class AdminUserViewController: UIViewController {
     
     private let viewDidLoadPublisher = PublishSubject<Void>()
     private let sortedTpyeBehavior = BehaviorSubject(value: SortType.dateDescending)
-    private let filteredTypeBehavior = BehaviorSubject(value: FilterType.name)
     private let resultTextFieldPublisher = PublishSubject<String>()
     
     init(viewModel: AdminUserViewModel) {
@@ -101,7 +94,6 @@ final class AdminUserViewController: UIViewController {
         let input = AdminUserViewModel.Input(
             viewDidLoad: viewDidLoadPublisher.asObservable(),
             sortedTpye: sortedTpyeBehavior.asObservable(),
-            filteredType: filteredTypeBehavior.asObservable(),
             resultTextField: resultTextFieldPublisher.asObserver()
         )
         let output = viewModel.transform(input: input)
@@ -146,32 +138,32 @@ extension AdminUserViewController {
 extension AdminUserViewController {
     
     private func addViews() {
-        let views = [filteredButton, textField, sortedMenu, userListTableView]
+        let views = [textField, searchButton, sortedMenu, userListTableView]
         view.addSubview(views)
     }
     
     private func makeConstraints() {
         let padding: CGFloat = 10
         
-        filteredButton.snp.makeConstraints { make in
+        textField.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(padding)
             make.leading.equalTo(padding)
-            make.width.equalTo(80)
             make.height.equalTo(40)
         }
         
-        textField.snp.makeConstraints { make in
-            make.top.equalTo(filteredButton)
-            make.leading.equalTo(filteredButton.snp.trailing).offset(padding)
-            make.trailing.equalTo(sortedMenu.snp.leading).offset(-padding)
-            make.height.equalTo(filteredButton.snp.height)
+        searchButton.snp.makeConstraints { make in
+            make.top.equalTo(textField)
+            make.leading.equalTo(textField.snp.trailing).offset(padding)
+            make.width.equalTo(60)
+            make.height.equalTo(textField.snp.height)
         }
         
         sortedMenu.snp.makeConstraints { make in
-            make.top.equalTo(filteredButton)
+            make.top.equalTo(textField)
+            make.leading.equalTo(searchButton.snp.trailing).offset(padding)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-padding)
-            make.width.equalTo(filteredButton.snp.height)
-            make.height.equalTo(filteredButton.snp.height)
+            make.width.equalTo(textField.snp.height)
+            make.height.equalTo(textField.snp.height)
         }
         
         userListTableView.snp.makeConstraints { make in

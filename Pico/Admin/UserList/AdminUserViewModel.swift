@@ -36,20 +36,6 @@ enum SortType: CaseIterable {
     }
 }
 
-enum FilterType: CaseIterable {
-    case name
-    case mbti
-    
-    var name: String {
-        switch self {
-        case .name:
-            return "이름"
-        case .mbti:
-            return "MBTI"
-        }
-    }
-}
-
 final class AdminUserViewModel: ViewModelType {
     
     private(set) var userList: [User] = []
@@ -64,7 +50,6 @@ final class AdminUserViewModel: ViewModelType {
     struct Input {
         let viewDidLoad: Observable<Void>
         let sortedTpye: Observable<SortType>
-        let filteredType: Observable<FilterType>
         let resultTextField: Observable<String>
     }
     
@@ -108,7 +93,7 @@ final class AdminUserViewModel: ViewModelType {
         }
     }
     
-    private func filterUserList(_ userList: [User], _ text: String, by filterType: FilterType) -> [User] {
+    private func filterUserList(_ userList: [User], _ text: String) -> [User] {
         print("adf \(text)")
         let users = userList.filter { sortedUser in
             sortedUser.nickName.contains(text) || sortedUser.phoneNumber.contains("8888")

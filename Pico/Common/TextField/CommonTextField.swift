@@ -25,7 +25,7 @@ import RxSwift
 
 final class CommonTextField: UIView {
     
-    private let textField: UITextField = {
+    let textField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "입력해주세여"
         return textField
