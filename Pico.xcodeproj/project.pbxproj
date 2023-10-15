@@ -402,14 +402,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		363CC4822ACF9CB300C86EDC /* LocationManager */ = {
-			isa = PBXGroup;
-			children = (
-				363CC4832ACF9CC500C86EDC /* LocationManager.swift */,
-			);
-			path = LocationManager;
-			sourceTree = "<group>";
-		};
 		369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */ = {
 			isa = PBXGroup;
 			children = (
@@ -424,6 +416,15 @@
 				36CD4CFB2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift */,
 			);
 			path = SignUpCell;
+			sourceTree = "<group>";
+		};
+		36CD4CFE2ADBB5BC00FC317B /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				369B25512ADB1FB4005C452D /* SmsAuthManager.swift */,
+				363CC4832ACF9CC500C86EDC /* LocationManager.swift */,
+			);
+			path = Manager;
 			sourceTree = "<group>";
 		};
 		4B2665322AC3E2E70074D4E2 /* RandomBox */ = {
@@ -763,9 +764,9 @@
 		B14B58FA2AC0A290009889DA /* Sign */ = {
 			isa = PBXGroup;
 			children = (
-				B146A3C42AD45670003143DD /* Constant */,
 				36F2BA002AC1682E00EF877A /* SignViewController.swift */,
-				369B25512ADB1FB4005C452D /* SmsAuthManager.swift */,
+				B146A3C42AD45670003143DD /* Constant */,
+				36CD4CFE2ADBB5BC00FC317B /* Manager */,
 				B14B58FC2AC0A2BB009889DA /* SignIn */,
 				B14B58FB2AC0A2B5009889DA /* SignUp */,
 			);
@@ -785,7 +786,6 @@
 				36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */,
 				B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */,
 				36CD4CFD2ADBB4C300FC317B /* SignUpCell */,
-				363CC4822ACF9CB300C86EDC /* LocationManager */,
 				369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */,
 			);
 			path = SignUp;
