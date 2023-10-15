@@ -32,7 +32,7 @@ final class AdminUserViewController: UIViewController {
         }
     }()
     
-    private let textField: CommonTextField = {
+    private let textFieldView: CommonTextField = {
         let textField = CommonTextField()
         textField.textField.placeholder = "이름을 검색하세요."
         return textField
@@ -56,7 +56,7 @@ final class AdminUserViewController: UIViewController {
     
     private let viewDidLoadPublisher = PublishSubject<Void>()
     private let sortedTpyeBehavior = BehaviorSubject(value: SortType.dateDescending)
-    private let resultTextFieldPublisher = PublishSubject<String>()
+    private let searchButtonPublisher = PublishSubject<String>()
     
     init(viewModel: AdminUserViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -73,6 +73,7 @@ final class AdminUserViewController: UIViewController {
         super.viewDidLoad()
         addViews()
         makeConstraints()
+        configButtons()
         configTableView()
         configTableViewDatasource()
         bind()
@@ -84,7 +85,16 @@ final class AdminUserViewController: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
     
-    // MARK: - config
+    private func configButtons() {
+        searchButton.rx.tap
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, _ in
+                let text = viewController.textFieldView.textField.text
+                viewController.searchButtonPublisher.onNext(text ?? "")
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func configTableView() {
         userListTableView.register(cell: NotificationTableViewCell.self)
         userListTableView.rowHeight = 80
@@ -94,22 +104,17 @@ final class AdminUserViewController: UIViewController {
         let input = AdminUserViewModel.Input(
             viewDidLoad: viewDidLoadPublisher.asObservable(),
             sortedTpye: sortedTpyeBehavior.asObservable(),
-            resultTextField: resultTextFieldPublisher.asObserver()
+            searchButton: searchButtonPublisher.asObservable()
         )
         let output = viewModel.transform(input: input)
 
-        output.resultToViewDidLoad
+        let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList)
+        
+        combinedData
             .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
                 guard let imageURL = item.imageURLs[safe: 0] else { return }
                 cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
             }
-            .disposed(by: disposeBag)
-
-        textField.textInputPublisher.asObservable()
-            .withUnretained(self)
-            .subscribe(onNext: { viewController, text in
-                viewController.resultTextFieldPublisher.onNext(text)
-            })
             .disposed(by: disposeBag)
         
         output.needToReload
@@ -138,36 +143,36 @@ extension AdminUserViewController {
 extension AdminUserViewController {
     
     private func addViews() {
-        let views = [textField, searchButton, sortedMenu, userListTableView]
+        let views = [textFieldView, searchButton, sortedMenu, userListTableView]
         view.addSubview(views)
     }
     
     private func makeConstraints() {
         let padding: CGFloat = 10
         
-        textField.snp.makeConstraints { make in
+        textFieldView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(padding)
             make.leading.equalTo(padding)
             make.height.equalTo(40)
         }
         
         searchButton.snp.makeConstraints { make in
-            make.top.equalTo(textField)
-            make.leading.equalTo(textField.snp.trailing).offset(padding)
+            make.centerY.equalTo(textFieldView)
+            make.leading.equalTo(textFieldView.snp.trailing).offset(padding)
             make.width.equalTo(60)
-            make.height.equalTo(textField.snp.height)
+            make.height.equalTo(35)
         }
         
         sortedMenu.snp.makeConstraints { make in
-            make.top.equalTo(textField)
+            make.centerY.equalTo(textFieldView)
             make.leading.equalTo(searchButton.snp.trailing).offset(padding)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-padding)
-            make.width.equalTo(textField.snp.height)
-            make.height.equalTo(textField.snp.height)
+            make.width.equalTo(textFieldView.snp.height)
+            make.height.equalTo(textFieldView.snp.height)
         }
         
         userListTableView.snp.makeConstraints { make in
-            make.top.equalTo(textField.snp.bottom).offset(padding)
+            make.top.equalTo(textFieldView.snp.bottom).offset(padding)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }

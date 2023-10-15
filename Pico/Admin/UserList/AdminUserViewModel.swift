@@ -50,11 +50,12 @@ final class AdminUserViewModel: ViewModelType {
     struct Input {
         let viewDidLoad: Observable<Void>
         let sortedTpye: Observable<SortType>
-        let resultTextField: Observable<String>
+        let searchButton: Observable<String>
     }
     
     struct Output {
         let resultToViewDidLoad: Observable<[User]>
+        let resultSearchUserList: Observable<[User]>
         let needToReload: Observable<Void>
     }
     
@@ -69,9 +70,16 @@ final class AdminUserViewModel: ViewModelType {
                         return viewModel.sortedList
                     }
             }
-
+        
+        let responseSearchButton = input.searchButton
+            .withUnretained(self)
+            .flatMapLatest { viewModel, textFieldText in
+                return Observable.just(viewModel.filterUserList(viewModel.sortedList, textFieldText))
+            }
+        
         return Output(
             resultToViewDidLoad: responseViewDidLoad,
+            resultSearchUserList: responseSearchButton,
             needToReload: reloadPublisher.asObservable()
         )
     }
@@ -94,10 +102,13 @@ final class AdminUserViewModel: ViewModelType {
     }
     
     private func filterUserList(_ userList: [User], _ text: String) -> [User] {
-        print("adf \(text)")
-        let users = userList.filter { sortedUser in
-            sortedUser.nickName.contains(text) || sortedUser.phoneNumber.contains("8888")
+        if text.isEmpty {
+            return sortedList
+        } else {
+            let users = userList.filter { sortedUser in
+                sortedUser.nickName.contains(text)
+            }
+            return users
         }
-        return users
     }
 }
