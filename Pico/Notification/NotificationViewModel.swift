@@ -55,26 +55,28 @@ final class NotificationViewModel: ViewModelType {
             query = query.start(afterDocument: lastSnapshot)
         }
         
-        query.getDocuments { [weak self] snapshot, error in
-            guard let self = self else { return }
-            if let error = error {
-                print(error)
-                return
-            }
-            guard let documents = snapshot?.documents else { return }
-            
-            if documents.isEmpty {
-                return
-            }
-            
-            lastDocumentSnapshot = documents.last
-            
-            for document in documents {
-                if let data = try? document.data(as: Noti.self) {
-                    notifications.append(data)
+        DispatchQueue.global().async {
+            query.getDocuments { [weak self] snapshot, error in
+                guard let self = self else { return }
+                if let error = error {
+                    print(error)
+                    return
                 }
+                guard let documents = snapshot?.documents else { return }
+                
+                if documents.isEmpty {
+                    return
+                }
+                
+                lastDocumentSnapshot = documents.last
+                
+                for document in documents {
+                    if let data = try? document.data(as: Noti.self) {
+                        notifications.append(data)
+                    }
+                }
+                reloadTableViewPublisher.onNext(())
             }
-            reloadTableViewPublisher.onNext(())
         }
     }
     

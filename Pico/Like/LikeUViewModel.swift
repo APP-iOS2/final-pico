@@ -15,12 +15,12 @@ final class LikeUViewModel: ViewModelType {
     }
     struct Input {
         let listLoad: Observable<Void>
-        let refresh: Observable<Bool>
+        let refresh: Observable<Void>
     }
     
     struct Output {
-        let resultToLikeUList: Observable<[Like.LikeInfo]>
         let likeUIsEmpty: Observable<Bool>
+        let reloadCollectionView: Observable<Void>
     }
     
     private(set) var likeUList: [Like.LikeInfo] = [] {
@@ -32,9 +32,8 @@ final class LikeUViewModel: ViewModelType {
             }
         }
     }
-    private let isEmptyPublisher = PublishSubject<Bool>()
-    var sendViewConnectSubject: PublishSubject<User> = PublishSubject()
-    
+    private var isEmptyPublisher = PublishSubject<Bool>()
+    private let reloadTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     private let currentUser = UserDefaultsManager.shared.getUserData()
     private let pageSize = 6
@@ -48,29 +47,17 @@ final class LikeUViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        let responseReady = input.listLoad
-            .flatMap { _ -> Observable<[Like.LikeInfo]> in
-                return Observable.create { [weak self] emitter in
-                    self?.loadNextPage { result in
-                        switch result {
-                        case .success(let data):
-                            emitter.onNext(data)
-                        case .failure(let error):
-                            emitter.onError(error)
-                        }
-                    }
-                    return Disposables.create()
-                }
-            }
+        input.listLoad
             .withUnretained(self)
-            .map { viewModel, likeList in
-                viewModel.likeUList.append(contentsOf: likeList)
-                return viewModel.likeUList
+            .subscribe { viewModel, _ in
+                viewModel.loadNextPage()
             }
+            .disposed(by: disposeBag)
         
-        return Output(resultToLikeUList: responseReady, likeUIsEmpty: isEmptyPublisher.asObservable())
+        return Output(likeUIsEmpty: isEmptyPublisher.asObservable(), reloadCollectionView: reloadTableViewPublisher.asObservable())
     }
-    private func loadNextPage(completion: @escaping (Result<[Like.LikeInfo], Error>) -> Void) {
+    
+    private func loadNextPage() {
         let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
         let endIndex = startIndex + pageSize
@@ -78,28 +65,32 @@ final class LikeUViewModel: ViewModelType {
         ref.getDocument { [weak self] document, error in
             guard let self = self else { return }
             if let error = error {
-                completion(.failure(error))
+                print(error)
+                return
             }
             
-            var tempList: [Like.LikeInfo] = []
             if let document = document, document.exists {
                 if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType == .like }) {
                     if startIndex > datas.count - 1 {
                         return
                     }
                     let currentPageDatas: [Like.LikeInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
-                    tempList.append(contentsOf: currentPageDatas)
+                    likeUList.append(contentsOf: currentPageDatas)
                     startIndex += currentPageDatas.count
-                    completion(.success(tempList))
+                    reloadTableViewPublisher.onNext(())
                 }
             } else {
-                completion(.failure(LikeUError.notFound))
+                print("문서를 찾을 수 없습니다.")
             }
         }
     }
     
     private func refresh() {
-        likeUList = []
-        startIndex = 0
+        let didSet = isEmptyPublisher
+        isEmptyPublisher = PublishSubject<Bool>()
+        self.likeUList = []
+        self.startIndex = 0
+        isEmptyPublisher = didSet
+        loadNextPage()
     }
 }

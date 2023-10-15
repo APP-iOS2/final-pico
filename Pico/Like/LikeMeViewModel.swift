@@ -15,7 +15,7 @@ final class LikeMeViewModel: ViewModelType {
         case notFound
     }
     
-    private let isEmptyPublisher = PublishSubject<Bool>()
+    private var isEmptyPublisher = PublishSubject<Bool>()
     private let reloadTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     
@@ -31,10 +31,12 @@ final class LikeMeViewModel: ViewModelType {
         let deleteUser: Observable<String>
         let likeUser: Observable<String>
     }
+    
     struct Output {
         let likeUIsEmpty: Observable<Bool>
         let reloadCollectionView: Observable<Void>
     }
+    
     private(set) var likeMeList: [Like.LikeInfo] = [] {
         didSet {
             if likeMeList.isEmpty {
@@ -73,7 +75,7 @@ final class LikeMeViewModel: ViewModelType {
         return Output(likeUIsEmpty: isEmptyPublisher.asObservable(), reloadCollectionView: reloadTableViewPublisher.asObservable())
     }
     
-    func loadNextPage() {
+    private func loadNextPage() {
         let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
         let endIndex = startIndex + pageSize
@@ -102,8 +104,11 @@ final class LikeMeViewModel: ViewModelType {
     }
     
     private func refresh() {
-        likeMeList = []
-        startIndex = 0
+        let didSet = isEmptyPublisher
+        isEmptyPublisher = PublishSubject<Bool>()
+        self.likeMeList = []
+        self.startIndex = 0
+        isEmptyPublisher = didSet
         loadNextPage()
     }
  

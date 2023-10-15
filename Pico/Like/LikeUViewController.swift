@@ -16,13 +16,13 @@ final class LikeUViewController: UIViewController {
     private let disposeBag: DisposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let listLoadPublisher = PublishSubject<Void>()
-    private let refreshPublisher = PublishSubject<Bool>()
+    private let refreshPublisher = PublishSubject<Void>()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collectionView.reloadData()
         if viewModel.likeUList.isEmpty {
-            refreshPublisher.onNext(true)
+            refreshPublisher.onNext(())
         }
     }
     
@@ -30,13 +30,15 @@ final class LikeUViewController: UIViewController {
         super.viewDidLoad()
         bind()
         configCollectionView()
-        bindDelegate()
         configRefresh()
+        bind()
         listLoadPublisher.onNext(())
     }
     
     private func configCollectionView() {
         collectionView.register(cell: LikeCollectionViewCell.self)
+        collectionView.dataSource = self
+        collectionView.delegate = self
     }
     
     private func configRefresh() {
@@ -48,14 +50,37 @@ final class LikeUViewController: UIViewController {
     @objc func refreshTable(refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            refreshPublisher.onNext(true)
-            listLoadPublisher.onNext(())
+            refreshPublisher.onNext(())
             refresh.endRefreshing()
         }
     }
 }
 
-extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return viewModel.likeUList.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
+        let item = viewModel.likeUList[indexPath.row]
+        cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
+        cell.messageButtonTapObservable
+            .subscribe { [weak self] _ in
+                // 메일 뷰 데이터 연결 후 userId 값 넘겨주기
+                let mailSendView = MailSendViewController()
+                mailSendView.modalPresentationStyle = .formSheet
+                self?.present(mailSendView, animated: true, completion: nil)
+            }
+            .disposed(by: cell.disposeBag)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // 디테일뷰 데이터 연결 후 UserId 값 넘겨주기
+        let viewController = UserDetailViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width / 2 - 17.5
@@ -105,30 +130,11 @@ extension LikeUViewController {
             })
             .disposed(by: disposeBag)
         
-        output.resultToLikeUList
-            .bind(to: collectionView.rx.items(cellIdentifier: LikeCollectionViewCell.reuseIdentifier, cellType: LikeCollectionViewCell.self)) { _, item, cell in
-                cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
-                cell.messageButtonTapObservable
-                    .subscribe(onNext: { [weak self] in
-                        // 메일 뷰 데이터 연결 후 userId 값 넘겨주기
-                        let mailSendView = MailSendViewController()
-                        mailSendView.modalPresentationStyle = .formSheet
-                        self?.present(mailSendView, animated: true, completion: nil)
-                    })
-                    .disposed(by: cell.disposeBag)
+        output.reloadCollectionView
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.collectionView.reloadData()
             }
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindDelegate() {
-        collectionView.rx.setDelegate(self)
-            .disposed(by: disposeBag)
-        collectionView.rx.modelSelected(Like.LikeInfo.self)
-            .subscribe(onNext: { _ in
-                // 디테일뷰 데이터 연결 후 UserId 값 넘겨주기
-                let viewController = UserDetailViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
-            })
             .disposed(by: disposeBag)
     }
 }
