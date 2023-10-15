@@ -8,14 +8,21 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import FirebaseFirestore
 
 // 질문: enum 을 여기에서만 쓰는데 어디에다 관리하는 게 좋을까용~?
 enum SortType: CaseIterable {
+    /// 가입일 내림차순
     case dateDescending
+    /// 가입일 오름차순
     case dateAscending
+    /// 이름 내림차순
     case nameDescending
+    /// 이름 오름차순
     case nameAscending
+    /// 나이 내림차순
     case ageDescending
+    /// 나이 오름차순
     case ageAscending
     
     var name: String {
@@ -37,48 +44,53 @@ enum SortType: CaseIterable {
 }
 
 final class AdminUserViewModel: ViewModelType {
+    private let itemsPerPage: Int = 10
+    private var lastDocumentSnapshot: DocumentSnapshot?
     
     private(set) var userList: [User] = []
-    private(set) var sortedList: [User] = []
-    private(set) var filteredList: [User] = [] {
-        didSet {
-            reloadPublisher.onNext(())
-        }
-    }
     private let reloadPublisher = PublishSubject<Void>()
 
     struct Input {
         let viewDidLoad: Observable<Void>
         let sortedTpye: Observable<SortType>
         let searchButton: Observable<String>
+        let tableViewOffset: Observable<Void>
     }
     
     struct Output {
         let resultToViewDidLoad: Observable<[User]>
+        let resultSortedUserList: Observable<[User]>
         let resultSearchUserList: Observable<[User]>
         let needToReload: Observable<Void>
     }
-    
+    //  질문: withUnretained 이거 바로 아래밖에 적용이 안되는지 ?
     func transform(input: Input) -> Output {
-        let responseViewDidLoad = Observable.combineLatest(input.sortedTpye, input.viewDidLoad)
-            .flatMapLatest { sortedType, _ in
+        let responseViewDidLoad = Observable.merge(input.tableViewOffset, input.viewDidLoad)
+            .flatMap { _ -> Observable<[User]> in
+                Loading.showLoading()
                 return FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
-                    .withUnretained(self)
-                    .map { viewModel, userList in
-                        viewModel.userList = userList
-                        viewModel.sortedList = viewModel.sortUserList(userList, by: sortedType)
-                        return viewModel.sortedList
-                    }
+            }
+            .withUnretained(self)
+            .map { viewModel, users in
+                viewModel.userList = users
+                return viewModel.userList
+            }
+        
+        let responseSorted = input.sortedTpye
+            .withUnretained(self)
+            .flatMapLatest { viewModel, sortedType in
+                return Observable.just(viewModel.sortUserList(viewModel.userList, by: sortedType))
             }
         
         let responseSearchButton = input.searchButton
             .withUnretained(self)
             .flatMapLatest { viewModel, textFieldText in
-                return Observable.just(viewModel.filterUserList(viewModel.sortedList, textFieldText))
+                return Observable.just(viewModel.filterUserList(viewModel.userList, textFieldText))
             }
         
         return Output(
             resultToViewDidLoad: responseViewDidLoad,
+            resultSortedUserList: responseSorted,
             resultSearchUserList: responseSearchButton,
             needToReload: reloadPublisher.asObservable()
         )
@@ -103,7 +115,7 @@ final class AdminUserViewModel: ViewModelType {
     
     private func filterUserList(_ userList: [User], _ text: String) -> [User] {
         if text.isEmpty {
-            return sortedList
+            return userList
         } else {
             let users = userList.filter { sortedUser in
                 sortedUser.nickName.contains(text)

@@ -27,7 +27,7 @@ final class AdminUserViewController: UIViewController {
             
             return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
                 guard let self = self else { return }
-                sortedTpyeBehavior.onNext(sortType)
+                sortedTpyePublisher.onNext(sortType)
             })
         }
     }()
@@ -55,8 +55,9 @@ final class AdminUserViewController: UIViewController {
     private let disposeBag: DisposeBag = DisposeBag()
     
     private let viewDidLoadPublisher = PublishSubject<Void>()
-    private let sortedTpyeBehavior = BehaviorSubject(value: SortType.dateDescending)
+    private let sortedTpyePublisher = PublishSubject<SortType>()
     private let searchButtonPublisher = PublishSubject<String>()
+    private let tableViewOffsetPublisher = PublishSubject<Void>()
     
     init(viewModel: AdminUserViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -103,17 +104,19 @@ final class AdminUserViewController: UIViewController {
     private func bind() {
         let input = AdminUserViewModel.Input(
             viewDidLoad: viewDidLoadPublisher.asObservable(),
-            sortedTpye: sortedTpyeBehavior.asObservable(),
-            searchButton: searchButtonPublisher.asObservable()
+            sortedTpye: sortedTpyePublisher.asObservable(),
+            searchButton: searchButtonPublisher.asObservable(),
+            tableViewOffset: tableViewOffsetPublisher.asObservable()
         )
         let output = viewModel.transform(input: input)
 
-        let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList)
+        let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSortedUserList, output.resultSearchUserList)
         
         combinedData
             .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
                 guard let imageURL = item.imageURLs[safe: 0] else { return }
                 cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
+                Loading.hideLoading()
             }
             .disposed(by: disposeBag)
         
@@ -130,6 +133,26 @@ final class AdminUserViewController: UIViewController {
 extension AdminUserViewController {
     
     private func configTableViewDatasource() {
+        var isOffsetPublisherCalled = false
+        
+        userListTableView.rx.contentOffset
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, contentOffset in
+                let contentOffsetY = contentOffset.y
+                let contentHeight = viewController.userListTableView.contentSize.height
+                let boundsHeight = viewController.userListTableView.bounds.size.height
+
+                if contentOffsetY > contentHeight - boundsHeight {
+                    if !isOffsetPublisherCalled {
+                        viewController.tableViewOffsetPublisher.onNext(())
+                        isOffsetPublisherCalled = true
+                    }
+                } else {
+                    isOffsetPublisherCalled = false
+                }
+            })
+            .disposed(by: disposeBag)
+
         userListTableView.rx.modelSelected(User.self)
             .subscribe { [weak self] user in
                 let viewController = AdminUserDetailViewController(viewModel: AdminUserDetailViewModel(selectedUser: user))

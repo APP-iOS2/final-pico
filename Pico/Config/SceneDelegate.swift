@@ -15,16 +15,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-//        if UserDefaultsManager.shared.isLogin() {
-//            let rootViewController = TabBarController()
-//            window?.rootViewController = rootViewController
-//        } else {
-//            let rootViewController = UINavigationController(rootViewController: SignViewController())
-//            window?.rootViewController = rootViewController
-//        }
+        if UserDefaultsManager.shared.isLogin() {
+            let rootViewController = TabBarController()
+            window?.rootViewController = rootViewController
+        } else {
+            let rootViewController = UINavigationController(rootViewController: SignViewController())
+            window?.rootViewController = rootViewController
+        }
         
-        let rootViewController = UINavigationController(rootViewController: AdminViewController())
-        window?.rootViewController = rootViewController
+//        let rootViewController = UINavigationController(rootViewController: AdminViewController())
+//        window?.rootViewController = rootViewController
         
         window?.makeKeyAndVisible()
     }

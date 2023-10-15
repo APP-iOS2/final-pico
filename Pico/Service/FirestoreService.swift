@@ -117,9 +117,12 @@ final class FirestoreService {
     }
     
     func loadDocuments<T: Codable>(collectionId: Collections, dataType: T.Type, completion: @escaping (Result<[T], Error>) -> Void) {
-        DispatchQueue.global().async {
-            
-            self.dbRef.collection(collectionId.name).getDocuments { querySnapshot, error in
+        
+        let query = dbRef.collection(collectionId.name)
+            .order(by: "createdDate", descending: true)
+        
+        DispatchQueue.global().async { [weak self] in
+            self?.dbRef.collection(collectionId.name).getDocuments { querySnapshot, error in
                 if let error = error {
                     print("Error to load new document at \(collectionId.name) \(error)")
                     completion(.failure(error))
@@ -139,6 +142,43 @@ final class FirestoreService {
         }
     }
     
+    func loadDocuments<T: Codable>(collectionId: Collections, dataType: T.Type, itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?, completion: @escaping (Result<([T], DocumentSnapshot?), Error>) -> Void) {
+        
+        var lastDocumentSnapshot = lastDocumentSnapshot
+        
+        let query = dbRef.collection(collectionId.name)
+            .order(by: "createdDate", descending: true)
+            .limit(to: itemsPerPage)
+        
+        if let lastSnapshots = lastDocumentSnapshot {
+            query.start(afterDocument: lastSnapshots)
+        }
+        
+        DispatchQueue.global().async {
+            query.getDocuments { querySnapshot, error in
+                if let error = error {
+                    print("Error to load new document at \(collectionId.name) \(error)")
+                    completion(.failure(error))
+                    return
+                }
+                guard let documents = querySnapshot?.documents else { return }
+                guard !documents.isEmpty else { return }
+                
+                lastDocumentSnapshot = documents.last
+                
+                if let documents = querySnapshot?.documents {
+                    var result: [T] = []
+                    for document in documents {
+                        if let temp = try? document.data(as: dataType) {
+                            result.append(temp)
+                        }
+                    }
+                    completion(.success((result, lastDocumentSnapshot)))
+                }
+            }
+        }
+    }
+
     func saveDocumentRx<T: Codable>(collectionId: Collections, documentId: String, data: T) -> Observable<Void> {
         return Observable.create { emitter in
             self.saveDocument(collectionId: collectionId, documentId: documentId, data: data) { result in
@@ -171,6 +211,21 @@ final class FirestoreService {
         }
     }
     
+    func loadDocumentRx<T: Codable>(collectionId: Collections, dataType: T.Type, itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?) -> Observable<([T], DocumentSnapshot?)> {
+        return Observable.create { emitter in
+            self.loadDocuments(collectionId: collectionId, dataType: dataType, itemsPerPage: itemsPerPage, lastDocumentSnapshot: lastDocumentSnapshot) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                    emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+
     func loadDocumentRx<T: Codable>(collectionId: Collections, documentId: String, dataType: T.Type) -> Observable<T?> {
         return Observable.create { emitter in
             self.loadDocument(collectionId: collectionId, documentId: documentId, dataType: dataType) { result in
