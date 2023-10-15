@@ -19,6 +19,11 @@
 		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
 		36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */; };
 		36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */; };
+		36CD4CFC2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4CFB2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift */; };
+		36CD4D012ADBB6C500FC317B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36CD4CFF2ADBB6BF00FC317B /* GoogleService-Info.plist */; };
+		36CD4D022ADBB6C500FC317B /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4D002ADBB6C500FC317B /* YOLOv3.mlmodel */; };
+		36CD4D042ADBB86000FC317B /* SignLoadingAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4D032ADBB86000FC317B /* SignLoadingAnimationView.swift */; };
+		36CD4D062ADBB95400FC317B /* SignLoadingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4D052ADBB95400FC317B /* SignLoadingManager.swift */; };
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
 		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
 		4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */; };
@@ -210,6 +215,11 @@
 		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
 		36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureViewController.swift; sourceTree = "<group>"; };
 		36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTermsOfServiceViewController.swift; sourceTree = "<group>"; };
+		36CD4CFB2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureEditCollectionCell.swift; sourceTree = "<group>"; };
+		36CD4CFF2ADBB6BF00FC317B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Pico/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		36CD4D002ADBB6C500FC317B /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
+		36CD4D032ADBB86000FC317B /* SignLoadingAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignLoadingAnimationView.swift; sourceTree = "<group>"; };
+		36CD4D052ADBB95400FC317B /* SignLoadingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignLoadingManager.swift; sourceTree = "<group>"; };
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
 		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -400,20 +410,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		363CC4822ACF9CB300C86EDC /* LocationManager */ = {
-			isa = PBXGroup;
-			children = (
-				363CC4832ACF9CC500C86EDC /* LocationManager.swift */,
-			);
-			path = LocationManager;
-			sourceTree = "<group>";
-		};
 		369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */ = {
 			isa = PBXGroup;
 			children = (
 				369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */,
 			);
 			path = TermsOfServiceText;
+			sourceTree = "<group>";
+		};
+		36CD4CFD2ADBB4C300FC317B /* SignUpCell */ = {
+			isa = PBXGroup;
+			children = (
+				36CD4CFB2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift */,
+			);
+			path = SignUpCell;
+			sourceTree = "<group>";
+		};
+		36CD4CFE2ADBB5BC00FC317B /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				369B25512ADB1FB4005C452D /* SmsAuthManager.swift */,
+				363CC4832ACF9CC500C86EDC /* LocationManager.swift */,
+				36CD4D052ADBB95400FC317B /* SignLoadingManager.swift */,
+				36CD4D032ADBB86000FC317B /* SignLoadingAnimationView.swift */,
+			);
+			path = Manager;
 			sourceTree = "<group>";
 		};
 		4B2665322AC3E2E70074D4E2 /* RandomBox */ = {
@@ -741,6 +762,8 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				36CD4CFF2ADBB6BF00FC317B /* GoogleService-Info.plist */,
+				36CD4D002ADBB6C500FC317B /* YOLOv3.mlmodel */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -753,9 +776,9 @@
 		B14B58FA2AC0A290009889DA /* Sign */ = {
 			isa = PBXGroup;
 			children = (
-				B146A3C42AD45670003143DD /* Constant */,
 				36F2BA002AC1682E00EF877A /* SignViewController.swift */,
-				369B25512ADB1FB4005C452D /* SmsAuthManager.swift */,
+				B146A3C42AD45670003143DD /* Constant */,
+				36CD4CFE2ADBB5BC00FC317B /* Manager */,
 				B14B58FC2AC0A2BB009889DA /* SignIn */,
 				B14B58FB2AC0A2B5009889DA /* SignUp */,
 			);
@@ -774,7 +797,7 @@
 				36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */,
 				36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */,
 				B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */,
-				363CC4822ACF9CB300C86EDC /* LocationManager */,
+				36CD4CFD2ADBB4C300FC317B /* SignUpCell */,
 				369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */,
 			);
 			path = SignUp;
@@ -1264,6 +1287,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
+				36CD4D012ADBB6C500FC317B /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1359,6 +1383,7 @@
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
 				B14D2AAC2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift in Sources */,
 				4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */,
+				36CD4CFC2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
@@ -1377,6 +1402,7 @@
 				B1E30BDD2AD5E21A00F95C66 /* ViewModelType.swift in Sources */,
 				6ADDE2EE2AC3B98000CE4482 /* ProfileEditViewController.swift in Sources */,
 				6ADDE2E82AC31C6000CE4482 /* SettingPrivateTableCell.swift in Sources */,
+				36CD4D022ADBB6C500FC317B /* YOLOv3.mlmodel in Sources */,
 				6ADDE2F32AC3BA4700CE4482 /* ProfileEditNicknameTabelCell.swift in Sources */,
 				B1BFE18F2AD6BAED0094253A /* AdminReportViewController.swift in Sources */,
 				534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */,
@@ -1385,6 +1411,7 @@
 				69B99BE62ACE815600695567 /* MailViewModel.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIView+Extensions.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
+				36CD4D042ADBB86000FC317B /* SignLoadingAnimationView.swift in Sources */,
 				5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */,
 				6A73784D2AC26AD50047DE35 /* MyPageCollectionTableCell.swift in Sources */,
 				6ADDE2E42AC30F2F00CE4482 /* SettingTableCell.swift in Sources */,
@@ -1432,6 +1459,7 @@
 				6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */,
 				B148052C2ACD2A900009FF71 /* AdminUserViewController.swift in Sources */,
 				360854F12AD04C7900F28168 /* StorageService.swift in Sources */,
+				36CD4D062ADBB95400FC317B /* SignLoadingManager.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
 				4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */,
 				6A9F734C2AD8E537002F13AC /* ProfileEditTextModalViewController.swift in Sources */,
