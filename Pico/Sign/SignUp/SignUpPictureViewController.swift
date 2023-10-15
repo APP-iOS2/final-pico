@@ -108,7 +108,7 @@ final class SignUpPictureViewController: UIViewController {
 
         let detectionGroup = DispatchGroup()
         
-        Loading.showLoading()
+        SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
         DispatchQueue.global().async {
             var allImagesDetected = true
 
@@ -125,7 +125,7 @@ final class SignUpPictureViewController: UIViewController {
             }
             
             detectionGroup.notify(queue: .main) {
-                Loading.hideLoading()
+                SignLoadingManager.hideLoading()
                 
                 if allImagesDetected {
                     self.showAlert(message: "이미지가 등록되었습니다.") {
