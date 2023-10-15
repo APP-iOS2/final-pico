@@ -87,22 +87,22 @@ extension LikeUViewController {
         
         output.likeUIsEmpty
             .withUnretained(self)
-            .subscribe { [weak self] viewModel, isEmpty in
+            .subscribe(onNext: { viewController, isEmpty in
                 if isEmpty {
-                    self?.addChild(self?.emptyView ?? UIViewController())
-                    self?.view.addSubview(self?.emptyView.view ?? UIView())
-                    self?.emptyView.didMove(toParent: self)
-                    self?.emptyView.view.snp.makeConstraints { make in
+                    viewController.addChild(viewController.emptyView)
+                    viewController.view.addSubview(viewController.emptyView.view ?? UIView())
+                    viewController.emptyView.didMove(toParent: self)
+                    viewController.emptyView.view.snp.makeConstraints { make in
                         make.edges.equalToSuperview()
                     }
                 } else {
-                    self?.view.addSubview(self?.collectionView ?? UICollectionView())
-                    self?.collectionView.snp.makeConstraints { make in
+                    viewController.view.addSubview(viewController.collectionView)
+                    viewController.collectionView.snp.makeConstraints { make in
                         make.top.leading.equalToSuperview().offset(10)
                         make.trailing.bottom.equalToSuperview().offset(-10)
                     }
                 }
-            }
+            })
             .disposed(by: disposeBag)
         
         output.resultToLikeUList

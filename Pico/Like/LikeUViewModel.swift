@@ -41,11 +41,12 @@ final class LikeUViewModel: ViewModelType {
     var startIndex = 0
 
     func transform(input: Input) -> Output {
-        let _ = input.refresh
+        input.refresh
             .withUnretained(self)
             .subscribe { viewModel, _ in
                 viewModel.refresh()
             }
+            .disposed(by: disposeBag)
         
         let responseReady = input.listLoad
             .flatMap { _ -> Observable<[Like.LikeInfo]> in
