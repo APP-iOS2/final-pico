@@ -10,9 +10,8 @@ import SnapKit
 import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
-    
+    private let authManager = SmsAuthManager()
     var viewModel: SignUpViewModel = .shared
-    
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
@@ -121,7 +120,7 @@ extension SignUpPhoneNumberViewController {
   
     private func configButtons() {
         cancelButton.addTarget(self, action: #selector(tappedCancelButton), for: .touchUpInside)
-        authButton.addTarget(self, action: #selector(tappedCheckButton), for: .touchUpInside)
+        authButton.addTarget(self, action: #selector(tappedAuthButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
@@ -185,15 +184,13 @@ extension SignUpPhoneNumberViewController {
     // MARK: - @objc
     @objc private func tappedCancelButton(_ sender: UIButton) {
         sender.tappedAnimation()
-        phoneNumberTextField.text = ""
-        updateAuthButton(isEnable: false, isHidden: true)
-        phoneNumberTextField.becomeFirstResponder()
+        configReset()
     }
     
-    @objc private func tappedCheckButton(_ sender: UIButton) {
+    @objc private func tappedAuthButton(_ sender: UIButton) {
         sender.tappedAnimation()
         isTappedCheckButton = true
-        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
+        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") {
             guard let text = self.phoneNumberTextField.text else { return }
             self.viewModel.checkPhoneNumber(userNumber: text) {
                 guard self.viewModel.isRightUser else {
@@ -221,6 +218,7 @@ extension SignUpPhoneNumberViewController {
         // 문자인증 기능이 완료 될 때 까지는 넘어가세요 :)
         configAuthText()
         isAuth = true
+        authManager.sendVerificationCode()
         guard isAuth else {
             print("비상비상")
             self.showAlert(message: "비상비상 인증실패") { self.configReset() }
