@@ -29,7 +29,6 @@ final class NotificationViewController: UIViewController {
         addViews()
         makeConstraints()
         configTableView()
-        configTableviewDelegate()
         configRefresh()
         bind()
         loadDataPublsher.onNext(())
@@ -48,6 +47,7 @@ final class NotificationViewController: UIViewController {
         }
         tableView.rowHeight = 90
         tableView.dataSource = self
+        tableView.delegate = self
     }
     
     private func configRefresh() {
@@ -75,8 +75,8 @@ final class NotificationViewController: UIViewController {
     }
 }
 
-// MARK: - DataSource
-extension NotificationViewController: UITableViewDataSource {
+// MARK: - TableView
+extension NotificationViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.notifications.count
     }
@@ -86,6 +86,20 @@ extension NotificationViewController: UITableViewDataSource {
         let item = viewModel.notifications[indexPath.row]
         cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti, date: item.createDate)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let item = viewModel.notifications[indexPath.row]
+        if item.notiType == .like {
+            let viewController = UserDetailViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        } else {
+            if let tabBarController = self.tabBarController as? TabBarController {
+                tabBarController.selectedIndex = 1
+                let viewControllers = self.navigationController?.viewControllers
+                self.navigationController?.setViewControllers(viewControllers ?? [], animated: false)
+            }
+        }
     }
 }
 
@@ -100,24 +114,6 @@ extension NotificationViewController {
             .subscribe { viewController, _ in
                 viewController.tableView.reloadData()
             }
-            .disposed(by: disposeBag)
-    }
-    private func configTableviewDelegate() {
-        tableView.rx.setDelegate(self)
-            .disposed(by: disposeBag)
-        tableView.rx.modelSelected(Noti.self)
-            .subscribe(onNext: { item in
-                if item.notiType == .like {
-                    let viewController = UserDetailViewController()
-                    self.navigationController?.pushViewController(viewController, animated: true)
-                } else {
-                    if let tabBarController = self.tabBarController as? TabBarController {
-                        tabBarController.selectedIndex = 1
-                        let viewControllers = self.navigationController?.viewControllers
-                        self.navigationController?.setViewControllers(viewControllers ?? [], animated: false)
-                    }
-                }
-            })
             .disposed(by: disposeBag)
     }
 }

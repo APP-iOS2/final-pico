@@ -32,7 +32,6 @@ final class LikeMeViewController: UIViewController {
         super.viewDidLoad()
         configCollectionView()
         bind()
-        configCollectionviewDelegate()
         configRefresh()
         loadDataPublsher.onNext(())
     }
@@ -40,6 +39,7 @@ final class LikeMeViewController: UIViewController {
     private func configCollectionView() {
         collectionView.register(cell: LikeCollectionViewCell.self)
         collectionView.dataSource = self
+        collectionView.delegate = self
     }
     
     private func configRefresh() {
@@ -86,6 +86,12 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // 디테일뷰 유저정보 연결 필요
+        let viewController = UserDetailViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = view.frame.width / 2 - 17.5
         return CGSize(width: width, height: width * 1.5)
@@ -127,18 +133,6 @@ extension LikeMeViewController {
             .subscribe { viewController, _ in
                 viewController.collectionView.reloadData()
             }
-            .disposed(by: disposeBag)
-    }
-    
-    private func configCollectionviewDelegate() {
-        collectionView.rx.setDelegate(self)
-            .disposed(by: disposeBag)
-        collectionView.rx.modelSelected(Like.LikeInfo.self)
-            .subscribe(onNext: { _ in
-                // 디테일 뷰 데이터 완성 후 User 정보 연결
-                let viewController = UserDetailViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
-            })
             .disposed(by: disposeBag)
     }
 }
