@@ -19,6 +19,7 @@
 		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
 		36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */; };
 		36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */; };
+		36CD4CFC2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4CFB2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift */; };
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
 		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
 		4B157D3C2AC1451800EEDEC1 /* EntCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */; };
@@ -210,6 +211,7 @@
 		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
 		36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureViewController.swift; sourceTree = "<group>"; };
 		36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTermsOfServiceViewController.swift; sourceTree = "<group>"; };
+		36CD4CFB2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureEditCollectionCell.swift; sourceTree = "<group>"; };
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
 		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
 		4B157D3B2AC1451800EEDEC1 /* EntCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -414,6 +416,14 @@
 				369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */,
 			);
 			path = TermsOfServiceText;
+			sourceTree = "<group>";
+		};
+		36CD4CFD2ADBB4C300FC317B /* SignUpCell */ = {
+			isa = PBXGroup;
+			children = (
+				36CD4CFB2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift */,
+			);
+			path = SignUpCell;
 			sourceTree = "<group>";
 		};
 		4B2665322AC3E2E70074D4E2 /* RandomBox */ = {
@@ -774,6 +784,7 @@
 				36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */,
 				36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */,
 				B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */,
+				36CD4CFD2ADBB4C300FC317B /* SignUpCell */,
 				363CC4822ACF9CB300C86EDC /* LocationManager */,
 				369F1BB02ACE3F6C00A98C7B /* TermsOfServiceText */,
 			);
@@ -1359,6 +1370,7 @@
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
 				B14D2AAC2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift in Sources */,
 				4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */,
+				36CD4CFC2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,

@@ -71,7 +71,7 @@ final class SignUpPictureViewController: UIViewController {
         view.contentInset = .zero
         view.backgroundColor = .clear
         view.contentInset = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25)
-        view.register(cell: ProfileEditCollectionCell.self)
+        view.register(cell: SignUpPictureEditCollectionCell.self)
         return view
     }()
 
@@ -148,7 +148,7 @@ final class SignUpPictureViewController: UIViewController {
 // MARK: - 사진 관련
 extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-    @objc private func openPhotoLibrary() {
+    @objc func openPhotoLibrary() {
         var configuration = PHPickerConfiguration()
         configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
         
@@ -186,12 +186,13 @@ extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditCollectionCell.self)
         
-        cell.configure(imageName: "chu")
-        cell.backgroundColor = .lightGray
-        cell.layer.masksToBounds = true
-        cell.layer.cornerRadius = 10
+        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: SignUpPictureEditCollectionCell.self)
+        cell.configure(imageName: "chu", isHidden: true)
+        cell.cellConfigure()
+        if indexPath.row == 0 {
+            cell.configure(imageName: "chu", isHidden: false)
+        }
         if indexPath.row != 0 {
             cell.configure(image: userImages[indexPath.row - 1])
         }
