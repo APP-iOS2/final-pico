@@ -20,7 +20,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return messageButton.rx.tap.asObservable()
     }
     
-    var likeBurttonTapObservalbe: Observable<Void> {
+    var likeButtonTapObservalbe: Observable<Void> {
         return likeButton.rx.tap.asObservable()
     }
     

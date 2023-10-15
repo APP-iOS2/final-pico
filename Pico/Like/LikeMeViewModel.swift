@@ -10,22 +10,67 @@ import RxSwift
 import RxRelay
 import FirebaseFirestore
 
-final class LikeMeViewModel {
-    var likeMeList: [Like.LikeInfo] = []
-    var likeMeListRx = BehaviorRelay<[Like.LikeInfo]>(value: [])
-    var likeMeIsEmpty: Observable<Bool> {
-        return likeMeListRx
-            .map { $0.isEmpty }
+final class LikeMeViewModel: ViewModelType {
+    enum LikeMeError: Error {
+        case notFound
     }
     
+    private let isEmptyPublisher = PublishSubject<Bool>()
+    private let reloadTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
+    
     private let currentUser: CurrentUser = UserDefaultsManager.shared.getUserData()
+    
     private let dbRef = Firestore.firestore()
     private let pageSize = 6
     var startIndex = 0
     
-    init() {
-        loadNextPage()
+    struct Input {
+        let listLoad: Observable<Void>
+        let refresh: Observable<Void>
+        let deleteUser: Observable<String>
+        let likeUser: Observable<String>
+    }
+    struct Output {
+        let likeUIsEmpty: Observable<Bool>
+        let reloadTableView: Observable<Void>
+    }
+    private(set) var likeMeList: [Like.LikeInfo] = [] {
+        didSet {
+            if likeMeList.isEmpty {
+                isEmptyPublisher.onNext(true)
+            } else {
+                isEmptyPublisher.onNext(false)
+            }
+        }
+    }
+    
+    func transform(input: Input) -> Output {
+        input.refresh
+            .withUnretained(self)
+            .subscribe { viewModel, _ in
+                viewModel.refresh()
+            }
+            .disposed(by: disposeBag)
+        input.listLoad
+            .withUnretained(self)
+            .subscribe { viewModel, _ in
+                viewModel.loadNextPage()
+            }
+            .disposed(by: disposeBag)
+        input.deleteUser
+            .withUnretained(self)
+            .subscribe { viewModel, userId in
+                viewModel.deleteUser(userId: userId)
+            }
+            .disposed(by: disposeBag)
+        input.likeUser
+            .withUnretained(self)
+            .subscribe { viewModel, userId in
+                viewModel.likeUser(userId: userId)
+            }
+            .disposed(by: disposeBag)
+        return Output(likeUIsEmpty: isEmptyPublisher.asObservable(), reloadTableView: reloadTableViewPublisher.asObservable())
     }
     
     func loadNextPage() {
@@ -48,7 +93,7 @@ final class LikeMeViewModel {
                     let currentPageDatas: [Like.LikeInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
                     likeMeList.append(contentsOf: currentPageDatas)
                     startIndex += currentPageDatas.count
-                    likeMeListRx.accept(likeMeList)
+                    reloadTableViewPublisher.onNext(())
                 }
             } else {
                 print("문서를 찾을 수 없습니다.")
@@ -56,20 +101,21 @@ final class LikeMeViewModel {
         }
     }
     
-    func refresh() {
+    private func refresh() {
         likeMeList = []
         startIndex = 0
         loadNextPage()
     }
  
-    func deleteUser(userId: String) {
-        guard let index = likeMeListRx.value.firstIndex(where: {
+    private func deleteUser(userId: String) {
+        guard let index = likeMeList.firstIndex(where: {
             $0.likedUserId == userId
         }) else {
             return
         }
+        guard let removeData: Like.LikeInfo = likeMeList[safe: index] else { return }
         likeMeList.remove(at: index)
-        guard let removeData: Like.LikeInfo = likeMeListRx.value[safe: index] else { return }
+        reloadTableViewPublisher.onNext(())
         let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: removeData.likedUserId, likeType: .dislike, birth: removeData.birth, nickName: removeData.nickName, mbti: removeData.mbti, imageURL: removeData.imageURL)
         
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
@@ -78,20 +124,17 @@ final class LikeMeViewModel {
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
             "recivedlikes": FieldValue.arrayUnion([updateData.asDictionary()])
         ])
-        
-        let updatedDatas = likeMeListRx.value.filter { $0.likedUserId != userId }
-        likeMeListRx.accept(updatedDatas)
-        
     }
     
-    func likeUser(userId: String) {
-        guard let index = likeMeListRx.value.firstIndex(where: {
+    private func likeUser(userId: String) {
+        guard let index = likeMeList.firstIndex(where: {
             $0.likedUserId == userId
         }) else {
             return
         }
+        guard let likeData: Like.LikeInfo = likeMeList[safe: index] else { return }
         likeMeList.remove(at: index)
-        guard let likeData: Like.LikeInfo = likeMeListRx.value[safe: index] else { return }
+        reloadTableViewPublisher.onNext(())
         let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL)
         
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
@@ -103,31 +146,31 @@ final class LikeMeViewModel {
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
             "sendedlikes": FieldValue.arrayUnion([updateData.asDictionary()])
         ])
-        let updatedDatas = likeMeListRx.value.filter { $0.likedUserId != userId }
-        likeMeListRx.accept(updatedDatas)
 
         var tempLike: Like?
         FirestoreService.shared.loadDocument(collectionId: .likes, documentId: likeData.likedUserId, dataType: Like.self) { [weak self] result in
             guard let self = self else { return }
+            var updateSendLike: Like.LikeInfo
             switch result {
             case .success(let data):
                 tempLike = data
                 guard let tempLike = tempLike else {
                     return
                 }
-                
-                guard let sendedlikes = tempLike.sendedlikes else { return }
-                guard let sendIndex = sendedlikes.firstIndex(where: {
+                let sendedlikes = tempLike.sendedlikes
+                if let sendIndex = sendedlikes?.firstIndex(where: {
                     $0.likedUserId == self.currentUser.userId
-                }) else {
-                    return
+                }) {
+                    guard let tempSendLike = sendedlikes?[safe: sendIndex] else { return }
+                    updateSendLike = Like.LikeInfo(likedUserId: tempSendLike.likedUserId, likeType: .matching, birth: tempSendLike.birth, nickName: tempSendLike.nickName, mbti: tempSendLike.mbti, imageURL: tempSendLike.imageURL)
+                    dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
+                        "sendedlikes": FieldValue.arrayRemove([tempSendLike.asDictionary()])
+                    ])
+                } else {
+                    guard let tempMbti: MBTIType = MBTIType(rawValue: currentUser.mbti) else { return }
+                    updateSendLike = Like.LikeInfo(likedUserId: currentUser.userId, likeType: .matching, birth: currentUser.birth, nickName: currentUser.nickName, mbti: tempMbti, imageURL: currentUser.imageURL)
                 }
-                
-                guard let tempSendLike = sendedlikes[safe: sendIndex] else { return }
-                let updateSendLike = Like.LikeInfo(likedUserId: tempSendLike.likedUserId, likeType: .matching, birth: tempSendLike.birth, nickName: tempSendLike.nickName, mbti: tempSendLike.mbti, imageURL: tempSendLike.imageURL)
-                dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
-                    "sendedlikes": FieldValue.arrayRemove([tempSendLike.asDictionary()])
-                ])
+                print(updateSendLike.asDictionary())
                 dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
                     "sendedlikes": FieldValue.arrayUnion([updateSendLike.asDictionary()])
                 ])

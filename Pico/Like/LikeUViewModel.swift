@@ -6,18 +6,33 @@
 //
 
 import RxSwift
-import RxRelay
 import UIKit
 import FirebaseFirestore
 
-final class LikeUViewModel {
-    var likeUList: [Like.LikeInfo] = []
-    var likeUListRx = BehaviorRelay<[Like.LikeInfo]>(value: [])
-    var likeUIsEmpty: Observable<Bool> {
-        return likeUListRx
-            .map { $0.isEmpty }
+final class LikeUViewModel: ViewModelType {
+    enum LikeUError: Error {
+        case notFound
+    }
+    struct Input {
+        let listLoad: Observable<Void>
+        let refresh: Observable<Bool>
     }
     
+    struct Output {
+        let resultToLikeUList: Observable<[Like.LikeInfo]>
+        let likeUIsEmpty: Observable<Bool>
+    }
+    
+    private(set) var likeUList: [Like.LikeInfo] = [] {
+        didSet {
+            if likeUList.isEmpty {
+                isEmptyPublisher.onNext(true)
+            } else {
+                isEmptyPublisher.onNext(false)
+            }
+        }
+    }
+    private let isEmptyPublisher = PublishSubject<Bool>()
     var sendViewConnectSubject: PublishSubject<User> = PublishSubject()
     
     private let disposeBag = DisposeBag()
@@ -25,11 +40,36 @@ final class LikeUViewModel {
     private let pageSize = 6
     var startIndex = 0
 
-    init() {
-        loadNextPage()
+    func transform(input: Input) -> Output {
+        let _ = input.refresh
+            .withUnretained(self)
+            .subscribe { viewModel, _ in
+                viewModel.refresh()
+            }
+        
+        let responseReady = input.listLoad
+            .flatMap { _ -> Observable<[Like.LikeInfo]> in
+                return Observable.create { [weak self] emitter in
+                    self?.loadNextPage { result in
+                        switch result {
+                        case .success(let data):
+                            emitter.onNext(data)
+                        case .failure(let error):
+                            emitter.onError(error)
+                        }
+                    }
+                    return Disposables.create()
+                }
+            }
+            .withUnretained(self)
+            .map { viewModel, likeList in
+                viewModel.likeUList.append(contentsOf: likeList)
+                return viewModel.likeUList
+            }
+        
+        return Output(resultToLikeUList: responseReady, likeUIsEmpty: isEmptyPublisher.asObservable())
     }
-    
-    func loadNextPage() {
+    private func loadNextPage(completion: @escaping (Result<[Like.LikeInfo], Error>) -> Void) {
         let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
         let endIndex = startIndex + pageSize
@@ -37,29 +77,28 @@ final class LikeUViewModel {
         ref.getDocument { [weak self] document, error in
             guard let self = self else { return }
             if let error = error {
-                print(error)
-                return
+                completion(.failure(error))
             }
             
+            var tempList: [Like.LikeInfo] = []
             if let document = document, document.exists {
                 if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType == .like }) {
                     if startIndex > datas.count - 1 {
                         return
                     }
                     let currentPageDatas: [Like.LikeInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
-                    likeUList.append(contentsOf: currentPageDatas)
+                    tempList.append(contentsOf: currentPageDatas)
                     startIndex += currentPageDatas.count
-                    likeUListRx.accept(likeUList)
+                    completion(.success(tempList))
                 }
             } else {
-                print("문서를 찾을 수 없습니다.")
+                completion(.failure(LikeUError.notFound))
             }
         }
     }
     
-    func refresh() {
+    private func refresh() {
         likeUList = []
         startIndex = 0
-        loadNextPage()
     }
 }
