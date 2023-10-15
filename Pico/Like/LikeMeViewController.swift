@@ -122,7 +122,7 @@ extension LikeMeViewController {
             })
             .disposed(by: disposeBag)
         
-        output.reloadTableView
+        output.reloadCollectionView
             .withUnretained(self)
             .subscribe { viewController, _ in
                 viewController.collectionView.reloadData()

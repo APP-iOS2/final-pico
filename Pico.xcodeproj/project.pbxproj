@@ -20,8 +20,6 @@
 		36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */; };
 		36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */; };
 		36CD4CFC2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4CFB2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift */; };
-		36CD4D012ADBB6C500FC317B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36CD4CFF2ADBB6BF00FC317B /* GoogleService-Info.plist */; };
-		36CD4D022ADBB6C500FC317B /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4D002ADBB6C500FC317B /* YOLOv3.mlmodel */; };
 		36CD4D042ADBB86000FC317B /* SignLoadingAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4D032ADBB86000FC317B /* SignLoadingAnimationView.swift */; };
 		36CD4D062ADBB95400FC317B /* SignLoadingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4D052ADBB95400FC317B /* SignLoadingManager.swift */; };
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
@@ -218,8 +216,6 @@
 		36A9B0062AC40F2D00D994EA /* SignUpPictureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureViewController.swift; sourceTree = "<group>"; };
 		36A9B0082AC410D900D994EA /* SignUpTermsOfServiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTermsOfServiceViewController.swift; sourceTree = "<group>"; };
 		36CD4CFB2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPictureEditCollectionCell.swift; sourceTree = "<group>"; };
-		36CD4CFF2ADBB6BF00FC317B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Pico/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		36CD4D002ADBB6C500FC317B /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
 		36CD4D032ADBB86000FC317B /* SignLoadingAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignLoadingAnimationView.swift; sourceTree = "<group>"; };
 		36CD4D052ADBB95400FC317B /* SignLoadingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignLoadingManager.swift; sourceTree = "<group>"; };
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
@@ -766,8 +762,6 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				36CD4CFF2ADBB6BF00FC317B /* GoogleService-Info.plist */,
-				36CD4D002ADBB6C500FC317B /* YOLOv3.mlmodel */,
 				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -1285,7 +1279,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				36CD4D012ADBB6C500FC317B /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1401,7 +1394,6 @@
 				B1E30BDD2AD5E21A00F95C66 /* ViewModelType.swift in Sources */,
 				6ADDE2EE2AC3B98000CE4482 /* ProfileEditViewController.swift in Sources */,
 				6ADDE2E82AC31C6000CE4482 /* SettingPrivateTableCell.swift in Sources */,
-				36CD4D022ADBB6C500FC317B /* YOLOv3.mlmodel in Sources */,
 				6ADDE2F32AC3BA4700CE4482 /* ProfileEditNicknameTabelCell.swift in Sources */,
 				B1BFE18F2AD6BAED0094253A /* AdminReportViewController.swift in Sources */,
 				534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */,

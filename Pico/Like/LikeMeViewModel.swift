@@ -33,7 +33,7 @@ final class LikeMeViewModel: ViewModelType {
     }
     struct Output {
         let likeUIsEmpty: Observable<Bool>
-        let reloadTableView: Observable<Void>
+        let reloadCollectionView: Observable<Void>
     }
     private(set) var likeMeList: [Like.LikeInfo] = [] {
         didSet {
@@ -70,7 +70,7 @@ final class LikeMeViewModel: ViewModelType {
                 viewModel.likeUser(userId: userId)
             }
             .disposed(by: disposeBag)
-        return Output(likeUIsEmpty: isEmptyPublisher.asObservable(), reloadTableView: reloadTableViewPublisher.asObservable())
+        return Output(likeUIsEmpty: isEmptyPublisher.asObservable(), reloadCollectionView: reloadTableViewPublisher.asObservable())
     }
     
     func loadNextPage() {

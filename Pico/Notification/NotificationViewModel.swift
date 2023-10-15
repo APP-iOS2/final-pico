@@ -10,18 +10,40 @@ import RxSwift
 import RxRelay
 import FirebaseFirestore
 
-final class NotificationViewModel {
+final class NotificationViewModel: ViewModelType {
     var notifications: [Noti] = []
-    var notificationsRx = BehaviorRelay<[Noti]>(value: [])
-    private let disposBag: DisposeBag = DisposeBag()
+    private let reloadTableViewPublisher = PublishSubject<Void>()
+    private let disposeBag: DisposeBag = DisposeBag()
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 90)
     var lastDocumentSnapshot: DocumentSnapshot?
-    
-    init() {
-        loadNextPage()
+
+    struct Input {
+        let listLoad: Observable<Void>
+        let refresh: Observable<Void>
     }
     
-    func loadNextPage() {
+    struct Output {
+        let reloadTableView: Observable<Void>
+    }
+    
+    func transform(input: Input) -> Output {
+        input.refresh
+            .withUnretained(self)
+            .subscribe { viewModel, _ in
+                viewModel.refresh()
+            }
+            .disposed(by: disposeBag)
+        input.listLoad
+            .withUnretained(self)
+            .subscribe { viewModel, _ in
+                viewModel.loadNextPage()
+            }
+            .disposed(by: disposeBag)
+        
+        return Output(reloadTableView: reloadTableViewPublisher.asObservable())
+    }
+    
+    private func loadNextPage() {
         let dbRef = Firestore.firestore()
         
         var query = dbRef.collection(Collections.notifications.name)
@@ -52,7 +74,13 @@ final class NotificationViewModel {
                     notifications.append(data)
                 }
             }
-            notificationsRx.accept(notifications)
+            reloadTableViewPublisher.onNext(())
         }
+    }
+    
+    private func refresh() {
+        notifications = []
+        lastDocumentSnapshot = nil
+        loadNextPage()
     }
 }
