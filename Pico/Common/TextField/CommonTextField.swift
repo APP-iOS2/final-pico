@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 /*
  사용법
@@ -24,7 +25,7 @@ import SnapKit
 
 final class CommonTextField: UIView {
     
-    private let textField: UITextField = {
+    let textField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "입력해주세여"
         return textField
@@ -42,7 +43,8 @@ final class CommonTextField: UIView {
     
     /// 최대 글자 수 제한
     private var maxLength: Int
-    
+    let textInputPublisher = PublishSubject<String>()
+
     init(frame: CGRect = .zero, maxLength: Int = 0) {
         self.maxLength = maxLength
         super.init(frame: frame)
@@ -92,11 +94,17 @@ extension CommonTextField: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard maxLength > 0 else { return true }
+        guard maxLength > 0 else {
+            if let text = textField.text {
+                textInputPublisher.onNext(text + string)
+            }
+            return true
+        }
         
         let currentText = textField.text ?? ""
         var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
         newText = newText.replacingOccurrences(of: " ", with: "")
+        textInputPublisher.onNext(newText)
         
         return newText.count <= maxLength
     }

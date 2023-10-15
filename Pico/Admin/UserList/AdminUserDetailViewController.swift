@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 struct UserImage {
     static let height: CGFloat = Screen.height * 0.6
@@ -31,11 +32,14 @@ final class AdminUserDetailViewController: UIViewController {
     
     private let tableView: UITableView = UITableView()
     
-    private var user: User!
+    private var viewModel: AdminUserDetailViewModel!
+    private let disposeBag: DisposeBag = DisposeBag()
     
-    init(user: User) {
+    private let recordTypePublish = PublishSubject<RecordType>()
+    
+    init(viewModel: AdminUserDetailViewModel) {
         super.init(nibName: nil, bundle: nil)
-        self.user = user
+        self.viewModel = viewModel
     }
     
     @available(*, unavailable)
@@ -50,6 +54,7 @@ final class AdminUserDetailViewController: UIViewController {
         makeConstraints()
         configTableView()
         configButtons()
+        bind()
     }
     
     private func configTableView() {
@@ -57,12 +62,27 @@ final class AdminUserDetailViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(cell: DetailUserImageTableViewCell.self)
         tableView.register(cell: DetailUserInfoTableViewCell.self)
+        tableView.register(cell: RecordHeaderTableViewCell.self)
         tableView.register(cell: NotificationTableViewCell.self)
         tableView.separatorStyle = .none
     }
     
     private func configButtons() {
         backButton.addTarget(self, action: #selector(tappedBackButton), for: .touchUpInside)
+    }
+    
+    private func bind() {
+        let input = AdminUserDetailViewModel.Input(
+            selectedRecordType: recordTypePublish.asObservable()
+        )
+        let output = viewModel.transform(input: input)
+        
+        output.needToReload
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, _ in
+                viewController.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
     }
     
     @objc private func tappedBackButton(_ sender: UIButton) {
@@ -74,6 +94,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
     enum TableViewCase: CaseIterable {
         case image
         case info
+        case recordHeader
         case record
     }
 
@@ -81,12 +102,10 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         guard let tableViewCase = TableViewCase.allCases[safe: section] else { return 0 }
         
         switch tableViewCase {
-        case .image:
-            return 1
-        case .info:
+        case .image, .info, .recordHeader:
             return 1
         case .record:
-            return 10
+            return viewModel.recordList.count
         }
     }
 
@@ -100,20 +119,32 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         switch tableViewCase {
         case .image:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: DetailUserImageTableViewCell.self)
-            cell.config(images: user.imageURLs)
+            cell.config(images: viewModel.selectedUser.imageURLs)
             cell.selectionStyle = .none
             return cell
 
         case .info:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: DetailUserInfoTableViewCell.self)
-            cell.config(user: user)
+            cell.config(user: viewModel.selectedUser)
             cell.selectionStyle = .none
+            return cell
+            
+        case .recordHeader:
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RecordHeaderTableViewCell.self)
+            cell.selectionStyle = .none
+            cell.selectedRecordTypePublisher.asObservable()
+                .withUnretained(self)
+                .subscribe(onNext: {  viewController, recordType in
+                    viewController.recordTypePublish.onNext(recordType)
+                })
+                .disposed(by: disposeBag)
             return cell
             
         case .record:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: NotificationTableViewCell.self)
-            guard let imageURL = user.imageURLs[safe: 0] else { return UITableViewCell() }
-            cell.configData(notitype: .report, imageUrl: imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, date: user.createdDate)
+            
+            guard let user = viewModel.recordList[safe: indexPath.row] else { return UITableViewCell() }
+            cell.configData(notitype: .like, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, date: Date().timeIntervalSince1970)
             cell.selectionStyle = .none
             return cell
         }
@@ -127,29 +158,11 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
             return UserImage.height
         case .info:
             return UITableView.automaticDimension
+        case .recordHeader:
+            return 50
         case .record:
-            return 80
+            return 100
         }
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let tableViewCase = TableViewCase.allCases[safe: section] else { return UIView() }
-        
-        if tableViewCase == .record {
-            let headerView = RecordHeaderCollectionView()
-            headerView.backgroundColor = .red
-
-            return headerView
-        }
-        return nil
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        guard let tableViewCase = TableViewCase.allCases[safe: section] else { return 0 }
-        if tableViewCase == .record {
-            return 80.0
-        }
-        return 0
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

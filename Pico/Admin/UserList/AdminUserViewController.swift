@@ -27,38 +27,37 @@ final class AdminUserViewController: UIViewController {
             
             return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
                 guard let self = self else { return }
-                viewModel.updateSelectedSortType(to: sortType)
+                sortedTpyePublisher.onNext(sortType)
             })
         }
     }()
     
-    private lazy var filteredButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("이름", for: .normal)
-        button.setTitleColor(.picoFontBlack, for: .normal)
-        button.menu = UIMenu(title: "정렬", options: [.singleSelection], children: filteredMenuItems)
-        button.showsMenuAsPrimaryAction = true
+    private let textFieldView: CommonTextField = {
+        let textField = CommonTextField()
+        textField.textField.placeholder = "이름을 검색하세요."
+        return textField
+    }()
+    
+    private let searchButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("검색", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .picoButtonFont
+        button.backgroundColor = .picoBlue
+        button.layer.cornerRadius = 10
         return button
     }()
     
-    private lazy var filteredMenuItems: [UIAction] = {
-        return FilterType.allCases.map { filterType in
-            let title = filterType.name
-            
-            return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
-                guard let self = self else { return }
-                filteredButton.setTitle(title, for: .normal)
-                viewModel.updateSelectedFilterType(to: filterType)
-            })
-        }
-    }()
-    
-    private let textField = CommonTextField()
     private let userListTableView = UITableView()
     
     // 질문: 이니셜라이저에서 받는건데 ! 써도 되는 지 ? (깃허브에는 !로 되어있어서요)
     private var viewModel: AdminUserViewModel!
     private let disposeBag: DisposeBag = DisposeBag()
+    
+    private let viewDidLoadPublisher = PublishSubject<Void>()
+    private let sortedTpyePublisher = PublishSubject<SortType>()
+    private let searchButtonPublisher = PublishSubject<String>()
+    private let tableViewOffsetPublisher = PublishSubject<Void>()
     
     init(viewModel: AdminUserViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -75,8 +74,11 @@ final class AdminUserViewController: UIViewController {
         super.viewDidLoad()
         addViews()
         makeConstraints()
+        configButtons()
         configTableView()
         configTableViewDatasource()
+        bind()
+        viewDidLoadPublisher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -84,10 +86,46 @@ final class AdminUserViewController: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
     
-    // MARK: - config
+    private func configButtons() {
+        searchButton.rx.tap
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, _ in
+                let text = viewController.textFieldView.textField.text
+                viewController.searchButtonPublisher.onNext(text ?? "")
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func configTableView() {
         userListTableView.register(cell: NotificationTableViewCell.self)
         userListTableView.rowHeight = 80
+    }
+    
+    private func bind() {
+        let input = AdminUserViewModel.Input(
+            viewDidLoad: viewDidLoadPublisher.asObservable(),
+            sortedTpye: sortedTpyePublisher.asObservable(),
+            searchButton: searchButtonPublisher.asObservable(),
+            tableViewOffset: tableViewOffsetPublisher.asObservable()
+        )
+        let output = viewModel.transform(input: input)
+
+        let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSortedUserList, output.resultSearchUserList)
+        
+        combinedData
+            .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
+                guard let imageURL = item.imageURLs[safe: 0] else { return }
+                cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
+                Loading.hideLoading()
+            }
+            .disposed(by: disposeBag)
+        
+        output.needToReload
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, _ in
+                viewController.userListTableView.reloadData()
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -95,18 +133,29 @@ final class AdminUserViewController: UIViewController {
 extension AdminUserViewController {
     
     private func configTableViewDatasource() {
-        // 로딩뷰 이거 안먹음 살려주셈살려주셈
-        Loading.showLoading()
-        viewModel.filteredUsers
-            .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
-                guard let imageURL = item.imageURLs[safe: 0] else { return }
-                cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
-            }
-            .disposed(by: disposeBag)
+        var isOffsetPublisherCalled = false
         
+        userListTableView.rx.contentOffset
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, contentOffset in
+                let contentOffsetY = contentOffset.y
+                let contentHeight = viewController.userListTableView.contentSize.height
+                let boundsHeight = viewController.userListTableView.bounds.size.height
+
+                if contentOffsetY > contentHeight - boundsHeight {
+                    if !isOffsetPublisherCalled {
+                        viewController.tableViewOffsetPublisher.onNext(())
+                        isOffsetPublisherCalled = true
+                    }
+                } else {
+                    isOffsetPublisherCalled = false
+                }
+            })
+            .disposed(by: disposeBag)
+
         userListTableView.rx.modelSelected(User.self)
             .subscribe { [weak self] user in
-                let viewController = AdminUserDetailViewController(user: user)
+                let viewController = AdminUserDetailViewController(viewModel: AdminUserDetailViewModel(selectedUser: user))
                 self?.navigationController?.pushViewController(viewController, animated: true)
             }
             .disposed(by: disposeBag)
@@ -117,36 +166,36 @@ extension AdminUserViewController {
 extension AdminUserViewController {
     
     private func addViews() {
-        let views = [filteredButton, textField, sortedMenu, userListTableView]
+        let views = [textFieldView, searchButton, sortedMenu, userListTableView]
         view.addSubview(views)
     }
     
     private func makeConstraints() {
         let padding: CGFloat = 10
         
-        filteredButton.snp.makeConstraints { make in
+        textFieldView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(padding)
             make.leading.equalTo(padding)
-            make.width.equalTo(80)
             make.height.equalTo(40)
         }
         
-        textField.snp.makeConstraints { make in
-            make.top.equalTo(filteredButton)
-            make.leading.equalTo(filteredButton.snp.trailing).offset(padding)
-            make.trailing.equalTo(sortedMenu.snp.leading).offset(-padding)
-            make.height.equalTo(filteredButton.snp.height)
+        searchButton.snp.makeConstraints { make in
+            make.centerY.equalTo(textFieldView)
+            make.leading.equalTo(textFieldView.snp.trailing).offset(padding)
+            make.width.equalTo(60)
+            make.height.equalTo(35)
         }
         
         sortedMenu.snp.makeConstraints { make in
-            make.top.equalTo(filteredButton)
+            make.centerY.equalTo(textFieldView)
+            make.leading.equalTo(searchButton.snp.trailing).offset(padding)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-padding)
-            make.width.equalTo(filteredButton.snp.height)
-            make.height.equalTo(filteredButton.snp.height)
+            make.width.equalTo(textFieldView.snp.height)
+            make.height.equalTo(textFieldView.snp.height)
         }
         
         userListTableView.snp.makeConstraints { make in
-            make.top.equalTo(textField.snp.bottom).offset(padding)
+            make.top.equalTo(textFieldView.snp.bottom).offset(padding)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
