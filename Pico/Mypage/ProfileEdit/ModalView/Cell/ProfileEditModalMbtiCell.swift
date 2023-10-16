@@ -23,8 +23,10 @@ final class ProfileEditModalMbtiCell: UICollectionViewCell {
         super.init(frame: frame)
         addSubView()
         makeConstraints()
+        cellConfigure()
     }
     
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -41,7 +43,7 @@ final class ProfileEditModalMbtiCell: UICollectionViewCell {
         }
     }
     
-    func cellConfigure() {
+    private func cellConfigure() {
         contentView.layer.masksToBounds = false
         contentView.layer.borderColor = UIColor.picoFontGray.cgColor
         contentView.layer.borderWidth = 1

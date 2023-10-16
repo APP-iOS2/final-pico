@@ -17,7 +17,6 @@ final class ProfileEditViewController: UIViewController {
         view.register(cell: ProfileEditImageTableCell.self)
         view.register(cell: ProfileEditNicknameTabelCell.self)
         view.register(cell: ProfileEditLoactionTabelCell.self)
-        view.register(cell: ProfileEditIntroTabelCell.self)
         view.register(cell: ProfileEditTextTabelCell.self)
         view.configBackgroundColor()
         view.separatorStyle = .none
@@ -55,16 +54,9 @@ final class ProfileEditViewController: UIViewController {
                 cell.configure(location: location)
                 return cell
                 
-            case .profileEditIntroTabelCell(let content):
-                let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditIntroTabelCell.self)
-                cell.selectionStyle = .none
-                cell.configure(intro: content)
-                return cell
-                
             case .profileEditTextTabelCell(let title, let content):
                 let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditTextTabelCell.self)
                 cell.configure(titleLabel: title, contentLabel: content)
-               
                 return cell
             }
         }
@@ -91,6 +83,19 @@ final class ProfileEditViewController: UIViewController {
             make.edges.equalToSuperview()
         }
     }
+    
+    private func presentModalView(viewController: UIViewController, viewHeight: CGFloat) {
+        let modalViewController = viewController
+        if let sheet = modalViewController.sheetPresentationController {
+            sheet.prefersGrabberVisible = true
+            if #available(iOS 16.0, *) {
+                sheet.detents = [ .custom { _ in
+                    return viewHeight } ]
+            } else { sheet.detents = [.medium()] }
+        }
+        modalViewController.modalPresentationStyle = .formSheet
+        present(modalViewController, animated: true)
+    }
 }
 
 extension ProfileEditViewController: UITableViewDelegate {
@@ -98,14 +103,8 @@ extension ProfileEditViewController: UITableViewDelegate {
         switch indexPath.section {
         case 0:
             return 155
-        case 1:
+        case 1, 2:
             return 45
-        case 2:
-            if indexPath.row != 0 {
-                return 45
-            } else {
-                return 100
-            }
         default:
             return 0
         }
@@ -127,7 +126,7 @@ extension ProfileEditViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
         case 0:
-            return 20.0
+            return 0
         case 1:
             return 25
         case 2:
@@ -142,40 +141,89 @@ extension ProfileEditViewController: UITableViewDelegate {
         case 0:
             break
         case 1:
-            let modalViewController = ProfileEditTextModalViewController()
-            if let sheet = modalViewController.sheetPresentationController {
-                sheet.prefersGrabberVisible = true
-                if #available(iOS 16.0, *) {
-                    sheet.detents = [ .custom { _ in
-                            return 250 } ]
-                } else { sheet.detents = [.medium()] }
-            }
-            modalViewController.modalPresentationStyle = .formSheet
-            present(modalViewController, animated: true)
-        case 2:
-            let modalViewController = ProfileEditCollectionModalViewController()
             switch indexPath.row {
             case 0:
-                let viewModel = modalViewController.profileEditModalViewModel
-                viewModel.data.accept(viewModel.educationType)
-                viewModel.name.accept("담배")
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.nickName.name)
+                profileEditViewModel.modalType = .nickName
+                profileEditViewModel.textData = profileEditViewModel.userData?.nickName
+                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
             case 1:
-                let viewModel = modalViewController.profileEditModalViewModel
-                viewModel.data.accept(viewModel.frequencyType)
-            case 2:
-                break
+                print("위치 바꾸기")
             default:
                 break
             }
-            if let sheet = modalViewController.sheetPresentationController {
-                sheet.prefersGrabberVisible = true
-                if #available(iOS 16.0, *) {
-                    sheet.detents = [ .custom { _ in
-                        return 250 } ]
-                } else { sheet.detents = [.medium()] }
+        case 2:
+            switch indexPath.row {
+            case 0:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.intro.name)
+                profileEditViewModel.modalType = .intro
+                profileEditViewModel.textData = profileEditViewModel.userData?.subInfo?.intro
+                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
+            case 1:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.height.name)
+                profileEditViewModel.modalType = .height
+                profileEditViewModel.textData = String(profileEditViewModel.userData?.subInfo?.height ?? 0)
+                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
+
+            case 2:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.job.name)
+                profileEditViewModel.modalType = .job
+                profileEditViewModel.textData = profileEditViewModel.userData?.subInfo?.job
+                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
+                
+            case 3:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.religion.name)
+                profileEditViewModel.modalType = .religion
+                profileEditViewModel.modalCollectionData = profileEditViewModel.religionType
+                profileEditViewModel.selectedIndex = profileEditViewModel.findIndex(for: profileEditViewModel.userData?.subInfo?.religion?.rawValue ?? "", in: ReligionType.allCases.map({ $0.rawValue})) ?? nil
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 250)
+                
+            case 4:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.drink.name)
+                profileEditViewModel.modalType = .drink
+                profileEditViewModel.modalCollectionData = profileEditViewModel.frequencyType
+                profileEditViewModel.selectedIndex = profileEditViewModel.findIndex(for: profileEditViewModel.userData?.subInfo?.drinkStatus?.rawValue ?? "", in: FrequencyType.allCases.map({ $0.rawValue})) ?? nil
+                
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 180)
+                
+            case 5:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.smoke.name)
+                profileEditViewModel.modalType = .smoke
+                profileEditViewModel.modalCollectionData = profileEditViewModel.frequencyType
+                profileEditViewModel.selectedIndex = profileEditViewModel.findIndex(for: profileEditViewModel.userData?.subInfo?.smokeStatus?.rawValue ?? "", in: FrequencyType.allCases.map({ $0.rawValue})) ?? nil
+                
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 180)
+                
+            case 6:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.education.name)
+                profileEditViewModel.modalType = .education
+                profileEditViewModel.modalCollectionData = profileEditViewModel.educationType
+                profileEditViewModel.selectedIndex = profileEditViewModel.findIndex(for: profileEditViewModel.userData?.subInfo?.education?.rawValue ?? "", in: EducationType.allCases.map({ $0.rawValue})) ?? nil
+                
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 210)
+                
+            case 7:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.personalities.name)
+                profileEditViewModel.modalType = .personalities
+                profileEditViewModel.collectionData = profileEditViewModel.userData?.subInfo?.personalities
+                
+                presentModalView(viewController: ProfileEditCollTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 250)
+     
+            case 8:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.hobbies.name)
+                profileEditViewModel.modalType = .hobbies
+                profileEditViewModel.collectionData = profileEditViewModel.userData?.subInfo?.hobbies
+                
+                presentModalView(viewController: ProfileEditCollTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 250)
+            case 9:
+                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.favoriteMBTIs.name)
+                profileEditViewModel.modalType = .favoriteMBTIs
+                profileEditViewModel.modalCollectionData = MBTIType.allCases.map { $0.nameString }
+                
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 290)
+            default:
+                break
             }
-            modalViewController.modalPresentationStyle = .formSheet
-            present(modalViewController, animated: true)
         default: break
         }
         tableView.deselectRow(at: indexPath, animated: true)
