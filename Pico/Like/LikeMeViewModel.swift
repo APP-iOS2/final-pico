@@ -80,25 +80,27 @@ final class LikeMeViewModel: ViewModelType {
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
         let endIndex = startIndex + pageSize
         
-        ref.getDocument { [weak self] document, error in
-            guard let self = self else { return }
-            if let error = error {
-                print(error)
-                return
-            }
-            
-            if let document = document, document.exists {
-                if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType == .like }) {
-                    if startIndex > datas.count - 1 {
-                        return
-                    }
-                    let currentPageDatas: [Like.LikeInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
-                    likeMeList.append(contentsOf: currentPageDatas)
-                    startIndex += currentPageDatas.count
-                    reloadTableViewPublisher.onNext(())
+        DispatchQueue.global().async {
+            ref.getDocument { [weak self] document, error in
+                guard let self = self else { return }
+                if let error = error {
+                    print(error)
+                    return
                 }
-            } else {
-                print("문서를 찾을 수 없습니다.")
+                
+                if let document = document, document.exists {
+                    if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType == .like }) {
+                        if startIndex > datas.count - 1 {
+                            return
+                        }
+                        let currentPageDatas: [Like.LikeInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
+                        likeMeList.append(contentsOf: currentPageDatas)
+                        startIndex += currentPageDatas.count
+                        reloadTableViewPublisher.onNext(())
+                    }
+                } else {
+                    print("문서를 찾을 수 없습니다.")
+                }
             }
         }
     }
