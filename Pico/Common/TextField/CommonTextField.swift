@@ -18,7 +18,6 @@ import RxSwift
  
  commonTextField.snp.makeConstraints { make in
     // top, leading, trailing 제약조건 추가
-    // height 40으로 고정해주세요
      make.height.equalTo(40)
  }
  */
@@ -36,7 +35,7 @@ final class CommonTextField: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
-        button.tintColor = .picoBlue
+        button.tintColor = .picoGray
         button.isHidden = true
         return button
     }()
@@ -53,7 +52,6 @@ final class CommonTextField: UIView {
         makeConstraints()
         configTextField()
         configButtons()
-        configBorder(color: .picoGray, width: 0)
     }
     
     @available(*, unavailable)
@@ -77,20 +75,11 @@ final class CommonTextField: UIView {
 
 extension CommonTextField: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        configBorder()
         removeAllButton.isHidden = false
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        configBorder(color: .picoGray, width: 0)
         removeAllButton.isHidden = true
-    }
-    
-    private func configBorder(color: UIColor = .picoBlue, width: CGFloat = 2) {
-        self.layer.borderColor = color.cgColor
-        self.layer.borderWidth = width
-        self.layer.cornerRadius = 5
-        self.clipsToBounds = true
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

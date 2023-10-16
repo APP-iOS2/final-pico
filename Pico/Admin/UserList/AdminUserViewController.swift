@@ -58,6 +58,9 @@ final class AdminUserViewController: UIViewController {
     private let sortedTpyePublisher = PublishSubject<SortType>()
     private let searchButtonPublisher = PublishSubject<String>()
     private let tableViewOffsetPublisher = PublishSubject<Void>()
+    private let refreshPublisher = PublishSubject<Void>()
+    
+    private let refreshControl = UIRefreshControl()
     
     init(viewModel: AdminUserViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -72,8 +75,10 @@ final class AdminUserViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        Loading.showLoading()
         addViews()
         makeConstraints()
+        configRefresh()
         configButtons()
         configTableView()
         configTableViewDatasource()
@@ -86,10 +91,17 @@ final class AdminUserViewController: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
     
+    private func configRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        userListTableView.refreshControl = refreshControl
+    }
+    
     private func configButtons() {
         searchButton.rx.tap
             .withUnretained(self)
             .subscribe(onNext: { viewController, _ in
+                viewController.searchButton.tappedAnimation()
                 let text = viewController.textFieldView.textField.text
                 viewController.searchButtonPublisher.onNext(text ?? "")
             })
@@ -98,7 +110,7 @@ final class AdminUserViewController: UIViewController {
     
     private func configTableView() {
         userListTableView.register(cell: NotificationTableViewCell.self)
-        userListTableView.rowHeight = 80
+        userListTableView.rowHeight = 280
     }
     
     private func bind() {
@@ -106,17 +118,17 @@ final class AdminUserViewController: UIViewController {
             viewDidLoad: viewDidLoadPublisher.asObservable(),
             sortedTpye: sortedTpyePublisher.asObservable(),
             searchButton: searchButtonPublisher.asObservable(),
-            tableViewOffset: tableViewOffsetPublisher.asObservable()
+            tableViewOffset: tableViewOffsetPublisher.asObservable(),
+            refresh: refreshPublisher.asObservable()
         )
         let output = viewModel.transform(input: input)
 
-        let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSortedUserList, output.resultSearchUserList)
+        let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSortedUserList, output.resultSearchUserList, output.resultPagingList)
         
         combinedData
             .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
                 guard let imageURL = item.imageURLs[safe: 0] else { return }
                 cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
-                Loading.hideLoading()
             }
             .disposed(by: disposeBag)
         
@@ -126,6 +138,14 @@ final class AdminUserViewController: UIViewController {
                 viewController.userListTableView.reloadData()
             })
             .disposed(by: disposeBag)
+    }
+    
+    @objc private func refreshTable(_ refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            refreshPublisher.onNext(())
+            refresh.endRefreshing()
+        }
     }
 }
 
@@ -140,7 +160,7 @@ extension AdminUserViewController {
             .subscribe(onNext: { viewController, contentOffset in
                 let contentOffsetY = contentOffset.y
                 let contentHeight = viewController.userListTableView.contentSize.height
-                let boundsHeight = viewController.userListTableView.bounds.size.height
+                let boundsHeight = viewController.userListTableView.frame.size.height
 
                 if contentOffsetY > contentHeight - boundsHeight {
                     if !isOffsetPublisherCalled {

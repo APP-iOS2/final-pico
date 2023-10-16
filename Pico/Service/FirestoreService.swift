@@ -121,8 +121,8 @@ final class FirestoreService {
         let query = dbRef.collection(collectionId.name)
             .order(by: "createdDate", descending: true)
         
-        DispatchQueue.global().async { [weak self] in
-            self?.dbRef.collection(collectionId.name).getDocuments { querySnapshot, error in
+        DispatchQueue.global().async {
+            query.getDocuments { querySnapshot, error in
                 if let error = error {
                     print("Error to load new document at \(collectionId.name) \(error)")
                     completion(.failure(error))
@@ -143,11 +143,10 @@ final class FirestoreService {
     }
     
     func loadDocuments<T: Codable>(collectionId: Collections, dataType: T.Type, itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?, completion: @escaping (Result<([T], DocumentSnapshot?), Error>) -> Void) {
-        
         var lastDocumentSnapshot = lastDocumentSnapshot
         
         let query = dbRef.collection(collectionId.name)
-            .order(by: "createdDate", descending: true)
+//            .order(by: "createdDate", descending: true)
             .limit(to: itemsPerPage)
         
         if let lastSnapshots = lastDocumentSnapshot {

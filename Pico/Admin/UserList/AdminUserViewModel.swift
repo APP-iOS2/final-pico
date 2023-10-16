@@ -44,7 +44,7 @@ enum SortType: CaseIterable {
 }
 
 final class AdminUserViewModel: ViewModelType {
-    private let itemsPerPage: Int = 10
+    private let itemsPerPage: Int = 5
     private var lastDocumentSnapshot: DocumentSnapshot?
     
     private(set) var userList: [User] = []
@@ -55,25 +55,41 @@ final class AdminUserViewModel: ViewModelType {
         let sortedTpye: Observable<SortType>
         let searchButton: Observable<String>
         let tableViewOffset: Observable<Void>
+        let refresh: Observable<Void>
     }
     
     struct Output {
         let resultToViewDidLoad: Observable<[User]>
         let resultSortedUserList: Observable<[User]>
         let resultSearchUserList: Observable<[User]>
+        let resultPagingList: Observable<[User]>
         let needToReload: Observable<Void>
     }
     //  질문: withUnretained 이거 바로 아래밖에 적용이 안되는지 ?
     func transform(input: Input) -> Output {
-        let responseViewDidLoad = Observable.merge(input.tableViewOffset, input.viewDidLoad)
-            .flatMap { _ -> Observable<[User]> in
-                Loading.showLoading()
-                return FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
-            }
+        let responseViewDidLoad = Observable.merge(input.refresh, input.viewDidLoad)
             .withUnretained(self)
-            .map { viewModel, users in
-                viewModel.userList = users
-                return viewModel.userList
+            .flatMap { (viewModel, _) -> Observable<([User], DocumentSnapshot?)> in
+                return FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
+            }
+            .map { users, snapShot in
+                self.userList.removeAll()
+                self.lastDocumentSnapshot = snapShot
+                self.userList = users
+                Loading.hideLoading()
+                return self.userList
+            }
+        
+        let responseTableViewPaging = input.tableViewOffset
+            .withUnretained(self)
+            .flatMap { (viewModel, _) -> Observable<[User]> in
+                Loading.showLoading()
+                return viewModel.loadNextPage()
+            }
+            .map { users in
+                self.userList = users
+                Loading.hideLoading()
+                return self.userList
             }
         
         let responseSorted = input.sortedTpye
@@ -92,6 +108,7 @@ final class AdminUserViewModel: ViewModelType {
             resultToViewDidLoad: responseViewDidLoad,
             resultSortedUserList: responseSorted,
             resultSearchUserList: responseSearchButton,
+            resultPagingList: responseTableViewPaging,
             needToReload: reloadPublisher.asObservable()
         )
     }
@@ -121,6 +138,48 @@ final class AdminUserViewModel: ViewModelType {
                 sortedUser.nickName.contains(text)
             }
             return users
+        }
+    }
+    
+    private func loadNextPage() -> Observable<[User]> {
+        let dbRef = Firestore.firestore()
+        
+        return Observable.create { [weak self] emitter in
+            guard let self = self else { return Disposables.create()}
+            
+            var query = dbRef.collection(Collections.users.name)
+//                .order(by: "createdDate", descending: true)
+                .limit(to: itemsPerPage)
+            
+            if let lastSnapshot = lastDocumentSnapshot {
+                query = query.start(afterDocument: lastSnapshot)
+            }
+            
+            DispatchQueue.global().async {
+                query.getDocuments { [weak self] snapshot, error in
+                    guard let self = self else { return }
+                    if let error = error {
+                        emitter.onError(error)
+                        return
+                    }
+                    guard let documents = snapshot?.documents else { return }
+                    
+                    if documents.isEmpty {
+                        Loading.hideLoading()
+                        return
+                    }
+                    
+                    lastDocumentSnapshot = documents.last
+                    
+                    for document in documents {
+                        if let data = try? document.data(as: User.self) {
+                            userList.append(data)
+                        }
+                    }
+                    emitter.onNext(userList)
+                }
+            }
+            return Disposables.create()
         }
     }
 }
