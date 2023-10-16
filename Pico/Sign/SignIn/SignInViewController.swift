@@ -83,6 +83,7 @@ final class SignInViewController: UIViewController {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
         button.backgroundColor = .picoGray
+        button.isEnabled = false
         return button
     }()
     

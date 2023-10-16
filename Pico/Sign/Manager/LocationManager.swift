@@ -29,7 +29,7 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
                 self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
                 self.locationManager.startUpdatingLocation()
             } else {
-                print("이미 했잖아")
+                print("위치 서비스에 동의를 안하셨네요?")
             }
         }
     }

@@ -1,10 +1,8 @@
-//
 //  YoloManager.swift
 //  Pico
 //
 //  Created by LJh on 10/16/23.
 //
-
 import Foundation
 import CoreML
 import Vision
@@ -13,7 +11,7 @@ import UIKit
 final class YoloManager {
     var isDetectedImage: Bool? = false
     var objectDetectionRequest: VNCoreMLRequest?
-    
+
     func loadYOLOv3Model() {
         let configuration = MLModelConfiguration()
         guard let yoloModel = try? VNCoreMLModel(for: YOLOv3(configuration: configuration).model) else {
@@ -24,7 +22,7 @@ final class YoloManager {
             self?.isDetectedImage = self?.handleObjectDetectionResults(request: request, error: error)
         })
     }
-    
+
     func handleObjectDetectionResults(request: VNRequest, error: Error?) -> Bool {
         guard let results = request.results as? [VNRecognizedObjectObservation] else { return false }
 
@@ -42,7 +40,7 @@ final class YoloManager {
         }
         return false
     }
-    
+
     func detectPeople(image: UIImage, completion: @escaping () -> ()) {
         guard let cgImage = image.cgImage, let objectDetectionRequest = objectDetectionRequest else { return }
 
