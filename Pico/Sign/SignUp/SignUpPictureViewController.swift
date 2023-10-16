@@ -27,13 +27,13 @@ final class SignUpPictureViewController: UIViewController {
     private var isDetectedImage: Bool? = false
     private var objectDetectionRequest: VNCoreMLRequest?
     private var userImages: [UIImage] = []
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142 * 6
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -94,7 +94,9 @@ final class SignUpPictureViewController: UIViewController {
         configCollectionView()
         yoloManager.loadYOLOv3Model()
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 6)
+    }
     // MARK: - Config
     private func configCollectionView() {
         collectionView.configBackgroundColor()

@@ -19,6 +19,7 @@ final class SignUpViewModel {
     var locationSubject: PublishSubject<Location> = PublishSubject()
     var isSaveSuccess: PublishSubject<Void> = PublishSubject()
     private let disposeBag = DisposeBag()
+    
     var isRightUser: Bool = false
     var isRightName: Bool = false
     let id = UUID().uuidString
@@ -41,6 +42,8 @@ final class SignUpViewModel {
     
     lazy var newUser: User =
     User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
+    
+    var progressStatus: Float = 0.0
     
     init() {
         locationSubject.subscribe { location in
@@ -66,11 +69,12 @@ final class SignUpViewModel {
             }.disposed(by: disposeBag)
     }
     
-    func animateProgressBar(progressView: UIProgressView, startPoint: Float, endPoint: Float) {
-        progressView.progress = 0.0
+    func animateProgressBar(progressView: UIProgressView, endPoint: Float) {
+        let endStatus = endPoint * 0.143
         UIView.animate(withDuration: 3) {
-            progressView.setProgress(0.1, animated: true)
+            progressView.setProgress(endStatus, animated: true)
         }
+        progressStatus = endStatus
     }
 
     func saveImage() {

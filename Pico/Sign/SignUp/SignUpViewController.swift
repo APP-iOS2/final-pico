@@ -21,7 +21,7 @@ final class SignUpViewController: UIViewController {
         view.progressTintColor = .picoBlue
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
-        view.progress = 0.0
+        view.progress = viewModel.progressStatus
         return view
     }()
 
@@ -109,7 +109,7 @@ final class SignUpViewController: UIViewController {
         
     }
     override func viewDidAppear(_ animated: Bool) {
-        viewModel.animateProgressBar(progressView: progressView, startPoint: 0.0, endPoint: 0.14)
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 1)
     }
 }
 // MARK: - Config

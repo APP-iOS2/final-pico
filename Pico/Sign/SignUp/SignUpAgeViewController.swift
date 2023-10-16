@@ -36,13 +36,13 @@ final class SignUpAgeViewController: UIViewController {
         return dateString
     }
     
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142 * 4
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -86,6 +86,9 @@ final class SignUpAgeViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configDatePicker()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 4)
     }
 }
 // MARK: - Config

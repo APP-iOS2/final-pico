@@ -23,13 +23,13 @@ final class SignUpGenderViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.426
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -80,6 +80,9 @@ final class SignUpGenderViewController: UIViewController {
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 3)
     }
 }
 // MARK: - Config

@@ -39,13 +39,13 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return label
     }()
     
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.284
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -114,13 +114,14 @@ final class SignUpPhoneNumberViewController: UIViewController {
         configButtons()
         configTextField()
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 2)
+    }
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
     }
-    
+   
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         keyboardManager.unregisterKeyboard()

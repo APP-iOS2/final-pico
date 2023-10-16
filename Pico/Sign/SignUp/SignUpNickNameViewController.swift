@@ -24,13 +24,13 @@ final class SignUpNickNameViewController: UIViewController {
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false
     private var userNickName: String = ""
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142 * 5
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -107,7 +107,9 @@ final class SignUpNickNameViewController: UIViewController {
         configButtons()
         configTextField()
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 5)
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         keyboardManager.registerKeyboard(with: nextButton)

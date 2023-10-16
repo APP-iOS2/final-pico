@@ -28,13 +28,13 @@ final class SignUpTermsOfServiceViewController: UIViewController {
     private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts
     
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142 * 7
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -78,6 +78,9 @@ final class SignUpTermsOfServiceViewController: UIViewController {
                 self.navigationController?.popToRootViewController(animated: true)
             }
             .disposed(by: disposeBag)
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 7)
     }
 }
 // MARK: - Config
