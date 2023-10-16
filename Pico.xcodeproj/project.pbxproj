@@ -14,7 +14,6 @@
 		3677DBC92AD4EC530026E089 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3677DBC82AD4EC530026E089 /* SignInViewModel.swift */; };
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
-		368D4D9E2ADCC94900322D91 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 368D4D9C2ADCC94800322D91 /* YOLOv3.mlmodel */; };
 		368D4DA12ADCC9DF00322D91 /* YoloManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D4DA02ADCC9DF00322D91 /* YoloManager.swift */; };
 		368D4DA52ADCD9B000322D91 /* PictureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D4DA42ADCD9B000322D91 /* PictureManager.swift */; };
 		368D4DA72ADCDBE800322D91 /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D4DA62ADCDBE800322D91 /* KeyboardManager.swift */; };
@@ -215,7 +214,6 @@
 		3677DBC82AD4EC530026E089 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
-		368D4D9C2ADCC94800322D91 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
 		368D4DA02ADCC9DF00322D91 /* YoloManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoloManager.swift; sourceTree = "<group>"; };
 		368D4DA42ADCD9B000322D91 /* PictureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureManager.swift; sourceTree = "<group>"; };
 		368D4DA62ADCDBE800322D91 /* KeyboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
@@ -775,7 +773,6 @@
 			isa = PBXGroup;
 			children = (
 				368D4DA82ADCE16700322D91 /* Info.plist */,
-				368D4D9C2ADCC94800322D91 /* YOLOv3.mlmodel */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
@@ -1391,7 +1388,6 @@
 				4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */,
 				36CD4CFC2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
-				368D4D9E2ADCC94900322D91 /* YOLOv3.mlmodel in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
 				369B25522ADB1FB4005C452D /* SmsAuthManager.swift in Sources */,
