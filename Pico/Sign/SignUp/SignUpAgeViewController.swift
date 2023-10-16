@@ -9,7 +9,6 @@ import UIKit
 import SnapKit
 
 final class SignUpAgeViewController: UIViewController {
-    private let viewModel: SignUpViewModel = .shared
     private var isChoiceAge: Bool = false
     private var selectedYear: Int = 2000
     private var selectedMonth: Int = 1
@@ -18,7 +17,16 @@ final class SignUpAgeViewController: UIViewController {
     private let years = Array(1900...2023)
     private let months = Array(1...12)
     private var days: [Int] = []
+    private let viewModel: SignUpViewModel
     
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     private var userAge: String {
         let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -107,7 +115,7 @@ extension SignUpAgeViewController {
 
             viewModel.birth = userAge
             sender.tappedAnimation()
-            let viewController = SignUpNickNameViewController()
+            let viewController = SignUpNickNameViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }

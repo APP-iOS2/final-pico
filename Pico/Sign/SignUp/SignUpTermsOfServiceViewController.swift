@@ -12,7 +12,16 @@ import RxSwift
 import RxRelay
 
 final class SignUpTermsOfServiceViewController: UIViewController {
-    private let viewModel: SignUpViewModel = .shared
+    private let viewModel: SignUpViewModel
+    
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     private let locationVM = LocationManager()
     private let disposeBag = DisposeBag()
     private var isLoading: Bool = false

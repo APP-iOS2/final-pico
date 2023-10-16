@@ -12,7 +12,17 @@ import RxSwift
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
     private let authManager = SmsAuthManager()
-    private let viewModel: SignUpViewModel = .shared
+    private let viewModel: SignUpViewModel
+    
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
@@ -227,7 +237,7 @@ extension SignUpPhoneNumberViewController {
         }
         print("성공성공")
         self.showAlert(message: "인증에 성공하셨습니다.") {
-            let viewController = SignUpGenderViewController()
+            let viewController = SignUpGenderViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
