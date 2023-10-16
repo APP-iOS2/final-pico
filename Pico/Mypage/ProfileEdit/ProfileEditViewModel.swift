@@ -80,14 +80,14 @@ final class ProfileEditViewModel {
                     SectionModel(items: [
                         .profileEditIntroTabelCell(content: data.subInfo?.intro ?? ""),
                         .profileEditTextTabelCell(title: SubInfoCase.height.name, content: "\(data.subInfo?.height ?? 0)"),
-                    .profileEditTextTabelCell(title: SubInfoCase.education.name, content: data.subInfo?.education.rawValue),
-                    .profileEditTextTabelCell(title: SubInfoCase.religion.name, content: data.subInfo?.religion.rawValue),
-                    .profileEditTextTabelCell(title: SubInfoCase.drink.name, content: data.subInfo?.drinkStatus.rawValue),
-                    .profileEditTextTabelCell(title: SubInfoCase.smoke.name, content: data.subInfo?.smokeStatus.rawValue),
+                        .profileEditTextTabelCell(title: SubInfoCase.education.name, content: data.subInfo?.education?.rawValue),
+                        .profileEditTextTabelCell(title: SubInfoCase.religion.name, content: data.subInfo?.religion?.rawValue),
+                        .profileEditTextTabelCell(title: SubInfoCase.drink.name, content: data.subInfo?.drinkStatus?.rawValue),
+                        .profileEditTextTabelCell(title: SubInfoCase.smoke.name, content: data.subInfo?.smokeStatus?.rawValue),
                     .profileEditTextTabelCell(title: SubInfoCase.job.name, content: data.subInfo?.job),
-                    .profileEditTextTabelCell(title: SubInfoCase.personalities.name, content: data.subInfo?.personalities[0]),
-                    .profileEditTextTabelCell(title: SubInfoCase.hobbies.name, content: data.subInfo?.hobbies[0]),
-                    .profileEditTextTabelCell(title: SubInfoCase.favoriteMBTIs.name, content: data.subInfo?.favoriteMBTIs[0].rawValue)
+                        .profileEditTextTabelCell(title: SubInfoCase.personalities.name, content: data.subInfo?.personalities?[0]),
+                        .profileEditTextTabelCell(title: SubInfoCase.hobbies.name, content: data.subInfo?.hobbies?[0]),
+                        .profileEditTextTabelCell(title: SubInfoCase.favoriteMBTIs.name, content: data.subInfo?.favoriteMBTIs?[0].rawValue)
                         ])
                     ]
                 sectionsRelay.accept(result)

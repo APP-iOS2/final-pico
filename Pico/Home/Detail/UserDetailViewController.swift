@@ -96,8 +96,8 @@ final class UserDetailViewController: UIViewController {
                 self.navigationItem.title = "\(user.nickName),  \(user.age)"
                 self.userImageViewController.config(images: user.imageURLs)
                 self.basicInformationViewContoller.config(mbti: user.mbti, nameAgeText: "\(user.nickName),  \(user.age)", locationText: "\(user.location.address)", heightText: "\(subInfo.height)")
-                self.aboutMeViewController.config(intro: subInfo.intro, eduText: "\(subInfo.education)", religionText: "\(subInfo.religion)", smokeText: "\(subInfo.smokeStatus)", jobText: "\(subInfo.job)", drinkText: "\(subInfo.drinkStatus)")
-                self.subInfomationViewController.config(hobbies: subInfo.hobbies, personalities: subInfo.personalities, likeMbtis: subInfo.favoriteMBTIs)
+                self.aboutMeViewController.config(intro: subInfo.intro ?? "", eduText: "\(subInfo.education)", religionText: "\(subInfo.religion)", smokeText: "\(subInfo.smokeStatus)", jobText: "\(subInfo.job)", drinkText: "\(subInfo.drinkStatus)")
+                self.subInfomationViewController.config(hobbies: subInfo.hobbies ?? [], personalities: subInfo.personalities ?? [], likeMbtis: subInfo.favoriteMBTIs ?? [])
             }, onCompleted: {
                 Loading.hideLoading()
             })
