@@ -93,9 +93,13 @@ final class SignUpPictureViewController: UIViewController {
         makeConstraints()
         configCollectionView()
         yoloManager.loadYOLOv3Model()
+        pictureManager.requestPhotoLibraryAccess()
     }
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 6)
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        SignLoadingManager.hideLoading()
     }
     // MARK: - Config
     private func configCollectionView() {
@@ -141,6 +145,8 @@ final class SignUpPictureViewController: UIViewController {
                 if allImagesDetected {
                     self.showAlert(message: "이미지가 등록되었습니다.") {
                         self.viewModel.imageArray = self.userImages
+                        
+                        SignLoadingManager.showLoading(text: "넘어가는중!")
                         let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
                         self.navigationController?.pushViewController(viewController, animated: true)
                     }
@@ -160,13 +166,32 @@ final class SignUpPictureViewController: UIViewController {
 extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @objc private func openPhotoLibrary() {
-        pictureManager.requestPhotoLibraryAccess()
+        
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             var configuration = PHPickerConfiguration()
             configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
             let picker = PHPickerViewController(configuration: configuration)
             picker.delegate = self
             present(picker, animated: true, completion: nil)
+        } else {
+            DispatchQueue.main.async {
+                let alertController = UIAlertController(title: "사진 라이브러리 권한 필요",
+                                                        message: "사진을 선택하려면 사진 라이브러리 권한이 필요합니다. 설정에서 권한을 변경할 수 있습니다.",
+                                                        preferredStyle: .alert)
+                
+                let settingsAction = UIAlertAction(title: "설정으로 이동", style: .default) { _ in
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(settingsURL)
+                    }
+                }
+                
+                let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+                
+                alertController.addAction(settingsAction)
+                alertController.addAction(cancelAction)
+                
+                self.present(alertController, animated: true)
+            }
         }
     }
     

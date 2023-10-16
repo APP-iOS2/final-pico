@@ -88,7 +88,7 @@ final class SignUpViewModel {
     }
     
     func checkPhoneNumber(userNumber: String, completion: @escaping () -> ()) {
-        Loading.showLoading()
+        SignLoadingManager.showLoading(text: "중복된 번호를 찾고 있어요!")
         self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
             guard err == nil, let documents = snapShot?.documents else {
                 print(err ?? "서버오류 비상비상")
@@ -107,7 +107,7 @@ final class SignUpViewModel {
     }
     
     func checkNickName(name: String, completion: @escaping () -> ()) {
-        Loading.showLoading()
+        SignLoadingManager.showLoading(text: "중복된 닉네임을 찾고 있어요!")
         self.dbRef.collection("users").whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
             guard err == nil, let documents = snapShot?.documents else {
                 print(err ?? "서버오류 비상비상")

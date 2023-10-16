@@ -120,6 +120,10 @@ final class SignUpNickNameViewController: UIViewController {
         super.viewWillDisappear(animated)
         keyboardManager.unregisterKeyboard()
     }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        SignLoadingManager.hideLoading()
+    }
 }
 // MARK: - Config
 extension SignUpNickNameViewController {
@@ -178,13 +182,13 @@ extension SignUpNickNameViewController {
         showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) {
             self.viewModel.checkNickName(name: self.userNickName) {
                 guard self.viewModel.isRightName else {
-                    Loading.hideLoading()
+                    SignLoadingManager.hideLoading()
                     self.showAlert(message: "이미 등록된 이름입니다.") {
                         self.reset()
                     }
                     return
                 }
-                Loading.hideLoading()
+                SignLoadingManager.hideLoading()
             }
             self.updateCheckButton(isFull: true, ischeck: true)
             self.updateNextButton(isCheck: true)
@@ -200,11 +204,21 @@ extension SignUpNickNameViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
+        /*
+         !!!: 멘토링 질문
+         2023-10-16 18:25:04.804179+0900 Pico[8452:2229602] Metal API Validation Enabled
+         2023-10-16 18:25:09.469090+0900 Pico[8452:2229938] Task <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1> finished with error [-1002] Error Domain=NSURLErrorDomain Code=-1002 "unsupported URL" UserInfo={NSLocalizedDescription=unsupported URL, NSErrorFailingURLStringKey=chu, NSErrorFailingURLKey=chu, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+             "LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>"
+         ), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>, NSUnderlyingError=0x281268f90 {Error Domain=kCFErrorDomainCFNetwork Code=-1002 "(null)"}}
+         2023-10-16 18:25:09.470571+0900 Pico[8452:2229602] [SystemGestureGate] <0x10600de80> Gesture: System gesture gate timed out.
+         2023-10-16 18:25:09.471088+0900 Pico[8452:2229602] [Presentation] Attempt to present <UIAlertController: 0x105abde00> on <Pico.PictureManager: 0x1064935e0> (from <Pico.PictureManager: 0x1064935e0>) whose view is not in the window hierarchy.
+         라는게 뜨면서 넘어가는게느림
+         */
         self.viewModel.nickName = userNickName
+        SignLoadingManager.showLoading(text: "넘어가는중!")
         let viewController = SignUpPictureViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
-   
 }
 
 // MARK: - 텍스트 필드 관련

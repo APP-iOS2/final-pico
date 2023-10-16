@@ -36,7 +36,8 @@ final class SignLoadingAnimationView: UIView {
         label.text = "잠시만용~ 평가중이에요."
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
-        label.font = UIFont.picoDescriptionFont
+        label.font = UIFont.picoSubTitleFont
+        label.textColor = .picoAlphaBlue
         return label
     }()
     
