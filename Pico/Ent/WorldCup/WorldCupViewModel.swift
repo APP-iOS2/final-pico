@@ -39,7 +39,7 @@ final class WorldCupViewModel {
     
     func configure(cell: WorldCupCollectionViewCell, with user: User) {
         cell.mbtiLabel.text = user.mbti.rawValue
-        cell.userNickname.text = user.nickName
+        cell.userNickname.text = String(user.nickName.prefix(4))
         cell.userAge.text = "\(user.age)세"
         
         let dataLabelTexts = addDataLabels(user)

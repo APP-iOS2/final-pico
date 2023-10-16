@@ -145,7 +145,7 @@ final class WorldCupResultViewController: UIViewController {
         if let selectedItem = selectedItem {
             resultUserView.mbtiLabel.text = "\(selectedItem.mbti)"
             resultUserView.userNickname.text = "\(selectedItem.nickName)"
-            resultUserView.userAge.text = "\(selectedItem.age)"
+            resultUserView.userAge.text = "\(selectedItem.age)세"
             
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {
                 resultUserView.userImage.load(url: url)
