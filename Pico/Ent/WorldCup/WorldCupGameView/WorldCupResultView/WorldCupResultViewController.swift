@@ -119,7 +119,7 @@ final class WorldCupResultViewController: UIViewController {
             make.top.equalTo(contentLabel.snp.bottom).offset(padding * 2)
             make.centerX.equalToSuperview()
             make.width.equalTo(200)
-            make.height.equalTo(200)
+            make.height.equalTo(250)
         }
         
         chatButton.snp.makeConstraints { make in
@@ -145,6 +145,7 @@ final class WorldCupResultViewController: UIViewController {
         if let selectedItem = selectedItem {
             resultUserView.mbtiLabel.text = "\(selectedItem.mbti)"
             resultUserView.userNickname.text = "\(selectedItem.nickName)"
+            resultUserView.userAge.text = "\(selectedItem.age)"
             
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {
                 do {

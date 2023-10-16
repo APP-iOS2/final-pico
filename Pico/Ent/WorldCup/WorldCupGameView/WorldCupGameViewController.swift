@@ -94,6 +94,12 @@ final class WorldCupGameViewController: UIViewController {
         collectionView.layer.shadowRadius = radius
     }
     
+    private func showResultViewController(with user: User) {
+        let resultViewController = WorldCupResultViewController()
+        resultViewController.selectedItem = user
+        navigationController?.pushViewController(resultViewController, animated: true)
+    }
+    
     private func addViews() {
         [backgroundImageView, roundLabel, contentLabel, collectionView, vsImageView].forEach { item in
             view.addSubview(item)
@@ -188,7 +194,7 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             collectionView.reloadData()
         default:
             let selectedItem = finals[index - 12 + indexPath.item]
-            winner.append(selectedItem)
+            showResultViewController(with: selectedItem)
         }
     }
 }
