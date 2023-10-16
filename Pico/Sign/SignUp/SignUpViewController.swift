@@ -14,16 +14,17 @@ final class SignUpViewController: UIViewController {
     let viewModel: SignUpViewModel = SignUpViewModel()
     private var userMbti: [String] = ["", "", "", ""]
     private var mbti: String = ""
-    private let progressView: UIProgressView = {
+    
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = 0.0
         return view
     }()
-    
+
     private let notifyLabel: UILabel = {
         let label = UILabel()
         label.text = "성격유형을 선택하세요."
@@ -105,6 +106,10 @@ final class SignUpViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configButtons()
+        
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, startPoint: 0.0, endPoint: 0.14)
     }
 }
 // MARK: - Config

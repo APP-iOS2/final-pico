@@ -66,6 +66,13 @@ final class SignUpViewModel {
             }.disposed(by: disposeBag)
     }
     
+    func animateProgressBar(progressView: UIProgressView, startPoint: Float, endPoint: Float) {
+        progressView.progress = 0.0
+        UIView.animate(withDuration: 3) {
+            progressView.setProgress(0.1, animated: true)
+        }
+    }
+
     func saveImage() {
         imagesSubject.onNext(imageArray)
     }
