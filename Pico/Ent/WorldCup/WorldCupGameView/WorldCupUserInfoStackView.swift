@@ -76,9 +76,14 @@ final class WorldCupUserInfoStackView: UIView {
         guard texts.count == dataLabels.count else {
             return
         }
-        
+
         for (index, text) in texts.enumerated() {
             dataLabels[index].text = text
+
+            if index == 2, !text.isEmpty, text.count > 6 {
+                let truncatedText = String(text.prefix(6)) + "..."
+                dataLabels[index].text = truncatedText
+            }
         }
     }
 }
