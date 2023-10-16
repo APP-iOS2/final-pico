@@ -114,9 +114,11 @@ final class SignUpPhoneNumberViewController: UIViewController {
         configButtons()
         configTextField()
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 2)
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
@@ -126,6 +128,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         super.viewWillDisappear(animated)
         keyboardManager.unregisterKeyboard()
     }
+    
     override func viewDidDisappear(_ animated: Bool) {
         SignLoadingManager.hideLoading()
     }

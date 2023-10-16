@@ -5,11 +5,11 @@
 //  Created by LJh on 10/16/23.
 //
 import UIKit
-import PhotosUI
 import Photos
 
-final class PictureManager: UIViewController {
-    func unauthorized() {
+final class PictureManager {
+    
+    func unauthorized(in viewController: UIViewController) {
         DispatchQueue.main.async {
             let alertController = UIAlertController(title: "사진 라이브러리 권한 필요",
                                                     message: "사진을 선택하려면 사진 라이브러리 권한이 필요합니다. 설정에서 권한을 변경할 수 있습니다.",
@@ -26,22 +26,19 @@ final class PictureManager: UIViewController {
             alertController.addAction(settingsAction)
             alertController.addAction(cancelAction)
             
-            self.present(alertController, animated: true)
+            viewController.present(alertController, animated: true)
         }
     }
-    func requestPhotoLibraryAccess() {
+
+    func requestPhotoLibraryAccess(in viewController: UIViewController) {
         PHPhotoLibrary.requestAuthorization { status in
             switch status {
             case .authorized:
                 break
-            case .denied, .restricted:
-                self.unauthorized()
-            case .notDetermined:
-                self.unauthorized()
-            case .limited:
-                self.unauthorized()
+            case .denied, .restricted, .notDetermined, .limited:
+                self.unauthorized(in: viewController)
             @unknown default:
-                self.unauthorized()
+                self.unauthorized(in: viewController)
             }
         }
     }
