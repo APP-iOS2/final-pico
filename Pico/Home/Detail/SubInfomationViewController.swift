@@ -68,7 +68,7 @@ final class SubInfomationViewController: BaseViewController {
         viewModel.userObservable
             .subscribe(onNext: { user in
                 guard let subInfo = user.subInfo else { return }
-                self.hobbies = subInfo.hobbies
+                self.hobbies = subInfo.hobbies ?? []
             })
             .disposed(by: disposeBag)
     }

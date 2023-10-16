@@ -8,17 +8,17 @@
 import Foundation
 
 struct SubInfo: Codable {
-    let intro: String
-    let height: Int
-    let drinkStatus: FrequencyType
-    let smokeStatus: FrequencyType
-    let religion: ReligionType
-    let education: EducationType
-    let job: String
+    let intro: String?
+    let height: Int?
+    let drinkStatus: FrequencyType?
+    let smokeStatus: FrequencyType?
+    let religion: ReligionType?
+    let education: EducationType?
+    let job: String?
     
-    let hobbies: [String]
-    let personalities: [String]
-    let favoriteMBTIs: [MBTIType]
+    let hobbies: [String]?
+    let personalities: [String]?
+    let favoriteMBTIs: [MBTIType]?
 }
 
 enum FrequencyType: String, CaseIterable, Codable {
