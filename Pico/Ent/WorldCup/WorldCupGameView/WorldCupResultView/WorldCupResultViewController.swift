@@ -148,16 +148,11 @@ final class WorldCupResultViewController: UIViewController {
             resultUserView.userAge.text = "\(selectedItem.age)"
             
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {
-                do {
-                    let data = try Data(contentsOf: url)
-                    resultUserView.userImage.image = UIImage(data: data)
-                } catch {
-                    print("이미지 로드 에러")
-                }
+                resultUserView.userImage.load(url: url)
             }
         }
     }
-    
+
     private func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
         resultUserView.layer.masksToBounds = false
         resultUserView.layer.shadowColor = UIColor.black.cgColor

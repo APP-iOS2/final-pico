@@ -14,6 +14,7 @@ final class WorldCupViewModel {
     
     var users: BehaviorRelay<[User]> = BehaviorRelay(value: [])
     private let disposeBag = DisposeBag()
+    var selectedIndexPath: IndexPath?
     
     init() {
         loadUsersRx()
@@ -67,5 +68,19 @@ final class WorldCupViewModel {
         dataLabelTexts.append("\(currentUser.location.address)")
 
         return dataLabelTexts
+    }
+    
+    func animateSelectedCell(collectionView: UICollectionView, indexPath: IndexPath) {
+        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else {
+            return
+        }
+
+        UIView.animate(withDuration: 0.3, animations: {
+            selectedCell.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+        }, completion: { _ in
+            UIView.animate(withDuration: 0.3) {
+                selectedCell.transform = .identity
+            }
+        })
     }
 }

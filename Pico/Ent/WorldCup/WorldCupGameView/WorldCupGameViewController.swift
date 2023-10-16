@@ -106,6 +106,11 @@ final class WorldCupGameViewController: UIViewController {
         }
     }
     
+    private func cellClickAction(indexPath: IndexPath) {
+        worldCupViewModel.selectedIndexPath = indexPath
+        worldCupViewModel.animateSelectedCell(collectionView: collectionView, indexPath: indexPath)
+    }
+    
     private func makeConstraints() {
         let padding: CGFloat = 20
         let half: CGFloat = 0.5
@@ -186,14 +191,17 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             let selectedItem = users.value[index + indexPath.item]
             semifinals.append(selectedItem)
             index += 2
+            cellClickAction(indexPath: indexPath)
             collectionView.reloadData()
         case 8..<12:
             let selectedItem = semifinals[index - 8 + indexPath.item]
             finals.append(selectedItem)
             index += 2
+            cellClickAction(indexPath: indexPath)
             collectionView.reloadData()
         default:
             let selectedItem = finals[index - 12 + indexPath.item]
+            cellClickAction(indexPath: indexPath)
             showResultViewController(with: selectedItem)
         }
     }
