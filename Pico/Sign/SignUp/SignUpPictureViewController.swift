@@ -17,7 +17,7 @@ final class SignUpPictureViewController: UIViewController {
     private var objectDetectionRequest: VNCoreMLRequest?
     private var userImages: [UIImage] = []
     let viewModel: SignUpViewModel = .shared
-
+    let yoloManager: YoloManager = YoloManager()
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -83,7 +83,7 @@ final class SignUpPictureViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configCollectionView()
-        loadYOLOv3Model()
+        yoloManager.loadYOLOv3Model()
     }
     
     // MARK: - Config
@@ -115,11 +115,11 @@ final class SignUpPictureViewController: UIViewController {
             for image in self.userImages {
                 detectionGroup.enter()
                 
-                self.detectPeople(image: image) {
+                self.yoloManager.detectPeople(image: image) {
                     detectionGroup.leave()
                 }
                 
-                if !(self.isDetectedImage ?? true) {
+                if !(self.yoloManager.isDetectedImage ?? true) {
                     allImagesDetected = false
                 }
             }
@@ -208,56 +208,6 @@ extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionV
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.row == 0 {
             openPhotoLibrary()
-        }
-    }
-}
-
-// MARK: - YOLOv3Model 관련
-extension SignUpPictureViewController {
-    
-    private func loadYOLOv3Model() {
-        let configuration = MLModelConfiguration()
-        guard let yoloModel = try? VNCoreMLModel(for: YOLOv3(configuration: configuration).model) else {
-            fatalError("Failed to load YOLOv3 model.")
-        }
-
-        objectDetectionRequest = VNCoreMLRequest(model: yoloModel, completionHandler: { [weak self] request, error in
-            self?.isDetectedImage = self?.handleObjectDetectionResults(request: request, error: error)
-        })
-    }
-    
-    private func handleObjectDetectionResults(request: VNRequest, error: Error?) -> Bool {
-        guard let results = request.results as? [VNRecognizedObjectObservation] else { return false }
-
-        var detectedObjects = ""
-        for result in results {
-            if let label = result.labels.first {
-                if label.identifier == "person" {
-                    detectedObjects += "\(label.identifier) (\(String(format: "%.2f", label.confidence * 100))%)\n"
-                    if label.confidence * 100 >= 80 {
-                        print(label.confidence)
-                        return true
-                    }
-                }
-            }
-        }
-        return false
-    }
-    
-    private func detectPeople(image: UIImage, completion: @escaping () -> ()) {
-        guard let cgImage = image.cgImage, let objectDetectionRequest = objectDetectionRequest else { return }
-
-        let request = VNCoreMLRequest(model: objectDetectionRequest.model) { [weak self] request, error in
-            self?.isDetectedImage = self?.handleObjectDetectionResults(request: request, error: error)
-            completion()
-        }
-
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-
-        do {
-            try handler.perform([request])
-        } catch {
-            print("Failed to perform object detection: \(error)")
         }
     }
 }

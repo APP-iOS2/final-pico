@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let rootViewController = TabBarController()
             window?.rootViewController = rootViewController
         } else {
-            let rootViewController = UINavigationController(rootViewController: SignViewController())
+            let rootViewController = UINavigationController(rootViewController: SignUpPictureViewController())
             window?.rootViewController = rootViewController
         }
         
