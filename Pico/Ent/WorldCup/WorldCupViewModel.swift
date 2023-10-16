@@ -49,18 +49,23 @@ final class WorldCupViewModel {
         }
     }
     
-    private func addDataLabels(_ currentItem: User) -> [String] {
+    private func addDataLabels(_ currentUser: User) -> [String] {
         var dataLabelTexts: [String] = []
-        
-        if let height = currentItem.subInfo?.height {
+
+        if let height = currentUser.subInfo?.height {
             dataLabelTexts.append("\(height)")
+        } else {
+            dataLabelTexts.append("")
         }
-        
-        if let job = currentItem.subInfo?.job {
+
+        if let job = currentUser.subInfo?.job {
             dataLabelTexts.append("\(job)")
+        } else {
+            dataLabelTexts.append("")
         }
-        
-        dataLabelTexts.append("\(currentItem.location.address)")
+
+        dataLabelTexts.append("\(currentUser.location.address)")
+
         return dataLabelTexts
     }
 }
