@@ -143,8 +143,8 @@ final class WorldCupResultViewController: UIViewController {
     
     private func configResultUserCell() {
         if let selectedItem = selectedItem {
-            resultUserView.mbtiLabel.text = "\(selectedItem.mbti)"
-            resultUserView.userNickname.text = "\(selectedItem.nickName)"
+            resultUserView.mbtiLabel.text = "\(selectedItem.mbti)".uppercased()
+            resultUserView.userNickname.text = String(selectedItem.nickName.prefix(6))
             resultUserView.userAge.text = "\(selectedItem.age)세"
             
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {

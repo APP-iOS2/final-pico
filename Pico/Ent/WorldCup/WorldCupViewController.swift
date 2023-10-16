@@ -85,7 +85,7 @@ final class WorldCupViewController: UIViewController {
         }
         
         worldCupTitleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Screen.height / 5)
+            make.top.equalToSuperview().offset(Screen.height / 6)
             make.centerX.equalToSuperview().offset(half)
         }
         
