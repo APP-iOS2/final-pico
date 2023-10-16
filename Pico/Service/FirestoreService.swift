@@ -187,7 +187,19 @@ final class FirestoreService {
             }
         }
     }
-    
+    func updataDocuments<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
+            let jsonData = data.asDictionary()
+            dbRef.collection(collectionId.name).document(documentId).updateData([field: jsonData]) { error in
+                if let error = error {
+                    completion(.failure(error))
+                    print("Error updating document: \(error)")
+                } else {
+                    completion(.success(true))
+                    print("Document successfully updated")
+                }
+            }
+       
+    }
     func saveDocumentRx<T: Codable>(collectionId: Collections, documentId: String, data: T) -> Observable<Void> {
         return Observable.create { emitter in
             self.saveDocument(collectionId: collectionId, documentId: documentId, data: data) { result in

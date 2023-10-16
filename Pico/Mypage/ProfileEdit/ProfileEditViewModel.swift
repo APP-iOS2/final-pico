@@ -80,7 +80,7 @@ final class ProfileEditViewModel {
             case .personalities:
                 return "subInfo.personalities"
             case .hobbies:
-               return "subInfo.hobbies"
+                return "subInfo.hobbies"
             case .favoriteMBTIs:
                 return "subInfo.favoriteMBTIs"
             }
@@ -99,7 +99,7 @@ final class ProfileEditViewModel {
     var selectedIndex: Int?/*컬렉션뷰만잇는뷰에서 사용*/
     var textData: String? /*텍스트만잇는뷰 사용*/
     var collectionData: [String]? /*콜렉션텍스트뷰 사용*/
-   
+    
     var userData: User?
     
     private let userId = UserDefaultsManager.shared.getUserData().userId
@@ -107,7 +107,7 @@ final class ProfileEditViewModel {
         SectionModel(items: [.profileEditImageTableCell(images: [])]),
         SectionModel(items: [.profileEditNicknameTabelCell, .profileEditLoactionTabelCell(location: "")]),
         SectionModel(items: [
-           .profileEditTextTabelCell(title: SubInfoCase.intro.name, content: nil),
+            .profileEditTextTabelCell(title: SubInfoCase.intro.name, content: nil),
             .profileEditTextTabelCell(title: SubInfoCase.height.name, content: nil),
             .profileEditTextTabelCell(title: SubInfoCase.job.name, content: nil),
             .profileEditTextTabelCell(title: SubInfoCase.religion.name, content: nil),
@@ -119,11 +119,11 @@ final class ProfileEditViewModel {
             .profileEditTextTabelCell(title: SubInfoCase.favoriteMBTIs.name, content: nil)
         ])
     ])
-  
+    
     init() {
         loadUserData()
     }
-
+    
     func findIndex(for targetString: String, in array: [String]) -> Int? {
         if let index = array.firstIndex(of: targetString) {
             return index
@@ -133,8 +133,15 @@ final class ProfileEditViewModel {
     
     func updateData<T: Codable>(data: T) {
         guard let field = modalType?.dataName else { return }
-     
-        FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: field, data: data)
+        
+        if modalType == .location {
+            SignLoadingManager.showLoading(text: "위치정보를 받는중이에요!!")
+            FirestoreService.shared.updataDocuments(collectionId: .users, documentId: userId, field: field, data: data) { _ in
+                SignLoadingManager.hideLoading()
+            }
+        } else {
+            FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: field, data: data)
+        }
         loadUserData()
     }
     
@@ -163,8 +170,8 @@ final class ProfileEditViewModel {
                         .profileEditTextTabelCell(title: SubInfoCase.personalities.name, content: data.subInfo?.personalities?[0]),
                         .profileEditTextTabelCell(title: SubInfoCase.hobbies.name, content: data.subInfo?.hobbies?[0]),
                         .profileEditTextTabelCell(title: SubInfoCase.favoriteMBTIs.name, content: data.subInfo?.favoriteMBTIs?[0].rawValue)
-                        ])
-                    ]
+                    ])
+                ]
                 sectionsRelay.accept(result)
             case .failure(let err):
                 debugPrint(err)

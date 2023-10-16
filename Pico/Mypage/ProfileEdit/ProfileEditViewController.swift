@@ -51,7 +51,7 @@ final class ProfileEditViewController: UIViewController {
             case .profileEditLoactionTabelCell(let location):
                 let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditLoactionTabelCell.self)
                 cell.selectionStyle = .none
-                cell.configure(location: location)
+                cell.configure(location: location, viewModel: self.profileEditViewModel)
                 return cell
                 
             case .profileEditTextTabelCell(let title, let content):
@@ -147,8 +147,6 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalType = .nickName
                 profileEditViewModel.textData = profileEditViewModel.userData?.nickName
                 presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
-            case 1:
-                print("위치 바꾸기")
             default:
                 break
             }
