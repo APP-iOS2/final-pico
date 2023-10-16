@@ -59,31 +59,29 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
     }
 
     func getAddress(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?, completion: @escaping (Location?) -> Void) {
-        let status = CLLocationManager.authorizationStatus()
+        let status = CLLocationManager()
 
-        switch status {
-        case .authorizedWhenInUse, .authorizedAlways:
-            let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
-            CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
-                if let error = error {
-                    print("Geocoding Error: \(error)")
-                    completion(nil)
-                    return
-                }
-
-                if let placemark = placemarks?.first {
-                    let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
-                    let location = Location(address: addressString, latitude: latitude ?? 0, longitude: longitude ?? 0)
-                    completion(location)
-                } else {
-                    completion(nil)
-                }
+        switch status.authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+        let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
+        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
+            if let error = error {
+                print("Geocoding Error: \(error)")
+                completion(nil)
+                return
             }
+
+            if let placemark = placemarks?.first {
+                let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
+                let location = Location(address: addressString, latitude: latitude ?? 0, longitude: longitude ?? 0)
+                completion(location)
+            } else {
+                completion(nil)
+            }
+        }
         case .denied:
-            // 거부된 경우 처리
             completion(nil)
         default:
-            // 다른 경우 처리 (권한 미결정, 제한됨 등)
             completion(nil)
         }
     }
