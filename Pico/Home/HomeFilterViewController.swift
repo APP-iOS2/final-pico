@@ -10,10 +10,9 @@ import SnapKit
 
 final class HomeFilterViewController: UIViewController {
     
-    static var filterGender: [GenderType] = []
     weak var homeViewController: HomeViewController?
     private let mbtiCollectionViewController = MBTICollectionViewController()
-    private var filterChangeState: Bool = false
+    static var filterChangeState: Bool = false
     private lazy var selectedGenderLabel: UILabel = createFilterLabel(text: "만나고 싶은 성별", font: .picoTitleFont)
     private lazy var selectedGenderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
     private lazy var selectedAge: UILabel = createFilterLabel(text: "나이", font: .picoSubTitleFont)
@@ -40,20 +39,20 @@ final class HomeFilterViewController: UIViewController {
         addSubView()
         makeConstraints()
         
-        manButton.isSelected = HomeFilterViewController.filterGender.contains(.male)
+        manButton.isSelected = HomeViewModel.filterGender.contains(.male)
         updateButtonAppearance(manButton)
         
-        womanButton.isSelected = HomeFilterViewController.filterGender.contains(.female)
+        womanButton.isSelected = HomeViewModel.filterGender.contains(.female)
         updateButtonAppearance(womanButton)
         
-        etcButton.isSelected = HomeFilterViewController.filterGender.contains(.etc)
+        etcButton.isSelected = HomeViewModel.filterGender.contains(.etc)
         updateButtonAppearance(etcButton)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        if filterChangeState == true {
+        if HomeFilterViewController.filterChangeState == true {
             self.homeViewController?.reloadView()
-            filterChangeState = false
+            HomeFilterViewController.filterChangeState = false
         }
     }
     
@@ -164,14 +163,14 @@ final class HomeFilterViewController: UIViewController {
         }
         if let genderType = genderType {
             if sender.isSelected {
-                HomeFilterViewController.filterGender.append(genderType)
+                HomeViewModel.filterGender.append(genderType)
             } else {
-                if let index = HomeFilterViewController.filterGender.firstIndex(of: genderType) {
-                    HomeFilterViewController.filterGender.remove(at: index)
+                if let index = HomeViewModel.filterGender.firstIndex(of: genderType) {
+                    HomeViewModel.filterGender.remove(at: index)
                 }
             }
             updateButtonAppearance(sender)
-            filterChangeState = true
+            HomeFilterViewController.filterChangeState = true
         }
     }
 }

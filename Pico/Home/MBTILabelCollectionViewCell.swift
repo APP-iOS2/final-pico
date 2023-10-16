@@ -9,6 +9,7 @@ import UIKit
 
 final class MBTILabelCollectionViewCell: UICollectionViewCell {
     
+    private var filterChangeState: Bool = false
     private let mbtiButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(.white, for: .normal)
@@ -19,7 +20,6 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         configureUI()
     }
-    
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -36,10 +36,17 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
         }
         
     }
+    private func updateButtonAppearance() {
+        if let buttonText = mbtiButton.titleLabel?.text?.lowercased(), let mbti = MBTIType(rawValue: buttonText) {
+            backgroundColor = mbtiButton.isSelected ? UIColor(hex: mbti.colorName) : .picoGray
+        }
+    }
     
     func configureWithMBTI(_ mbti: MBTIType) {
         mbtiButton.setTitle(mbti.rawValue.uppercased(), for: .normal)
         mbtiButton.titleLabel?.font = .picoMBTILabelFont
+        mbtiButton.isSelected = HomeViewModel.filterMbti.contains(mbti)
+        backgroundColor = mbtiButton.isSelected ? UIColor(hex: mbti.colorName) : .picoGray
         mbtiButton.isUserInteractionEnabled = true
         mbtiButton.addTarget(self, action: #selector(buttonTouch), for: .touchUpInside)
     }
@@ -49,11 +56,16 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
 //    }
     @objc func buttonTouch() {
         mbtiButton.isSelected.toggle()
-        if let buttonText = mbtiButton.titleLabel?.text?.lowercased() {
-            if let mbti = MBTIType(rawValue: buttonText) {
-                backgroundColor = mbtiButton.isSelected ? UIColor(hex: mbti.colorName) : .picoGray
+        if let buttonText = mbtiButton.titleLabel?.text?.lowercased(), let mbti = MBTIType(rawValue: buttonText) {
+            backgroundColor = mbtiButton.isSelected ? UIColor(hex: mbti.colorName) : .picoGray
+            if mbtiButton.isSelected {
+                HomeViewModel.filterMbti.append(mbti)
+            } else {
+                if let index = HomeViewModel.filterMbti.firstIndex(of: mbti) {
+                    HomeViewModel.filterMbti.remove(at: index)
+                }
             }
+            HomeFilterViewController.filterChangeState = true
         }
     }
-
 }
