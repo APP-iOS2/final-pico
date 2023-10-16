@@ -139,11 +139,11 @@ final class FirestoreService {
         }
     }
     
-    func loadDocuments<T: Codable>(collectionId: Collections, dataType: T.Type, itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?, completion: @escaping (Result<([T], DocumentSnapshot?), Error>) -> Void) {
+    func loadDocuments<T: Codable>(collectionId: Collections, dataType: T.Type, orderBy: (String, Bool), itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?, completion: @escaping (Result<([T], DocumentSnapshot?), Error>) -> Void) {
         var lastDocumentSnapshot = lastDocumentSnapshot
         
         let query = dbRef.collection(collectionId.name)
-//            .order(by: "createdDate", descending: true)
+            .order(by: orderBy.0, descending: orderBy.1)
             .limit(to: itemsPerPage)
         
         if let lastSnapshots = lastDocumentSnapshot {
@@ -220,9 +220,9 @@ final class FirestoreService {
         }
     }
     
-    func loadDocumentRx<T: Codable>(collectionId: Collections, dataType: T.Type, itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?) -> Observable<([T], DocumentSnapshot?)> {
+    func loadDocumentRx<T: Codable>(collectionId: Collections, dataType: T.Type, orderBy: (String, Bool), itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?) -> Observable<([T], DocumentSnapshot?)> {
         return Observable.create { emitter in
-            self.loadDocuments(collectionId: collectionId, dataType: dataType, itemsPerPage: itemsPerPage, lastDocumentSnapshot: lastDocumentSnapshot) { result in
+            self.loadDocuments(collectionId: collectionId, dataType: dataType, orderBy: orderBy, itemsPerPage: itemsPerPage, lastDocumentSnapshot: lastDocumentSnapshot) { result in
                 switch result {
                 case .success(let data):
                     emitter.onNext(data)

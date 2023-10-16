@@ -27,7 +27,7 @@ final class AdminUserViewController: UIViewController {
             
             return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
                 guard let self = self else { return }
-                sortedTpyePublisher.onNext(sortType)
+                sortedTpyeBehavior.onNext(sortType)
             })
         }
     }()
@@ -55,10 +55,10 @@ final class AdminUserViewController: UIViewController {
     private let disposeBag: DisposeBag = DisposeBag()
     
     private let viewDidLoadPublisher = PublishSubject<Void>()
-    private let sortedTpyePublisher = PublishSubject<SortType>()
+    private let sortedTpyeBehavior = BehaviorSubject(value: SortType.dateDescending)
     private let searchButtonPublisher = PublishSubject<String>()
     private let tableViewOffsetPublisher = PublishSubject<Void>()
-    private let refreshPublisher = PublishSubject<Void>()
+    private let refreshablePublisher = PublishSubject<Void>()
     
     private let refreshControl = UIRefreshControl()
     
@@ -110,20 +110,20 @@ final class AdminUserViewController: UIViewController {
     
     private func configTableView() {
         userListTableView.register(cell: NotificationTableViewCell.self)
-        userListTableView.rowHeight = 280
+        userListTableView.rowHeight = 180
     }
     
     private func bind() {
         let input = AdminUserViewModel.Input(
             viewDidLoad: viewDidLoadPublisher.asObservable(),
-            sortedTpye: sortedTpyePublisher.asObservable(),
+            sortedTpye: sortedTpyeBehavior.asObservable(),
             searchButton: searchButtonPublisher.asObservable(),
             tableViewOffset: tableViewOffsetPublisher.asObservable(),
-            refresh: refreshPublisher.asObservable()
+            refreshable: refreshablePublisher.asObservable()
         )
         let output = viewModel.transform(input: input)
 
-        let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSortedUserList, output.resultSearchUserList, output.resultPagingList)
+        let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList, output.resultPagingList)
         
         combinedData
             .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
@@ -143,7 +143,10 @@ final class AdminUserViewController: UIViewController {
     @objc private func refreshTable(_ refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            refreshPublisher.onNext(())
+            if let currentSortType = try? self.sortedTpyeBehavior.value() {
+                self.sortedTpyeBehavior.onNext(currentSortType)
+            }
+            refreshablePublisher.onNext(())
             refresh.endRefreshing()
         }
     }
