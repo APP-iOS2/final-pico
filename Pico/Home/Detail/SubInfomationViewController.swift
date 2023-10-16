@@ -9,8 +9,6 @@ import UIKit
 import RxSwift
 
 final class SubInfomationViewController: BaseViewController {
-    private let disposeBag = DisposeBag()
-    private let viewModel = UserDetailViewModel(user: User.userData)
     private var hobbies: [String] = []
     private var personalities: [String] = []
     private var likeMbtis: [MBTIType] = []
@@ -62,15 +60,6 @@ final class SubInfomationViewController: BaseViewController {
         addViews()
         makeConstraints()
         configCollectionView()
-        bind()
-    }
-    func bind() {
-        viewModel.userObservable
-            .subscribe(onNext: { user in
-                guard let subInfo = user.subInfo else { return }
-                self.hobbies = subInfo.hobbies ?? []
-            })
-            .disposed(by: disposeBag)
     }
     
     func config(hobbies: [String], personalities: [String], likeMbtis: [MBTIType]) {

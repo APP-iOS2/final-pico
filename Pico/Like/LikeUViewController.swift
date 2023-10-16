@@ -87,6 +87,8 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // 디테일뷰 데이터 연결 후 UserId 값 넘겨주기
         let viewController = UserDetailViewController()
+         // 유저정보 넘겨주세요요
+        // viewController.viewModel = UserDetailViewModel(user: user)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     

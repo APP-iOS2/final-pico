@@ -17,7 +17,7 @@ import RxCocoa
 
 final class UserDetailViewController: UIViewController {
     // 이전 뷰에서 실행이 필요 해 Defalut로 작성
-    var viewModel = UserDetailViewModel(user: User.userData)
+    var viewModel: UserDetailViewModel!
     private var user: User!
     private let disposeBag = DisposeBag()
     /// SubViews

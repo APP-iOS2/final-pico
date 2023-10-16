@@ -8,10 +8,10 @@
 import UIKit
 
 final class BasicInformationViewContoller: UIViewController {
-    private var mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infp, scale: .large)
+    private var mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .enfj, scale: .large)
     private let nameAgeLabel: UILabel = {
         let label = UILabel()
-        label.text = "카리나, 24"
+        label.text = ""
         label.font = UIFont.picoTitleFont
         return label
     }()
@@ -25,7 +25,7 @@ final class BasicInformationViewContoller: UIViewController {
     
     private let locationLabel: UILabel = {
         let label = UILabel()
-        label.text = "서울시 강남구 1.1km"
+        label.text = ""
         return label
     }()
     
@@ -71,8 +71,7 @@ final class BasicInformationViewContoller: UIViewController {
         
         nameAgeLabel.snp.makeConstraints { make in
             make.top.equalTo(mbtiLabelView.snp.bottom).offset(15)
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-20)
+            make.leading.trailing.equalToSuperview()
         }
         
         locationImageView.snp.makeConstraints { make in
@@ -82,8 +81,7 @@ final class BasicInformationViewContoller: UIViewController {
         
         locationLabel.snp.makeConstraints { make in
             make.top.equalTo(locationImageView.snp.top)
-            make.leading.equalTo(locationImageView.snp.trailing).offset(5).priority(.medium)
-            make.trailing.equalToSuperview().offset(-20)
+            make.leading.trailing.equalTo(locationImageView.snp.trailing).offset(5).priority(.medium)
         }
         
         heightImageView.snp.makeConstraints { make in
@@ -93,8 +91,7 @@ final class BasicInformationViewContoller: UIViewController {
         
         heightLabel.snp.makeConstraints { make in
             make.top.equalTo(heightImageView.snp.top)
-            make.leading.equalTo(heightImageView.snp.trailing).offset(5).priority(.medium)
-            make.trailing.equalToSuperview().offset(-20)
+            make.leading.trailing.equalTo(heightImageView.snp.trailing).offset(5).priority(.medium)
         }
     }
 }
