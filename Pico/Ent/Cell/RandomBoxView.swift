@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class RandomBoxView: UICollectionReusableView {
+final class RandomBoxView: UIView {
     
     private let boxChuImage: UIImageView = {
         let imageView = UIImageView()
