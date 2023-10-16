@@ -17,8 +17,10 @@ final class LikeMeViewController: UIViewController {
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
+    private let listLoadPublisher = PublishSubject<Void>()
     private let deleteUserPublisher = PublishSubject<String>()
     private let likeUserPublisher = PublishSubject<String>()
+    private var isLoading = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -38,6 +40,7 @@ final class LikeMeViewController: UIViewController {
     
     private func configCollectionView() {
         collectionView.register(cell: LikeCollectionViewCell.self)
+        collectionView.register(cell: CollectionViewFooterLoadingCell.self)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -48,7 +51,7 @@ final class LikeMeViewController: UIViewController {
         collectionView.refreshControl = refreshControl
     }
     
-    @objc func refreshTable(refresh: UIRefreshControl) {
+    @objc private func refreshTable(refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             refreshPublisher.onNext(())
@@ -59,31 +62,37 @@ final class LikeMeViewController: UIViewController {
 
 extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.likeMeList.count
+        return isLoading ? viewModel.likeMeList.count + 1 : viewModel.likeMeList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
-        let item = viewModel.likeMeList[indexPath.row]
-        cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true, mbti: item.mbti)
-        
-        cell.deleteButtonTapObservable
-            .subscribe(onNext: { [weak self] in
-                self?.showAlert(message: "\(item.nickName)님을 disLike합니다.", isCancelButton: true, yesAction: {
-                    self?.deleteUserPublisher.onNext(item.likedUserId)
+        if isLoading && indexPath.row == viewModel.likeMeList.count {
+            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: CollectionViewFooterLoadingCell.self)
+            cell.startLoading()
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
+            let item = viewModel.likeMeList[indexPath.row]
+            cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true, mbti: item.mbti)
+            
+            cell.deleteButtonTapObservable
+                .subscribe(onNext: { [weak self] in
+                    self?.showAlert(message: "\(item.nickName)님을 disLike합니다.", isCancelButton: true, yesAction: {
+                        self?.deleteUserPublisher.onNext(item.likedUserId)
+                    })
                 })
-            })
-            .disposed(by: cell.disposeBag)
-        
-        cell.likeButtonTapObservalbe
-            .subscribe(onNext: { [weak self] in
-                self?.showAlert(message: "\(item.nickName)님께 좋아요를 보냅니다.\n 바로 매칭되어 쪽지가 가능합니다.", isCancelButton: true, yesAction: {
-                    self?.likeUserPublisher.onNext(item.likedUserId)
+                .disposed(by: cell.disposeBag)
+            
+            cell.likeButtonTapObservalbe
+                .subscribe(onNext: { [weak self] in
+                    self?.showAlert(message: "\(item.nickName)님께 좋아요를 보냅니다.\n 바로 매칭되어 쪽지가 가능합니다.", isCancelButton: true, yesAction: {
+                        self?.likeUserPublisher.onNext(item.likedUserId)
+                    })
                 })
-            })
-            .disposed(by: cell.disposeBag)
-        
-        return cell
+                .disposed(by: cell.disposeBag)
+            
+            return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -93,12 +102,34 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = view.frame.width / 2 - 17.5
-        return CGSize(width: width, height: width * 1.5)
+        if isLoading && indexPath.row == viewModel.likeMeList.count {
+            return CGSize(width: view.frame.width, height: 50)
+        } else {
+            let width = view.frame.width / 2 - 17.5
+            return CGSize(width: width, height: width * 1.5)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 15
+    }
+    
+    // MARK: - 페이징 처리
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let contentOffsetY = scrollView.contentOffset.y
+        let collectionViewContentSizeY = collectionView.contentSize.height
+        
+        if contentOffsetY > collectionViewContentSizeY - scrollView.frame.size.height {
+            self.isLoading = true
+            self.collectionView.reloadData()
+            listLoadPublisher.onNext(())
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                self.isLoading = false
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            }
+        }
     }
 }
 

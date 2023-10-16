@@ -17,6 +17,7 @@ final class NotificationViewController: UIViewController {
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
+    private let footerView = FooterView()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -42,6 +43,7 @@ final class NotificationViewController: UIViewController {
     
     private func configTableView() {
         tableView.register(cell: NotificationTableViewCell.self)
+        footerView.frame = CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 80)
         if #available(iOS 15.0, *) {
             tableView.tableHeaderView = UIView()
         }
@@ -101,6 +103,7 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
             }
         }
     }
+
 }
 
 // MARK: - Bind
@@ -125,7 +128,14 @@ extension NotificationViewController: UIScrollViewDelegate {
         let tableViewContentSizeY = tableView.contentSize.height
         
         if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
+            
+            tableView.tableFooterView = footerView
+            
             loadDataPublsher.onNext(())
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.tableView.tableFooterView = nil
+            }
         }
     }
 }

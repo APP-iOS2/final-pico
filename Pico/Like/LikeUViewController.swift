@@ -17,6 +17,7 @@ final class LikeUViewController: UIViewController {
     private let refreshControl = UIRefreshControl()
     private let listLoadPublisher = PublishSubject<Void>()
     private let refreshPublisher = PublishSubject<Void>()
+    private var isLoading = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -37,6 +38,7 @@ final class LikeUViewController: UIViewController {
     
     private func configCollectionView() {
         collectionView.register(cell: LikeCollectionViewCell.self)
+        collectionView.register(cell: CollectionViewFooterLoadingCell.self)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -58,22 +60,28 @@ final class LikeUViewController: UIViewController {
 
 extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.likeUList.count
+        return isLoading ? viewModel.likeUList.count + 1 : viewModel.likeUList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
-        let item = viewModel.likeUList[indexPath.row]
-        cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
-        cell.messageButtonTapObservable
-            .subscribe { [weak self] _ in
-                // 메일 뷰 데이터 연결 후 userId 값 넘겨주기
-                let mailSendView = MailSendViewController()
-                mailSendView.modalPresentationStyle = .formSheet
-                self?.present(mailSendView, animated: true, completion: nil)
-            }
-            .disposed(by: cell.disposeBag)
-        return cell
+        if isLoading && indexPath.row == viewModel.likeUList.count {
+            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: CollectionViewFooterLoadingCell.self)
+            cell.startLoading()
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
+            let item = viewModel.likeUList[indexPath.row]
+            cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
+            cell.messageButtonTapObservable
+                .subscribe { [weak self] _ in
+                    // 메일 뷰 데이터 연결 후 userId 값 넘겨주기
+                    let mailSendView = MailSendViewController()
+                    mailSendView.modalPresentationStyle = .formSheet
+                    self?.present(mailSendView, animated: true, completion: nil)
+                }
+                .disposed(by: cell.disposeBag)
+            return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -83,8 +91,24 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = view.frame.width / 2 - 17.5
-        return CGSize(width: width, height: width * 1.5)
+        if isLoading && indexPath.row == viewModel.likeUList.count {
+            return CGSize(width: view.frame.width, height: 50)
+        } else {
+            let width = view.frame.width / 2 - 17.5
+            return CGSize(width: width, height: width * 1.5)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if isLoading && viewModel.likeUList.count % 2 == 1 {
+            // 데이터 셀이 홀수개일 때 가운데 정렬하기
+            let cellWidth = (collectionView.bounds.width - 15) / 2
+            let extraSpacing = (collectionView.bounds.width - cellWidth) / 2
+            return UIEdgeInsets(top: 0, left: extraSpacing, bottom: 0, right: extraSpacing)
+        } else {
+            // 데이터 셀이 짝수개일 때 정상적으로 정렬
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -99,7 +123,15 @@ extension LikeUViewController: UIScrollViewDelegate {
         let collectionViewContentSizeY = collectionView.contentSize.height
         
         if contentOffsetY > collectionViewContentSizeY - scrollView.frame.size.height {
-            listLoadPublisher.onNext(())
+            self.isLoading = true
+            self.collectionView.reloadData()
+            self.listLoadPublisher.onNext(())
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                self.isLoading = false
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            }
         }
     }
 }

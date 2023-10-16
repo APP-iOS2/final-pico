@@ -57,6 +57,8 @@
 		53817BE32ACED57B00AEE9AE /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 53817BE22ACED57B00AEE9AE /* FirebaseDatabaseSwift */; };
 		53836F532ACC903800D98F77 /* LoadingAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F522ACC903800D98F77 /* LoadingAnimationView.swift */; };
 		53836F552ACC90FC00D98F77 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F542ACC90FC00D98F77 /* Loading.swift */; };
+		53B529592ADCBD0D00A9C9D8 /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B529582ADCBD0D00A9C9D8 /* FooterView.swift */; };
+		53B5295B2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B5295A2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift */; };
 		547C4C212AD8381F00028AFB /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */; };
 		547C4C292AD8393700028AFB /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C242AD8393700028AFB /* UserDetailViewController.swift */; };
 		547C4C2A2AD8393700028AFB /* SubInfomationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C252AD8393700028AFB /* SubInfomationViewController.swift */; };
@@ -252,6 +254,8 @@
 		53817BDB2ACE753800AEE9AE /* LikeUViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeUViewModel.swift; sourceTree = "<group>"; };
 		53836F522ACC903800D98F77 /* LoadingAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAnimationView.swift; sourceTree = "<group>"; };
 		53836F542ACC90FC00D98F77 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
+		53B529582ADCBD0D00A9C9D8 /* FooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
+		53B5295A2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFooterLoadingCell.swift; sourceTree = "<group>"; };
 		547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
 		547C4C242AD8393700028AFB /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		547C4C252AD8393700028AFB /* SubInfomationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubInfomationViewController.swift; sourceTree = "<group>"; };
@@ -683,6 +687,7 @@
 				53836F522ACC903800D98F77 /* LoadingAnimationView.swift */,
 				B161B8712AC414DD00257A9C /* PopupViewController.swift */,
 				533D5D2D2AD9169A0074F767 /* CustomIndicator.swift */,
+				53B529582ADCBD0D00A9C9D8 /* FooterView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -860,6 +865,7 @@
 				53817BDB2ACE753800AEE9AE /* LikeUViewModel.swift */,
 				53389AEE2AC16D120076DA9B /* EmptyViewController.swift */,
 				531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */,
+				53B5295A2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift */,
 			);
 			path = Like;
 			sourceTree = "<group>";
@@ -1358,6 +1364,7 @@
 				B19ED9F22AD71D670089D0A1 /* ProfileView.swift in Sources */,
 				369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */,
 				B1BFE18D2AD6BA1B0094253A /* AdminViewController.swift in Sources */,
+				53B529592ADCBD0D00A9C9D8 /* FooterView.swift in Sources */,
 				4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */,
 				6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */,
 				B146A3C72AD456A8003143DD /* CommonConstraints.swift in Sources */,
@@ -1365,6 +1372,7 @@
 				B14D2AC42AD913FF0014DE29 /* RecordHeaderCollectionViewCell.swift in Sources */,
 				6A20604A2ACD2CF600435723 /* SwitchButton.swift in Sources */,
 				36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */,
+				53B5295B2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift in Sources */,
 				B1701F962AD436F80014850D /* RandomBoxView.swift in Sources */,
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
 				B130BB4C2ACF207A0039A1FA /* AdminUserViewModel.swift in Sources */,
