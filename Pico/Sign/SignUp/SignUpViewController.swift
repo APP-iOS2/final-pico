@@ -112,10 +112,6 @@ final class SignUpViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 1)
     }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        SignLoadingManager.hideLoading()
-    }
 }
 // MARK: - Config
 extension SignUpViewController: SignViewControllerDelegate {
@@ -206,7 +202,6 @@ extension SignUpViewController: SignViewControllerDelegate {
                 return userMbti.joined()
             }
             viewModel.userMbti = convertMbti
-            SignLoadingManager.showLoading(text: "넘어가는중!")
             let viewController = SignUpPhoneNumberViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
