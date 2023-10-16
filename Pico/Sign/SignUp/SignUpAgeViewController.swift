@@ -9,8 +9,7 @@ import UIKit
 import SnapKit
 
 final class SignUpAgeViewController: UIViewController {
-    
-    var viewModel: SignUpViewModel = .shared
+    private let viewModel: SignUpViewModel = .shared
     private var isChoiceAge: Bool = false
     private var selectedYear: Int = 2000
     private var selectedMonth: Int = 1

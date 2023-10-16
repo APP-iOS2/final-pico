@@ -11,7 +11,7 @@ import RxSwift
 import RxRelay
 
 final class SignUpViewController: UIViewController {
-    var viewModel: SignUpViewModel = .shared
+    private let viewModel: SignUpViewModel = .shared
     private var userMbti: [String] = ["", "", "", ""]
     private var mbti: String = ""
     private let progressView: UIProgressView = {

@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class SignInViewController: UIViewController {
-    
+    private let keyboardManager = KeyboardManager()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
     private let phoneNumberSubject = BehaviorSubject<String>(value: "")
@@ -101,13 +101,13 @@ final class SignInViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        registerKeyboard()
+        keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        unregisterKeyboard()
+        keyboardManager.unregisterKeyboard()
     }
 }
 // MARK: - Config
@@ -116,6 +116,7 @@ extension SignInViewController {
     private func configTextfield() {
         phoneNumberTextField.delegate = self
     }
+    
     private func configAuthText() {
         var authStrings: [String] = []
         for text in authTextFields {
@@ -123,8 +124,9 @@ extension SignInViewController {
         }
         authText = authStrings.joined()
     }
+    
     private func configReset() {
-        registerKeyboard()
+        keyboardManager.registerKeyboard(with: nextButton)
         isFullPhoneNumber = false
         isTappedAuthButton = false
         isAuth = false
@@ -141,6 +143,7 @@ extension SignInViewController {
         updateAuthTextFieldStack(isShow: false)
         updateNextButton(isEnabled: false)
     }
+    
     private func configButton() {
         authButton.rx.tap
             .subscribe(onNext: { [weak self] in
@@ -257,37 +260,6 @@ extension SignInViewController: UITextFieldDelegate {
         return false
     }
 }
-// MARK: - 키보드 관련
-extension SignInViewController {
-    
-    private func registerKeyboard() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    private func unregisterKeyboard() {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc private func keyboardUp(notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            
-            UIView.animate(
-                withDuration: 0.5,
-                animations: {
-                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
-                }
-            )
-        }
-    }
-    
-    @objc private func keyboardDown() {
-        self.nextButton.transform = .identity
-    }
-}
-
 // MARK: - UI 관련
 extension SignInViewController {
     

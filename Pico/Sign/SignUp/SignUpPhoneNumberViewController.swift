@@ -10,8 +10,9 @@ import SnapKit
 import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
+    private let keyboardManager = KeyboardManager()
     private let authManager = SmsAuthManager()
-    var viewModel: SignUpViewModel = .shared
+    private let viewModel: SignUpViewModel = .shared
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
@@ -106,13 +107,13 @@ final class SignUpPhoneNumberViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        registerKeyboard()
+        keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        unregisterKeyboard()
+        keyboardManager.unregisterKeyboard()
     }
 }
 // MARK: - Config
@@ -137,7 +138,7 @@ extension SignUpPhoneNumberViewController {
     }
     
     private func configReset() {
-        registerKeyboard()
+        keyboardManager.registerKeyboard(with: nextButton)
         userPhoneNumber = ""
         isFullPhoneNumber = false
         isTappedCheckButton = false
@@ -259,38 +260,6 @@ extension SignUpPhoneNumberViewController: UITextFieldDelegate {
         return true
     }
 }
-
-// MARK: - 키보드 관련
-extension SignUpPhoneNumberViewController {
-    
-    private func registerKeyboard() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    private func unregisterKeyboard() {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc private func keyboardUp(notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            
-            UIView.animate(
-                withDuration: 0.5,
-                animations: {
-                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
-                }
-            )
-        }
-    }
-    
-    @objc private func keyboardDown() {
-        self.nextButton.transform = .identity
-    }
-}
-
 // MARK: - UI 관련
 extension SignUpPhoneNumberViewController {
     

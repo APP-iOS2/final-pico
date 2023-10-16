@@ -4,20 +4,20 @@
 //
 //  Created by LJh on 2023/09/27.
 //
-
 import UIKit
 import SnapKit
 import PhotosUI
 import AVFoundation
 import Vision
+import Photos
 
 final class SignUpPictureViewController: UIViewController {
-    
+    private let viewModel: SignUpViewModel = .shared
+    private let yoloManager: YoloManager = YoloManager()
+    private let pictureManager: PictureManager = PictureManager()
     private var isDetectedImage: Bool? = false
     private var objectDetectionRequest: VNCoreMLRequest?
     private var userImages: [UIImage] = []
-    let viewModel: SignUpViewModel = .shared
-    let yoloManager: YoloManager = YoloManager()
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -74,7 +74,7 @@ final class SignUpPictureViewController: UIViewController {
         view.register(cell: SignUpPictureEditCollectionCell.self)
         return view
     }()
-
+    
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,13 +105,13 @@ final class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
-
+        
         let detectionGroup = DispatchGroup()
         
         SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
         DispatchQueue.global().async {
             var allImagesDetected = true
-
+            
             for image in self.userImages {
                 detectionGroup.enter()
                 
@@ -147,14 +147,16 @@ final class SignUpPictureViewController: UIViewController {
 
 // MARK: - 사진 관련
 extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
-    @objc func openPhotoLibrary() {
-        var configuration = PHPickerConfiguration()
-        configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
-        
-        let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = self
-        present(picker, animated: true, completion: nil)
+    
+    @objc private func openPhotoLibrary() {
+        pictureManager.requestPhotoLibraryAccess()
+        if PHPhotoLibrary.authorizationStatus() == .authorized {
+            var configuration = PHPickerConfiguration()
+            configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            present(picker, animated: true, completion: nil)
+        }
     }
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
@@ -214,7 +216,7 @@ extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionV
 
 // MARK: - UI 관련
 extension SignUpPictureViewController {
-  
+    
     private func addSubViews() {
         for viewItem in [progressView, notifyLabel, subNotifyLabel, nextButton, collectionView] { // imageStackView를 포함하여 모든 뷰를 추가
             view.addSubview(viewItem)

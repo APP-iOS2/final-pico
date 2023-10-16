@@ -12,11 +12,9 @@ import RxSwift
 import RxRelay
 
 final class SignUpTermsOfServiceViewController: UIViewController {
-    var viewModel: SignUpViewModel = .shared
-    var locationVM = LocationManager()
+    private let viewModel: SignUpViewModel = .shared
+    private let locationVM = LocationManager()
     private let disposeBag = DisposeBag()
-//    private var locationManager: CLLocationManager = CLLocationManager()
-//    private var currentLocation: CLLocationCoordinate2D?
     private var isLoading: Bool = false
     private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts
@@ -102,7 +100,7 @@ extension SignUpTermsOfServiceViewController {
             if let location = location {
                 self.viewModel.locationSubject.onNext(location)
             } else {
-                print("nil")
+                self.locationVM.accessLocation()
             }
         }
     }

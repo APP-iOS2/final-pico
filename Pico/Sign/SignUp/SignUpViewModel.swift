@@ -46,7 +46,7 @@ final class SignUpViewModel {
     
     private init() {
         locationSubject.subscribe { location in
-            Loading.showLoading()
+            SignLoadingManager.showLoading(text: "위치정보를 받는중이에요!!")
             self.newUser.location = location
             self.saveImage()
         }
@@ -64,7 +64,7 @@ final class SignUpViewModel {
                 print("스트링 저장완료")
                 self.newUser.imageURLs = strings
                 self.saveNewUser()
-                Loading.hideLoading()
+                SignLoadingManager.hideLoading()
             }.disposed(by: disposeBag)
     }
     
