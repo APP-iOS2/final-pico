@@ -14,6 +14,10 @@
 		3677DBC92AD4EC530026E089 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3677DBC82AD4EC530026E089 /* SignInViewModel.swift */; };
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
+		368D4DA12ADCC9DF00322D91 /* YoloManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D4DA02ADCC9DF00322D91 /* YoloManager.swift */; };
+		368D4DA52ADCD9B000322D91 /* PictureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D4DA42ADCD9B000322D91 /* PictureManager.swift */; };
+		368D4DA72ADCDBE800322D91 /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D4DA62ADCDBE800322D91 /* KeyboardManager.swift */; };
+		368D4DA92ADCE16700322D91 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 368D4DA82ADCE16700322D91 /* Info.plist */; };
 		369B25522ADB1FB4005C452D /* SmsAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369B25512ADB1FB4005C452D /* SmsAuthManager.swift */; };
 		369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */; };
 		36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */; };
@@ -210,6 +214,10 @@
 		3677DBC82AD4EC530026E089 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
+		368D4DA02ADCC9DF00322D91 /* YoloManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoloManager.swift; sourceTree = "<group>"; };
+		368D4DA42ADCD9B000322D91 /* PictureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureManager.swift; sourceTree = "<group>"; };
+		368D4DA62ADCDBE800322D91 /* KeyboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
+		368D4DA82ADCE16700322D91 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../../../../../.Trash/Info.plist; sourceTree = "<group>"; };
 		369B25512ADB1FB4005C452D /* SmsAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmsAuthManager.swift; sourceTree = "<group>"; };
 		369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceText.swift; sourceTree = "<group>"; };
 		36A39B4F2AC27A4F004A279C /* MbtiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MbtiModalViewController.swift; sourceTree = "<group>"; };
@@ -309,7 +317,6 @@
 		B14B58CD2AC0A230009889DA /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		B14B58D22AC0A232009889DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B14B58D52AC0A232009889DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		B14B58D72AC0A232009889DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B14B59072AC0A4FD009889DA /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		B14B59092AC0A644009889DA /* MailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailViewController.swift; sourceTree = "<group>"; };
 		B14B590B2AC0A64C009889DA /* LikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeViewController.swift; sourceTree = "<group>"; };
@@ -433,6 +440,9 @@
 				363CC4832ACF9CC500C86EDC /* LocationManager.swift */,
 				36CD4D052ADBB95400FC317B /* SignLoadingManager.swift */,
 				36CD4D032ADBB86000FC317B /* SignLoadingAnimationView.swift */,
+				368D4DA02ADCC9DF00322D91 /* YoloManager.swift */,
+				368D4DA42ADCD9B000322D91 /* PictureManager.swift */,
+				368D4DA62ADCDBE800322D91 /* KeyboardManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -762,7 +772,9 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				B14B58D72AC0A232009889DA /* Info.plist */,
+
+				368D4DA82ADCE16700322D91 /* Info.plist */,
+
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
@@ -1280,6 +1292,7 @@
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
+				368D4DA92ADCE16700322D91 /* Info.plist in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1421,6 +1434,7 @@
 				B146A3C32AD4566C003143DD /* SignViewConstraints.swift in Sources */,
 				B17D678C2AC0AB80006F91DC /* Location.swift in Sources */,
 				B146A3CA2AD456D2003143DD /* MypageViewConstraints.swift in Sources */,
+				368D4DA12ADCC9DF00322D91 /* YoloManager.swift in Sources */,
 				693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */,
 				B11D2B8C2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift in Sources */,
 				B146A3CE2AD45795003143DD /* UITableView+Extensions.swift in Sources */,
@@ -1448,6 +1462,7 @@
 				6A9F73502AD8E554002F13AC /* ProfileEditModalViewModel.swift in Sources */,
 				5375E74A2ACD2C09001A571D /* NotificationViewModel.swift in Sources */,
 				698521F42AD841510051A29A /* MailListTableViewCell.swift in Sources */,
+				368D4DA52ADCD9B000322D91 /* PictureManager.swift in Sources */,
 				6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */,
 				B148052C2ACD2A900009FF71 /* AdminUserViewController.swift in Sources */,
 				360854F12AD04C7900F28168 /* StorageService.swift in Sources */,
@@ -1485,6 +1500,7 @@
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
 				6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
+				368D4DA72ADCDBE800322D91 /* KeyboardManager.swift in Sources */,
 				B1701F922AD4351A0014850D /* Array+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -6,6 +6,8 @@
 	<string>Light</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>위치접근권한</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>사진접근권한</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>위치 접근 권한 허용 설정</string>
 	<key>UIApplicationSceneManifest</key>

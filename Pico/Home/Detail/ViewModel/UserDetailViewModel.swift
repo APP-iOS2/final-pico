@@ -42,7 +42,7 @@ final class UserDetailViewModel {
                 let imageURLs = data["imageURLs"] as? [String] ?? []
                 let createdDate = data["createdDate"] as? Double ?? 0.0
                 
-                // TODO: - subInfo, reports, blocks nil 값 들어 갈 수 있게 변경
+                //  - subInfo, reports, blocks nil 값 들어 갈 수 있게 변경
                 let subInfo = data["subInfo"] as? SubInfo ?? SubInfo(intro: "인트로 입니당.", height: 180, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: ["asdasd"], personalities: ["asds"], favoriteMBTIs: [.enfj])
                 let reports = data["reports"] as? Report ?? Report(id: id, reportedId: "", reason: "", reportedDate: 0)
                 let blocks = data["blocks"] as? Block ?? Block(id: id, blockedId: "", blockedDate: 0)

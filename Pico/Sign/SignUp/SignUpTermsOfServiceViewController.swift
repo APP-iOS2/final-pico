@@ -12,11 +12,9 @@ import RxSwift
 import RxRelay
 
 final class SignUpTermsOfServiceViewController: UIViewController {
-    var viewModel: SignUpViewModel = .shared
-
+    private let viewModel: SignUpViewModel = .shared
+    private let locationVM = LocationManager()
     private let disposeBag = DisposeBag()
-    private var locationManager: CLLocationManager = CLLocationManager()
-    private var currentLocation: CLLocationCoordinate2D?
     private var isLoading: Bool = false
     private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts
@@ -63,7 +61,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configTableView()
-        configLocation()
+        locationVM.configLocation()
         viewModel.isSaveSuccess
             .observe(on: MainScheduler.instance)
             .bind { _ in
@@ -71,40 +69,6 @@ final class SignUpTermsOfServiceViewController: UIViewController {
                 self.navigationController?.popToRootViewController(animated: true)
             }
             .disposed(by: disposeBag)
-    }
-}
-// MARK: - 위치관련
-extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
-    private func configLocation() {
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        DispatchQueue.global().async {
-            if CLLocationManager.locationServicesEnabled() {
-                self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-                self.locationManager.startUpdatingLocation()
-            } else {
-                print("이미 했잖아")
-            }
-        }
-    }
-    private func getAddress(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
-        
-        let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
-        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
-            if let error = error {
-                print("Geocoding Error: \(error)")
-                return
-            }
-            if let placemark = placemarks?.first {
-                let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
-                self.viewModel.locationSubject.onNext(Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
-            }
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error)
     }
 }
 // MARK: - Config
@@ -128,11 +92,17 @@ extension SignUpTermsOfServiceViewController {
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         // 위도 경도
-        let space = locationManager.location?.coordinate
+        let space = locationVM.locationManager.location?.coordinate
         let lat = space?.latitude
         let long = space?.longitude
-        getAddress(latitude: lat, longitude: long)
         
+        locationVM.getAddress(latitude: lat, longitude: long) { location in
+            if let location = location {
+                self.viewModel.locationSubject.onNext(location)
+            } else {
+                self.locationVM.accessLocation()
+            }
+        }
     }
 }
 // MARK: - tableView관련
