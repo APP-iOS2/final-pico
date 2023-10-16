@@ -10,9 +10,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 final class SignInViewModel {
-    
     private let dbRef = Firestore.firestore()
-    static var shared: SignInViewModel = SignInViewModel()
     var loginUser: User = UserDummyData.users[0]
     var isRightUser = false
     

@@ -10,7 +10,16 @@ import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
-    private let viewModel: SignUpViewModel = .shared
+    private let viewModel: SignUpViewModel
+    
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false
@@ -190,7 +199,7 @@ extension SignUpNickNameViewController {
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         self.viewModel.nickName = userNickName
-        let viewController = SignUpPictureViewController()
+        let viewController = SignUpPictureViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
    

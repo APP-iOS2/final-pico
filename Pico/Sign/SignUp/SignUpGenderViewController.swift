@@ -9,11 +9,19 @@ import UIKit
 import SnapKit
 
 final class SignUpGenderViewController: UIViewController {
-    private let viewModel: SignUpViewModel = .shared
     private var gender: String = ""
     private var genderButtons: [UIButton] = []
     private var isTappedGenderButton = false
+    private let viewModel: SignUpViewModel
     
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     private let progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoBetaBlue
@@ -96,7 +104,7 @@ extension SignUpGenderViewController {
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isTappedGenderButton {
             sender.tappedAnimation()
-            let viewController = SignUpAgeViewController()
+            let viewController = SignUpAgeViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
