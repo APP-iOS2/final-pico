@@ -20,7 +20,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return messageButton.rx.tap.asObservable()
     }
     
-    var likeBurttonTapObservalbe: Observable<Void> {
+    var likeButtonTapObservalbe: Observable<Void> {
         return likeButton.rx.tap.asObservable()
     }
     
@@ -107,9 +107,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     }
     
     private func addViews() {
-        [userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton].forEach { item in
-            addSubview(item)
-        }
+        addSubview([userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton])
     }
     
     private func makeConstraints() {
