@@ -66,9 +66,7 @@ final class EmptyViewController: UIViewController {
     }
     
     private func addViews() {
-        [chuImage, infomationLabel].forEach { item in
-            view.addSubview(item)
-        }
+        view.addSubview([chuImage, infomationLabel])
         if viewType == .iLikeU {
             view.addSubview(linkButton)
         }

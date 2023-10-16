@@ -15,6 +15,8 @@ final class NotificationViewController: UIViewController {
     private let viewModel = NotificationViewModel()
     private var disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
+    private let refreshPublisher = PublishSubject<Void>()
+    private let loadDataPublsher = PublishSubject<Void>()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -27,9 +29,9 @@ final class NotificationViewController: UIViewController {
         addViews()
         makeConstraints()
         configTableView()
-        configTableviewDelegate()
-        configTableviewDatasource()
         configRefresh()
+        bind()
+        loadDataPublsher.onNext(())
     }
     
     private func configViewController() {
@@ -44,6 +46,8 @@ final class NotificationViewController: UIViewController {
             tableView.tableHeaderView = UIView()
         }
         tableView.rowHeight = 90
+        tableView.dataSource = self
+        tableView.delegate = self
     }
     
     private func configRefresh() {
@@ -65,40 +69,51 @@ final class NotificationViewController: UIViewController {
     @objc func refreshTable(refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            viewModel.notifications = []
-            viewModel.lastDocumentSnapshot = nil
-            viewModel.loadNextPage()
+            refreshPublisher.onNext(())
             refresh.endRefreshing()
         }
     }
 }
 
-// MARK: - UITableView+Rx
-extension NotificationViewController {
-    private func configTableviewDatasource() {
-        viewModel.notificationsRx
-            .bind(to: tableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
-                cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti, date: item.createDate)
-            }
-            .disposed(by: disposeBag)
+// MARK: - TableView
+extension NotificationViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.notifications.count
     }
     
-    private func configTableviewDelegate() {
-        tableView.rx.setDelegate(self)
-            .disposed(by: disposeBag)
-        tableView.rx.modelSelected(Noti.self)
-            .subscribe(onNext: { item in
-                if item.notiType == .like {
-                    let viewController = UserDetailViewController()
-                    self.navigationController?.pushViewController(viewController, animated: true)
-                } else {
-                    if let tabBarController = self.tabBarController as? TabBarController {
-                        tabBarController.selectedIndex = 1
-                        let viewControllers = self.navigationController?.viewControllers
-                        self.navigationController?.setViewControllers(viewControllers ?? [], animated: false)
-                    }
-                }
-            })
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: NotificationTableViewCell.self)
+        let item = viewModel.notifications[indexPath.row]
+        cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti, date: item.createDate)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let item = viewModel.notifications[indexPath.row]
+        if item.notiType == .like {
+            let viewController = UserDetailViewController()
+            self.navigationController?.pushViewController(viewController, animated: true)
+        } else {
+            if let tabBarController = self.tabBarController as? TabBarController {
+                tabBarController.selectedIndex = 1
+                let viewControllers = self.navigationController?.viewControllers
+                self.navigationController?.setViewControllers(viewControllers ?? [], animated: false)
+            }
+        }
+    }
+}
+
+// MARK: - Bind
+extension NotificationViewController {
+    private func bind() {
+        let input = NotificationViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
+        let output = viewModel.transform(input: input)
+        
+        output.reloadTableView
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.tableView.reloadData()
+            }
             .disposed(by: disposeBag)
     }
 }
@@ -110,7 +125,7 @@ extension NotificationViewController: UIScrollViewDelegate {
         let tableViewContentSizeY = tableView.contentSize.height
         
         if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
-            viewModel.loadNextPage()
+            loadDataPublsher.onNext(())
         }
     }
 }

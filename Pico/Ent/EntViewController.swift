@@ -51,7 +51,7 @@ final class EntViewController: BaseViewController {
         
     }
     
-    @objc func tappedRandomBoxBanner() {
+    @objc func tappedRandomBoxView(_ sender: UITapGestureRecognizer) {
         let randomBoxViewController = RandomBoxViewController()
         self.navigationController?.pushViewController(randomBoxViewController, animated: true)
         self.tabBarController?.tabBar.isHidden = true
@@ -64,6 +64,10 @@ extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSourc
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "RandomBoxView", for: indexPath) as? RandomBoxView else { return UICollectionViewCell() }
+            
+            let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tappedRandomBoxView(_:)))
+            headerView.addGestureRecognizer(tapGestureRecognizer)
+            
             return headerView
         default:
             fatalError("Unexpected element kind")
@@ -80,7 +84,7 @@ extension EntViewController: UICollectionViewDelegate, UICollectionViewDataSourc
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 6
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

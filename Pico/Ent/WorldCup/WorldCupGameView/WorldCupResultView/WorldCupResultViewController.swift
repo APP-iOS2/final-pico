@@ -119,7 +119,7 @@ final class WorldCupResultViewController: UIViewController {
             make.top.equalTo(contentLabel.snp.bottom).offset(padding * 2)
             make.centerX.equalToSuperview()
             make.width.equalTo(200)
-            make.height.equalTo(200)
+            make.height.equalTo(250)
         }
         
         chatButton.snp.makeConstraints { make in
@@ -145,18 +145,14 @@ final class WorldCupResultViewController: UIViewController {
         if let selectedItem = selectedItem {
             resultUserView.mbtiLabel.text = "\(selectedItem.mbti)"
             resultUserView.userNickname.text = "\(selectedItem.nickName)"
+            resultUserView.userAge.text = "\(selectedItem.age)세"
             
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {
-                do {
-                    let data = try Data(contentsOf: url)
-                    resultUserView.userImage.image = UIImage(data: data)
-                } catch {
-                    print("이미지 로드 에러")
-                }
+                resultUserView.userImage.load(url: url)
             }
         }
     }
-    
+
     private func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
         resultUserView.layer.masksToBounds = false
         resultUserView.layer.shadowColor = UIColor.black.cgColor
