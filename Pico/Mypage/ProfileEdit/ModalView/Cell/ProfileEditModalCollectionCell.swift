@@ -23,8 +23,10 @@ final class ProfileEditModalCollectionCell: UICollectionViewCell {
         super.init(frame: frame)
         addSubView()
         makeConstraints()
+        cellConfigure()
     }
     
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -41,23 +43,15 @@ final class ProfileEditModalCollectionCell: UICollectionViewCell {
         }
     }
     
-    func cellConfigure() {
+    func configure(content: String) {
+        contentLabel.text = content
+    }
+
+    private func cellConfigure() {
         contentView.layer.masksToBounds = false
         contentView.layer.borderColor = UIColor.picoFontGray.cgColor
         contentView.layer.borderWidth = 1
         contentView.layer.cornerRadius = 15
-    }
-    
-    func configure(content: String) {
-        contentLabel.text = content
-    }
-    
-    static func fittingSize(height: CGFloat, text: String) -> CGSize {
-        let cell = ProfileEditModalCollectionCell()
-        cell.configure(content: text)
-        let targetSize = CGSize(width: UIView.layoutFittingCompressedSize.width, height: height)
-        let fittingSize = cell.contentView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .fittingSizeLevel, verticalFittingPriority: .required)
-        return CGSize(width: fittingSize.width + 30, height: height)
     }
     
     private func addSubView() {
