@@ -17,13 +17,13 @@ final class SignUpAgeViewController: UIViewController {
     private let years = Array(1900...2023)
     private let months = Array(1...12)
     private var days: [Int] = []
-    private let viewModel: SignUpViewModel
+    let viewModel: SignUpViewModel
     
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
-        super.init()
+        super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

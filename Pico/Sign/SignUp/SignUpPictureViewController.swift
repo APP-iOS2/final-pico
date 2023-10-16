@@ -12,13 +12,13 @@ import Vision
 import Photos
 
 final class SignUpPictureViewController: UIViewController {
-    private let viewModel: SignUpViewModel
+    let viewModel: SignUpViewModel
     
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
-        super.init()
+        super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

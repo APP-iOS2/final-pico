@@ -10,13 +10,13 @@ import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
-    private let viewModel: SignUpViewModel
+    let viewModel: SignUpViewModel
     
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
-        super.init()
+        super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -12,13 +12,13 @@ import RxSwift
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
     private let authManager = SmsAuthManager()
-    private let viewModel: SignUpViewModel
+    let viewModel: SignUpViewModel
     
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
-        super.init()
+        super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -237,7 +237,7 @@ extension SignUpPhoneNumberViewController {
         }
         print("성공성공")
         self.showAlert(message: "인증에 성공하셨습니다.") {
-            let viewController = SignUpGenderViewController(viewModel: viewModel)
+            let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
