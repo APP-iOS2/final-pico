@@ -13,7 +13,6 @@ final class ProfileEditTextTabelCell: UITableViewCell {
         let label = UILabel()
         label.textColor = .picoFontBlack
         label.font = UIFont.picoSubTitleFont
-        label.text = "하,,,"
         return label
     }()
     
@@ -30,7 +29,6 @@ final class ProfileEditTextTabelCell: UITableViewCell {
         imageView.image = UIImage(systemName: "chevron.right")
         imageView.tintColor = .lightGray
         imageView.contentMode = .scaleAspectFit
-     
         return imageView
     }()
     
@@ -43,6 +41,14 @@ final class ProfileEditTextTabelCell: UITableViewCell {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        contentLabel.text = "추가"
+        contentLabel.textAlignment = .right
+        titleLabel.text = nil
+        nextImageView.image = UIImage(systemName: "chevron.right")
     }
     
     func configure(titleLabel: String, contentLabel: String?) {

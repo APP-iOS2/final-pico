@@ -14,7 +14,6 @@ enum Collections {
     case users
     case likes
     case notifications
-    case subInfo
     case mail
     
     var name: String {
@@ -25,8 +24,6 @@ enum Collections {
             return "likes"
         case .notifications:
             return "notifications"
-        case .subInfo:
-            return "subInfo"
         case .mail:
             return "mail"
         }
@@ -178,6 +175,19 @@ final class FirestoreService {
         }
     }
 
+    func updateDocument<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            dbRef.collection(collectionId.name).document(documentId).updateData([field: data]) { err in
+                if let err = err {
+                    print("Error updating document: \(err)")
+                } else {
+                    print("Document successfully updated")
+                }
+            }
+        }
+    }
+    
     func saveDocumentRx<T: Codable>(collectionId: Collections, documentId: String, data: T) -> Observable<Void> {
         return Observable.create { emitter in
             self.saveDocument(collectionId: collectionId, documentId: documentId, data: data) { result in
