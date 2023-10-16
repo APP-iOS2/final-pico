@@ -157,8 +157,9 @@ final class MailViewController: BaseViewController {
                         }
                     } else {
                         self?.mailListTableView.snp.makeConstraints { make in
-                            make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView())
-                            make.leading.trailing.bottom.equalTo(safeArea)
+                            make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
+                            make.leading.equalTo(safeArea).offset(10)
+                            make.trailing.bottom.equalTo(safeArea).offset(-10)
                         }
                     }
                 })
@@ -168,14 +169,14 @@ final class MailViewController: BaseViewController {
                 .subscribe(onNext: { [weak self] isEmpty in
                     if isEmpty {
                         self?.emptyView.view.snp.makeConstraints { make in
-                            make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
+                            make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView())
                             make.leading.trailing.bottom.equalTo(safeArea)
-                            Loading.hideLoading()
                         }
                     } else {
                         self?.mailListTableView.snp.makeConstraints { make in
                             make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
-                            make.leading.trailing.bottom.equalTo(safeArea)
+                            make.leading.equalTo(safeArea).offset(10)
+                            make.trailing.bottom.equalTo(safeArea).offset(-10)
                         }
                     }
                 })
@@ -190,7 +191,7 @@ final class MailViewController: BaseViewController {
     }
     
     private func configTableView() {
-        mailListTableView.rowHeight = 100
+        mailListTableView.rowHeight = 80
         
         refreshControl.endRefreshing()
         mailListTableView.refreshControl = refreshControl

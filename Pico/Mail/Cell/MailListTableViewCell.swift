@@ -20,8 +20,16 @@ final class MailListTableViewCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 40
+        imageView.layer.cornerRadius = 30
         return imageView
+    }()
+    
+    private let userStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 10
+        return stackView
     }()
     
     private let nameStackView: UIStackView = {
@@ -31,19 +39,10 @@ final class MailListTableViewCell: UITableViewCell {
         return stackView
     }()
     
-    private let infoStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 10
-        stackView.alignment = .leading
-        return stackView
-    }()
-    
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.picoSubTitleFont
+        label.font = UIFont.picoContentBoldFont
         label.textColor = .picoFontBlack
-        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -59,6 +58,7 @@ final class MailListTableViewCell: UITableViewCell {
     private let dateStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
+        stackView.distribution = .fillEqually
         stackView.spacing = 10
         return stackView
     }()
@@ -111,7 +111,7 @@ final class MailListTableViewCell: UITableViewCell {
         let date = senderUser.sendedDate
         let startIndex = date.index(date.startIndex, offsetBy: 5)
         let range = startIndex...
-        self.dateLabel.text = "\(date[range])"
+        self.dateLabel.text = "\(date[range].prefix(2)).\(date[range].suffix(2))"
         
         if type == .receive {
             if !senderUser.isReading {
@@ -122,21 +122,21 @@ final class MailListTableViewCell: UITableViewCell {
     
     private func addViews() {
         nameStackView.addArrangedSubview([nameLabel, mbtiLabelView])
-        infoStackView.addArrangedSubview([nameStackView, message])
+        userStackView.addArrangedSubview([nameStackView, message])
         dateStackView.addArrangedSubview([dateLabel, newLabel])
         
-        contentView.addSubview([userImage, infoStackView, dateStackView])
+        contentView.addSubview([userImage, userStackView, dateStackView])
     }
     
     private func makeConstraints() {
         userImage.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(10)
             make.leading.equalTo(contentView).offset(10)
-            make.width.height.equalTo(80)
+            make.width.height.equalTo(60)
         }
         
         nameStackView.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView)
+            make.top.equalTo(userStackView)
             make.leading.equalTo(userImage.snp.trailing).offset(15)
             
         }
@@ -147,7 +147,7 @@ final class MailListTableViewCell: UITableViewCell {
             make.width.equalTo(mbtiLabelView.frame.size.width)
         }
         
-        infoStackView.snp.makeConstraints { make in
+        userStackView.snp.makeConstraints { make in
             make.top.equalTo(userImage).offset(10)
             make.leading.equalTo(nameStackView)
             make.trailing.equalTo(contentView).offset(-70)
@@ -155,7 +155,7 @@ final class MailListTableViewCell: UITableViewCell {
         }
         
         dateStackView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(infoStackView)
+            make.top.bottom.equalTo(userStackView)
             make.trailing.equalTo(contentView.snp.trailing).offset(-10)
             make.width.equalTo(50)
         }
