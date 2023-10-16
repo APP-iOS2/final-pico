@@ -1,5 +1,5 @@
 //
-//  BottomUserDetailViewController.swift
+//  SubInfomationViewController.swift
 //  Pico
 //
 //  Created by 신희권 on 2023/09/26.
@@ -101,7 +101,8 @@ final class SubInfomationViewController: BaseViewController {
     
     private func makeConstraints() {
         personalLabel.snp.makeConstraints { make in
-            make.leading.top.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(20)
+            make.leading.equalToSuperview()
         }
         
         personalCollectionView.snp.makeConstraints { make in

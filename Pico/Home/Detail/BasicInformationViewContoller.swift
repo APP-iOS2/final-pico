@@ -64,20 +64,20 @@ final class BasicInformationViewContoller: UIViewController {
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         mbtiLabelView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(20)
+            make.top.leading.equalToSuperview()
             make.width.equalTo(70)
             make.height.equalTo(50)
         }
         
         nameAgeLabel.snp.makeConstraints { make in
             make.top.equalTo(mbtiLabelView.snp.bottom).offset(15)
-            make.leading.equalToSuperview().offset(20)
+            make.leading.equalToSuperview()
             make.trailing.equalToSuperview().offset(-20)
         }
         
         locationImageView.snp.makeConstraints { make in
             make.top.equalTo(nameAgeLabel.snp.bottom).offset(15)
-            make.leading.equalTo(safeArea).offset(20)
+            make.leading.equalTo(safeArea)
         }
         
         locationLabel.snp.makeConstraints { make in
@@ -88,7 +88,7 @@ final class BasicInformationViewContoller: UIViewController {
         
         heightImageView.snp.makeConstraints { make in
             make.top.equalTo(locationLabel.snp.bottom).offset(10)
-            make.leading.equalTo(safeArea).offset(20)
+            make.leading.equalTo(safeArea)
         }
         
         heightLabel.snp.makeConstraints { make in

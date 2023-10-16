@@ -1,5 +1,5 @@
 //
-//  UserImageTableViewCell.swift
+//  UserImageViewControll.swift
 //  Pico
 //
 //  Created by 신희권 on 2023/10/04.
@@ -71,6 +71,7 @@ final class UserImageViewControll: UIViewController {
     private func makeConstraints() {
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+            make.height.equalTo(UserImageViewControllConstraint.height)
         }
         
         pageControl.snp.makeConstraints { make in
