@@ -13,14 +13,13 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 final class SignUpViewModel {
-    
     private let dbRef = Firestore.firestore()
-    static let shared: SignUpViewModel = SignUpViewModel()
     var imagesSubject: PublishSubject<[UIImage]> = PublishSubject()
     var urlStringsSubject: PublishSubject<[String]> = PublishSubject()
     var locationSubject: PublishSubject<Location> = PublishSubject()
     var isSaveSuccess: PublishSubject<Void> = PublishSubject()
     private let disposeBag = DisposeBag()
+    
     var isRightUser: Bool = false
     var isRightName: Bool = false
     let id = UUID().uuidString
@@ -44,7 +43,9 @@ final class SignUpViewModel {
     lazy var newUser: User =
     User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
     
-    private init() {
+    var progressStatus: Float = 0.0
+    
+    init() {
         locationSubject.subscribe { location in
             SignLoadingManager.showLoading(text: "위치정보를 받는중이에요!!")
             self.newUser.location = location
@@ -68,6 +69,14 @@ final class SignUpViewModel {
             }.disposed(by: disposeBag)
     }
     
+    func animateProgressBar(progressView: UIProgressView, endPoint: Float) {
+        let endStatus = endPoint * 0.143
+        UIView.animate(withDuration: 3) {
+            progressView.setProgress(endStatus, animated: true)
+        }
+        progressStatus = endStatus
+    }
+
     func saveImage() {
         imagesSubject.onNext(imageArray)
     }

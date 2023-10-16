@@ -12,7 +12,17 @@ import RxSwift
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
     private let authManager = SmsAuthManager()
-    private let viewModel: SignUpViewModel = .shared
+    let viewModel: SignUpViewModel
+    
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
@@ -29,13 +39,13 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return label
     }()
     
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.284
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -104,13 +114,14 @@ final class SignUpPhoneNumberViewController: UIViewController {
         configButtons()
         configTextField()
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 2)
+    }
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
     }
-    
+   
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         keyboardManager.unregisterKeyboard()
@@ -227,7 +238,7 @@ extension SignUpPhoneNumberViewController {
         }
         print("성공성공")
         self.showAlert(message: "인증에 성공하셨습니다.") {
-            let viewController = SignUpGenderViewController()
+            let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }

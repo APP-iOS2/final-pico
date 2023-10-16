@@ -12,19 +12,28 @@ import Vision
 import Photos
 
 final class SignUpPictureViewController: UIViewController {
-    private let viewModel: SignUpViewModel = .shared
+    let viewModel: SignUpViewModel
+    
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     private let yoloManager: YoloManager = YoloManager()
     private let pictureManager: PictureManager = PictureManager()
     private var isDetectedImage: Bool? = false
     private var objectDetectionRequest: VNCoreMLRequest?
     private var userImages: [UIImage] = []
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142 * 6
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -85,7 +94,9 @@ final class SignUpPictureViewController: UIViewController {
         configCollectionView()
         yoloManager.loadYOLOv3Model()
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 6)
+    }
     // MARK: - Config
     private func configCollectionView() {
         collectionView.configBackgroundColor()
@@ -130,7 +141,7 @@ final class SignUpPictureViewController: UIViewController {
                 if allImagesDetected {
                     self.showAlert(message: "이미지가 등록되었습니다.") {
                         self.viewModel.imageArray = self.userImages
-                        let viewController = SignUpTermsOfServiceViewController()
+                        let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
                         self.navigationController?.pushViewController(viewController, animated: true)
                     }
                 } else {

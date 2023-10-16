@@ -11,19 +11,20 @@ import RxSwift
 import RxRelay
 
 final class SignUpViewController: UIViewController {
-    private let viewModel: SignUpViewModel = .shared
+    let viewModel: SignUpViewModel = SignUpViewModel()
     private var userMbti: [String] = ["", "", "", ""]
     private var mbti: String = ""
-    private let progressView: UIProgressView = {
+    
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
-    
+
     private let notifyLabel: UILabel = {
         let label = UILabel()
         label.text = "성격유형을 선택하세요."
@@ -105,6 +106,10 @@ final class SignUpViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configButtons()
+        
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 1)
     }
 }
 // MARK: - Config
@@ -196,7 +201,7 @@ extension SignUpViewController: SignViewControllerDelegate {
                 return userMbti.joined()
             }
             viewModel.userMbti = convertMbti
-            let viewController = SignUpPhoneNumberViewController()
+            let viewController = SignUpPhoneNumberViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }

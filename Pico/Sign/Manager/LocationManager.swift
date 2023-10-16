@@ -13,7 +13,6 @@ import RxRelay
 
 final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
     
-    var viewModel: SignUpViewModel = .shared
     static var shared = LocationManager()
     var locationManager: CLLocationManager = CLLocationManager()
     var currentLocation: CLLocationCoordinate2D?

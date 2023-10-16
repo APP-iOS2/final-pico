@@ -9,18 +9,27 @@ import UIKit
 import SnapKit
 
 final class SignUpGenderViewController: UIViewController {
-    private let viewModel: SignUpViewModel = .shared
     private var gender: String = ""
     private var genderButtons: [UIButton] = []
     private var isTappedGenderButton = false
+    let viewModel: SignUpViewModel
     
-    private let progressView: UIProgressView = {
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.426
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -72,6 +81,9 @@ final class SignUpGenderViewController: UIViewController {
         addSubViews()
         makeConstraints()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 3)
+    }
 }
 // MARK: - Config
 extension SignUpGenderViewController {
@@ -96,7 +108,7 @@ extension SignUpGenderViewController {
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isTappedGenderButton {
             sender.tappedAnimation()
-            let viewController = SignUpAgeViewController()
+            let viewController = SignUpAgeViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
