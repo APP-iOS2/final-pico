@@ -98,13 +98,13 @@ final class RandomBoxViewController: UIViewController {
         }
 
         purchaseChuButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(padding * 4)
+            make.top.equalToSuperview().offset(padding * 5)
             make.trailing.equalTo(infoButton.snp.leading).offset(-padding)
             make.width.height.equalTo(padding * 2)
         }
 
         infoButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(padding * 4)
+            make.top.equalToSuperview().offset(padding * 5)
             make.trailing.equalToSuperview().offset(-padding)
             make.width.height.equalTo(padding * 2)
         }
@@ -146,19 +146,25 @@ final class RandomBoxViewController: UIViewController {
         openOneBoxButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.openBoxButtonTapped()
+                self.tappedBoxButton()
             })
             .disposed(by: disposeBag)
         
         openTenBoxButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.openTenBoxButtonTapped()
+                self.tappedTenBoxButton()
+            })
+            .disposed(by: disposeBag)
+        
+        infoButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.tappedInfoButton()
             })
             .disposed(by: disposeBag)
     }
     
-    private func openBoxButtonTapped() {
+    private func tappedBoxButton() {
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
 
@@ -172,7 +178,7 @@ final class RandomBoxViewController: UIViewController {
         }
     }
     
-    private func openTenBoxButtonTapped() {
+    private func tappedTenBoxButton() {
         var boxHistory: [Int] = []
 
         self.openOneBoxButton.isEnabled = false
@@ -206,5 +212,17 @@ final class RandomBoxViewController: UIViewController {
         let alert = UIAlertController(title: nil, message: messageSting, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+    
+    @objc private func tappedInfoButton() {
+        let percentCardView = PercentCardView()
+        percentCardView.frame = CGRect(x: 0, y: 0, width: 300, height: 200)
+        percentCardView.center = view.center
+        percentCardView.alpha = 0
+        view.addSubview(percentCardView)
+
+        UIView.animate(withDuration: 0.3) {
+            percentCardView.alpha = 1
+        }
     }
 }
