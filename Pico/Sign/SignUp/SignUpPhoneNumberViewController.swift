@@ -10,8 +10,19 @@ import SnapKit
 import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
+    private let keyboardManager = KeyboardManager()
     private let authManager = SmsAuthManager()
-    var viewModel: SignUpViewModel = .shared
+    let viewModel: SignUpViewModel
+    
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
@@ -28,13 +39,13 @@ final class SignUpPhoneNumberViewController: UIViewController {
         return label
     }()
     
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.284
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -104,15 +115,22 @@ final class SignUpPhoneNumberViewController: UIViewController {
         configTextField()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        registerKeyboard()
-        phoneNumberTextField.becomeFirstResponder()
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 2)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        keyboardManager.registerKeyboard(with: nextButton)
+        phoneNumberTextField.becomeFirstResponder()
+    }
+   
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        unregisterKeyboard()
+        keyboardManager.unregisterKeyboard()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        SignLoadingManager.hideLoading()
     }
 }
 // MARK: - Config
@@ -137,7 +155,7 @@ extension SignUpPhoneNumberViewController {
     }
     
     private func configReset() {
-        registerKeyboard()
+        keyboardManager.registerKeyboard(with: nextButton)
         userPhoneNumber = ""
         isFullPhoneNumber = false
         isTappedCheckButton = false
@@ -194,13 +212,13 @@ extension SignUpPhoneNumberViewController {
             guard let text = self.phoneNumberTextField.text else { return }
             self.viewModel.checkPhoneNumber(userNumber: text) {
                 guard self.viewModel.isRightUser else {
-                    Loading.hideLoading()
+                    SignLoadingManager.hideLoading()
                     self.showAlert(message: "이미 등록된 번호입니다.") {
                         self.configReset()
                     }
                     return
                 }
-                Loading.hideLoading()
+                SignLoadingManager.hideLoading()
                 self.viewModel.phoneNumber = text
                 self.authTextFields[0].becomeFirstResponder()
                 self.updatePhoneNumberTextField(isFull: true)
@@ -226,7 +244,8 @@ extension SignUpPhoneNumberViewController {
         }
         print("성공성공")
         self.showAlert(message: "인증에 성공하셨습니다.") {
-            let viewController = SignUpGenderViewController()
+            SignLoadingManager.showLoading(text: "넘어가는중!")
+            let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
@@ -259,38 +278,6 @@ extension SignUpPhoneNumberViewController: UITextFieldDelegate {
         return true
     }
 }
-
-// MARK: - 키보드 관련
-extension SignUpPhoneNumberViewController {
-    
-    private func registerKeyboard() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    private func unregisterKeyboard() {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc private func keyboardUp(notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            
-            UIView.animate(
-                withDuration: 0.5,
-                animations: {
-                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
-                }
-            )
-        }
-    }
-    
-    @objc private func keyboardDown() {
-        self.nextButton.transform = .identity
-    }
-}
-
 // MARK: - UI 관련
 extension SignUpPhoneNumberViewController {
     

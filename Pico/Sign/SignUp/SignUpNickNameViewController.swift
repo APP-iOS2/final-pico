@@ -9,18 +9,28 @@ import UIKit
 import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
-    var viewModel: SignUpViewModel = .shared
+    private let keyboardManager = KeyboardManager()
+    let viewModel: SignUpViewModel
+    
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false
     private var userNickName: String = ""
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142 * 5
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -97,16 +107,22 @@ final class SignUpNickNameViewController: UIViewController {
         configButtons()
         configTextField()
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 5)
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        registerKeyboard()
+        keyboardManager.registerKeyboard(with: nextButton)
         nickNameTextField.becomeFirstResponder()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        unregisterKeyboard()
+        keyboardManager.unregisterKeyboard()
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        SignLoadingManager.hideLoading()
     }
 }
 // MARK: - Config
@@ -166,13 +182,13 @@ extension SignUpNickNameViewController {
         showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) {
             self.viewModel.checkNickName(name: self.userNickName) {
                 guard self.viewModel.isRightName else {
-                    Loading.hideLoading()
+                    SignLoadingManager.hideLoading()
                     self.showAlert(message: "이미 등록된 이름입니다.") {
                         self.reset()
                     }
                     return
                 }
-                Loading.hideLoading()
+                SignLoadingManager.hideLoading()
             }
             self.updateCheckButton(isFull: true, ischeck: true)
             self.updateNextButton(isCheck: true)
@@ -188,11 +204,22 @@ extension SignUpNickNameViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
+        /*
+         !!!: 멘토링 질문
+         2023-10-16 18:25:04.804179+0900 Pico[8452:2229602] Metal API Validation Enabled
+         2023-10-16 18:25:09.469090+0900 Pico[8452:2229938] Task <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1> finished with error [-1002] Error Domain=NSURLErrorDomain Code=-1002 "unsupported URL" UserInfo={NSLocalizedDescription=unsupported URL, NSErrorFailingURLStringKey=chu, NSErrorFailingURLKey=chu, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+             "LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>"
+         ), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>, NSUnderlyingError=0x281268f90 {Error Domain=kCFErrorDomainCFNetwork Code=-1002 "(null)"}}
+         Pico[8452:2229602] [SystemGestureGate] <0x10600de80> Gesture: System gesture gate timed out.
+         Pico[8452:2229602] [Presentation] Attempt to present <UIAlertController: 0x105abde00> on <Pico.PictureManager: 0x1064935e0> (from <Pico.PictureManager: 0x1064935e0>) whose view is not in the window hierarchy.
+         
+         위에 메시지가 뜨면서 다음 뷰컨으로 넘어가는게 조금 걸립니다 !
+         */
         self.viewModel.nickName = userNickName
-        let viewController = SignUpPictureViewController()
+        SignLoadingManager.showLoading(text: "넘어가는중!")
+        let viewController = SignUpPictureViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
-   
 }
 
 // MARK: - 텍스트 필드 관련
@@ -214,42 +241,9 @@ extension SignUpNickNameViewController: UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        textField.resignFirstResponder()
         return true
     }
 }
-
-// MARK: - 키보드 관련
-extension SignUpNickNameViewController {
-    
-    private func registerKeyboard() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    private func unregisterKeyboard() {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc private func keyboardUp(notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            
-            UIView.animate(
-                withDuration: 0.5,
-                animations: {
-                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
-                }
-            )
-        }
-    }
-    
-    @objc private func keyboardDown() {
-        self.nextButton.transform = .identity
-    }
-}
-
 // MARK: - UI 관련
 extension SignUpNickNameViewController {
     

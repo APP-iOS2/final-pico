@@ -14,7 +14,6 @@ enum Collections {
     case users
     case likes
     case notifications
-    case subInfo
     case mail
     
     var name: String {
@@ -25,8 +24,6 @@ enum Collections {
             return "likes"
         case .notifications:
             return "notifications"
-        case .subInfo:
-            return "subInfo"
         case .mail:
             return "mail"
         }
@@ -142,11 +139,11 @@ final class FirestoreService {
         }
     }
     
-    func loadDocuments<T: Codable>(collectionId: Collections, dataType: T.Type, itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?, completion: @escaping (Result<([T], DocumentSnapshot?), Error>) -> Void) {
+    func loadDocuments<T: Codable>(collectionId: Collections, dataType: T.Type, orderBy: (String, Bool), itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?, completion: @escaping (Result<([T], DocumentSnapshot?), Error>) -> Void) {
         var lastDocumentSnapshot = lastDocumentSnapshot
         
         let query = dbRef.collection(collectionId.name)
-//            .order(by: "createdDate", descending: true)
+            .order(by: orderBy.0, descending: orderBy.1)
             .limit(to: itemsPerPage)
         
         if let lastSnapshots = lastDocumentSnapshot {
@@ -178,6 +175,31 @@ final class FirestoreService {
         }
     }
 
+    func updateDocument<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            dbRef.collection(collectionId.name).document(documentId).updateData([field: data]) { err in
+                if let err = err {
+                    print("Error updating document: \(err)")
+                } else {
+                    print("Document successfully updated")
+                }
+            }
+        }
+    }
+    func updataDocuments<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
+            let jsonData = data.asDictionary()
+            dbRef.collection(collectionId.name).document(documentId).updateData([field: jsonData]) { error in
+                if let error = error {
+                    completion(.failure(error))
+                    print("Error updating document: \(error)")
+                } else {
+                    completion(.success(true))
+                    print("Document successfully updated")
+                }
+            }
+       
+    }
     func saveDocumentRx<T: Codable>(collectionId: Collections, documentId: String, data: T) -> Observable<Void> {
         return Observable.create { emitter in
             self.saveDocument(collectionId: collectionId, documentId: documentId, data: data) { result in
@@ -210,9 +232,9 @@ final class FirestoreService {
         }
     }
     
-    func loadDocumentRx<T: Codable>(collectionId: Collections, dataType: T.Type, itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?) -> Observable<([T], DocumentSnapshot?)> {
+    func loadDocumentRx<T: Codable>(collectionId: Collections, dataType: T.Type, orderBy: (String, Bool), itemsPerPage: Int, lastDocumentSnapshot: DocumentSnapshot?) -> Observable<([T], DocumentSnapshot?)> {
         return Observable.create { emitter in
-            self.loadDocuments(collectionId: collectionId, dataType: dataType, itemsPerPage: itemsPerPage, lastDocumentSnapshot: lastDocumentSnapshot) { result in
+            self.loadDocuments(collectionId: collectionId, dataType: dataType, orderBy: orderBy, itemsPerPage: itemsPerPage, lastDocumentSnapshot: lastDocumentSnapshot) { result in
                 switch result {
                 case .success(let data):
                     emitter.onNext(data)

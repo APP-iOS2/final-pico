@@ -1,5 +1,5 @@
 //
-//  BottomUserDetailViewController.swift
+//  SubInfomationViewController.swift
 //  Pico
 //
 //  Created by 신희권 on 2023/09/26.
@@ -9,8 +9,6 @@ import UIKit
 import RxSwift
 
 final class SubInfomationViewController: BaseViewController {
-    private let disposeBag = DisposeBag()
-    private let viewModel = UserDetailViewModel(user: User.userData)
     private var hobbies: [String] = []
     private var personalities: [String] = []
     private var likeMbtis: [MBTIType] = []
@@ -62,15 +60,6 @@ final class SubInfomationViewController: BaseViewController {
         addViews()
         makeConstraints()
         configCollectionView()
-        bind()
-    }
-    func bind() {
-        viewModel.userObservable
-            .subscribe(onNext: { user in
-                guard let subInfo = user.subInfo else { return }
-                self.hobbies = subInfo.hobbies
-            })
-            .disposed(by: disposeBag)
     }
     
     func config(hobbies: [String], personalities: [String], likeMbtis: [MBTIType]) {
@@ -101,7 +90,8 @@ final class SubInfomationViewController: BaseViewController {
     
     private func makeConstraints() {
         personalLabel.snp.makeConstraints { make in
-            make.leading.top.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(20)
+            make.leading.equalToSuperview()
         }
         
         personalCollectionView.snp.makeConstraints { make in

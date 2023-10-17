@@ -9,8 +9,6 @@ import UIKit
 import SnapKit
 
 final class SignUpAgeViewController: UIViewController {
-    
-    var viewModel: SignUpViewModel = .shared
     private var isChoiceAge: Bool = false
     private var selectedYear: Int = 2000
     private var selectedMonth: Int = 1
@@ -19,7 +17,16 @@ final class SignUpAgeViewController: UIViewController {
     private let years = Array(1900...2023)
     private let months = Array(1...12)
     private var days: [Int] = []
+    let viewModel: SignUpViewModel
     
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     private var userAge: String {
         let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -29,13 +36,13 @@ final class SignUpAgeViewController: UIViewController {
         return dateString
     }
     
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142 * 4
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -80,6 +87,12 @@ final class SignUpAgeViewController: UIViewController {
         makeConstraints()
         configDatePicker()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 4)
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        SignLoadingManager.hideLoading()
+    }
 }
 // MARK: - Config
 extension SignUpAgeViewController {
@@ -108,7 +121,8 @@ extension SignUpAgeViewController {
 
             viewModel.birth = userAge
             sender.tappedAnimation()
-            let viewController = SignUpNickNameViewController()
+            SignLoadingManager.showLoading(text: "넘어가는중!")
+            let viewController = SignUpNickNameViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }

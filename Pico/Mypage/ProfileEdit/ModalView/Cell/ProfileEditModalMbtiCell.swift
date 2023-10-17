@@ -1,14 +1,14 @@
 //
-//  ProfileEditModalCollectionCell.swift
+//  ProfileEditModalMbtiCell.swift
 //  Pico
 //
-//  Created by 김민기 on 2023/10/13.
+//  Created by 김민기 on 2023/10/16.
 //
 
 import UIKit
 import SnapKit
 
-final class ProfileEditModalCollectionCell: UICollectionViewCell {
+final class ProfileEditModalMbtiCell: UICollectionViewCell {
     
     private let contentLabel: UILabel = {
         let label = UILabel()
@@ -43,15 +43,15 @@ final class ProfileEditModalCollectionCell: UICollectionViewCell {
         }
     }
     
-    func configure(content: String) {
-        contentLabel.text = content
-    }
-
     private func cellConfigure() {
         contentView.layer.masksToBounds = false
         contentView.layer.borderColor = UIColor.picoFontGray.cgColor
         contentView.layer.borderWidth = 1
         contentView.layer.cornerRadius = 15
+    }
+    
+    func configure(content: String) {
+        contentLabel.text = content
     }
     
     private func addSubView() {

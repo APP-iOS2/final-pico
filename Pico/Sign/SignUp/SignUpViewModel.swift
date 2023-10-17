@@ -13,14 +13,13 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 final class SignUpViewModel {
-    
     private let dbRef = Firestore.firestore()
-    static let shared: SignUpViewModel = SignUpViewModel()
     var imagesSubject: PublishSubject<[UIImage]> = PublishSubject()
     var urlStringsSubject: PublishSubject<[String]> = PublishSubject()
     var locationSubject: PublishSubject<Location> = PublishSubject()
     var isSaveSuccess: PublishSubject<Void> = PublishSubject()
     private let disposeBag = DisposeBag()
+    
     var isRightUser: Bool = false
     var isRightName: Bool = false
     let id = UUID().uuidString
@@ -44,9 +43,11 @@ final class SignUpViewModel {
     lazy var newUser: User =
     User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
     
-    private init() {
+    var progressStatus: Float = 0.0
+    
+    init() {
         locationSubject.subscribe { location in
-            Loading.showLoading()
+            SignLoadingManager.showLoading(text: "위치정보를 받는중이에요!!")
             self.newUser.location = location
             self.saveImage()
         }
@@ -64,10 +65,18 @@ final class SignUpViewModel {
                 print("스트링 저장완료")
                 self.newUser.imageURLs = strings
                 self.saveNewUser()
-                Loading.hideLoading()
+                SignLoadingManager.hideLoading()
             }.disposed(by: disposeBag)
     }
     
+    func animateProgressBar(progressView: UIProgressView, endPoint: Float) {
+        let endStatus = endPoint * 0.143
+        UIView.animate(withDuration: 3) {
+            progressView.setProgress(endStatus, animated: true)
+        }
+        progressStatus = endStatus
+    }
+
     func saveImage() {
         imagesSubject.onNext(imageArray)
     }
@@ -79,7 +88,7 @@ final class SignUpViewModel {
     }
     
     func checkPhoneNumber(userNumber: String, completion: @escaping () -> ()) {
-        Loading.showLoading()
+        SignLoadingManager.showLoading(text: "중복된 번호를 찾고 있어요!")
         self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
             guard err == nil, let documents = snapShot?.documents else {
                 print(err ?? "서버오류 비상비상")
@@ -98,7 +107,7 @@ final class SignUpViewModel {
     }
     
     func checkNickName(name: String, completion: @escaping () -> ()) {
-        Loading.showLoading()
+        SignLoadingManager.showLoading(text: "중복된 닉네임을 찾고 있어요!")
         self.dbRef.collection("users").whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
             guard err == nil, let documents = snapShot?.documents else {
                 print(err ?? "서버오류 비상비상")

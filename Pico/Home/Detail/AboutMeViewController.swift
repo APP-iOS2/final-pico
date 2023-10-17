@@ -19,7 +19,7 @@ final class AboutMeViewController: UIViewController {
     
     private let introLabel: UILabel = {
         let label = UILabel()
-        label.text = "저랑 블랙맘바 잡으러 가실래요??저랑 블랙맘바 잡으러 가가실래요??래실래요??래실래요??래실래요??래실래요??래실래요??래실래요??래요??가실래요??"
+        label.text = ""
         label.textAlignment = .left
         label.numberOfLines = 0
         return label
@@ -34,7 +34,7 @@ final class AboutMeViewController: UIViewController {
     
     private let educationLabel: UILabel = {
         let label = UILabel()
-        label.text = "멋사대학교"
+        label.text = ""
         return label
     }()
     
@@ -47,7 +47,7 @@ final class AboutMeViewController: UIViewController {
     
     private let religionLabel: UILabel = {
         let label = UILabel()
-        label.text = "불교"
+        label.text = ""
         return label
     }()
     
@@ -60,7 +60,7 @@ final class AboutMeViewController: UIViewController {
     
     private let smokeLabel: UILabel = {
         let label = UILabel()
-        label.text = "비흡연"
+        label.text = ""
         return label
     }()
     
@@ -73,7 +73,7 @@ final class AboutMeViewController: UIViewController {
     
     private let jobLabel: UILabel = {
         let label = UILabel()
-        label.text = "Aespa"
+        label.text = ""
         return label
     }()
     
@@ -86,7 +86,7 @@ final class AboutMeViewController: UIViewController {
     
     private let drinkLabel: UILabel = {
         let label = UILabel()
-        label.text = "전혀 안함"
+        label.text = ""
         return label
     }()
     
@@ -114,8 +114,8 @@ final class AboutMeViewController: UIViewController {
     private func makeConstraints() {
         introLabelContainerView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(30)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
         }
         
         introLabel.snp.makeConstraints { make in
@@ -124,7 +124,7 @@ final class AboutMeViewController: UIViewController {
         
         educationImageView.snp.makeConstraints { make in
             make.top.equalTo(introLabelContainerView.snp.bottom).offset(30)
-            make.leading.equalToSuperview().offset(20)
+            make.leading.equalToSuperview()
             make.width.equalTo(25)
         }
         
@@ -135,7 +135,7 @@ final class AboutMeViewController: UIViewController {
         
         religionImageView.snp.makeConstraints { make in
             make.top.equalTo(educationImageView.snp.bottom).offset(30)
-            make.leading.equalToSuperview().offset(20)
+            make.leading.equalToSuperview()
         }
         
         religionLabel.snp.makeConstraints { make in
@@ -145,7 +145,7 @@ final class AboutMeViewController: UIViewController {
         
         smokeImageView.snp.makeConstraints { make in
             make.top.equalTo(religionImageView.snp.bottom).offset(30)
-            make.leading.equalToSuperview().offset(20)
+            make.leading.equalToSuperview()
         }
         
         smokeLabel.snp.makeConstraints { make in

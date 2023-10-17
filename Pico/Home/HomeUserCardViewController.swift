@@ -370,6 +370,7 @@ final class HomeUserCardViewController: UIViewController {
     
     @objc func tappedInfoButton() {
         let viewController = UserDetailViewController()
+        viewController.viewModel = UserDetailViewModel(user: user)
         navigationController?.pushViewController(viewController, animated: true)
     }
     

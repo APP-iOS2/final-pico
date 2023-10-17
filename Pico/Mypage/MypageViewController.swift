@@ -26,6 +26,7 @@ final class MypageViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         resetTableViewScroll()
+        profileView.configProgressBarView()
     }
     
     private func resetTableViewScroll() {

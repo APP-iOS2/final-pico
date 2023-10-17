@@ -235,6 +235,8 @@ final class MailReceiveViewController: UIViewController {
     @objc func tappedSenderStack() {
         dismiss(animated: true)
         let viewController = UserDetailViewController()
+        // user 정보 넘겨주세용
+        //viewController.viewModel = UserDetailViewModel(user: user)
         self.navigationController?.pushViewController(viewController, animated: true)
         print("tap senderStack")
     }
