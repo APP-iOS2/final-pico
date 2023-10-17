@@ -9,14 +9,10 @@ import UIKit
 
 final class PercentModalViewController: UIViewController {
     
-    private let tableView: UITableView = {
-        let tableView = UITableView()
-        return tableView
-    }()
+    private let tableView = UITableView()
     
     private let percentInfo: [[String]] = [
-        ["Section 1", "Item 1-1", "Item 1-2", "Item 1-3"],
-        ["Section 2", "Item 2-1", "Item 2-2", "Item 2-3"]
+        ["초급 박스", "50%", "35%", "15%", "5%"]
     ]
     
     override func viewDidLoad() {
