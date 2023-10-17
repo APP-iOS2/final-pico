@@ -21,7 +21,7 @@ final class StoreViewController: UIViewController {
     private let viewModel: StoreViewModel
     private let disposeBag: DisposeBag = DisposeBag()
     
-    private let purchaseChuCountPublish = PublishSubject<Int>()
+    private let purchaseChuCountPublish = PublishSubject<StoreModel>()
     private let consumeChuCountPublish = PublishSubject<Int>()
     
     init(viewModel: StoreViewModel) {
@@ -64,9 +64,12 @@ final class StoreViewController: UIViewController {
         output.resultPurchase
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "결제 확인", messageText: "결제되셨습니다.", confirmButtonText: "확인", comfrimAction: {
-                    viewController.navigationController?.popViewController(animated: true)
-                })
+                DispatchQueue.main.async {
+                    viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "결제 확인", messageText: "결제되셨습니다.", confirmButtonText: "확인", comfrimAction: {
+                        viewController.navigationController?.popViewController(animated: true)
+                        print(UserDefaultsManager.shared.getChuCount())
+                    })
+                }
             }
             .disposed(by: disposeBag)
     }
@@ -116,9 +119,9 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         self.showCustomAlert(alertType: .canCancel, titleText: "결제 알림", messageText: "결제하시겠습니까 ?", confirmButtonText: "결제", comfrimAction: { [weak self] in
             guard let self = self else { return }
+            guard let storeModel = viewModel.storeModels[safe: indexPath.section] else { return }
             
-            let purchaseChuCount = viewModel.storeModels[indexPath.section].count
-            purchaseChuCountPublish.onNext(purchaseChuCount)
+            purchaseChuCountPublish.onNext(storeModel)
         })
     }
 }
