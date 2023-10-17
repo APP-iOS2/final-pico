@@ -146,25 +146,25 @@ final class RandomBoxViewController: UIViewController {
         openOneBoxButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.openBoxButtonTapped()
+                self.tappedBoxButton()
             })
             .disposed(by: disposeBag)
         
         openTenBoxButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.openTenBoxButtonTapped()
+                self.tappedTenBoxButton()
             })
             .disposed(by: disposeBag)
         
         infoButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                self?.infoButtonTapped()
+                self?.tappedInfoButton()
             })
             .disposed(by: disposeBag)
     }
     
-    private func openBoxButtonTapped() {
+    private func tappedBoxButton() {
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
 
@@ -178,7 +178,7 @@ final class RandomBoxViewController: UIViewController {
         }
     }
     
-    private func openTenBoxButtonTapped() {
+    private func tappedTenBoxButton() {
         var boxHistory: [Int] = []
 
         self.openOneBoxButton.isEnabled = false
@@ -214,10 +214,15 @@ final class RandomBoxViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    @objc private func infoButtonTapped() {
-        let percentModalViewController = PercentModalViewController()
-        let navController = UINavigationController(rootViewController: percentModalViewController)
-        navController.modalPresentationStyle = .fullScreen
-        present(navController, animated: true, completion: nil)
+    @objc private func tappedInfoButton() {
+        let percentCardView = PercentCardView()
+        percentCardView.frame = CGRect(x: 0, y: 0, width: 300, height: 200)
+        percentCardView.center = view.center
+        percentCardView.alpha = 0
+        view.addSubview(percentCardView)
+
+        UIView.animate(withDuration: 0.3) {
+            percentCardView.alpha = 1
+        }
     }
 }

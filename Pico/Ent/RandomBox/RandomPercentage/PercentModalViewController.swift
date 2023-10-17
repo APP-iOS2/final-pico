@@ -6,49 +6,44 @@
 //
 
 import UIKit
+import SnapKit
 
-final class PercentModalViewController: UIViewController {
-    
+final class PercentCardView: UIView {
     private let tableView = UITableView()
     
     private let percentInfo: [[String]] = [
         ["초급 박스", "50%", "35%", "15%", "5%"]
     ]
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         addViews()
         makeConstraints()
         configTableView()
     }
     
-    private func addViews() {
-        view.addSubview(tableView)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    
+
+    private func addViews() {
+        addSubview(tableView)
+    }
+
     private func makeConstraints() {
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
-    
+
     private func configTableView() {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
-    
-    private func configModalView() {
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(tappedCancelButton))
-            navigationItem.leftBarButtonItem = cancelButton
-    }
-    
-    @objc private func tappedCancelButton() {
-        self.dismiss(animated: true, completion: nil)
-    }
 }
 
-extension PercentModalViewController: UITableViewDataSource, UITableViewDelegate {
+extension PercentCardView: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         return percentInfo.count
     }
