@@ -16,9 +16,9 @@ final class HomeViewModel {
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
     static var filterGender: [GenderType] = []
     static var filterMbti: [MBTIType] = []
-    static var filterAgeMin: Int = 22
-    static var filterAgeMax: Int = 27
-    static var filterDistance: Int = 150
+    static var filterAgeMin: Int = 19
+    static var filterAgeMax: Int = 61
+    static var filterDistance: Int = 501
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
     
@@ -39,7 +39,9 @@ final class HomeViewModel {
         
         DispatchQueue.global().async {
             let dbRef = Firestore.firestore()
-            let query = dbRef.collection("users").whereField("id", isNotEqualTo: self.loginUser.userId).whereField("gender", in: gender.map { $0.rawValue })
+            let query = dbRef.collection("users")
+                .whereField("id", isNotEqualTo: self.loginUser.userId)
+                .whereField("gender", in: gender.map { $0.rawValue })
             
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
@@ -92,22 +94,4 @@ final class HomeViewModel {
             HomeViewModel.filterMbti = filterMbti
         }
     }
-    
-    //    func loadUsersRx() {
-    //        FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
-    //            .observe(on: MainScheduler.instance)
-    //            .bind(to: users)
-    //            .disposed(by: disposeBag)
-    //    }
-    
-    //    func loadUsers() {
-    //        FirestoreService.shared.loadDocuments(collectionId: .users, dataType: User.self) { result in
-    //            switch result {
-    //            case .success(let data):
-    //                self.users.accept(data)
-    //            case .failure(let error):
-    //                print("오류: \(error)")
-    //            }
-    //        }
-    //    }
 }

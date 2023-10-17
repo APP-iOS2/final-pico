@@ -13,7 +13,7 @@ final class HomeFilterViewController: UIViewController {
     weak var homeViewController: HomeViewController?
     private let mbtiCollectionViewController = MBTICollectionViewController()
     static var filterChangeState: Bool = false
-    private lazy var genderLabel: UILabel = createFilterLabel(text: "만나고 싶은 성별", font: .picoTitleFont)
+    private lazy var genderLabel: UILabel = createFilterLabel(text: "상대 성별", font: .picoSubTitleFont)
     private lazy var genderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
     private lazy var distanceLabel: UILabel = createFilterLabel(text: "거리", font: .picoSubTitleFont)
     private lazy var distanceValueLabel: UILabel = createFilterLabel(text: "0km ~ 200km", font: .picoSubTitleFont)
@@ -60,7 +60,11 @@ final class HomeFilterViewController: UIViewController {
             distanceSlider.setThumbImage(resizedThumbImage, for: .normal)
         }
         
-        distanceValueLabel.text = "0km ~ \(HomeViewModel.filterDistance)km"
+        if HomeViewModel.filterDistance > 500 {
+            distanceValueLabel.text = "0km ~ 500km +"
+        } else {
+            distanceValueLabel.text = "0km ~ \(HomeViewModel.filterDistance)km"
+        }
         distanceValueLabel.textColor = .picoBlue
         distanceValueLabel.textAlignment = .right
         
@@ -206,7 +210,7 @@ final class HomeFilterViewController: UIViewController {
         HomeViewModel.filterDistance = selectedValue
         UserDefaults.standard.set(HomeViewModel.filterDistance, forKey: "filterDistance")
         if selectedValue > 500 {
-            distanceValueLabel.text = "0km ~ \(selectedValue)km +"
+            distanceValueLabel.text = "0km ~ 500km +"
         } else {
             distanceValueLabel.text = "0km ~ \(selectedValue)km"
         }
