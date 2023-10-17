@@ -60,14 +60,16 @@ final class UserDetailViewModel {
                                                       birth: receiveUserInfo.birth,
                                                       nickName: receiveUserInfo.nickName,
                                                       mbti: receiveUserInfo.mbti,
-                                                      imageURL: receiveUserInfo.imageURLs[0])
+                                                      imageURL: receiveUserInfo.imageURLs[0], 
+                                                      createdDate: Date().timeIntervalSince1970)
         let myLikeUserDic = myLikeUser.asDictionary()
         let myInfo: Like.LikeInfo = Like.LikeInfo(likedUserId: loginUser.userId,
                                                   likeType: likeType,
                                                   birth: loginUser.birth,
                                                   nickName: loginUser.nickName,
                                                   mbti: MBTIType(rawValue: loginUser.mbti) ?? .entp,
-                                                  imageURL: loginUser.imageURL)
+                                                  imageURL: loginUser.imageURL, 
+                                                  createdDate: Date().timeIntervalSince1970)
         let myInfoDic = myInfo.asDictionary()
         HomeUserCardViewModel.passedMyData.append(myLikeUserDic)
         HomeUserCardViewModel.passedUserData.append(myInfoDic)
