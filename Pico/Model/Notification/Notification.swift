@@ -75,6 +75,7 @@ enum NotiType: String, Codable {
 
 struct Noti: Codable {
     let receiveId: String // 알림 받는 사람 id
+    let sendId: String // 보내는 사람 id
     let name: String // 보내는사람 이름
     let birth: String // 보내는사람 생년월일
     let imageUrl: String // 보내는 사람 첫번째 이미지

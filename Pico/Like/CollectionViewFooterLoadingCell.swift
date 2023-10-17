@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class CollectionViewFooterLoadingCell: UICollectionViewCell {
+final class CollectionViewFooterLoadingCell: UICollectionReusableView {
     private let indicatorView: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.color = .picoBlue
