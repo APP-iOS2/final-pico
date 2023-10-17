@@ -90,7 +90,7 @@ extension MypageViewController: MyPageViewDelegate {
 }
 extension MypageViewController: MyPageCollectionDelegate {
     func didSelectItem(item: Int) {
-        let viewController = StoreViewController()
+        let viewController = StoreViewController(viewModel: StoreViewModel())
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

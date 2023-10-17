@@ -187,10 +187,10 @@ final class LikeMeViewModel: ViewModelType {
                     "recivedlikes": FieldValue.arrayUnion([updateSendLike.asDictionary()])
                 ])
                 
-                let myNoti = Noti(receiveId: currentUser.userId, name: likeData.nickName, birth: likeData.birth, imageUrl: likeData.imageURL, notiType: .matching, mbti: likeData.mbti, createDate: Date().timeIntervalSince1970)
+                let myNoti = Noti(receiveId: currentUser.userId, sendId: likeData.likedUserId, name: likeData.nickName, birth: likeData.birth, imageUrl: likeData.imageURL, notiType: .matching, mbti: likeData.mbti, createDate: Date().timeIntervalSince1970)
                 
                 guard let yourMbti = MBTIType(rawValue: currentUser.mbti) else { return }
-                let yourNoti = Noti(receiveId: likeData.likedUserId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)
+                let yourNoti = Noti(receiveId: likeData.likedUserId, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: myNoti)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)
             case .failure(let error):

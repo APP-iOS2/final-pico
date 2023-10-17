@@ -175,18 +175,21 @@ final class FirestoreService {
         }
     }
 
-    func updateDocument<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T) {
+    func updateDocument<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<T, Error>) -> Void) {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             dbRef.collection(collectionId.name).document(documentId).updateData([field: data]) { err in
                 if let err = err {
+                    completion(.failure(err))
                     print("Error updating document: \(err)")
                 } else {
+                    completion(.success(data))
                     print("Document successfully updated")
                 }
             }
         }
     }
+    
     func updataDocuments<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
             let jsonData = data.asDictionary()
             dbRef.collection(collectionId.name).document(documentId).updateData([field: jsonData]) { error in
@@ -200,6 +203,7 @@ final class FirestoreService {
             }
        
     }
+    
     func saveDocumentRx<T: Codable>(collectionId: Collections, documentId: String, data: T) -> Observable<Void> {
         return Observable.create { emitter in
             self.saveDocument(collectionId: collectionId, documentId: documentId, data: data) { result in
@@ -254,6 +258,21 @@ final class FirestoreService {
                 case .success(let data):
                     emitter.onNext(data)
                     emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func updateDocumentRx<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T) -> Observable<T> {
+        return Observable.create { [weak self] emitter in
+            guard let self = self else { return Disposables.create() }
+            updateDocument(collectionId: collectionId, documentId: documentId, field: field, data: data) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
                 case .failure(let error):
                     emitter.onError(error)
                 }
