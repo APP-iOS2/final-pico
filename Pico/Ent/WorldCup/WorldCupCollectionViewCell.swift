@@ -97,8 +97,8 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
         
         userInfoStackView.snp.makeConstraints { make in
             make.top.equalTo(userAge.snp.bottom).offset(padding)
-            make.leading.equalTo(contentView.snp.leading).offset(padding)
-            make.trailing.equalTo(contentView.snp.trailing).offset(-padding)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview()
         }
     }
 }
