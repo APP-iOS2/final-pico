@@ -123,7 +123,8 @@ final class LikeMeViewModel: ViewModelType {
         guard let removeData: Like.LikeInfo = likeMeList[safe: index] else { return }
         likeMeList.remove(at: index)
         reloadTableViewPublisher.onNext(())
-        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: removeData.likedUserId, likeType: .dislike, birth: removeData.birth, nickName: removeData.nickName, mbti: removeData.mbti, imageURL: removeData.imageURL)
+      
+        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: removeData.likedUserId, likeType: .dislike, birth: removeData.birth, nickName: removeData.nickName, mbti: removeData.mbti, imageURL: removeData.imageURL, createdDate: Date().timeIntervalSince1970)
         
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
             "recivedlikes": FieldValue.arrayRemove([removeData.asDictionary()])
@@ -142,7 +143,8 @@ final class LikeMeViewModel: ViewModelType {
         guard let likeData: Like.LikeInfo = likeMeList[safe: index] else { return }
         likeMeList.remove(at: index)
         reloadTableViewPublisher.onNext(())
-        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL)
+      
+        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL, createdDate: Date().timeIntervalSince1970)
         
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
             "recivedlikes": FieldValue.arrayRemove([likeData.asDictionary()])
@@ -169,15 +171,15 @@ final class LikeMeViewModel: ViewModelType {
                     $0.likedUserId == self.currentUser.userId
                 }) {
                     guard let tempSendLike = sendedlikes?[safe: sendIndex] else { return }
-                    updateSendLike = Like.LikeInfo(likedUserId: tempSendLike.likedUserId, likeType: .matching, birth: tempSendLike.birth, nickName: tempSendLike.nickName, mbti: tempSendLike.mbti, imageURL: tempSendLike.imageURL)
+                    updateSendLike = Like.LikeInfo(likedUserId: tempSendLike.likedUserId, likeType: .matching, birth: tempSendLike.birth, nickName: tempSendLike.nickName, mbti: tempSendLike.mbti, imageURL: tempSendLike.imageURL, createdDate: Date().timeIntervalSince1970)
                     dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
                         "sendedlikes": FieldValue.arrayRemove([tempSendLike.asDictionary()])
                     ])
                 } else {
                     guard let tempMbti: MBTIType = MBTIType(rawValue: currentUser.mbti) else { return }
-                    updateSendLike = Like.LikeInfo(likedUserId: currentUser.userId, likeType: .matching, birth: currentUser.birth, nickName: currentUser.nickName, mbti: tempMbti, imageURL: currentUser.imageURL)
+                    updateSendLike = Like.LikeInfo(likedUserId: currentUser.userId, likeType: .matching, birth: currentUser.birth, nickName: currentUser.nickName, mbti: tempMbti, imageURL: currentUser.imageURL, createdDate: Date().timeIntervalSince1970)
                 }
-                print(updateSendLike.asDictionary())
+              
                 dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
                     "sendedlikes": FieldValue.arrayUnion([updateSendLike.asDictionary()])
                 ])

@@ -12,25 +12,35 @@ import FirebaseFirestoreSwift
 
 final class HomeViewModel {
     
-    var users = BehaviorRelay<[User]>(value: [])
+    var otherUsers = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
-    var filterGender: [GenderType] = HomeFilterViewController.filterGender
+    static var filterGender: [GenderType] = []
+    static var filterMbti: [MBTIType] = []
+    static var filterAgeMin: Int = 22
+    static var filterAgeMax: Int = 27
+    static var filterDistance: Int = 150
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
     
     init() {
         loadUsers()
         loadMyLikesRx()
+        
     }
     
     private func loadUsers() {
+        var gender: [GenderType] = []
+        
+        if HomeViewModel.filterGender.isEmpty {
+            gender = GenderType.allCases
+        } else {
+            gender = HomeViewModel.filterGender
+        }
+        
         DispatchQueue.global().async {
             let dbRef = Firestore.firestore()
-            var query = dbRef.collection("users")
-                .whereField("id", isNotEqualTo: self.loginUser.userId)
-            if !self.filterGender.isEmpty {
-                query = query.whereField("gender", in: self.filterGender.map { $0.rawValue })
-            }
+            let query = dbRef.collection("users").whereField("id", isNotEqualTo: self.loginUser.userId).whereField("gender", in: gender.map { $0.rawValue })
+            
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print(error)
@@ -41,7 +51,7 @@ final class HomeViewModel {
                             users.append(user)
                         }
                     }
-                    self.users.accept(users)
+                    self.otherUsers.accept(users)
                     
                 }
             }
