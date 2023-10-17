@@ -53,8 +53,13 @@ final class ProfileEditTextTabelCell: UITableViewCell {
     
     func configure(titleLabel: String, contentLabel: String?) {
         self.titleLabel.text = titleLabel
+       
         guard let contentLabel else { return }
-        self.contentLabel.text = contentLabel
+        print(contentLabel)
+        if !contentLabel.isEmpty {
+            self.contentLabel.text = contentLabel
+        }
+        
     }
     
     private func addSubView() {
@@ -66,7 +71,7 @@ final class ProfileEditTextTabelCell: UITableViewCell {
     private func makeConstraints() {
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(15)
-            make.trailing.equalTo(contentLabel.snp.leading).offset(-200)
+            make.trailing.equalTo(contentLabel.snp.leading).offset(-50)
             make.centerY.equalToSuperview()
         }
         

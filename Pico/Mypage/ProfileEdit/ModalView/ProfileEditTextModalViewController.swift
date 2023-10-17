@@ -29,7 +29,7 @@ final class ProfileEditTextModalViewController: UIViewController {
         label.textColor = .picoFontBlack
         return label
     }()
-
+    
     private let textField: UITextField = {
         let textField = UITextField()
         textField.font = .picoTitleFont
@@ -105,7 +105,7 @@ final class ProfileEditTextModalViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-         let text = profileEditViewModel.textData ?? ""
+        let text = profileEditViewModel.textData ?? ""
         textField.text = text
         
         completeButton.rx.tap
@@ -120,7 +120,7 @@ final class ProfileEditTextModalViewController: UIViewController {
                         print("재입력해라")
                     }
                 case .job, .intro, .nickName:
-                    self.profileEditViewModel.updateData(data: self.textField.text)
+                    self.profileEditViewModel.updateData(data: self.textField.text?.trimmed())
                     self.dismiss(animated: true)
                 default:
                     break
@@ -174,7 +174,8 @@ final class ProfileEditTextModalViewController: UIViewController {
 extension ProfileEditTextModalViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let text = profileEditViewModel.textData ?? ""
-          let updatedText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
+        let updatedText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
+        
         if updatedText != text {
             completeButton.isEnabled = true
             completeButton.backgroundColor = .picoBlue
@@ -182,6 +183,6 @@ extension ProfileEditTextModalViewController: UITextFieldDelegate {
             completeButton.isEnabled = false
             completeButton.backgroundColor = .picoGray
         }
-          return true
-      }
+        return true
+    }
 }
