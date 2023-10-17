@@ -55,7 +55,11 @@ final class MailViewModel {
                     mailSendList.append(contentsOf: currentPageDatas)
                     startIndex += currentPageDatas.count
                     mailSendListRx.accept(mailSendList)
-                } else if let datas = try? document.data(as: Mail.self).receiveMailInfo?.filter({ $0.mailType == .receive }) {
+                } else {
+                    print("보낸 문서를 찾을 수 없습니다.")
+                }
+                
+                if let datas = try? document.data(as: Mail.self).receiveMailInfo?.filter({ $0.mailType == .receive }) {
                     
                     if startIndex > datas.count - 1 { return }
                     
@@ -64,15 +68,15 @@ final class MailViewModel {
                     startIndex += currentPageDatas.count
                     mailRecieveListRx.accept(mailRecieveList)
                 } else {
-                    print("문서를 찾을 수 없습니다.")
+                    print("받은 문서를 찾을 수 없습니다.")
                 }
             }
         }
     }
     
     func refresh() {
-        mailSendList = []
-        mailRecieveList = []
+        //mailSendList = []
+        //mailRecieveList = []
         loadNextMailPage()
     }
     

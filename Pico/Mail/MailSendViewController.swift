@@ -37,21 +37,19 @@ final class MailSendViewController: UIViewController {
         return barButtonItem
     }()
     
-    private let receiverStack: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.spacing = 10
-        return stackView
-    }()
-    
-    private let receiverLabel: UILabel = {
+    private let toLabel: UILabel = {
         let label = UILabel()
         label.text = "To."
-        label.textAlignment = .center
         label.font = .picoContentBoldFont
         label.textColor = .picoFontBlack
         return label
+    }()
+    
+    private let receiverStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        return stackView
     }()
     
     private let receiverImageView: UIImageView = {
@@ -68,6 +66,8 @@ final class MailSendViewController: UIViewController {
         return label
     }()
     
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj, scale: .small)
+    
     private let contentView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -77,7 +77,7 @@ final class MailSendViewController: UIViewController {
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 20
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
         return stackView
     }()
     
@@ -123,28 +123,25 @@ final class MailSendViewController: UIViewController {
     }
     
     // MARK: - MailSend +UI
-    func getReceiver(mailReceiver: Mail.MailInfo) {
-        if mailReceiver.mailType == .receive {
-            viewModel.getUser(userId: mailReceiver.sendedUserId) {
-                if let user = self.viewModel.user {
-                    self.configViews(user: user)
-                }
-            }
-        } else {
-            viewModel.getUser(userId: mailReceiver.receivedUserId) {
-                if let user = self.viewModel.user {
-                    self.configViews(user: user)
-                }
+    func getReceiver(userId: String) {
+        viewModel.getUser(userId: userId) {
+            if let user = self.viewModel.user {
+                self.receiverId = user.id
+                    guard let url = URL(string: user.imageURLs[0]) else { return }
+                self.receiverImageView.kf.setImage(with: url)
+                self.receiverNameLabel.text = user.nickName
+                self.receiverNameLabel.sizeToFit()
+                self.mbtiLabelView.setMbti(mbti: user.mbti)
             }
         }
     }
     
     private func addViews() {
-        receiverStack.addArrangedSubview( [receiverLabel, receiverImageView, receiverNameLabel])
+        receiverStack.addArrangedSubview( [receiverNameLabel, mbtiLabelView])
         contentView.addArrangedSubview( [messageView, remainCountLabel])
         
         view.addSubview(navigationBar)
-        view.addSubview([receiverStack, contentView, sendButton])
+        view.addSubview([toLabel, receiverImageView, receiverStack, contentView, sendButton])
     }
     
     private func makeConstraints() {
@@ -154,24 +151,33 @@ final class MailSendViewController: UIViewController {
             make.top.leading.trailing.equalTo(safeArea)
         }
         
-        receiverStack.snp.makeConstraints { make in
+        toLabel.snp.makeConstraints { make in
             make.top.equalTo(navigationBar.snp.bottom).offset(20)
-            make.leading.equalTo(navigationBar).offset(20)
-            make.trailing.equalTo(navigationBar).offset(-20)
-            make.height.equalTo(50)
-        }
-        
-        receiverLabel.snp.makeConstraints { make in
-            make.width.equalTo(35)
+            make.leading.equalTo(safeArea).offset(20)
+            make.trailing.equalTo(safeArea).offset(-20)
         }
         
         receiverImageView.snp.makeConstraints { make in
+            make.top.equalTo(toLabel.snp.bottom).offset(10)
+            make.leading.equalTo(toLabel)
             make.width.height.equalTo(50)
         }
         
+        receiverStack.snp.makeConstraints { make in
+            make.top.equalTo(receiverImageView).offset(10)
+            make.leading.equalTo(receiverImageView.snp.trailing).offset(10)
+        }
+        
+        mbtiLabelView.snp.makeConstraints { make in
+            make.centerY.equalTo(receiverNameLabel)
+            make.height.equalTo(mbtiLabelView.frame.size.height)
+            make.width.equalTo(mbtiLabelView.frame.size.width)
+        }
+        
         contentView.snp.makeConstraints { make in
-            make.top.equalTo(receiverStack.snp.bottom).offset(20)
-            make.leading.trailing.equalTo(receiverStack)
+            make.top.equalTo(receiverImageView.snp.bottom).offset(20)
+            make.leading.equalTo(receiverImageView)
+            make.trailing.equalTo(toLabel)
             make.bottom.equalTo(sendButton.snp.bottom).offset(-80)
         }
         
@@ -184,13 +190,6 @@ final class MailSendViewController: UIViewController {
     }
     
     // MARK: - MailSend +Config
-    private func configViews(user: User) {
-        receiverId = user.id
-        guard let url = URL(string: user.imageURLs[0]) else { return }
-        receiverImageView.kf.setImage(with: url)
-        receiverNameLabel.text = user.nickName
-    }
-    
     private func configNavigationBarItem() {
         navItem.leftBarButtonItem = leftBarButton
         navigationBar.shadowImage = UIImage()
