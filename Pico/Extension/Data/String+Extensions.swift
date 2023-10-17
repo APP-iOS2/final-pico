@@ -29,4 +29,9 @@ extension String {
         
         return formattedText
     }
+    
+    /// 좌우 공백자르기
+    func trimmed() -> String {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 }
