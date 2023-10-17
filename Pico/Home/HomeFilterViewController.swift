@@ -52,6 +52,7 @@ final class HomeFilterViewController: UIViewController {
         distanceSlider.maximumTrackTintColor = UIColor.lightGray.withAlphaComponent(0.5)
         distanceSlider.minimumTrackTintColor = .picoBlue
         distanceSlider.maximumValue = 501
+        distanceSlider.value = Float(HomeViewModel.filterDistance)
         distanceSlider.addTarget(self, action: #selector(distanceSliderValueChanged), for: .valueChanged)
         if let thumbImage = UIImage(systemName: "circle.fill")?.withTintColor(.picoBlue) {
             let thumbSize = CGSize(width: 14, height: 14)
