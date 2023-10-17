@@ -59,7 +59,6 @@
 		53836F552ACC90FC00D98F77 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F542ACC90FC00D98F77 /* Loading.swift */; };
 		53B529592ADCBD0D00A9C9D8 /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B529582ADCBD0D00A9C9D8 /* FooterView.swift */; };
 		53B5295B2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B5295A2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift */; };
-		54120E7F2ADD95D0000CB5FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54120E7E2ADD95D0000CB5FB /* GoogleService-Info.plist */; };
 		547C4C212AD8381F00028AFB /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */; };
 		547C4C292AD8393700028AFB /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C242AD8393700028AFB /* UserDetailViewController.swift */; };
 		547C4C2A2AD8393700028AFB /* SubInfomationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C252AD8393700028AFB /* SubInfomationViewController.swift */; };
@@ -780,7 +779,6 @@
 			children = (
 				B15F16022ADCFA5C002952B4 /* Info.plist */,
 				54120E7E2ADD95D0000CB5FB /* GoogleService-Info.plist */,
-				B14B58D72AC0A232009889DA /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
@@ -1298,7 +1296,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				54120E7F2ADD95D0000CB5FB /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
