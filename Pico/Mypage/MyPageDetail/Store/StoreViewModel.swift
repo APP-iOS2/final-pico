@@ -17,34 +17,44 @@ final class StoreViewModel: ViewModelType {
         StoreModel(count: 1000, price: 88000, discount: 20)
     ]
     
+    private var currentChuCount = 0
+    
     struct Input {
-        /// 구매한 츄 카운트
-        let purchaseChuCount: Observable<Int>
-        /// 사용한 츄 카운트
+        /// 구매한 츄
+        let purchaseChuCount: Observable<StoreModel>
+        /// 사용한 츄
         let consumeChuCount: Observable<Int>
     }
     
     struct Output {
-        let resultPurchase: Observable<Int>
+        let resultPurchase: Observable<Void>
     }
     
     func transform(input: Input) -> Output {
         let responsePurchase = input.purchaseChuCount
             .withUnretained(self)
-            .flatMap { viewModel, purchaseChuCount in
+            .flatMap { viewModel, storeModel in
                 Loading.showLoading()
-                return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: purchaseChuCount + UserDefaultsManager.shared.getChuCount())
+                viewModel.currentChuCount = storeModel.count + UserDefaultsManager.shared.getChuCount()
+                return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
+                    .flatMap { _ -> Observable<Void> in
+                        let payment: Payment = Payment(purchases: [Payment.Purchase(price: storeModel.price, purchaseChuCount: storeModel.count)])
+                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "purchases", data: payment)
+                    }
             }
-            .map { chuCount in
-                UserDefaultsManager.shared.updateChuCount(chuCount)
-                DispatchQueue.global().asyncAfter(deadline: .now() + 2.0) {
+            .withUnretained(self)
+            .map { viewModel, _ in
+                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
+                return DispatchQueue.global().asyncAfter(deadline: .now() + 2.0) {
                     Loading.hideLoading()
                 }
-                return chuCount
             }
-        
         return Output(
             resultPurchase: responsePurchase
         )
+    }
+    
+    private func savePayment() {
+        
     }
 }
