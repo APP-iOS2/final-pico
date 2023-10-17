@@ -7,11 +7,6 @@
 
 import UIKit
 
-protocol CustomAlertDelegate: AnyObject {
-    func action()   // confirm button event
-    func exit()     // cancel button event
-}
-
 enum AlertType {
     case onlyConfirm /// 확인 버튼만 있는 Alert Type
     case canCancel /// 확인 + 취소 버튼 있는 Alert Type
@@ -20,13 +15,13 @@ enum AlertType {
 class CustomPopupViewController: UIViewController {
     
     var titleText: String = "titletitletitletitletitletitletitle"
-    var messageText: String = "messagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessagmessagemessagemessagemessagemessagemessagemessag"
+    var messageText: String = ""
     var cancelButtonText: String = "Cancel"
     var confirmButtonText: String = "OK"
     var alertType: AlertType = .onlyConfirm
-    
-    var delegate: CustomAlertDelegate?
-    
+    var confirmAction: (() -> Void)?
+    var cancelAction: (() -> Void)?
+
     private let dimView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
@@ -46,9 +41,8 @@ class CustomPopupViewController: UIViewController {
         return view
     }()
     
-    private lazy var titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = titleText
         label.font = .picoTitleFont
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -57,9 +51,8 @@ class CustomPopupViewController: UIViewController {
         return label
     }()
     
-    private lazy var cancelButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton(configuration: .plain())
-        button.setTitle(cancelButtonText, for: .normal)
         button.clipsToBounds = true
         button.layer.cornerRadius = 15
         button.backgroundColor = .white
@@ -70,9 +63,8 @@ class CustomPopupViewController: UIViewController {
         return button
     }()
     
-    private lazy var confirmButton: UIButton = {
+    private let confirmButton: UIButton = {
         let button = UIButton(configuration: .plain())
-        button.setTitle(confirmButtonText, for: .normal)
         button.clipsToBounds = true
         button.layer.cornerRadius = 15
         button.backgroundColor = .picoBlue
@@ -81,13 +73,13 @@ class CustomPopupViewController: UIViewController {
         return button
     }()
     
-    private lazy var messageLabel: UILabel = {
+    private let messageLabel: UILabel = {
         let label = UILabel()
-        label.text = messageText
         label.textAlignment = .center
         label.font = .picoDescriptionFont
         label.textColor = .gray
         label.numberOfLines = 0
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -99,11 +91,14 @@ class CustomPopupViewController: UIViewController {
         addViews()
         makeConstraints()
         configButtons()
-        // Do any additional setup after loading the view.
     }
     
     private func configView() {
         view.backgroundColor = .clear
+        titleLabel.text = titleText
+        messageLabel.text = messageText
+        confirmButton.setTitle(confirmButtonText, for: .normal)
+        cancelButton.setTitle(cancelButtonText, for: .normal)
     }
     
     private func configButtons() {
@@ -112,29 +107,21 @@ class CustomPopupViewController: UIViewController {
     }
     
     @objc func confirmButtonTapped(_ sender: UIButton) {
-        self.dismiss(animated: true) {
-            self.delegate?.action()
+        self.dismiss(animated: true) { [weak self] in
+            self?.confirmAction?()
         }
     }
     
     @objc func cancelButtonTapped(_ sender: UIButton) {
-        self.dismiss(animated: true) {
-            self.delegate?.exit()
+        self.dismiss(animated: true) { [weak self] in
+            self?.cancelAction?()
         }
     }
     
     private func addViews() {
-        [dimView, alertView].forEach {
-            view.addSubview($0)
-        }
-        
-        [cancelButton, confirmButton].forEach {
-            buttonsView.addSubview($0)
-        }
-        
-        [titleLabel, messageLabel, buttonsView].forEach {
-            alertView.addSubview($0)
-        }
+        view.addSubview([dimView, alertView])
+        buttonsView.addSubview([cancelButton, confirmButton])
+        alertView.addSubview([titleLabel, messageLabel, buttonsView])
     }
     
     private func makeConstraints() {
@@ -146,7 +133,7 @@ class CustomPopupViewController: UIViewController {
         
         alertView.snp.makeConstraints { make in
             make.centerX.centerY.equalTo(safeArea)
-            make.height.equalTo(safeArea).multipliedBy(0.4)
+            make.height.lessThanOrEqualTo(safeArea).multipliedBy(0.4)
             make.width.equalTo(safeArea).multipliedBy(0.8)
         }
         
@@ -160,6 +147,7 @@ class CustomPopupViewController: UIViewController {
         messageLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
+            make.bottom.lessThanOrEqualTo(buttonsView.snp.top).offset(-20)
             make.width.equalTo(titleLabel)
         }
         
@@ -168,7 +156,7 @@ class CustomPopupViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-20)
             make.width.equalTo(titleLabel)
-            make.height.equalTo(80)
+            make.height.greaterThanOrEqualTo(80)
         }
         switch alertType {
         case .onlyConfirm:
@@ -189,50 +177,3 @@ class CustomPopupViewController: UIViewController {
     }
     
 }
-
-extension CustomAlertDelegate where Self: UIViewController {
-    func show(
-        alertType: AlertType,
-        titleText: String,
-        messageText: String,
-        cancelButtonText: String? = "취소",
-        confirmButtonText: String
-    ) {
-        let customAlertViewController = CustomPopupViewController()
-        
-        customAlertViewController.delegate = self
-        
-        customAlertViewController.modalPresentationStyle = .overFullScreen
-        customAlertViewController.modalTransitionStyle = .crossDissolve
-        customAlertViewController.alertType = alertType
-        customAlertViewController.titleText = titleText
-        customAlertViewController.messageText = messageText
-        customAlertViewController.cancelButtonText = cancelButtonText ?? "취소"
-        customAlertViewController.confirmButtonText = confirmButtonText
-        
-        self.present(customAlertViewController, animated: true, completion: nil)
-    }
-}
-/*
- extension ViewController: CustomAlertDelegate {
-     func action() {
-         // 확인 버튼 이벤트 처리
-         print("확인")
-     }
-     
-     func exit() {
-         // 취소 버튼 이벤트 처리
-         print("취소")
-     }
- }
- 사용할 뷰컨트롤러에서 델리게이트 구현 후
- @objc func touchUpCustomButton(_ sender: UIButton) {
-     show(alertType: .canCancel, titleText: "축하드립니다~!", messageText: "축하드립니다. 무료 뽑기권에 당첨되셨습니다.\n이동하시겠습니까?", cancelButtonText: "취소", confirmButtonText: "이동")
- }
- 
- @objc func touchUpMbtiButton(_ sender: UIButton) {
-     show(alertType: .onlyConfirm, titleText: "ESTP", messageText: "축하드립니다. 당신은 ESTP입니다~", confirmButtonText: "이동")
- }
- 이런식으로 사용
- -> 근데 이러면 같은 뷰컨트롤러에서 두가지 이상 알럿이 필요할 때 다른 액션 주는 방법이 이상해짐
- */
