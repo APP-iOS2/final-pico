@@ -76,7 +76,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
                 .subscribe { [weak self] _ in
                     // 메일 뷰 데이터 연결 후 userId 값 넘겨주기
                     let mailSendView = MailSendViewController()
-                    mailSendView.getReceiver(userId: item.likedUserId)
+                    mailSendView.configData(userId: item.likedUserId)
                     mailSendView.modalPresentationStyle = .formSheet
                     self?.present(mailSendView, animated: true, completion: nil)
                 }

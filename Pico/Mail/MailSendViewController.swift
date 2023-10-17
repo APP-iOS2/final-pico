@@ -15,7 +15,7 @@ final class MailSendViewController: UIViewController {
     private let viewModel = MailViewModel()
     private let disposeBag = DisposeBag()
     
-    private var receiverId: String = ""
+    private var receiver: User?
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -123,19 +123,6 @@ final class MailSendViewController: UIViewController {
     }
     
     // MARK: - MailSend +UI
-    func getReceiver(userId: String) {
-        viewModel.getUser(userId: userId) {
-            if let user = self.viewModel.user {
-                self.receiverId = user.id
-                    guard let url = URL(string: user.imageURLs[0]) else { return }
-                self.receiverImageView.kf.setImage(with: url)
-                self.receiverNameLabel.text = user.nickName
-                self.receiverNameLabel.sizeToFit()
-                self.mbtiLabelView.setMbti(mbti: user.mbti)
-            }
-        }
-    }
-    
     private func addViews() {
         receiverStack.addArrangedSubview( [receiverNameLabel, mbtiLabelView])
         contentView.addArrangedSubview( [messageView, remainCountLabel])
@@ -190,6 +177,20 @@ final class MailSendViewController: UIViewController {
     }
     
     // MARK: - MailSend +Config
+    func configData(userId: String) {
+        viewModel.getUser(userId: userId) {
+            if let user = self.viewModel.user {
+                self.receiver = user
+                guard let url = URL(string: user.imageURLs[0]) else { return }
+                self.receiverImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+                self.receiverImageView.kf.setImage(with: url)
+                self.receiverNameLabel.text = user.nickName
+                self.receiverNameLabel.sizeToFit()
+                self.mbtiLabelView.setMbti(mbti: user.mbti)
+            }
+        }
+    }
+    
     private func configNavigationBarItem() {
         navItem.leftBarButtonItem = leftBarButton
         navigationBar.shadowImage = UIImage()
@@ -202,8 +203,10 @@ final class MailSendViewController: UIViewController {
                 self?.sendButton.tappedAnimation()
                 if let text = self?.messageView.text {
                     // sender: 로그인한 사람, recevie 받는 사람
-                    self?.viewModel.saveMailData(receiveUserId: self?.receiverId ?? "", message: text)
-                    self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                    if let receiver = self?.receiver {
+                        self?.viewModel.saveMailData(receiveUser: receiver, message: text)
+                        self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                    }
                 }
             }
             .disposed(by: disposeBag)
