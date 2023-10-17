@@ -96,11 +96,19 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 디테일뷰 유저정보 연결 필요
         let viewController = UserDetailViewController()
-        // user정보 넘겨주세여
-        //viewController.viewModel = UserDetailViewModel(user: user)
-        self.navigationController?.pushViewController(viewController, animated: true)
+        let selectedUser = viewModel.likeMeList[indexPath.row]
+        FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { result in
+            switch result {
+            case .success(let data):
+                guard let data = data else { return }
+                viewController.viewModel = UserDetailViewModel(user: data)
+                self.navigationController?.pushViewController(viewController, animated: true)
+            case .failure(let error):
+                print(error)
+                return
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

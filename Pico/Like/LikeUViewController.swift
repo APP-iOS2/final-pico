@@ -86,11 +86,19 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 디테일뷰 데이터 연결 후 UserId 값 넘겨주기
         let viewController = UserDetailViewController()
-         // 유저정보 넘겨주세요요
-        // viewController.viewModel = UserDetailViewModel(user: user)
-        self.navigationController?.pushViewController(viewController, animated: true)
+        let selectedUser = viewModel.likeUList[indexPath.row]
+        FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { result in
+            switch result {
+            case .success(let data):
+                guard let data = data else { return }
+                viewController.viewModel = UserDetailViewModel(user: data)
+                self.navigationController?.pushViewController(viewController, animated: true)
+            case .failure(let error):
+                print(error)
+                return
+            }
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
