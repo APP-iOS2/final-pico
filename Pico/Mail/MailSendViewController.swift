@@ -7,10 +7,15 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class MailSendViewController: UIViewController {
     
     private let viewModel = MailViewModel()
+    private let disposeBag = DisposeBag()
+    
+    private var receiverId: String = ""
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -32,21 +37,19 @@ final class MailSendViewController: UIViewController {
         return barButtonItem
     }()
     
-    private let receiverStack: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.spacing = 10
-        return stackView
-    }()
-    
-    private let receiverLabel: UILabel = {
+    private let toLabel: UILabel = {
         let label = UILabel()
         label.text = "To."
-        label.textAlignment = .center
         label.font = .picoContentBoldFont
         label.textColor = .picoFontBlack
         return label
+    }()
+    
+    private let receiverStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        return stackView
     }()
     
     private let receiverImageView: UIImageView = {
@@ -63,16 +66,18 @@ final class MailSendViewController: UIViewController {
         return label
     }()
     
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj, scale: .small)
+    
     private let contentView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = 20
         stackView.alignment = .fill
-        stackView.backgroundColor = .picoGray
+        stackView.backgroundColor = .picoLightGray
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 20
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
         return stackView
     }()
     
@@ -97,10 +102,11 @@ final class MailSendViewController: UIViewController {
     private let sendButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("보내기", for: .normal)
-        button.addTarget(nil, action: #selector(tappedSendButton), for: .touchUpInside)
+        button.backgroundColor = .picoGray
         return button
     }()
     
+    // MARK: - MailSend +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.configBackgroundColor()
@@ -108,34 +114,34 @@ final class MailSendViewController: UIViewController {
         configNavigationBarItem()
         addViews()
         makeConstraints()
-        viewModel.changeTextView(textView: messageView, label: remainCountLabel)
+        changeTextView()
+        configSendButton()
     }
     
     override func viewDidLayoutSubviews() {
         receiverImageView.setCircleImageView()
     }
     
-    func getReceiver(mailReceiver: DummyMailUsers) {
-        if let imageURL = URL(string: mailReceiver.messages.imageUrl) {
-            receiverImageView.load(url: imageURL)
+    // MARK: - MailSend +UI
+    func getReceiver(userId: String) {
+        viewModel.getUser(userId: userId) {
+            if let user = self.viewModel.user {
+                self.receiverId = user.id
+                    guard let url = URL(string: user.imageURLs[0]) else { return }
+                self.receiverImageView.kf.setImage(with: url)
+                self.receiverNameLabel.text = user.nickName
+                self.receiverNameLabel.sizeToFit()
+                self.mbtiLabelView.setMbti(mbti: user.mbti)
+            }
         }
-        receiverNameLabel.text = mailReceiver.messages.oppenentName
     }
     
     private func addViews() {
-        [receiverLabel, receiverImageView, receiverNameLabel].forEach { views in
-            receiverStack.addArrangedSubview(views)
-        }
-        
-        [messageView, remainCountLabel].forEach { views in
-            contentView.addArrangedSubview(views)
-        }
+        receiverStack.addArrangedSubview( [receiverNameLabel, mbtiLabelView])
+        contentView.addArrangedSubview( [messageView, remainCountLabel])
         
         view.addSubview(navigationBar)
-        
-        [receiverStack, contentView, sendButton].forEach { views in
-            view.addSubview(views)
-        }
+        view.addSubview([toLabel, receiverImageView, receiverStack, contentView, sendButton])
     }
     
     private func makeConstraints() {
@@ -145,24 +151,33 @@ final class MailSendViewController: UIViewController {
             make.top.leading.trailing.equalTo(safeArea)
         }
         
-        receiverStack.snp.makeConstraints { make in
+        toLabel.snp.makeConstraints { make in
             make.top.equalTo(navigationBar.snp.bottom).offset(20)
-            make.leading.equalTo(navigationBar).offset(20)
-            make.trailing.equalTo(navigationBar).offset(-20)
-            make.height.equalTo(50)
-        }
-        
-        receiverLabel.snp.makeConstraints { make in
-            make.width.equalTo(35)
+            make.leading.equalTo(safeArea).offset(20)
+            make.trailing.equalTo(safeArea).offset(-20)
         }
         
         receiverImageView.snp.makeConstraints { make in
+            make.top.equalTo(toLabel.snp.bottom).offset(10)
+            make.leading.equalTo(toLabel)
             make.width.height.equalTo(50)
         }
         
+        receiverStack.snp.makeConstraints { make in
+            make.top.equalTo(receiverImageView).offset(10)
+            make.leading.equalTo(receiverImageView.snp.trailing).offset(10)
+        }
+        
+        mbtiLabelView.snp.makeConstraints { make in
+            make.centerY.equalTo(receiverNameLabel)
+            make.height.equalTo(mbtiLabelView.frame.size.height)
+            make.width.equalTo(mbtiLabelView.frame.size.width)
+        }
+        
         contentView.snp.makeConstraints { make in
-            make.top.equalTo(receiverStack.snp.bottom).offset(20)
-            make.leading.trailing.equalTo(receiverStack)
+            make.top.equalTo(receiverImageView.snp.bottom).offset(20)
+            make.leading.equalTo(receiverImageView)
+            make.trailing.equalTo(toLabel)
             make.bottom.equalTo(sendButton.snp.bottom).offset(-80)
         }
         
@@ -174,20 +189,74 @@ final class MailSendViewController: UIViewController {
         }
     }
     
+    // MARK: - MailSend +Config
     private func configNavigationBarItem() {
         navItem.leftBarButtonItem = leftBarButton
         navigationBar.shadowImage = UIImage()
         navigationBar.setItems([navItem], animated: true)
     }
     
-    @objc private func tappedSendButton(_ sender: UIButton) {
-        sender.tappedAnimation()
-        // sender: 로그인한 사람, recevie 받는 사람
-        viewModel.saveMailData(sendUserInfo: UserDummyData.users[1], receiveUserInfo: UserDummyData.users[0], message: messageView.text)
-        presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+    private func configSendButton() {
+        sendButton.rx.tap
+            .bind { [weak self] _ in
+                self?.sendButton.tappedAnimation()
+                if let text = self?.messageView.text {
+                    // sender: 로그인한 사람, recevie 받는 사람
+                    self?.viewModel.saveMailData(receiveUserId: self?.receiverId ?? "", message: text)
+                    self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
+    // MARK: - MailSend +objc
     @objc func tappedBackzButton() {
         dismiss(animated: true)
+    }
+}
+// MARK: - MailSend +textView
+extension MailSendViewController {
+    private func changeTextView() {
+        let textViewPlaceHolder = "메시지를 입력하세요"
+        
+        messageView.rx.didBeginEditing
+            .bind { [weak self] _ in
+                if self?.messageView.text == textViewPlaceHolder {
+                    self?.messageView.text = nil
+                    self?.messageView.textColor = .black
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        messageView.rx.didEndEditing
+            .bind { [weak self] _ in
+                if let text = self?.messageView.text {
+                    if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        self?.messageView.text = textViewPlaceHolder
+                        self?.messageView.textColor = .picoFontGray
+                        self?.updateCountLabel(characterCount: 0)
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        messageView.rx.text
+            .orEmpty
+            .subscribe(onNext: { changedText in
+                if changedText != textViewPlaceHolder {
+                    let characterCount = changedText.count
+                    if characterCount <= 300 {
+                        self.updateCountLabel(characterCount: characterCount)
+                    }
+                    self.sendButton.backgroundColor = .picoBlue
+                } else {
+                    self.updateCountLabel(characterCount: 0)
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func updateCountLabel(characterCount: Int) {
+        remainCountLabel.text = "\(characterCount)/300"
     }
 }

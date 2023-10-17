@@ -23,8 +23,8 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
     
     lazy var userImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "woman1")
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         return imageView
     }()
     

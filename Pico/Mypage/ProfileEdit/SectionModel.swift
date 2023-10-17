@@ -20,9 +20,8 @@ extension SectionModel: SectionModelType {
 }
 
 enum Item {
-    case profileEditImageTableCell
+    case profileEditImageTableCell(images: [String])
     case profileEditNicknameTabelCell
     case profileEditLoactionTabelCell(location: String)
-    case profileEditIntroTabelCell(content: String)
     case profileEditTextTabelCell(title: String, content: String?)
 }

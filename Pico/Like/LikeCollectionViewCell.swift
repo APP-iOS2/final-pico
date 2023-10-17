@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import RxSwift
+import Kingfisher
 
 final class LikeCollectionViewCell: UICollectionViewCell {
     
@@ -19,7 +20,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return messageButton.rx.tap.asObservable()
     }
     
-    var likeBurttonTapObservalbe: Observable<Void> {
+    var likeButtonTapObservalbe: Observable<Void> {
         return likeButton.rx.tap.asObservable()
     }
     
@@ -96,6 +97,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     
     func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType) {
         guard let url = URL(string: image) else { return }
+        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         userImageView.kf.setImage(with: url)
         nameLabel.text = nameText
         mbtiLabel.setMbti(mbti: mbti)
@@ -105,9 +107,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     }
     
     private func addViews() {
-        [userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton].forEach { item in
-            addSubview(item)
-        }
+        addSubview([userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton])
     }
     
     private func makeConstraints() {

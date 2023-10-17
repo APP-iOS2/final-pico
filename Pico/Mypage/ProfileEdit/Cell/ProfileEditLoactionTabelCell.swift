@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class ProfileEditLoactionTabelCell: UITableViewCell {
     
@@ -22,23 +23,23 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         let image = UIImage(named: "chu")?.resized(toSize: CGSize(width: 30, height: 30))
         var configuration = UIButton.Configuration.plain()
         configuration.subtitle = "경기도 용인시"
+        configuration.subtitleLineBreakMode = .byTruncatingTail
         configuration.image = image
-        configuration.imagePlacement = .leading
+        configuration.imagePlacement = .trailing
         configuration.imagePadding = 3
-      
         button.configuration = configuration
         button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
         return button
     }()
     
+    private var profileEditViewModel: ProfileEditViewModel?
+    private let locationManager = LocationManager()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubView()
         makeConstraints()
-    }
-    
-    func configure(location: String) {
-       
+        locationConfigure()
     }
     
     @available(*, unavailable)
@@ -46,8 +47,31 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(location: String, viewModel: ProfileEditViewModel) {
+        locationChangeButton.configuration?.subtitle = location
+        profileEditViewModel = viewModel
+    }
+
+    private func locationConfigure() {
+        locationManager.configLocation()
+    }
+    
     @objc private func tappedButton() {
-        print("tap")
+        profileEditViewModel?.modalType = .location
+
+        let space = locationManager.locationManager.location?.coordinate
+        let lat = space?.latitude
+        let long = space?.longitude
+
+        locationManager.getAddress(latitude: lat, longitude: long) { [weak self] location in
+            guard let self else { return }
+            if let location = location {
+                print(location)
+                profileEditViewModel?.updateData(data: location)
+            } else {
+                self.locationManager.accessLocation()
+            }
+        }
     }
     
     private func addSubView() {
@@ -65,6 +89,7 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         locationChangeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-15)
             make.centerY.equalToSuperview()
+            make.width.equalTo(150)
         }
     }
 }

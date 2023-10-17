@@ -91,14 +91,9 @@ final class LikeViewController: BaseViewController {
     }
     
     private func addViews() {
-        [tabSegmentedControl, underLineView].forEach { item in
-            segmentView.addSubview(item)
-        }
-        
-        [segmentView, contentsView].forEach { item in
-            view.addSubview(item)
-        }
-        contentsView.addSubview(pageViewController.view)
+        segmentView.addSubview([tabSegmentedControl, underLineView])
+        view.addSubview([segmentView, contentsView])
+        contentsView.addSubview([pageViewController.view])
     }
     
     private func makeConstraints() {

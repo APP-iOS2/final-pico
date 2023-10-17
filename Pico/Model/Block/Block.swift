@@ -8,7 +8,9 @@
 import Foundation
 
 struct Block: Codable {
-    var id: String = UUID().uuidString
     let blockedId: String
     let blockedDate: Double
+    var id: String {
+        return blockedId
+    }
 }

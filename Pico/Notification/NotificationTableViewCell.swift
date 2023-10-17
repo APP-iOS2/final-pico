@@ -13,8 +13,6 @@ import Kingfisher
 
 final class NotificationTableViewCell: UITableViewCell {
     
-    private var notiType: NotiType = .like
-    
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -122,35 +120,26 @@ final class NotificationTableViewCell: UITableViewCell {
 extension NotificationTableViewCell {
     func configData(notitype: NotiType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, date: Double) {
         guard let url = URL(string: imageUrl) else { return }
+        profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         profileImageView.kf.setImage(with: url)
-        notiType = notitype
-        switch notitype {
-        case .like:
-            iconImageView.image = UIImage(systemName: "heart.fill")
-            iconImageView.tintColor = .systemPink
-            contentLabel.text = "좋아요를 누르셨습니다."
-        case .message:
-            iconImageView.image = UIImage(systemName: "message.fill")
-            iconImageView.tintColor = .picoBlue
-            contentLabel.text = "쪽지를 보냈습니다."
-        case .matching:
-            iconImageView.image = UIImage(systemName: "bolt.heart.fill")?.withRenderingMode(.alwaysOriginal)
-            iconImageView.tintColor = .systemPink
-            contentLabel.text = "매칭이 되었습니다. 쪽지를 보내보세요."
-        }
+        iconImageView.image = UIImage(systemName: notitype.iconSystemImageName)
+        iconImageView.tintColor = notitype.iconColor
+        contentLabel.text = notitype.content
         nameLabel.text = "\(nickName), \(age)"
         mbitLabel.setMbti(mbti: mbti)
         createDateLabel.isHidden = false
         createDateLabel.text = date.toStringTime()
     }
     
-    func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: String) {
+    func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
         guard let url = URL(string: imageUrl) else { return }
         profileImageView.kf.setImage(with: url)
         iconImageView.image = UIImage()
         nameLabel.text = "\(nickName), \(age)"
         mbitLabel.setMbti(mbti: mbti)
-        contentLabel.text = createdDate
+        contentLabel.text = "가입일자 \(createdDate.toString(dateSeparator: .dot))"
+        contentLabel.font = .picoDescriptionFont
+        contentLabel.textColor = .picoFontGray
     }
     
     override func prepareForReuse() {

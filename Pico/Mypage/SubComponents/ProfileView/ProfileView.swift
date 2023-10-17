@@ -110,7 +110,7 @@ final class ProfileView: UIView {
 
     }
     
-    private func configProgressBarView() {
+     func configProgressBarView() {
         let circularViewDuration: TimeInterval = 2
         circularProgressBarView.progressAnimation(duration: circularViewDuration)
     }

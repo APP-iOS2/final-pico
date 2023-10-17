@@ -8,110 +8,180 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import FirebaseFirestore
 
 // 질문: enum 을 여기에서만 쓰는데 어디에다 관리하는 게 좋을까용~?
 enum SortType: CaseIterable {
-    case dateAscending
+    /// 가입일 내림차순
     case dateDescending
-    case nameAscending
+    /// 가입일 오름차순
+    case dateAscending
+    /// 이름 내림차순
     case nameDescending
-    case ageAscending
+    /// 이름 오름차순
+    case nameAscending
+    /// 나이 내림차순
     case ageDescending
+    /// 나이 오름차순
+    case ageAscending
     
     var name: String {
         switch self {
-        case .dateAscending:
-            return "가입일 오름차순"
         case .dateDescending:
             return "가입일 내림차순"
-        case .nameAscending:
-            return "이름 오름차순"
+        case .dateAscending:
+            return "가입일 오름차순"
         case .nameDescending:
             return "이름 내림차순"
-        case .ageAscending:
-            return "나이 오름차순"
+        case .nameAscending:
+            return "이름 오름차순"
         case .ageDescending:
             return "나이 내림차순"
+        case .ageAscending:
+            return "나이 오름차순"
         }
     }
-}
-
-enum FilterType: CaseIterable {
-    case name
-    case mbti
     
-    var name: String {
+    var orderBy: (String, Bool) {
         switch self {
-        case .name:
-            return "이름"
-        case .mbti:
-            return "MBTI"
+        case .dateDescending:
+            return ("createdDate", true)
+        case .dateAscending:
+            return ("createdDate", false)
+        case .nameDescending:
+            return ("nickName", true)
+        case .nameAscending:
+            return ("nickName", false)
+        case .ageDescending:
+            return ("birth", true)
+        case .ageAscending:
+            return ("birth", false)
         }
     }
 }
 
-final class AdminUserViewModel {
-    private let disposeBag = DisposeBag()
-    let userList = BehaviorRelay<[User]>(value: [])
+final class AdminUserViewModel: ViewModelType {
+    private let itemsPerPage: Int = 5
+    private var lastDocumentSnapshot: DocumentSnapshot?
     
-    var selectedSortType: BehaviorRelay<SortType> = BehaviorRelay(value: .dateAscending)
-    var selectedFilteredType: BehaviorSubject<FilterType> = BehaviorSubject(value: .name)
-    
-    var sortedUsers: Observable<[User]> {
-        return Observable.combineLatest(selectedSortType, userList)
-            .map { sortType, users in
-                switch sortType {
-                case .dateAscending:
-                    return users.sorted { $0.createdDate < $1.createdDate }
-                case .dateDescending:
-                    return users.sorted { $0.createdDate > $1.createdDate }
-                case .nameAscending:
-                    return users.sorted { $0.nickName < $1.nickName }
-                case .nameDescending:
-                    return users.sorted { $0.nickName > $1.nickName }
-                case .ageAscending:
-                    return users.sorted { $0.age < $1.age }
-                case .ageDescending:
-                    return users.sorted { $0.age > $1.age }
-                }
-            }
+    private(set) var userList: [User] = []
+    private let reloadPublisher = PublishSubject<Void>()
+
+    struct Input {
+        let viewDidLoad: Observable<Void>
+        let sortedTpye: Observable<SortType>
+        let searchButton: Observable<String>
+        let tableViewOffset: Observable<Void>
+        let refreshable: Observable<Void>
     }
     
-    var filteredUsers: Observable<[User]> {
-        return Observable.combineLatest(selectedFilteredType, sortedUsers)
-            .map { filterType, users in
-                switch filterType {
-                case .name:
-                    Loading.hideLoading()
-                    return users.filter { sortedUser in
-                        sortedUser.nickName.contains("밍키") || sortedUser.phoneNumber.contains("8888")
+    struct Output {
+        let resultToViewDidLoad: Observable<[User]>
+        let resultSearchUserList: Observable<[User]>
+        let resultPagingList: Observable<[User]>
+        let needToReload: Observable<Void>
+    }
+    //  질문: withUnretained 이거 바로 아래밖에 적용이 안되는지 ?
+    func transform(input: Input) -> Output {
+        // 질문:
+        // refreshTable 에서 input.sortedTpye 변경으로 호출되는데
+        // refreshablePublisher.onNext(()) 가 호출되었을 때 할 수 있는 방법이 있을 까여?
+        let responseViewDidLoad = Observable.combineLatest(input.sortedTpye, input.viewDidLoad)
+            .withUnretained(self)
+            .flatMapLatest { (viewModel, value) -> Observable<([User], DocumentSnapshot?)> in
+                let (sortedTpye, _) = value
+                return FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self, orderBy: sortedTpye.orderBy, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
+            }
+            .map { users, snapShot in
+                self.userList.removeAll()
+                self.lastDocumentSnapshot = snapShot
+                self.userList = users
+                Loading.hideLoading()
+                return self.userList
+            }
+        
+        let sortedType = input.sortedTpye.asObservable()
+        
+        let responseTableViewPaging = input.tableViewOffset
+            .withUnretained(self)
+            .flatMap { (viewModel, _) -> Observable<[User]> in
+                Loading.showLoading()
+                return sortedType
+                    .map { sortType in
+                        return viewModel.loadNextPage(orderBy: sortType.orderBy)
                     }
-                case .mbti:
-                    return users
+                    .switchLatest()
+            }
+            .map { users in
+                self.userList = users
+                Loading.hideLoading()
+                return self.userList
+            }
+        
+        let responseSearchButton = input.searchButton
+            .withUnretained(self)
+            .flatMapLatest { viewModel, textFieldText in
+                return Observable.just(viewModel.filterUserList(viewModel.userList, textFieldText))
+            }
+        
+        return Output(
+            resultToViewDidLoad: responseViewDidLoad,
+            resultSearchUserList: responseSearchButton,
+            resultPagingList: responseTableViewPaging,
+            needToReload: reloadPublisher.asObservable()
+        )
+    }
+    
+    private func filterUserList(_ userList: [User], _ text: String) -> [User] {
+        if text.isEmpty {
+            return userList
+        } else {
+            let users = userList.filter { sortedUser in
+                sortedUser.nickName.contains(text)
+            }
+            return users
+        }
+    }
+    
+    private func loadNextPage(orderBy: (String, Bool)) -> Observable<[User]> {
+        let dbRef = Firestore.firestore()
+        
+        return Observable.create { [weak self] emitter in
+            guard let self = self else { return Disposables.create()}
+            
+            var query = dbRef.collection(Collections.users.name)
+                .order(by: orderBy.0, descending: orderBy.1)
+                .limit(to: itemsPerPage)
+            
+            if let lastSnapshot = lastDocumentSnapshot {
+                query = query.start(afterDocument: lastSnapshot)
+            }
+            
+            DispatchQueue.global().async {
+                query.getDocuments { [weak self] snapshot, error in
+                    guard let self = self else { return }
+                    if let error = error {
+                        emitter.onError(error)
+                        return
+                    }
+                    guard let documents = snapshot?.documents else { return }
+                    
+                    if documents.isEmpty {
+                        Loading.hideLoading()
+                        return
+                    }
+                    
+                    lastDocumentSnapshot = documents.last
+                    
+                    for document in documents {
+                        if let data = try? document.data(as: User.self) {
+                            userList.append(data)
+                        }
+                    }
+                    emitter.onNext(userList)
                 }
             }
-    }
-    
-    init() {
-        FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
-            .subscribe { [weak self] event in
-                switch event {
-                case .next(let users):
-                    self?.userList.accept(users)
-                case .error(let error):
-                    print(error)
-                default:
-                    break
-                }
-            }
-            .disposed(by: disposeBag)
-    }
-    
-    func updateSelectedSortType(to sortType: SortType) {
-        selectedSortType.accept(sortType)
-    }
-    
-    func updateSelectedFilterType(to filterType: FilterType) {
-        selectedFilteredType.onNext(filterType)
+            return Disposables.create()
+        }
     }
 }
