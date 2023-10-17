@@ -109,7 +109,7 @@ final class HomeFilterViewController: UIViewController {
             make.top.equalTo(ageSlider.snp.bottom).offset(25)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
-            make.bottom.equalTo(ageSlider.snp.bottom).offset(100)
+            make.bottom.equalTo(ageSlider.snp.bottom).offset(60)
         }
         
         distanceLabel.snp.makeConstraints { make in
@@ -127,7 +127,7 @@ final class HomeFilterViewController: UIViewController {
         }
         
         mbtiLabel.snp.makeConstraints { make in
-            make.top.equalTo(distanceSlider.snp.bottom).offset(10)
+            make.top.equalTo(distanceSlider.snp.bottom)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
             make.height.equalTo(50)
@@ -187,9 +187,13 @@ final class HomeFilterViewController: UIViewController {
         if let genderType = genderType {
             if sender.isSelected {
                 HomeViewModel.filterGender.append(genderType)
+                let genderData = try? JSONEncoder().encode(HomeViewModel.filterGender)
+                UserDefaults.standard.set(genderData, forKey: "filterGender")
             } else {
                 if let index = HomeViewModel.filterGender.firstIndex(of: genderType) {
                     HomeViewModel.filterGender.remove(at: index)
+                    let genderData = try? JSONEncoder().encode(HomeViewModel.filterGender)
+                    UserDefaults.standard.set(genderData, forKey: "filterGender")
                 }
             }
             updateButtonAppearance(sender)
@@ -200,6 +204,7 @@ final class HomeFilterViewController: UIViewController {
     @objc func distanceSliderValueChanged() {
         let selectedValue = Int(distanceSlider.value)
         HomeViewModel.filterDistance = selectedValue
+        UserDefaults.standard.set(HomeViewModel.filterDistance, forKey: "filterDistance")
         if selectedValue > 500 {
             distanceValueLabel.text = "0km ~ \(selectedValue)km +"
         } else {

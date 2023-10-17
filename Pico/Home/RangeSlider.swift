@@ -155,6 +155,7 @@ final class RangeSlider: UIView {
                 }
                 valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
                 HomeViewModel.filterAgeMin = leftBallValue
+                UserDefaults.standard.set(HomeViewModel.filterAgeMin, forKey: "filterAgeMin")
             }
             if ball == rightBall {
                 rightPoint = Int(newCenterX)
@@ -169,9 +170,11 @@ final class RangeSlider: UIView {
                 if rightBallValue > 60 {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
                     HomeViewModel.filterAgeMax = 61
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: "filterAgeMax")
                 } else {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
                     HomeViewModel.filterAgeMax = rightBallValue
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: "filterAgeMax")
                 }
             }
         case .ended:

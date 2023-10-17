@@ -23,9 +23,9 @@ final class HomeViewModel {
     private let disposeBag = DisposeBag()
     
     init() {
+        loadFilterDefault()
         loadUsers()
         loadMyLikesRx()
-        
     }
     
     private func loadUsers() {
@@ -67,6 +67,30 @@ final class HomeViewModel {
             }
             .bind(to: myLikes)
             .disposed(by: disposeBag)
+    }
+    
+    private func loadFilterDefault() {
+        if let filterAgeMin = UserDefaults.standard.object(forKey: "filterAgeMin") as? Int {
+            HomeViewModel.filterAgeMin = filterAgeMin
+        }
+
+        if let filterAgeMax = UserDefaults.standard.object(forKey: "filterAgeMax") as? Int {
+            HomeViewModel.filterAgeMax = filterAgeMax
+        }
+
+        if let filterDistance = UserDefaults.standard.object(forKey: "filterDistance") as? Int {
+            HomeViewModel.filterDistance = filterDistance
+        }
+        
+        if let genderData = UserDefaults.standard.object(forKey: "filterGender") as? Data,
+           let filterGender = try? JSONDecoder().decode([GenderType].self, from: genderData) {
+            HomeViewModel.filterGender = filterGender
+        }
+
+        if let mbtiData = UserDefaults.standard.object(forKey: "filterMbti") as? Data,
+           let filterMbti = try? JSONDecoder().decode([MBTIType].self, from: mbtiData) {
+            HomeViewModel.filterMbti = filterMbti
+        }
     }
     
     //    func loadUsersRx() {
