@@ -32,14 +32,14 @@ final class AdminUserDetailViewController: UIViewController {
     
     private let tableView: UITableView = UITableView()
     
-    private var viewModel: AdminUserDetailViewModel!
+    private var viewModel: AdminUserDetailViewModel
     private let disposeBag: DisposeBag = DisposeBag()
     
     private let recordTypePublish = PublishSubject<RecordType>()
     
     init(viewModel: AdminUserDetailViewModel) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     @available(*, unavailable)
