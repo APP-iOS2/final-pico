@@ -64,15 +64,30 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
         switch status.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
         let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
-        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) { (placemarks, error) in
             if let error = error {
                 print("Geocoding Error: \(error)")
                 completion(nil)
                 return
             }
-
             if let placemark = placemarks?.first {
-                let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
+                var addressComponents = [String]()
+                
+                if let locality = placemark.locality {
+                    addressComponents.append(locality)
+                }
+                
+                if let subLocality = placemark.subLocality {
+                    addressComponents.append(subLocality)
+                }
+                
+                if let thoroughfare = placemark.thoroughfare {
+                    addressComponents.append(thoroughfare)
+                }
+                
+                let addressString = addressComponents.joined(separator: " ")
+                print("addressString: \(addressString)")
                 let location = Location(address: addressString, latitude: latitude ?? 0, longitude: longitude ?? 0)
                 completion(location)
             } else {
