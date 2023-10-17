@@ -43,7 +43,7 @@ final class WorldCupViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoButtonFont
-        label.text = "마음에 드는 이성을 골라보세요!\n최종 선택 이성에게 채팅신청 시\n피코가 채팅 신청 피용의 50%를\n부담해 드릴게요!"
+        label.text = "마음에 드는 이성을 골라보세요!\n최종 선택 이성에게 채팅신청 시\n피코가 채팅 신청 비용의 50%를\n부담해 드릴게요!"
         label.numberOfLines = 0
         return label
     }()
@@ -73,7 +73,7 @@ final class WorldCupViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        checkGameAvailability()
+//        checkGameAvailability()
     }
     
     private func addViews() {

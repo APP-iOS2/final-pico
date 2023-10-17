@@ -156,6 +156,12 @@ final class RandomBoxViewController: UIViewController {
                 self.openTenBoxButtonTapped()
             })
             .disposed(by: disposeBag)
+        
+        infoButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.infoButtonTapped()
+            })
+            .disposed(by: disposeBag)
     }
     
     private func openBoxButtonTapped() {
@@ -206,5 +212,12 @@ final class RandomBoxViewController: UIViewController {
         let alert = UIAlertController(title: nil, message: messageSting, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+    
+    @objc private func infoButtonTapped() {
+        let percentModalViewController = PercentModalViewController()
+        let navController = UINavigationController(rootViewController: percentModalViewController)
+        navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true, completion: nil)
     }
 }
