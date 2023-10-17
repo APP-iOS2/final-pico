@@ -18,6 +18,7 @@ final class LikeUViewController: UIViewController {
     private let listLoadPublisher = PublishSubject<Void>()
     private let refreshPublisher = PublishSubject<Void>()
     private var isLoading = false
+    private var isRefresh = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -38,7 +39,7 @@ final class LikeUViewController: UIViewController {
     
     private func configCollectionView() {
         collectionView.register(cell: LikeCollectionViewCell.self)
-        collectionView.register(cell: CollectionViewFooterLoadingCell.self)
+        collectionView.register(CollectionViewFooterLoadingCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -48,46 +49,45 @@ final class LikeUViewController: UIViewController {
         refreshControl.tintColor = .picoBlue
         collectionView.refreshControl = refreshControl
     }
-
+    
     @objc func refreshTable(refresh: UIRefreshControl) {
+        isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             refreshPublisher.onNext(())
             refresh.endRefreshing()
+            isRefresh = false
         }
     }
 }
 
 extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return isLoading ? viewModel.likeUList.count + 1 : viewModel.likeUList.count
+        return viewModel.likeUList.count
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if isLoading && indexPath.row == viewModel.likeUList.count {
-            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: CollectionViewFooterLoadingCell.self)
-            cell.startLoading()
-            return cell
-        } else {
-            let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
-            let item = viewModel.likeUList[indexPath.row]
-            cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
-            cell.messageButtonTapObservable
-                .subscribe { [weak self] _ in
-                    // 메일 뷰 데이터 연결 후 userId 값 넘겨주기
-                    let mailSendView = MailSendViewController()
-                    mailSendView.getReceiver(userId: item.likedUserId)
-                    mailSendView.modalPresentationStyle = .formSheet
-                    self?.present(mailSendView, animated: true, completion: nil)
-                }
-                .disposed(by: cell.disposeBag)
-            return cell
-        }
+        let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
+        guard let item = viewModel.likeUList[safe: indexPath.row] else { return cell }
+        cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
+        cell.messageButtonTapObservable
+            .subscribe { [weak self] _ in
+                let mailSendView = MailSendViewController()
+                mailSendView.getReceiver(userId: item.likedUserId)
+                mailSendView.modalPresentationStyle = .formSheet
+                self?.present(mailSendView, animated: true, completion: nil)
+            }
+            .disposed(by: cell.disposeBag)
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let viewController = UserDetailViewController()
-        let selectedUser = viewModel.likeUList[indexPath.row]
+        guard let selectedUser = viewModel.likeUList[safe: indexPath.row] else { return }
         FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { result in
             switch result {
             case .success(let data):
@@ -101,25 +101,29 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if isLoading && indexPath.row == viewModel.likeUList.count {
-            return CGSize(width: view.frame.width, height: 50)
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer", for: indexPath) as? CollectionViewFooterLoadingCell else {
+                return CollectionViewFooterLoadingCell()
+            }
+            footer.startLoading()
+            
+            return footer
+        }
+        return UICollectionReusableView()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        if isLoading {
+            return CGSize(width: view.frame.size.width, height: 50)
         } else {
-            let width = view.frame.width / 2 - 17.5
-            return CGSize(width: width, height: width * 1.5)
+            return CGSize(width: 0, height: 0)
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        if isLoading && viewModel.likeUList.count % 2 == 1 {
-            // 데이터 셀이 홀수개일 때 가운데 정렬하기
-            let cellWidth = (collectionView.bounds.width - 15) / 2
-            let extraSpacing = (collectionView.bounds.width - cellWidth) / 2
-            return UIEdgeInsets(top: 0, left: extraSpacing, bottom: 0, right: extraSpacing)
-        } else {
-            // 데이터 셀이 짝수개일 때 정상적으로 정렬
-            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = view.frame.width / 2 - 17.5
+        return CGSize(width: width, height: width * 1.5)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -133,7 +137,7 @@ extension LikeUViewController: UIScrollViewDelegate {
         let contentOffsetY = scrollView.contentOffset.y
         let collectionViewContentSizeY = collectionView.contentSize.height
         
-        if contentOffsetY > collectionViewContentSizeY - scrollView.frame.size.height {
+        if contentOffsetY > collectionViewContentSizeY - scrollView.frame.size.height && !isRefresh {
             self.isLoading = true
             self.collectionView.reloadData()
             self.listLoadPublisher.onNext(())
