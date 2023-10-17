@@ -65,7 +65,7 @@ final class StoreViewController: UIViewController {
             .withUnretained(self)
             .subscribe { viewController, _ in
                 viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "결제 확인", messageText: "결제되셨습니다.", confirmButtonText: "확인", comfrimAction: {
-                    print(UserDefaultsManager.shared.getChuCount())
+                    viewController.navigationController?.popViewController(animated: true)
                 })
             }
             .disposed(by: disposeBag)
