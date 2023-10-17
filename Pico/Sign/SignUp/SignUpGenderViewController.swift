@@ -84,6 +84,9 @@ final class SignUpGenderViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 3)
     }
+    override func viewDidDisappear(_ animated: Bool) {
+        SignLoadingManager.hideLoading()
+    }
 }
 // MARK: - Config
 extension SignUpGenderViewController {
@@ -108,6 +111,7 @@ extension SignUpGenderViewController {
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isTappedGenderButton {
             sender.tappedAnimation()
+            SignLoadingManager.showLoading(text: "넘어가는중!")
             let viewController = SignUpAgeViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }

@@ -114,9 +114,11 @@ final class SignUpPhoneNumberViewController: UIViewController {
         configButtons()
         configTextField()
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 2)
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
@@ -125,6 +127,10 @@ final class SignUpPhoneNumberViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         keyboardManager.unregisterKeyboard()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        SignLoadingManager.hideLoading()
     }
 }
 // MARK: - Config
@@ -206,13 +212,13 @@ extension SignUpPhoneNumberViewController {
             guard let text = self.phoneNumberTextField.text else { return }
             self.viewModel.checkPhoneNumber(userNumber: text) {
                 guard self.viewModel.isRightUser else {
-                    Loading.hideLoading()
+                    SignLoadingManager.hideLoading()
                     self.showAlert(message: "이미 등록된 번호입니다.") {
                         self.configReset()
                     }
                     return
                 }
-                Loading.hideLoading()
+                SignLoadingManager.hideLoading()
                 self.viewModel.phoneNumber = text
                 self.authTextFields[0].becomeFirstResponder()
                 self.updatePhoneNumberTextField(isFull: true)
@@ -238,6 +244,7 @@ extension SignUpPhoneNumberViewController {
         }
         print("성공성공")
         self.showAlert(message: "인증에 성공하셨습니다.") {
+            SignLoadingManager.showLoading(text: "넘어가는중!")
             let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }

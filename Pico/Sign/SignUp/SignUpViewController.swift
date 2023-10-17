@@ -108,6 +108,7 @@ final class SignUpViewController: UIViewController {
         configButtons()
         
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 1)
     }

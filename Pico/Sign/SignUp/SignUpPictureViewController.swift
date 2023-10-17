@@ -93,9 +93,13 @@ final class SignUpPictureViewController: UIViewController {
         makeConstraints()
         configCollectionView()
         yoloManager.loadYOLOv3Model()
+        pictureManager.requestPhotoLibraryAccess(in: self)
     }
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 6)
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        SignLoadingManager.hideLoading()
     }
     // MARK: - Config
     private func configCollectionView() {
@@ -141,6 +145,8 @@ final class SignUpPictureViewController: UIViewController {
                 if allImagesDetected {
                     self.showAlert(message: "이미지가 등록되었습니다.") {
                         self.viewModel.imageArray = self.userImages
+                        
+                        SignLoadingManager.showLoading(text: "넘어가는중!")
                         let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
                         self.navigationController?.pushViewController(viewController, animated: true)
                     }
@@ -158,15 +164,16 @@ final class SignUpPictureViewController: UIViewController {
 
 // MARK: - 사진 관련
 extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
     @objc private func openPhotoLibrary() {
-        pictureManager.requestPhotoLibraryAccess()
+        
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             var configuration = PHPickerConfiguration()
             configuration.selectionLimit = 3 // 최대 선택 가능한 이미지 수
             let picker = PHPickerViewController(configuration: configuration)
             picker.delegate = self
             present(picker, animated: true, completion: nil)
+        } else {
+            pictureManager.unauthorized(in: self)
         }
     }
     
@@ -229,7 +236,7 @@ extension SignUpPictureViewController: UICollectionViewDataSource, UICollectionV
 extension SignUpPictureViewController {
     
     private func addSubViews() {
-        for viewItem in [progressView, notifyLabel, subNotifyLabel, nextButton, collectionView] { // imageStackView를 포함하여 모든 뷰를 추가
+        for viewItem in [progressView, notifyLabel, subNotifyLabel, nextButton, collectionView] {
             view.addSubview(viewItem)
         }
     }
