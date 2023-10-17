@@ -210,9 +210,10 @@ extension SignUpNickNameViewController {
          2023-10-16 18:25:09.469090+0900 Pico[8452:2229938] Task <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1> finished with error [-1002] Error Domain=NSURLErrorDomain Code=-1002 "unsupported URL" UserInfo={NSLocalizedDescription=unsupported URL, NSErrorFailingURLStringKey=chu, NSErrorFailingURLKey=chu, _NSURLErrorRelatedURLSessionTaskErrorKey=(
              "LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>"
          ), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>, NSUnderlyingError=0x281268f90 {Error Domain=kCFErrorDomainCFNetwork Code=-1002 "(null)"}}
-         2023-10-16 18:25:09.470571+0900 Pico[8452:2229602] [SystemGestureGate] <0x10600de80> Gesture: System gesture gate timed out.
-         2023-10-16 18:25:09.471088+0900 Pico[8452:2229602] [Presentation] Attempt to present <UIAlertController: 0x105abde00> on <Pico.PictureManager: 0x1064935e0> (from <Pico.PictureManager: 0x1064935e0>) whose view is not in the window hierarchy.
-         라는게 뜨면서 넘어가는게느림
+         Pico[8452:2229602] [SystemGestureGate] <0x10600de80> Gesture: System gesture gate timed out.
+         Pico[8452:2229602] [Presentation] Attempt to present <UIAlertController: 0x105abde00> on <Pico.PictureManager: 0x1064935e0> (from <Pico.PictureManager: 0x1064935e0>) whose view is not in the window hierarchy.
+         
+         위에 메시지가 뜨면서 다음 뷰컨으로 넘어가는게 조금 걸립니다 !
          */
         self.viewModel.nickName = userNickName
         SignLoadingManager.showLoading(text: "넘어가는중!")
