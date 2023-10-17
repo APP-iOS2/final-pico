@@ -45,7 +45,7 @@ enum GenderType: String, Codable {
 
 extension User {
     // User MockUpData
-    static let userData = User(mbti: .infp, phoneNumber: "01012341234", gender: .male, birth: "1999-01-31", nickName: "윈터", location: Location(address: "서울특별시 강남구", latitude: 10, longitude: 10),
+    static let userData = User(id: "05047220-C832-4C7A-ACE4-669E4859C5C3", mbti: .infp, phoneNumber: "01012341234", gender: .male, birth: "1999-01-31", nickName: "윈터", location: Location(address: "서울특별시 강남구", latitude: 10, longitude: 10),
                                imageURLs: [    "https://image5jvqbd.fmkorea.com/files/attach/new2/20211225/3655109/3113058505/4195166827/e130faca7194985e4f162b3583d52853.jpg",
                                                "https://img.dmitory.com/img/202107/2lh/a8H/2lha8HnRr6Q046GGGQ0uwM.jpg",
                                                "https://pbs.twimg.com/media/FJtITDWXwAUQB3y.jpg:large",

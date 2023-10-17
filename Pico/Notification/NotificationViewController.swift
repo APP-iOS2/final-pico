@@ -94,6 +94,8 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
         let item = viewModel.notifications[indexPath.row]
         if item.notiType == .like {
             let viewController = UserDetailViewController()
+            // 유저 정보 넘겨주세요
+            // viewController.viewModel = UserDetailViewModel(user: user)
             self.navigationController?.pushViewController(viewController, animated: true)
         } else {
             if let tabBarController = self.tabBarController as? TabBarController {

@@ -98,6 +98,8 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // 디테일뷰 유저정보 연결 필요
         let viewController = UserDetailViewController()
+        // user정보 넘겨주세여
+        //viewController.viewModel = UserDetailViewModel(user: user)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     

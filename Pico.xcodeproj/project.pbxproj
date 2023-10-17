@@ -256,6 +256,7 @@
 		53836F542ACC90FC00D98F77 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
 		53B529582ADCBD0D00A9C9D8 /* FooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		53B5295A2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFooterLoadingCell.swift; sourceTree = "<group>"; };
+
 		547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
 		547C4C242AD8393700028AFB /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		547C4C252AD8393700028AFB /* SubInfomationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubInfomationViewController.swift; sourceTree = "<group>"; };

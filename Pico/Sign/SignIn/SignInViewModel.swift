@@ -44,7 +44,7 @@ final class SignInViewModel {
                 let createdDate = data["createdDate"] as? Double ?? 0.0
                 let subInfo = data["subInfo"] as? SubInfo ?? SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [""], personalities: [""], favoriteMBTIs: [.enfj])
                 let reports = data["reports"] as? Report ?? Report(id: id, reportedId: "", reason: "", reportedDate: 0)
-                let blocks = data["blocks"] as? Block ?? Block(id: id, blockedId: "", blockedDate: 0)
+                let blocks = data["blocks"] as? Block ?? Block(blockedId: "", blockedDate: 0)
                 let chuCount = data["chuCount"] as? Int ?? 0
                 let isSubscribe = data["isSubscribe"] as? Bool ?? false
                 let retrievedUser = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfo, reports: [reports], blocks: [blocks], chuCount: chuCount, isSubscribe: isSubscribe)
