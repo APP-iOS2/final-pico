@@ -11,6 +11,7 @@ final class UserDefaultsManager {
     enum Key: String, CaseIterable {
         case userId, nickName, mbti, imageURL, birth
         case latitude, longitude
+        case chuCount
     }
     
     static let shared: UserDefaultsManager = UserDefaultsManager()
@@ -32,6 +33,8 @@ final class UserDefaultsManager {
         UserDefaults.standard.setValue(userData.birth, forKey: Key.birth.rawValue)
         UserDefaults.standard.setValue(userData.location.latitude, forKey: Key.latitude.rawValue)
         UserDefaults.standard.setValue(userData.location.longitude, forKey: Key.longitude.rawValue)
+        
+        UserDefaults.standard.setValue(userData.chuCount, forKey: Key.chuCount.rawValue)
     }
     
     func isLogin() -> Bool {
@@ -47,5 +50,13 @@ final class UserDefaultsManager {
         let latitude = UserDefaults.standard.double(forKey: Key.latitude.rawValue)
         let longitude = UserDefaults.standard.double(forKey: Key.longitude.rawValue)
         return CurrentUser(userId: userId, nickName: nickName, mbti: mbti, imageURL: imageURL, birth: birth, latitude: latitude, longitude: longitude)
+    }
+    
+    func getChuCount() -> Int {
+        return UserDefaults.standard.integer(forKey: Key.chuCount.rawValue)
+    }
+    
+    func updateChuCount(_ chuCount: Int) {
+        UserDefaults.standard.setValue(chuCount, forKey: Key.chuCount.rawValue)
     }
 }
