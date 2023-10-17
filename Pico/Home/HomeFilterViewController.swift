@@ -13,24 +13,22 @@ final class HomeFilterViewController: UIViewController {
     weak var homeViewController: HomeViewController?
     private let mbtiCollectionViewController = MBTICollectionViewController()
     static var filterChangeState: Bool = false
-    private lazy var selectedGenderLabel: UILabel = createFilterLabel(text: "만나고 싶은 성별", font: .picoTitleFont)
-    private lazy var selectedGenderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
-    private lazy var selectedAge: UILabel = createFilterLabel(text: "나이", font: .picoSubTitleFont)
-    private lazy var selectedDistance: UILabel = createFilterLabel(text: "거리", font: .picoSubTitleFont)
-    private lazy var selectedMBTI: UILabel = createFilterLabel(text: "성격 유형", font: .picoSubTitleFont)
+    private lazy var genderLabel: UILabel = createFilterLabel(text: "만나고 싶은 성별", font: .picoTitleFont)
+    private lazy var genderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
+    private lazy var distanceLabel: UILabel = createFilterLabel(text: "거리", font: .picoSubTitleFont)
+    private lazy var distanceValueLabel: UILabel = createFilterLabel(text: "0km ~ 200km", font: .picoSubTitleFont)
+    private lazy var mbtiLabel: UILabel = createFilterLabel(text: "성격 유형", font: .picoSubTitleFont)
     private lazy var manButton: UIButton = createFilterButton(title: "남자")
     private lazy var womanButton: UIButton = createFilterButton(title: "여자")
     private lazy var etcButton: UIButton = createFilterButton(title: "기타")
     
     private let ageSlider = RangeSlider()
-    private let distanceSlider = RangeSlider()
+    private let distanceSlider = UISlider()
     
     // MARK: - 스택
     private lazy var genderHStack: UIStackView = createFilterStack(axis: .horizontal, spacing: 5, distribution: .fillEqually)
     private lazy var genderLabelVStack: UIStackView = createFilterStack(axis: .vertical, spacing: 0, distribution: nil)
     private lazy var genderButtonHStack: UIStackView = createFilterStack(axis: .horizontal, spacing: 5, distribution: .fillEqually)
-    private lazy var ageVStack: UIStackView = createFilterStack(axis: .vertical, spacing: 0, distribution: nil)
-    private lazy var distanceVStack: UIStackView = createFilterStack(axis: .vertical, spacing: 0, distribution: nil)
     
     // MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -38,6 +36,32 @@ final class HomeFilterViewController: UIViewController {
         view.configBackgroundColor()
         addSubView()
         makeConstraints()
+        configUI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        if HomeFilterViewController.filterChangeState == true {
+            self.homeViewController?.reloadView()
+            HomeFilterViewController.filterChangeState = false
+        }
+    }
+    
+    private func configUI() {
+        ageSlider.titleLabel.text = "나이"
+        
+        distanceSlider.maximumTrackTintColor = UIColor.lightGray.withAlphaComponent(0.5)
+        distanceSlider.minimumTrackTintColor = .picoBlue
+        distanceSlider.maximumValue = 501
+        distanceSlider.addTarget(self, action: #selector(distanceSliderValueChanged), for: .valueChanged)
+        if let thumbImage = UIImage(systemName: "circle.fill")?.withTintColor(.picoBlue) {
+            let thumbSize = CGSize(width: 14, height: 14)
+            let resizedThumbImage = thumbImage.resized(toSize: thumbSize)
+            distanceSlider.setThumbImage(resizedThumbImage, for: .normal)
+        }
+        
+        distanceValueLabel.text = "0km ~ \(HomeViewModel.filterDistance)km"
+        distanceValueLabel.textColor = .picoBlue
+        distanceValueLabel.textAlignment = .right
         
         manButton.isSelected = HomeViewModel.filterGender.contains(.male)
         updateButtonAppearance(manButton)
@@ -49,32 +73,16 @@ final class HomeFilterViewController: UIViewController {
         updateButtonAppearance(etcButton)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        if HomeFilterViewController.filterChangeState == true {
-            self.homeViewController?.reloadView()
-            HomeFilterViewController.filterChangeState = false
-        }
-    }
-    
     private func addSubView() {
-        view.addSubview(genderHStack)
-        view.addSubview(ageVStack)
-        view.addSubview(distanceVStack)
-        view.addSubview(selectedMBTI)
+        view.addSubview([genderHStack, mbtiLabel, ageSlider, distanceSlider, distanceLabel, distanceValueLabel])
         
         genderHStack.addArrangedSubview(genderLabelVStack)
         genderHStack.addArrangedSubview(genderButtonHStack)
-        genderLabelVStack.addArrangedSubview(selectedGenderLabel)
-        genderLabelVStack.addArrangedSubview(selectedGenderSubLabel)
+        genderLabelVStack.addArrangedSubview(genderLabel)
+        genderLabelVStack.addArrangedSubview(genderSubLabel)
         genderButtonHStack.addArrangedSubview(manButton)
         genderButtonHStack.addArrangedSubview(womanButton)
         genderButtonHStack.addArrangedSubview(etcButton)
-        
-        ageVStack.addArrangedSubview(selectedAge)
-        ageVStack.addArrangedSubview(ageSlider)
-        
-        distanceVStack.addArrangedSubview(selectedDistance)
-        distanceVStack.addArrangedSubview(distanceSlider)
         
         addChild(mbtiCollectionViewController)
         view.addSubview(mbtiCollectionViewController.view)
@@ -89,29 +97,43 @@ final class HomeFilterViewController: UIViewController {
             make.height.equalTo(40)
         }
         
-        ageVStack.snp.makeConstraints { make in
-            make.top.equalTo(genderHStack.snp.bottom).offset(25)
+        ageSlider.snp.makeConstraints { make in
+            make.top.equalTo(genderHStack.snp.bottom).offset(45)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
             make.bottom.equalTo(genderHStack.snp.bottom).offset(100)
         }
         
-        distanceVStack.snp.makeConstraints { make in
-            make.top.equalTo(ageVStack.snp.bottom).offset(5)
+        distanceSlider.snp.makeConstraints { make in
+            make.top.equalTo(ageSlider.snp.bottom).offset(25)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
-            make.bottom.equalTo(ageVStack.snp.bottom).offset(100)
+            make.bottom.equalTo(ageSlider.snp.bottom).offset(100)
         }
         
-        selectedMBTI.snp.makeConstraints { make in
-            make.top.equalTo(distanceVStack.snp.bottom).offset(10)
+        distanceLabel.snp.makeConstraints { make in
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
+            make.bottom.equalTo(distanceSlider.snp.centerY).offset(-15)
+            make.width.equalTo(50)
+            make.height.equalTo(30)
+        }
+        
+        distanceValueLabel.snp.makeConstraints { make in
+            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
+            make.bottom.equalTo(distanceSlider.snp.centerY).offset(-15)
+            make.width.equalTo(200)
+            make.height.equalTo(30)
+        }
+        
+        mbtiLabel.snp.makeConstraints { make in
+            make.top.equalTo(distanceSlider.snp.bottom).offset(10)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
             make.height.equalTo(50)
         }
         
         mbtiCollectionViewController.view.snp.makeConstraints { make in
-            make.top.equalTo(selectedMBTI.snp.bottom).offset(5)
+            make.top.equalTo(mbtiLabel.snp.bottom).offset(5)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
             make.height.equalTo(mbtiCollectionViewController.view.frame.size.height)
@@ -171,6 +193,16 @@ final class HomeFilterViewController: UIViewController {
             }
             updateButtonAppearance(sender)
             HomeFilterViewController.filterChangeState = true
+        }
+    }
+    
+    @objc func distanceSliderValueChanged() {
+        let selectedValue = Int(distanceSlider.value)
+        HomeViewModel.filterDistance = selectedValue
+        if selectedValue > 500 {
+            distanceValueLabel.text = "0km ~ \(selectedValue)km +"
+        } else {
+            distanceValueLabel.text = "0km ~ \(selectedValue)km"
         }
     }
 }

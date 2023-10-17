@@ -16,35 +16,30 @@ final class HomeViewModel {
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
     static var filterGender: [GenderType] = []
     static var filterMbti: [MBTIType] = []
+    static var filterAgeMin: Int = 22
+    static var filterAgeMax: Int = 27
+    static var filterDistance: Int = 150
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
     
     init() {
         loadUsers()
         loadMyLikesRx()
+        
     }
     
     private func loadUsers() {
         var gender: [GenderType] = []
-        var mbti: [MBTIType] = []
         
         if HomeViewModel.filterGender.isEmpty {
             gender = GenderType.allCases
         } else {
             gender = HomeViewModel.filterGender
         }
-        if HomeViewModel.filterMbti.isEmpty {
-            mbti = MBTIType.allCases
-        } else {
-            mbti = HomeViewModel.filterMbti
-        }
         
         DispatchQueue.global().async {
             let dbRef = Firestore.firestore()
-            var query = dbRef.collection("users")
-                .whereField("id", isNotEqualTo: self.loginUser.userId)
-                .whereField("gender", in: gender.map { $0.rawValue })
-                .whereField("mbti", in: mbti.map { $0.rawValue })
+            let query = dbRef.collection("users").whereField("id", isNotEqualTo: self.loginUser.userId).whereField("gender", in: gender.map { $0.rawValue })
             
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {

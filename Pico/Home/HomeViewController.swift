@@ -44,15 +44,21 @@ final class HomeViewController: BaseViewController {
     }
     
     private func addSubView() {
-        view.addSubview(likeLabel)
-        view.addSubview(passLabel)
+        view.addSubview([likeLabel, passLabel])
     }
     private func loadCards() {
+        var mbti: [MBTIType] = []
+        if HomeViewModel.filterMbti.isEmpty {
+            mbti = MBTIType.allCases
+        } else {
+            mbti = HomeViewModel.filterMbti
+        }
         Observable.combineLatest(users, myLikes)
             .map { users, myLikes in
                 let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
+                let myMbti = Set(mbti.map { $0.rawValue })
                 return users.filter { user in
-                    return !myLikedUserIds.contains(user.id)
+                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue)
                 }
             }
             .observe(on: MainScheduler.instance)
