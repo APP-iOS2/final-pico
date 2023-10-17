@@ -12,7 +12,7 @@ enum AlertType {
     case canCancel /// 확인 + 취소 버튼 있는 Alert Type
 }
 
-class CustomPopupViewController: UIViewController {
+final class CustomPopupViewController: UIViewController {
     
     var titleText: String = "titletitletitletitletitletitletitle"
     var messageText: String = ""
@@ -175,5 +175,4 @@ class CustomPopupViewController: UIViewController {
             }
         }
     }
-    
 }
