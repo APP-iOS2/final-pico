@@ -27,6 +27,7 @@ final class ProfileEditViewController: UIViewController {
     private let profileEditViewModel = ProfileEditViewModel()
     private let disposeBag = DisposeBag()
     weak var profileEditImageDelegate: ProfileEditImageDelegate?
+    weak var profileEditNicknameDelegate: ProfileEditNicknameDelegate?
     private let yoloManager: YoloManager = YoloManager()
     private let pictureManager = PictureManager()
     private var userImages: [UIImage] = []
@@ -38,8 +39,13 @@ final class ProfileEditViewController: UIViewController {
         addViews()
         makeConstraints()
         binds()
-        profileEditImageDelegate = self
+        delegateConfig()
         yoloManager.loadYOLOv3Model()
+    }
+    
+    private func delegateConfig() {
+        profileEditImageDelegate = self
+        profileEditNicknameDelegate = self
     }
     
     private func binds() {
@@ -53,6 +59,7 @@ final class ProfileEditViewController: UIViewController {
                 
             case .profileEditNicknameTabelCell:
                 let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditNicknameTabelCell.self)
+                cell.profileEditNicknameDelegate = self.profileEditNicknameDelegate
                 cell.selectionStyle = .none
                 return cell
                 
@@ -151,15 +158,7 @@ extension ProfileEditViewController: UITableViewDelegate {
         case 0:
             break
         case 1:
-            switch indexPath.row {
-            case 0:
-                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.nickName.name)
-                profileEditViewModel.modalType = .nickName
-                profileEditViewModel.textData = profileEditViewModel.userData?.nickName
-                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
-            default:
-                break
-            }
+            break
         case 2:
             switch indexPath.row {
             case 0:
@@ -252,6 +251,15 @@ extension ProfileEditViewController: ProfileEditImageDelegate {
         } else {
             pictureManager.unauthorized(in: self)
         }
+    }
+}
+
+extension ProfileEditViewController: ProfileEditNicknameDelegate {
+    func presentEditView() {
+        profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.nickName.name)
+        profileEditViewModel.modalType = .nickName
+        profileEditViewModel.textData = profileEditViewModel.userData?.nickName
+        presentModalView(viewController: ProfileEditNicknameModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
     }
 }
 

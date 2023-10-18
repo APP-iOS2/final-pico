@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ProfileEditNicknameDelegate: AnyObject {
+    func presentEditView()
+}
+
 final class ProfileEditNicknameTabelCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
@@ -34,6 +38,8 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
         return button
     }()
     
+    weak var profileEditNicknameDelegate: ProfileEditNicknameDelegate?
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubView()
@@ -46,7 +52,7 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
     }
     
     @objc private func tappedButton() {
-       // TODO: 추가하기
+        profileEditNicknameDelegate?.presentEditView()
     }
     
     private func addSubView() {
