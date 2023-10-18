@@ -120,10 +120,6 @@ final class SignUpNickNameViewController: UIViewController {
         super.viewWillDisappear(animated)
         keyboardManager.unregisterKeyboard()
     }
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        SignLoadingManager.hideLoading()
-    }
 }
 // MARK: - Config
 extension SignUpNickNameViewController {
@@ -217,7 +213,6 @@ extension SignUpNickNameViewController {
          위에 메시지가 뜨면서 다음 뷰컨으로 넘어가는게 조금 걸립니다 !
          */
         self.viewModel.nickName = userNickName
-        SignLoadingManager.showLoading(text: "넘어가는중!")
         let viewController = SignUpPictureViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }

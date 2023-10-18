@@ -82,10 +82,6 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
                     addressComponents.append(subLocality)
                 }
                 
-                if let thoroughfare = placemark.thoroughfare {
-                    addressComponents.append(thoroughfare)
-                }
-                
                 let addressString = addressComponents.joined(separator: " ")
                 print("addressString: \(addressString)")
                 let location = Location(address: addressString, latitude: latitude ?? 0, longitude: longitude ?? 0)

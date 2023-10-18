@@ -124,15 +124,15 @@ final class SignUpViewModel {
                     
                     guard documents.first != nil else {
                         self.isRightName = true
-                        completion("굳 ")
+                        completion("사용가능한 닉네임이에요!!")
                         return
                     }
                     self.isRightName = false
-                    completion("이미 포함된 닉네임")
+                    completion("이미 포함된 닉네임이네요..")
                 }
             } else {
                 self.isRightName = false
-                completion("연속된 자음 또는 모음이 포함되어 있습니다.")
+                completion("연속된 자음 또는 모음이 포함되어 있어요! 제대로 지어주세요 😁")
                 return
             }
         } catch {
