@@ -11,6 +11,29 @@ import RxCocoa
 import FirebaseFirestore
 
 // 질문: enum 을 여기에서만 쓰는데 어디에다 관리하는 게 좋을까용~?
+enum UserListType: CaseIterable {
+    case using
+    case unsubscribe
+    
+    var name: String {
+        switch self {
+        case .using:
+            return "사용중인 회원"
+        case .unsubscribe:
+            return "탈퇴된 회원"
+        }
+    }
+    
+    var collectionId: Collections {
+        switch self {
+        case .using:
+            return .users
+        case .unsubscribe:
+            return .unsubscribe
+        }
+    }
+}
+
 enum SortType: CaseIterable {
     /// 가입일 내림차순
     case dateDescending
@@ -69,7 +92,9 @@ final class AdminUserViewModel: ViewModelType {
     
     struct Input {
         let viewDidLoad: Observable<Void>
+        let viewWillAppear: Observable<Void>
         let sortedTpye: Observable<SortType>
+        let userListType: Observable<UserListType>
         let searchButton: Observable<String>
         let tableViewOffset: Observable<Void>
         let refreshable: Observable<Void>
@@ -86,11 +111,11 @@ final class AdminUserViewModel: ViewModelType {
         // 질문:
         // 밑으로 당겨서 새로고침 refreshTable 에서 input.sortedTpye 변경으로 호출되는데
         // refreshablePublisher.onNext(()) 가 호출되었을 때 할 수 있는 방법이 있을 까여?
-        let responseViewDidLoad = Observable.combineLatest(input.sortedTpye, input.viewDidLoad)
+        let responseViewDidLoad = Observable.combineLatest(input.userListType, input.sortedTpye, input.viewDidLoad)
             .withUnretained(self)
             .flatMapLatest { (viewModel, value) -> Observable<([User], DocumentSnapshot?)> in
-                let (sortedTpye, _) = value
-                return FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self, orderBy: sortedTpye.orderBy, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
+                let (userListType, sortedTpye, _) = value
+                return FirestoreService.shared.loadDocumentRx(collectionId: userListType.collectionId, dataType: User.self, orderBy: sortedTpye.orderBy, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
             }
             .map { users, snapShot in
                 self.userList.removeAll()
@@ -100,7 +125,14 @@ final class AdminUserViewModel: ViewModelType {
                 return self.userList
             }
         
+        _ = input.viewWillAppear
+            .withUnretained(self)
+            .subscribe(onNext: { viewModel, _ in
+                viewModel.reloadPublisher.onNext(())
+            })
+        
         let sortedType = input.sortedTpye.asObservable()
+        let userListType = input.userListType.asObservable()
         
         let responseTableViewPaging = input.tableViewOffset
             .withUnretained(self)
@@ -108,7 +140,10 @@ final class AdminUserViewModel: ViewModelType {
                 Loading.showLoading()
                 return sortedType
                     .map { sortType in
-                        return viewModel.loadNextPage(orderBy: sortType.orderBy)
+                        return userListType
+                            .flatMap { usrListType in
+                                return viewModel.loadNextPage(collectionId: usrListType.collectionId, orderBy: sortType.orderBy)
+                            }
                     }
                     .switchLatest()
             }
@@ -159,13 +194,13 @@ final class AdminUserViewModel: ViewModelType {
         }
     }
     
-    private func loadNextPage(orderBy: (String, Bool)) -> Observable<[User]> {
+    private func loadNextPage(collectionId: Collections, orderBy: (String, Bool)) -> Observable<[User]> {
         let dbRef = Firestore.firestore()
         
         return Observable.create { [weak self] emitter in
             guard let self = self else { return Disposables.create()}
             
-            var query = dbRef.collection(Collections.users.name)
+            var query = dbRef.collection(collectionId.name)
                 .order(by: orderBy.0, descending: orderBy.1)
                 .limit(to: itemsPerPage)
             
