@@ -1577,6 +1577,7 @@
 				B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */,
 				54627BD92ADFBA3C0055069C /* AboutMeCollectionViewCell.swift in Sources */,
 				BC49271B2ADFD70D0073E882 /* UserService.swift in Sources */,
+				54627BD92ADFBA3C0055069C /* AboutMeCollectionViewCell.swift in Sources */,
 				4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */,
 				B15F16192ADE8587002952B4 /* Int+Extensions.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
