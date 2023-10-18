@@ -14,7 +14,7 @@ final class UserService {
     
     var users = [User]()
     
-    private func loadUsers() {
+    func loadUsers() {
         DispatchQueue.global().async {
             let dbRef = Firestore.firestore()
             let query = dbRef.collection("users")
