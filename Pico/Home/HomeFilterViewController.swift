@@ -13,7 +13,7 @@ final class HomeFilterViewController: UIViewController {
     weak var homeViewController: HomeViewController?
     private let mbtiCollectionViewController = MBTICollectionViewController()
     static var filterChangeState: Bool = false
-    private lazy var genderLabel: UILabel = createFilterLabel(text: "만나고 싶은 성별", font: .picoTitleFont)
+    private lazy var genderLabel: UILabel = createFilterLabel(text: "상대 성별", font: .picoSubTitleFont)
     private lazy var genderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
     private lazy var distanceLabel: UILabel = createFilterLabel(text: "거리", font: .picoSubTitleFont)
     private lazy var distanceValueLabel: UILabel = createFilterLabel(text: "0km ~ 200km", font: .picoSubTitleFont)
@@ -60,7 +60,11 @@ final class HomeFilterViewController: UIViewController {
             distanceSlider.setThumbImage(resizedThumbImage, for: .normal)
         }
         
-        distanceValueLabel.text = "0km ~ \(HomeViewModel.filterDistance)km"
+        if HomeViewModel.filterDistance > 500 {
+            distanceValueLabel.text = "0km ~ 500km +"
+        } else {
+            distanceValueLabel.text = "0km ~ \(HomeViewModel.filterDistance)km"
+        }
         distanceValueLabel.textColor = .picoBlue
         distanceValueLabel.textAlignment = .right
         
@@ -109,7 +113,7 @@ final class HomeFilterViewController: UIViewController {
             make.top.equalTo(ageSlider.snp.bottom).offset(25)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
-            make.bottom.equalTo(ageSlider.snp.bottom).offset(100)
+            make.bottom.equalTo(ageSlider.snp.bottom).offset(60)
         }
         
         distanceLabel.snp.makeConstraints { make in
@@ -127,7 +131,7 @@ final class HomeFilterViewController: UIViewController {
         }
         
         mbtiLabel.snp.makeConstraints { make in
-            make.top.equalTo(distanceSlider.snp.bottom).offset(10)
+            make.top.equalTo(distanceSlider.snp.bottom)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
             make.height.equalTo(50)
@@ -187,9 +191,13 @@ final class HomeFilterViewController: UIViewController {
         if let genderType = genderType {
             if sender.isSelected {
                 HomeViewModel.filterGender.append(genderType)
+                let genderData = try? JSONEncoder().encode(HomeViewModel.filterGender)
+                UserDefaults.standard.set(genderData, forKey: UserDefaultsManager.Key.filterGender.rawValue)
             } else {
                 if let index = HomeViewModel.filterGender.firstIndex(of: genderType) {
                     HomeViewModel.filterGender.remove(at: index)
+                    let genderData = try? JSONEncoder().encode(HomeViewModel.filterGender)
+                    UserDefaults.standard.set(genderData, forKey: UserDefaultsManager.Key.filterGender.rawValue)
                 }
             }
             updateButtonAppearance(sender)
@@ -200,8 +208,9 @@ final class HomeFilterViewController: UIViewController {
     @objc func distanceSliderValueChanged() {
         let selectedValue = Int(distanceSlider.value)
         HomeViewModel.filterDistance = selectedValue
+        UserDefaults.standard.set(HomeViewModel.filterDistance, forKey: UserDefaultsManager.Key.filterDistance.rawValue)
         if selectedValue > 500 {
-            distanceValueLabel.text = "0km ~ \(selectedValue)km +"
+            distanceValueLabel.text = "0km ~ 500km +"
         } else {
             distanceValueLabel.text = "0km ~ \(selectedValue)km"
         }

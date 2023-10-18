@@ -20,8 +20,10 @@ final class RangeSlider: UIView {
     private var rightPoint = Int()
     private var valueLabel = UILabel()
     private var layoutIsCheck = false
+    // 19 이상부터
     private var sliderMinValue = 19
-    private var sliderMaxValue = 61
+    // 62 미만까지
+    private var sliderMaxValue = 62
     private var leftBallValue = HomeViewModel.filterAgeMin
     private var rightBallValue = HomeViewModel.filterAgeMax
     var titleLabel = UILabel()
@@ -47,6 +49,7 @@ final class RangeSlider: UIView {
             updateRangeStick()
             layoutIsCheck = true
         }
+        print(rightPoint)
     }
     
     private func addSubView() {
@@ -98,15 +101,18 @@ final class RangeSlider: UIView {
     }
     
     private func configUI() {
-        titleLabel.text = "제목"
+        titleLabel.text = "title"
         titleLabel.font = .picoSubTitleFont
         
         sliderBar.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
-        sliderBar.layer.cornerRadius = 3
+        sliderBar.layer.cornerRadius = 2
         
         rangeBar.backgroundColor = UIColor.picoBlue
-        
-        valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
+        if rightBallValue > 60 {
+            valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
+        } else {
+            valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
+        }
         valueLabel.textAlignment = .right
         valueLabel.font = .picoSubTitleFont
         valueLabel.textColor = .picoBlue
@@ -114,11 +120,6 @@ final class RangeSlider: UIView {
         [leftBall, rightBall].forEach { ball in
             ball.image = UIImage(systemName: "circle.fill")
             ball.tintColor = .picoBlue
-            //            ball.layer.shadowColor = UIColor.gray.cgColor
-            //            ball.layer.shadowOffset = CGSize(width: 2, height: 2)
-            //            ball.layer.shadowOpacity = 1
-            //            ball.frame = CGRect(x: 0, y: 0, width: ballSize, height: ballSize)
-            //            ball.layer.cornerRadius = leftBall.frame.size.width / 2
         }
     }
     
@@ -142,36 +143,49 @@ final class RangeSlider: UIView {
         case .changed:
             if ball == leftBall {
                 leftPoint = Int(newCenterX)
-                if leftPoint < 0 {
-                    leftPoint = 0
+                if leftPoint < 5 {
+                    leftPoint = 5
                 }
                 if leftPoint > (rightPoint - ballSize + 5) {
                     leftPoint = rightPoint - ballSize + 5
                 }
                 updateRangeStick()
-                leftBallValue = (leftPoint + ballSize / 2) * (sliderMaxValue - sliderMinValue) / Int(sliderBar.frame.width) + sliderMinValue
+                leftBallValue = (leftPoint) * (sliderMaxValue - sliderMinValue) / Int(sliderBar.frame.width) + sliderMinValue
                 if leftBallValue >= rightBallValue {
                     leftBallValue = rightBallValue - 1
                 }
-                valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
-                HomeViewModel.filterAgeMin = leftBallValue
+                if rightBallValue > 60 {
+                    valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
+                    HomeViewModel.filterAgeMin = leftBallValue
+                    HomeFilterViewController.filterChangeState = true
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMin, forKey: UserDefaultsManager.Key.filterAgeMin.rawValue)
+                } else {
+                    valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
+                    HomeViewModel.filterAgeMin = leftBallValue
+                    HomeFilterViewController.filterChangeState = true
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMin, forKey: UserDefaultsManager.Key.filterAgeMin.rawValue)
+                }
             }
             if ball == rightBall {
                 rightPoint = Int(newCenterX)
-                if rightPoint > Int(sliderBar.frame.width) {
-                    rightPoint = Int(sliderBar.frame.width)
+                if rightPoint > Int(sliderBar.frame.width) - 5 {
+                    rightPoint = Int(sliderBar.frame.width) - 5
                 }
                 if rightPoint < (leftPoint + ballSize - 5) {
                     rightPoint = leftPoint + ballSize - 5
                 }
                 updateRangeStick()
-                rightBallValue = (rightPoint + ballSize / 2) * (sliderMaxValue - sliderMinValue) / Int(sliderBar.frame.width) + sliderMinValue
+                rightBallValue = (rightPoint) * (sliderMaxValue - sliderMinValue) / Int(sliderBar.frame.width) + sliderMinValue
                 if rightBallValue > 60 {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
                     HomeViewModel.filterAgeMax = 61
+                    HomeFilterViewController.filterChangeState = true
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: UserDefaultsManager.Key.filterAgeMax.rawValue)
                 } else {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
                     HomeViewModel.filterAgeMax = rightBallValue
+                    HomeFilterViewController.filterChangeState = true
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: UserDefaultsManager.Key.filterAgeMax.rawValue)
                 }
             }
         case .ended:
@@ -182,10 +196,16 @@ final class RangeSlider: UIView {
     }
     
     private func calculatePointFromValue(_ value: Int) -> Int {
-        return Int((CGFloat(value - sliderMinValue) / CGFloat(sliderMaxValue - sliderMinValue)) * (sliderBar.frame.width - CGFloat(ballSize)))
+        if value > 60 {
+            return Int(sliderBar.frame.width) - 5
+        }
+        return Int((Double(value - sliderMinValue) / Double(sliderMaxValue - sliderMinValue)) * Double(sliderBar.frame.width))
     }
     
     private func updateRangeStick() {
+        if leftPoint == 0 {
+            leftPoint = 5
+        }
         leftBall.snp.updateConstraints { make in
             make.centerX.equalTo(sliderBar.snp.leading).offset(leftPoint)
             make.centerY.equalTo(sliderBar.snp.centerY)
