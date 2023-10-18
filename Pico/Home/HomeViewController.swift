@@ -26,7 +26,6 @@ final class HomeViewController: BaseViewController {
     private let disposeBag = DisposeBag()
     private let viewModel = HomeViewModel()
     private let loadingView = LoadingAnimationView()
-    private let currentUser = UserDefaultsManager.shared.getUserData()
     
     // MARK: - override
     override func viewDidLoad() {
@@ -43,7 +42,6 @@ final class HomeViewController: BaseViewController {
             .disposed(by: disposeBag)
         loadCards()
     }
-    
     private func addSubView() {
         view.addSubview([likeLabel, passLabel])
     }
@@ -68,7 +66,7 @@ final class HomeViewController: BaseViewController {
                         maxDistance = 10000
                     }
                     let filterAge = (HomeViewModel.filterAgeMin..<maxAge + 1).contains(user.age)
-                    let distance = calculateDistance(user: user)
+                    let distance = viewModel.calculateDistance(user: user)
                     let filterDistance = (0..<maxDistance + 1).contains(Int(distance / 1000))
                     return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance
                 }
@@ -114,12 +112,6 @@ final class HomeViewController: BaseViewController {
             self.view.insertSubview(tabImageViewController.view, at: 1)
             userCards.removeFirst()
         }
-    }
-    
-    private func calculateDistance(user: User) -> CLLocationDistance {
-        let currentUserLoc = CLLocation(latitude: currentUser.latitude, longitude: currentUser.longitude)
-        let otherUserLoc = CLLocation(latitude: user.location.latitude, longitude: user.location.longitude)
-        return  currentUserLoc.distance(from: otherUserLoc)
     }
     
     private func makeConstraints() {
