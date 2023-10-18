@@ -8,7 +8,7 @@
 import Foundation
 
 struct Block: Codable {
-    let userId: String
+    let userId: String?
     var sendBlock: [BlockInfo]?
     var recivedBlock: [BlockInfo]?
     
