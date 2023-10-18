@@ -109,7 +109,7 @@ final class AdminUserViewController: UIViewController {
     
     private func configTableView() {
         userListTableView.register(cell: NotificationTableViewCell.self)
-        userListTableView.rowHeight = 180
+        userListTableView.rowHeight = 80
     }
     
     private func bind() {

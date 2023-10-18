@@ -61,12 +61,12 @@ enum SortType: CaseIterable {
 }
 
 final class AdminUserViewModel: ViewModelType {
-    private let itemsPerPage: Int = 5
+    private let itemsPerPage: Int = 15
     private var lastDocumentSnapshot: DocumentSnapshot?
     
     private(set) var userList: [User] = []
     private let reloadPublisher = PublishSubject<Void>()
-
+    
     struct Input {
         let viewDidLoad: Observable<Void>
         let sortedTpye: Observable<SortType>
@@ -84,7 +84,7 @@ final class AdminUserViewModel: ViewModelType {
     //  질문: withUnretained 이거 바로 아래밖에 적용이 안되는지 ?
     func transform(input: Input) -> Output {
         // 질문:
-        // refreshTable 에서 input.sortedTpye 변경으로 호출되는데
+        // 밑으로 당겨서 새로고침 refreshTable 에서 input.sortedTpye 변경으로 호출되는데
         // refreshablePublisher.onNext(()) 가 호출되었을 때 할 수 있는 방법이 있을 까여?
         let responseViewDidLoad = Observable.combineLatest(input.sortedTpye, input.viewDidLoad)
             .withUnretained(self)
@@ -120,26 +120,42 @@ final class AdminUserViewModel: ViewModelType {
         
         let responseSearchButton = input.searchButton
             .withUnretained(self)
-            .flatMapLatest { viewModel, textFieldText in
-                return Observable.just(viewModel.filterUserList(viewModel.userList, textFieldText))
+            .flatMap { viewModel, textFieldText in
+                if textFieldText.isEmpty {
+                    return Observable.just(viewModel.userList)
+                } else {
+                    return FirestoreService.shared.searchDocumentWithEqualFieldRx(collectionId: .users, field: "nickName", compareWith: textFieldText, dataType: User.self)
+                }
+            }
+        
+        let responseTextFieldSearch = input.searchButton
+            .withUnretained(self)
+            .flatMap { viewModel, textFieldText in
+                return viewModel.searchListTextField(viewModel.userList, textFieldText)
+            }
+        
+        let combinedResults = Observable.zip(responseSearchButton, responseTextFieldSearch)
+            .map { searchList, textFieldList in
+                let list = searchList + textFieldList
+                let setList = Set(list)
+                return Array(setList)
             }
         
         return Output(
             resultToViewDidLoad: responseViewDidLoad,
-            resultSearchUserList: responseSearchButton,
+            resultSearchUserList: combinedResults,
             resultPagingList: responseTableViewPaging,
             needToReload: reloadPublisher.asObservable()
         )
     }
     
-    private func filterUserList(_ userList: [User], _ text: String) -> [User] {
-        if text.isEmpty {
-            return userList
-        } else {
+    private func searchListTextField(_ userList: [User], _ text: String) -> Observable<[User]> {
+        return Observable.create { emitter in
             let users = userList.filter { sortedUser in
                 sortedUser.nickName.contains(text)
             }
-            return users
+            emitter.onNext(users)
+            return Disposables.create()
         }
     }
     

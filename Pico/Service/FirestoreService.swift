@@ -108,7 +108,7 @@ final class FirestoreService {
         }
     }
     
-    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type, completion: @escaping (Result<[T]?, Error>) -> Void) {
+    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type, completion: @escaping (Result<[T], Error>) -> Void) {
         DispatchQueue.global().async {
             let query = self.dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
             query.getDocuments { (querySnapshot, error) in
@@ -120,7 +120,7 @@ final class FirestoreService {
                 
                 if querySnapshot?.documents.isEmpty == true {
                     print("At \(collectionId.name) document is Empty")
-                    completion(.success(nil))
+                    completion(.success([]))
                 } else {
                     var result: [T] = []
                     for document in querySnapshot!.documents {
@@ -224,6 +224,7 @@ final class FirestoreService {
             }
     }
     
+    // MARK: - Rx
     func saveDocumentRx<T: Codable>(collectionId: Collections, documentId: String, data: T) -> Observable<Void> {
         return Observable.create { emitter in
             self.saveDocument(collectionId: collectionId, documentId: documentId, data: data) { result in
@@ -307,6 +308,21 @@ final class FirestoreService {
         return Observable.create { [weak self] emitter in
             guard let self = self else { return Disposables.create() }
             updateDocument(collectionId: collectionId, documentId: documentId, field: field, data: data) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func searchDocumentWithEqualFieldRx<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type) -> Observable<[T]> {
+        return Observable.create { [weak self] emitter in
+            guard let self = self else { return Disposables.create() }
+            searchDocumentWithEqualField(collectionId: collectionId, field: field, compareWith: compareWith, dataType: dataType) { result in
                 switch result {
                 case .success(let data):
                     emitter.onNext(data)
