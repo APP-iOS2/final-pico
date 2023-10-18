@@ -134,7 +134,7 @@ final class AdminUserViewModel: ViewModelType {
                 return viewModel.searchListTextField(viewModel.userList, textFieldText)
             }
         
-        let combinedResults = Observable.combineLatest(responseSearchButton, responseTextFieldSearch)
+        let combinedResults = Observable.zip(responseSearchButton, responseTextFieldSearch)
             .map { searchList, textFieldList in
                 let list = searchList + textFieldList
                 let setList = Set(list)
