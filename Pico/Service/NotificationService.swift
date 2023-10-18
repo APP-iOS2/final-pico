@@ -103,4 +103,16 @@ final class NotificationService {
            }
         UIApplication.shared.registerForRemoteNotifications()
     }
+    
+    func fcmTokenDelete() {
+        let emptyToken = Token(fcmToken: "")
+        FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: emptyToken) { result in
+            switch result {
+            case .success(_):
+                print("토큰 비우기 성공")
+            case .failure(let error):
+                print("토큰 비우기 실패: \(error)")
+            }
+        }
+    }
 }

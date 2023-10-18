@@ -151,6 +151,7 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 3:
+            NotificationService.shared.fcmTokenDelete()
             UserDefaultsManager.shared.removeAll()
             logout()
         default:
