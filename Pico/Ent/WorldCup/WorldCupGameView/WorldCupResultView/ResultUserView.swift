@@ -9,11 +9,9 @@ import UIKit
 
 final class ResultUserView: UIView {
     
-    lazy var mbtiLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.picoTitleFont
-        return label
+    lazy var mbtiLabel: MBTILabelView = {
+        let view = MBTILabelView(mbti: .esfj, scale: .small)
+        return view
     }()
     
     lazy var userImage: UIImageView = {
@@ -63,6 +61,8 @@ final class ResultUserView: UIView {
             make.top.equalTo(self.snp.top).offset(padding)
             make.leading.equalTo(self.snp.leading).offset(padding)
             make.trailing.equalTo(self.snp.trailing).offset(-padding)
+            make.width.equalTo(mbtiLabel.frame.size.width)
+            make.height.equalTo(mbtiLabel.frame.size.height)
         }
 
         userImage.snp.makeConstraints { make in
@@ -77,11 +77,10 @@ final class ResultUserView: UIView {
             make.top.equalTo(userImage.snp.bottom).offset(padding * half)
             make.centerX.equalTo(self.snp.centerX)
         }
-
+        
         userAge.snp.makeConstraints { make in
-            make.leading.equalTo(userNickname.snp.trailing).offset(padding * half)
-            make.trailing.equalTo(self.snp.trailing).offset(-padding)
-            make.centerY.equalTo(userNickname.snp.centerY)
+            make.top.equalTo(userNickname.snp.bottom)
+            make.centerX.equalTo(self.snp.centerX)
         }
     }
 }

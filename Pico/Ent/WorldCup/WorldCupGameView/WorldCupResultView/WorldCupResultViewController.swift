@@ -61,7 +61,7 @@ final class WorldCupResultViewController: UIViewController {
     private let guideLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.picoButtonFont
+        label.font = UIFont.picoEntSubLabelFont
         label.text = "채팅 신청 비용 50츄 (50%)"
         label.textColor = .picoFontGray
         return label
@@ -118,15 +118,15 @@ final class WorldCupResultViewController: UIViewController {
         resultUserView.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(padding * 2)
             make.centerX.equalToSuperview()
-            make.width.equalTo(200)
-            make.height.equalTo(250)
+            make.width.equalTo(Screen.width * 0.5)
+            make.height.equalTo(Screen.height * 0.5)
         }
         
         chatButton.snp.makeConstraints { make in
-            make.top.equalTo(resultUserView.userNickname.snp.bottom).offset(padding * 2)
+            make.top.equalTo(resultUserView.userAge.snp.bottom).offset(padding)
             make.centerX.equalToSuperview().offset(half)
-            make.leading.equalToSuperview().offset(Screen.width / 4)
-            make.trailing.equalToSuperview().offset(-Screen.width / 4)
+            make.leading.equalToSuperview().offset(Screen.width / 3.5)
+            make.trailing.equalToSuperview().offset(-Screen.width / 3.5)
             make.height.equalTo(Screen.width / 10)
         }
         
@@ -143,8 +143,8 @@ final class WorldCupResultViewController: UIViewController {
     
     private func configResultUserCell() {
         if let selectedItem = selectedItem {
-            resultUserView.mbtiLabel.text = "\(selectedItem.mbti)".uppercased()
-            resultUserView.userNickname.text = String(selectedItem.nickName.prefix(6))
+            resultUserView.mbtiLabel.setMbti(mbti: selectedItem.mbti)
+            resultUserView.userNickname.text = String(selectedItem.nickName)
             resultUserView.userAge.text = "\(selectedItem.age)세"
             
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {

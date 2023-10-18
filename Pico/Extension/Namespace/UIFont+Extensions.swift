@@ -48,4 +48,9 @@ extension UIFont {
     static var picoMBTISelectedSubLabelFont: UIFont {
         return UIFont.systemFont(ofSize: 13, weight: .thin)
     }
+    
+    /// 엔터 뷰 얇은 폰트 사이트 (12, thin)
+    static var picoEntSubLabelFont: UIFont {
+        return UIFont.systemFont(ofSize: 12, weight: .thin)
+    }
 }
