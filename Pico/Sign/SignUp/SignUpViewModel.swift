@@ -47,7 +47,7 @@ final class SignUpViewModel {
     
     init() {
         locationSubject.subscribe { location in
-            SignLoadingManager.showLoading(text: "위치정보를 받는중이에요!!")
+            SignLoadingManager.showLoading(text: "")
             self.newUser.location = location
             self.saveImage()
         }
@@ -110,7 +110,7 @@ final class SignUpViewModel {
         SignLoadingManager.showLoading(text: "중복된 닉네임을 찾고 있어요!")
         
         do {
-            let pattern = "([ㄱ-ㅎㅏ-ㅣ]){2,}"
+            let pattern = "([ㄱ-ㅎㅏ-ㅣ]){2,8}"
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let matches = regex.matches(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))
             

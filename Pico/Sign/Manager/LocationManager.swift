@@ -74,10 +74,14 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
             if let placemark = placemarks?.first {
                 var addressComponents = [String]()
                 
-                if let locality = placemark.locality {
-                    addressComponents.append(locality)
+                if let administrativeArea = placemark.administrativeArea {
+                    addressComponents.append(administrativeArea)
                 }
-                
+//                
+//                if let locality = placemark.locality {
+//                    addressComponents.append(locality)
+//                }
+//                
                 if let subLocality = placemark.subLocality {
                     addressComponents.append(subLocality)
                 }
