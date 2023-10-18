@@ -195,7 +195,7 @@ final class ProfileEditViewModel {
             text += stringArr[index]
             if index < stringArr.count - 1 {
                 text += ","
-               }
+            }
         }
         return text
     }
@@ -207,7 +207,7 @@ final class ProfileEditViewModel {
             text += value.uppercased()
             if index < stringArr.count - 1 {
                 text += ","
-               }
+            }
         }
         return text
     }
@@ -227,8 +227,8 @@ final class ProfileEditViewModel {
                     SectionModel(items: [.profileEditNicknameTabelCell, .profileEditLoactionTabelCell(location: data.location.address)]),
                     SectionModel(items: [
                         .profileEditTextTabelCell(title: SubInfoCase.intro.name, content: data.subInfo?.intro),
-                        .profileEditTextTabelCell(title: SubInfoCase.height.name, content: "\(data.subInfo?.height ?? 0) cm"),
-                        .profileEditTextTabelCell(title: SubInfoCase.job.name, content: data.subInfo?.job),
+                        .profileEditTextTabelCell(title: SubInfoCase.height.name, content: data.subInfo?.height != nil ? "\(data.subInfo?.height ?? 0)cm" : "추가"),
+                            .profileEditTextTabelCell(title: SubInfoCase.job.name, content: data.subInfo?.job),
                         .profileEditTextTabelCell(title: SubInfoCase.religion.name, content: data.subInfo?.religion?.rawValue),
                         .profileEditTextTabelCell(title: SubInfoCase.drink.name, content: data.subInfo?.drinkStatus?.rawValue),
                         .profileEditTextTabelCell(title: SubInfoCase.smoke.name, content: data.subInfo?.smokeStatus?.rawValue),
