@@ -90,7 +90,6 @@ final class WorldCupResultViewController: UIViewController {
         [backgroundImageView, worldCupTitleLabel, pickMeLabel, contentLabel, resultUserView, chatButton, guideLabel, cancelButton].forEach { item in
             view.addSubview(item)
         }
-        navigationController?.isNavigationBarHidden = true
     }
     
     private func makeConstraints() {
@@ -102,7 +101,7 @@ final class WorldCupResultViewController: UIViewController {
         }
         
         worldCupTitleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Screen.height / 6)
+            make.top.equalToSuperview().offset(Screen.height / 8)
             make.centerX.equalToSuperview().offset(half)
         }
         
@@ -138,7 +137,7 @@ final class WorldCupResultViewController: UIViewController {
         
         cancelButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview().offset(0.5)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-padding * 1.5)
+            make.bottom.equalToSuperview().offset(-padding * 1.5)
         }
     }
     
