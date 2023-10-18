@@ -90,7 +90,7 @@ final class ProfileEditViewController: UIViewController {
     private func makeConstraints() {
         tableView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-15)
+            make.bottom.equalToSuperview().offset(-20)
         }
     }
     
