@@ -19,23 +19,42 @@ var randomBoxDummy: [RandomBox] = [
     RandomBox(first: 0, second: 2, third: 2, fourth: 3, fifth: 100)
 ]
 
+struct RandomPercent {
+    let totalProbability = 100
+    let firstRange = 1...35
+    let secondRange = 36...55
+    let thirdRange = 56...80
+    let fourthRange = 81...99
+}
+
 final class RandomBoxManager {
+    let randomPercent = RandomPercent()
 
     func getRandomValue() -> Int {
         let randomValue = Int.random(in: 1...100)
 
         switch randomValue {
-        case 1...35:
+        case randomPercent.firstRange:
             return randomBoxDummy[0].first
-        case 36...55:
+        case randomPercent.secondRange:
             return randomBoxDummy[0].second
-        case 56...80:
+        case randomPercent.thirdRange:
             return randomBoxDummy[0].third
-        case 81...99:
+        case randomPercent.fourthRange:
             return randomBoxDummy[0].fourth
         default:
             return randomBoxDummy[0].fifth
         }
+    }
+
+    func getProbabilityInfo() -> [Int] {
+        return [
+            randomPercent.firstRange.count * 100 / randomPercent.totalProbability,
+            randomPercent.secondRange.count * 100 / randomPercent.totalProbability,
+            randomPercent.thirdRange.count * 100 / randomPercent.totalProbability,
+            randomPercent.fourthRange.count * 100 / randomPercent.totalProbability,
+            (randomPercent.totalProbability - randomPercent.fourthRange.upperBound + 1) * 100 / randomPercent.totalProbability
+        ]
     }
     
     func shake(view: UIView, duration: CFTimeInterval = 0.5, repeatCount: Float = 3, completion: (() -> Void)? = nil) {

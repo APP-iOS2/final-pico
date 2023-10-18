@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 final class HomeViewController: BaseViewController {
     
@@ -16,6 +17,7 @@ final class HomeViewController: BaseViewController {
     var userCards: [User] = []
     var users = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
+
     lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
     lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
     
@@ -23,51 +25,85 @@ final class HomeViewController: BaseViewController {
     private let emptyView = HomeEmptyView()
     private let disposeBag = DisposeBag()
     private let viewModel = HomeViewModel()
+    private let loadingView = LoadingAnimationView()
+    private let currentUser = UserDefaultsManager.shared.getUserData()
     
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubView()
-        loadCards()
         makeConstraints()
         configNavigationBarItem()
         configButtons()
-        viewModel.users
+        viewModel.otherUsers
             .bind(to: users)
             .disposed(by: disposeBag)
         viewModel.myLikes
             .bind(to: myLikes)
             .disposed(by: disposeBag)
+        loadCards()
     }
     
     private func addSubView() {
-        view.addSubview(emptyView)
-        view.addSubview(likeLabel)
-        view.addSubview(passLabel)
+        view.addSubview([likeLabel, passLabel])
     }
     private func loadCards() {
+        var mbti: [MBTIType] = []
+        if HomeViewModel.filterMbti.isEmpty {
+            mbti = MBTIType.allCases
+        } else {
+            mbti = HomeViewModel.filterMbti
+        }
         Observable.combineLatest(users, myLikes)
-            .map { users, myLikes in
+            .map { [self] users, myLikes in
                 let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
+                let myMbti = Set(mbti.map { $0.rawValue })
                 return users.filter { user in
-                    return !myLikedUserIds.contains(user.id)
+                    var maxAge = HomeViewModel.filterAgeMax
+                    var maxDistance = HomeViewModel.filterDistance
+                    if HomeViewModel.filterAgeMax == 61 {
+                        maxAge = 100
+                    }
+                    if HomeViewModel.filterDistance == 501 {
+                        maxDistance = 10000
+                    }
+                    let filterAge = (HomeViewModel.filterAgeMin..<maxAge + 1).contains(user.age)
+                    let distance = calculateDistance(user: user)
+                    let filterDistance = (0..<maxDistance + 1).contains(Int(distance / 1000))
+                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance
                 }
             }
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] filteredUsers in
                 guard let self = self else { return }
                 userCards = filteredUsers
-                for user in filteredUsers.prefix(self.numberOfCards) {
-                    let tabImageViewController = HomeUserCardViewController(user: user)
-                    tabImageViewController.homeViewController = self
-                    self.addChild(tabImageViewController)
-                    self.view.insertSubview(tabImageViewController.view, at: 1)
-                    userCards.removeFirst()
+                view.subviews.forEach { subView in
+                  subView.removeFromSuperview()
+               }
+                addLoadingView()
+                addUserCards()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.addEmptyView()
+                    self.loadingView.removeFromSuperview()
                 }
             }, onError: { error in
                 print(error)
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func addLoadingView() {
+        loadingView.frame = view.frame
+        loadingView.backgroundColor = .systemBackground
+        loadingView.animate()
+        view.addSubview(loadingView)
+    }
+    
+    private func addEmptyView() {
+        view.insertSubview(emptyView, at: 0)
+        emptyView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
     }
     
     func addUserCards() {
@@ -80,10 +116,13 @@ final class HomeViewController: BaseViewController {
         }
     }
     
+    private func calculateDistance(user: User) -> CLLocationDistance {
+        let currentUserLoc = CLLocation(latitude: currentUser.latitude, longitude: currentUser.longitude)
+        let otherUserLoc = CLLocation(latitude: user.location.latitude, longitude: user.location.longitude)
+        return  currentUserLoc.distance(from: otherUserLoc)
+    }
+    
     private func makeConstraints() {
-        emptyView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
         
         likeLabel.snp.makeConstraints { make in
             make.centerX.equalTo(view.snp.centerX)

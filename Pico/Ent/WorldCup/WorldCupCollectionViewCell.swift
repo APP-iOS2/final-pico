@@ -76,11 +76,7 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
             make.leading.equalTo(contentView.snp.leading).offset(padding)
             make.trailing.equalTo(contentView.snp.trailing).offset(-padding)
         }
-        userInfoStackView.snp.makeConstraints { make in
-            make.top.equalTo(userNickname.snp.bottom).offset(padding)
-            make.leading.equalTo(contentView.snp.leading).offset(padding)
-            make.trailing.equalTo(contentView.snp.trailing).offset(-padding)
-        }
+
         userImage.snp.makeConstraints { make in
             make.top.equalTo(mbtiLabel.snp.bottom).offset(padding * half)
             make.leading.equalTo(contentView.snp.leading).offset(padding)
@@ -95,9 +91,14 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
         }
         
         userAge.snp.makeConstraints { make in
-            make.leading.equalTo(userNickname.snp.trailing).offset(padding * half)
+            make.top.equalTo(userNickname.snp.bottom)
+            make.centerX.equalTo(contentView.snp.centerX)
+        }
+        
+        userInfoStackView.snp.makeConstraints { make in
+            make.top.equalTo(userAge.snp.bottom).offset(padding)
+            make.leading.equalTo(contentView.snp.leading).offset(padding)
             make.trailing.equalTo(contentView.snp.trailing).offset(-padding)
-            make.centerY.equalTo(userNickname.snp.centerY)
         }
     }
 }

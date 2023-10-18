@@ -123,7 +123,8 @@ final class LikeMeViewModel: ViewModelType {
         guard let removeData: Like.LikeInfo = likeMeList[safe: index] else { return }
         likeMeList.remove(at: index)
         reloadTableViewPublisher.onNext(())
-        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: removeData.likedUserId, likeType: .dislike, birth: removeData.birth, nickName: removeData.nickName, mbti: removeData.mbti, imageURL: removeData.imageURL)
+      
+        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: removeData.likedUserId, likeType: .dislike, birth: removeData.birth, nickName: removeData.nickName, mbti: removeData.mbti, imageURL: removeData.imageURL, createdDate: Date().timeIntervalSince1970)
         
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
             "recivedlikes": FieldValue.arrayRemove([removeData.asDictionary()])
@@ -142,7 +143,8 @@ final class LikeMeViewModel: ViewModelType {
         guard let likeData: Like.LikeInfo = likeMeList[safe: index] else { return }
         likeMeList.remove(at: index)
         reloadTableViewPublisher.onNext(())
-        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL)
+      
+        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL, createdDate: Date().timeIntervalSince1970)
         
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
             "recivedlikes": FieldValue.arrayRemove([likeData.asDictionary()])
@@ -169,15 +171,15 @@ final class LikeMeViewModel: ViewModelType {
                     $0.likedUserId == self.currentUser.userId
                 }) {
                     guard let tempSendLike = sendedlikes?[safe: sendIndex] else { return }
-                    updateSendLike = Like.LikeInfo(likedUserId: tempSendLike.likedUserId, likeType: .matching, birth: tempSendLike.birth, nickName: tempSendLike.nickName, mbti: tempSendLike.mbti, imageURL: tempSendLike.imageURL)
+                    updateSendLike = Like.LikeInfo(likedUserId: tempSendLike.likedUserId, likeType: .matching, birth: tempSendLike.birth, nickName: tempSendLike.nickName, mbti: tempSendLike.mbti, imageURL: tempSendLike.imageURL, createdDate: Date().timeIntervalSince1970)
                     dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
                         "sendedlikes": FieldValue.arrayRemove([tempSendLike.asDictionary()])
                     ])
                 } else {
                     guard let tempMbti: MBTIType = MBTIType(rawValue: currentUser.mbti) else { return }
-                    updateSendLike = Like.LikeInfo(likedUserId: currentUser.userId, likeType: .matching, birth: currentUser.birth, nickName: currentUser.nickName, mbti: tempMbti, imageURL: currentUser.imageURL)
+                    updateSendLike = Like.LikeInfo(likedUserId: currentUser.userId, likeType: .matching, birth: currentUser.birth, nickName: currentUser.nickName, mbti: tempMbti, imageURL: currentUser.imageURL, createdDate: Date().timeIntervalSince1970)
                 }
-                print(updateSendLike.asDictionary())
+              
                 dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
                     "sendedlikes": FieldValue.arrayUnion([updateSendLike.asDictionary()])
                 ])
@@ -185,17 +187,18 @@ final class LikeMeViewModel: ViewModelType {
                     "recivedlikes": FieldValue.arrayUnion([updateSendLike.asDictionary()])
                 ])
                 
-                let myNoti = Noti(receiveId: currentUser.userId, name: likeData.nickName, birth: likeData.birth, imageUrl: likeData.imageURL, notiType: .matching, mbti: likeData.mbti, createDate: Date().timeIntervalSince1970)
+                let myNoti = Noti(receiveId: currentUser.userId, sendId: likeData.likedUserId, name: likeData.nickName, birth: likeData.birth, imageUrl: likeData.imageURL, notiType: .matching, mbti: likeData.mbti, createDate: Date().timeIntervalSince1970)
                 
                 guard let yourMbti = MBTIType(rawValue: currentUser.mbti) else { return }
-                let yourNoti = Noti(receiveId: likeData.likedUserId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)
+                let yourNoti = Noti(receiveId: likeData.likedUserId, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: myNoti)
-                FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)
-                
+                FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)               
                 let mailModel = MailViewModel()
                 let receiverUser = User(mbti: likeData.mbti, phoneNumber: "", gender: .etc, birth: likeData.birth, nickName: likeData.nickName, location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [likeData.imageURL], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
                 mailModel.saveMailData(receiveUser: receiverUser, message: "서로 매칭되었습니다.")
                 
+                NotificationService.shared.sendNotification(userId: likeData.likedUserId, sendUserName: currentUser.nickName, notiType: .matching)
+                NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: likeData.nickName, notiType: .matching)
             case .failure(let error):
                 print(error)
                 return

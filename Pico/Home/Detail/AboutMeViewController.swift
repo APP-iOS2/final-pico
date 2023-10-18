@@ -96,7 +96,7 @@ final class AboutMeViewController: UIViewController {
         makeConstraints()
     }
     
-    func config(intro: String, eduText: String, religionText: String, smokeText: String, jobText: String, drinkText: String) {
+    func config(intro: String?, eduText: String?, religionText: String?, smokeText: String?, jobText: String?, drinkText: String?) {
         introLabel.text = intro
         educationLabel.text = eduText
         religionLabel.text = religionText

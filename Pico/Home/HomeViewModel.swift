@@ -12,25 +12,37 @@ import FirebaseFirestoreSwift
 
 final class HomeViewModel {
     
-    var users = BehaviorRelay<[User]>(value: [])
+    var otherUsers = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
-    var filterGender: [GenderType] = HomeFilterViewController.filterGender
+    static var filterGender: [GenderType] = []
+    static var filterMbti: [MBTIType] = []
+    static var filterAgeMin: Int = 19
+    static var filterAgeMax: Int = 61
+    static var filterDistance: Int = 501
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
     
     init() {
+        loadFilterDefault()
         loadUsers()
         loadMyLikesRx()
     }
     
     private func loadUsers() {
+        var gender: [GenderType] = []
+        
+        if HomeViewModel.filterGender.isEmpty {
+            gender = GenderType.allCases
+        } else {
+            gender = HomeViewModel.filterGender
+        }
+        
         DispatchQueue.global().async {
             let dbRef = Firestore.firestore()
-            var query = dbRef.collection("users")
+            let query = dbRef.collection("users")
                 .whereField("id", isNotEqualTo: self.loginUser.userId)
-            if !self.filterGender.isEmpty {
-                query = query.whereField("gender", in: self.filterGender.map { $0.rawValue })
-            }
+                .whereField("gender", in: gender.map { $0.rawValue })
+            
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print(error)
@@ -41,7 +53,7 @@ final class HomeViewModel {
                             users.append(user)
                         }
                     }
-                    self.users.accept(users)
+                    self.otherUsers.accept(users)
                     
                 }
             }
@@ -59,21 +71,27 @@ final class HomeViewModel {
             .disposed(by: disposeBag)
     }
     
-    //    func loadUsersRx() {
-    //        FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
-    //            .observe(on: MainScheduler.instance)
-    //            .bind(to: users)
-    //            .disposed(by: disposeBag)
-    //    }
-    
-    //    func loadUsers() {
-    //        FirestoreService.shared.loadDocuments(collectionId: .users, dataType: User.self) { result in
-    //            switch result {
-    //            case .success(let data):
-    //                self.users.accept(data)
-    //            case .failure(let error):
-    //                print("오류: \(error)")
-    //            }
-    //        }
-    //    }
+    private func loadFilterDefault() {
+        if let filterAgeMin = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterAgeMin.rawValue) as? Int {
+            HomeViewModel.filterAgeMin = filterAgeMin
+        }
+
+        if let filterAgeMax = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterAgeMax.rawValue) as? Int {
+            HomeViewModel.filterAgeMax = filterAgeMax
+        }
+
+        if let filterDistance = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterDistance.rawValue) as? Int {
+            HomeViewModel.filterDistance = filterDistance
+        }
+        
+        if let genderData = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterGender.rawValue) as? Data,
+           let filterGender = try? JSONDecoder().decode([GenderType].self, from: genderData) {
+            HomeViewModel.filterGender = filterGender
+        }
+
+        if let mbtiData = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterMbti.rawValue) as? Data,
+           let filterMbti = try? JSONDecoder().decode([MBTIType].self, from: mbtiData) {
+            HomeViewModel.filterMbti = filterMbti
+        }
+    }
 }

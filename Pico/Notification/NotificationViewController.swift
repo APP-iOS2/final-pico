@@ -94,9 +94,17 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
         let item = viewModel.notifications[indexPath.row]
         if item.notiType == .like {
             let viewController = UserDetailViewController()
-            // 유저 정보 넘겨주세요
-            // viewController.viewModel = UserDetailViewModel(user: user)
-            self.navigationController?.pushViewController(viewController, animated: true)
+            FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.sendId, dataType: User.self) { result in
+                switch result {
+                case .success(let data):
+                    guard let data = data else { return }
+                    viewController.viewModel = UserDetailViewModel(user: data)
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                case .failure(let error):
+                    print(error)
+                    return
+                }
+            }
         } else {
             if let tabBarController = self.tabBarController as? TabBarController {
                 tabBarController.selectedIndex = 1

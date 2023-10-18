@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class StoreTableCell: UITableViewCell {
     
@@ -50,11 +51,11 @@ final class StoreTableCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(count: String, price: String, discount: String?) {
-        countLabel.text = "X \(count)"
-        priceLabel.text = "\(price) 원"
-        guard let discount else { return }
-        discountLabel.text = "- \(discount)%"
+    func configure(_ storeModel: StoreModel) {
+        countLabel.text = "X \(storeModel.count.formattedSeparator())"
+        priceLabel.text = "\(storeModel.price.formattedSeparator()) 원"
+        guard let discount = storeModel.discount else { return }
+        discountLabel.text = "- \(discount.formattedSeparator())%"
     }
     
     private func addSubView() {
@@ -71,7 +72,7 @@ final class StoreTableCell: UITableViewCell {
         }
         countLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(tableImageView.snp.trailing).offset(10)
+            make.leading.equalTo(tableImageView.snp.trailing)
             make.trailing.equalToSuperview().offset(-10)
         }
         priceLabel.snp.makeConstraints { make in

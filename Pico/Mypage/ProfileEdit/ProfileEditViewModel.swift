@@ -7,6 +7,7 @@
 
 import RxSwift
 import RxCocoa
+import Foundation
 
 final class ProfileEditViewModel {
     
@@ -140,11 +141,39 @@ final class ProfileEditViewModel {
                 SignLoadingManager.hideLoading()
             }
         } else {
-            FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: field, data: data)
+            FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: field, data: data) { result in
+                switch result {
+                case .success(let data):
+                    print("업데이트 성공 \(data)")
+                case .failure(let error):
+                    print("업데이트 실패, 에러메시지 : \(error)")
+                }
+            }
         }
         loadUserData()
     }
+    func transformArrtoString<T: StringProtocol>(stringArr: [T]) -> String {
+        var text = ""
+        for index in 0..<stringArr.count {
+            text += stringArr[index]
+            if index < stringArr.count - 1 {
+                text += ","
+               }
+        }
+        return text
+    }
     
+    func transformEnumtoString<T: RawRepresentable>(stringArr: [T]) -> String {
+        var text = ""
+        for index in 0..<stringArr.count {
+            let value = stringArr[index].rawValue as? String ?? ""
+            text += value.uppercased()
+            if index < stringArr.count - 1 {
+                text += ","
+               }
+        }
+        return text
+    }
     func loadUserData() {
         FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }
@@ -161,15 +190,15 @@ final class ProfileEditViewModel {
                     SectionModel(items: [.profileEditNicknameTabelCell, .profileEditLoactionTabelCell(location: data.location.address)]),
                     SectionModel(items: [
                         .profileEditTextTabelCell(title: SubInfoCase.intro.name, content: data.subInfo?.intro),
-                        .profileEditTextTabelCell(title: SubInfoCase.height.name, content: "\(data.subInfo?.height ?? 0)"),
+                        .profileEditTextTabelCell(title: SubInfoCase.height.name, content: "\(data.subInfo?.height ?? 0) cm"),
                         .profileEditTextTabelCell(title: SubInfoCase.job.name, content: data.subInfo?.job),
                         .profileEditTextTabelCell(title: SubInfoCase.religion.name, content: data.subInfo?.religion?.rawValue),
                         .profileEditTextTabelCell(title: SubInfoCase.drink.name, content: data.subInfo?.drinkStatus?.rawValue),
                         .profileEditTextTabelCell(title: SubInfoCase.smoke.name, content: data.subInfo?.smokeStatus?.rawValue),
                         .profileEditTextTabelCell(title: SubInfoCase.education.name, content: data.subInfo?.education?.rawValue),
-                        .profileEditTextTabelCell(title: SubInfoCase.personalities.name, content: data.subInfo?.personalities?[0]),
-                        .profileEditTextTabelCell(title: SubInfoCase.hobbies.name, content: data.subInfo?.hobbies?[0]),
-                        .profileEditTextTabelCell(title: SubInfoCase.favoriteMBTIs.name, content: data.subInfo?.favoriteMBTIs?[0].rawValue)
+                        .profileEditTextTabelCell(title: SubInfoCase.personalities.name, content: transformArrtoString(stringArr: data.subInfo?.personalities ?? [])),
+                        .profileEditTextTabelCell(title: SubInfoCase.hobbies.name, content: transformArrtoString(stringArr: data.subInfo?.hobbies ?? [])),
+                        .profileEditTextTabelCell(title: SubInfoCase.favoriteMBTIs.name, content: transformEnumtoString(stringArr: data.subInfo?.favoriteMBTIs ?? []))
                     ])
                 ]
                 sectionsRelay.accept(result)

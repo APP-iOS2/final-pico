@@ -128,10 +128,6 @@ final class SignUpPhoneNumberViewController: UIViewController {
         super.viewWillDisappear(animated)
         keyboardManager.unregisterKeyboard()
     }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        SignLoadingManager.hideLoading()
-    }
 }
 // MARK: - Config
 extension SignUpPhoneNumberViewController {
@@ -244,7 +240,6 @@ extension SignUpPhoneNumberViewController {
         }
         print("성공성공")
         self.showAlert(message: "인증에 성공하셨습니다.") {
-            SignLoadingManager.showLoading(text: "넘어가는중!")
             let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
