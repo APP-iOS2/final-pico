@@ -39,7 +39,6 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubView()
         makeConstraints()
-        locationConfigure()
     }
     
     @available(*, unavailable)
@@ -57,8 +56,8 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
     }
     
     @objc private func tappedButton() {
+        locationConfigure()
         profileEditViewModel?.modalType = .location
-
         let space = locationManager.locationManager.location?.coordinate
         let lat = space?.latitude
         let long = space?.longitude
@@ -69,7 +68,7 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
                 print(location)
                 profileEditViewModel?.updateData(data: location)
             } else {
-                self.locationManager.accessLocation()
+                self.locationManager.configLocation()
             }
         }
     }
