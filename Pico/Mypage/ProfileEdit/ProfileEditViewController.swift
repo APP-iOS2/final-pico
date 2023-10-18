@@ -90,7 +90,7 @@ final class ProfileEditViewController: UIViewController {
     private func makeConstraints() {
         tableView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-15)
+            make.bottom.equalToSuperview().offset(-20)
         }
     }
     
@@ -171,7 +171,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.height.name)
                 profileEditViewModel.modalType = .height
                 profileEditViewModel.textData = String(profileEditViewModel.userData?.subInfo?.height ?? 0)
-                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
+                presentModalView(viewController: ProfileEditPickerViewController(profileEditViewModel: profileEditViewModel), viewHeight: 230)
                 
             case 2:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.job.name)
