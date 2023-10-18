@@ -19,11 +19,11 @@ struct User: Codable {
     let createdDate: Double
     
     /// 추가정보
-    let subInfo: SubInfo?
+    var subInfo: SubInfo?
     /// 나를 신고한 기록
-    let reports: [Report]?
+    var reports: [Report]?
     /// 내가 차단한 기록
-    let blocks: [Block]?
+    var blocks: [Block]?
     
     let chuCount: Int
     let isSubscribe: Bool

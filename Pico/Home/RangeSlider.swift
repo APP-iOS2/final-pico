@@ -49,7 +49,6 @@ final class RangeSlider: UIView {
             updateRangeStick()
             layoutIsCheck = true
         }
-        print(rightPoint)
     }
     
     private func addSubView() {
