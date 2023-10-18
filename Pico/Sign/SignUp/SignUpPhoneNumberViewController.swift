@@ -11,7 +11,7 @@ import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
-    private let authManager = SmsAuthManager()
+    private let smsAuthManager = SmsAuthManager()
     let viewModel: SignUpViewModel
     
     init(viewModel: SignUpViewModel) {
@@ -26,7 +26,6 @@ final class SignUpPhoneNumberViewController: UIViewController {
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
-    private var isAuth: Bool = false
     private var authTextFields: [UITextField] = []
     private var authText: String = ""
     
@@ -155,7 +154,6 @@ extension SignUpPhoneNumberViewController {
         userPhoneNumber = ""
         isFullPhoneNumber = false
         isTappedCheckButton = false
-        isAuth = false
         for authTextField in authTextFields {
             authTextField.text = ""
         }
@@ -195,6 +193,16 @@ extension SignUpPhoneNumberViewController {
         nextButton.backgroundColor = isEnabled ? .picoBlue : .picoGray
         nextButton.isEnabled = isEnabled
     }
+    
+    private func updateViewState(num: String) {
+        self.viewModel.phoneNumber = num
+        self.authTextFields[0].becomeFirstResponder()
+        self.updatePhoneNumberTextField(isFull: true)
+        self.updateCancelButton(isHidden: true)
+        self.updateAuthButton(isEnable: false, isHidden: false)
+        self.updateAuthTextFieldStack(isShow: true)
+        self.updateNextButton(isEnabled: true)
+    }
     // MARK: - @objc
     @objc private func tappedCancelButton(_ sender: UIButton) {
         sender.tappedAnimation()
@@ -215,30 +223,21 @@ extension SignUpPhoneNumberViewController {
                     return
                 }
                 SignLoadingManager.hideLoading()
-                self.viewModel.phoneNumber = text
-                self.authTextFields[0].becomeFirstResponder()
-                self.updatePhoneNumberTextField(isFull: true)
-                self.updateCancelButton(isHidden: true)
-                self.updateAuthButton(isEnable: false, isHidden: false)
-                self.updateAuthTextFieldStack(isShow: true)
-                self.updateNextButton(isEnabled: true)
+                self.updateViewState(num: text)
+                self.smsAuthManager.sendVerificationCode()
             }
         }
     }
-    
+   
     @objc private func tappedNextButton(_ sender: UIButton) {
         sender.tappedAnimation()
-        // 문자인증 시작하면 건드려야해용
+        // MARK: - 문자인증 시작하면 건드려야해용
         // 문자인증 기능이 완료 될 때 까지는 넘어가세요 :)
         configAuthText()
-        isAuth = true
-        authManager.sendVerificationCode()
-        guard isAuth else {
-            print("비상비상")
+        guard smsAuthManager.checkRightCode(code: authText) else {
             self.showAlert(message: "비상비상 인증실패") { self.configReset() }
             return
         }
-        print("성공성공")
         self.showAlert(message: "인증에 성공하셨습니다.") {
             let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
