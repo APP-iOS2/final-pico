@@ -24,7 +24,7 @@ final class WorldCupUserInfoStackView: UIView {
         let label = UILabel()
         label.textAlignment = .right
         label.textColor = UIColor.picoBlue
-        label.font = UIFont.picoDescriptionFont
+        label.font = UIFont.systemFont(ofSize: 12)
         label.numberOfLines = 0
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.translatesAutoresizingMaskIntoConstraints = false

@@ -35,10 +35,13 @@
 		4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */; };
 		4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */; };
 		4B2665492ACD76F00074D4E2 /* ResultUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665482ACD76F00074D4E2 /* ResultUserView.swift */; };
+		4B576BBE2ADFB77700C49D43 /* APIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B576BBD2ADFB77700C49D43 /* APIKeys.plist */; };
+		4B576BC12ADFB7A300C49D43 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B576BBF2ADFB7A200C49D43 /* YOLOv3.mlmodel */; };
+		4B576BC42ADFBF0F00C49D43 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B576BC32ADFBF0E00C49D43 /* GoogleService-Info.plist */; };
 		4B89E12D2AD528E500BFBAA3 /* WorldCupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */; };
 		4BF01A3C2ADE1FF200181708 /* PercentModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF01A3B2ADE1FF200181708 /* PercentModalViewController.swift */; };
-		4BF01A462ADE729500181708 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4BF01A452ADE729500181708 /* YOLOv3.mlmodel */; };
-		4BF01A482ADE72C000181708 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BF01A472ADE72C000181708 /* GoogleService-Info.plist */; };
+		4BF01A462ADE729500181708 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		4BF01A482ADE72C000181708 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */; };
 		531C4ED82AC26BA300ADC614 /* CustomTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */; };
 		531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED92AC275DA00ADC614 /* LikeCollectionViewCell.swift */; };
@@ -60,7 +63,6 @@
 		53836F552ACC90FC00D98F77 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F542ACC90FC00D98F77 /* Loading.swift */; };
 		53B529592ADCBD0D00A9C9D8 /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B529582ADCBD0D00A9C9D8 /* FooterView.swift */; };
 		53B5295B2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B5295A2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift */; };
-		53DD41B32ADF627000C5FE39 /* APIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53DD41B22ADF627000C5FE39 /* APIKeys.plist */; };
 		53DD41B52ADF62F500C5FE39 /* Bundle+Extenstions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD41B42ADF62F500C5FE39 /* Bundle+Extenstions.swift */; };
 		53DD41B82ADF65EF00C5FE39 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */; };
 		53DD41BE2ADF672B00C5FE39 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 53DD41BD2ADF672B00C5FE39 /* FirebaseMessaging */; };
@@ -244,6 +246,9 @@
 		4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewModel.swift; sourceTree = "<group>"; };
 		4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewController.swift; sourceTree = "<group>"; };
 		4B2665482ACD76F00074D4E2 /* ResultUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultUserView.swift; sourceTree = "<group>"; };
+		4B576BBD2ADFB77700C49D43 /* APIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = APIKeys.plist; sourceTree = "<group>"; };
+		4B576BBF2ADFB7A200C49D43 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
+		4B576BC32ADFBF0E00C49D43 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupViewModel.swift; sourceTree = "<group>"; };
 		4BF01A3B2ADE1FF200181708 /* PercentModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PercentModalViewController.swift; sourceTree = "<group>"; };
 		5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
@@ -263,7 +268,6 @@
 		53836F542ACC90FC00D98F77 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
 		53B529582ADCBD0D00A9C9D8 /* FooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		53B5295A2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFooterLoadingCell.swift; sourceTree = "<group>"; };
-		53DD41B22ADF627000C5FE39 /* APIKeys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = APIKeys.plist; sourceTree = "<group>"; };
 		53DD41B42ADF62F500C5FE39 /* Bundle+Extenstions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extenstions.swift"; sourceTree = "<group>"; };
 		53DD41B62ADF652100C5FE39 /* Pico.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pico.entitlements; sourceTree = "<group>"; };
 		53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -803,14 +807,14 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				4BF01A472ADE72C000181708 /* GoogleService-Info.plist */,
-				4BF01A452ADE729500181708 /* YOLOv3.mlmodel */,
+				4B576BBF2ADFB7A200C49D43 /* YOLOv3.mlmodel */,
+				4B576BC32ADFBF0E00C49D43 /* GoogleService-Info.plist */,
 				B15F16022ADCFA5C002952B4 /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
 				B14B58D42AC0A232009889DA /* LaunchScreen.storyboard */,
-				53DD41B22ADF627000C5FE39 /* APIKeys.plist */,
+				4B576BBD2ADFB77700C49D43 /* APIKeys.plist */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -1326,10 +1330,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				4BF01A482ADE72C000181708 /* GoogleService-Info.plist in Resources */,
-				53DD41B32ADF627000C5FE39 /* APIKeys.plist in Resources */,
+				4B576BBE2ADFB77700C49D43 /* APIKeys.plist in Resources */,
+				4BF01A482ADE72C000181708 /* (null) in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
+				4B576BC42ADFBF0F00C49D43 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1429,7 +1434,7 @@
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
-				4BF01A462ADE729500181708 /* YOLOv3.mlmodel in Sources */,
+				4BF01A462ADE729500181708 /* (null) in Sources */,
 				369B25522ADB1FB4005C452D /* SmsAuthManager.swift in Sources */,
 				6ADDE2F92AC3BABD00CE4482 /* ProfileEditIntroTabelCell.swift in Sources */,
 				53817BDC2ACE753800AEE9AE /* LikeUViewModel.swift in Sources */,
@@ -1506,6 +1511,7 @@
 				B148052C2ACD2A900009FF71 /* AdminUserViewController.swift in Sources */,
 				360854F12AD04C7900F28168 /* StorageService.swift in Sources */,
 				36CD4D062ADBB95400FC317B /* SignLoadingManager.swift in Sources */,
+				4B576BC12ADFB7A300C49D43 /* YOLOv3.mlmodel in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
 				4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */,
 				6A9F734C2AD8E537002F13AC /* ProfileEditTextModalViewController.swift in Sources */,
