@@ -1,54 +1,23 @@
 //
-//  HomeViewModel.swift
+//  UserService.swift
 //  Pico
 //
-//  Created by 임대진 on 10/5/23.
+//  Created by 임대진 on 10/18/23.
 //
-import RxSwift
-import RxRelay
+
 import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
-import CoreLocation
 
-final class HomeViewModel {
+final class UserService {
+    static let shared: UserService = UserService()
     
-    var otherUsers = BehaviorRelay<[User]>(value: [])
-    var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
-    static var filterGender: [GenderType] = []
-    static var filterMbti: [MBTIType] = []
-    static var filterAgeMin: Int = 24
-    static var filterAgeMax: Int = 34
-    static var filterDistance: Int = 501
-    private let loginUser = UserDefaultsManager.shared.getUserData()
-    private let disposeBag = DisposeBag()
-    
-    init() {
-        loadFilterDefault()
-        loadUsers()
-        loadMyLikesRx()
-    }
-    
-    func calculateDistance(user: User) -> CLLocationDistance {
-        let currentUserLoc = CLLocation(latitude: loginUser.latitude, longitude: loginUser.longitude)
-        let otherUserLoc = CLLocation(latitude: user.location.latitude, longitude: user.location.longitude)
-        return  currentUserLoc.distance(from: otherUserLoc)
-    }
+    var users = [User]()
     
     private func loadUsers() {
-        var gender: [GenderType] = []
-        
-        if HomeViewModel.filterGender.isEmpty {
-            gender = GenderType.allCases
-        } else {
-            gender = HomeViewModel.filterGender
-        }
-        
         DispatchQueue.global().async {
             let dbRef = Firestore.firestore()
             let query = dbRef.collection("users")
-                .whereField("id", isNotEqualTo: self.loginUser.userId)
-                .whereField("gender", in: gender.map { $0.rawValue })
             
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
@@ -88,8 +57,7 @@ final class HomeViewModel {
                             users.append(user)
                         }
                     }
-                    self.otherUsers.accept(users)
-                    print(users.count)
+                    self.users = users
                 }
             }
         }
@@ -167,94 +135,6 @@ final class HomeViewModel {
             } else {
                 completion(nil)
             }
-        }
-    }
-    
-    private func loadUsersCodable() {
-        var gender: [GenderType] = []
-        
-        if HomeViewModel.filterGender.isEmpty {
-            gender = GenderType.allCases
-        } else {
-            gender = HomeViewModel.filterGender
-        }
-        
-        DispatchQueue.global().async {
-            let dbRef = Firestore.firestore()
-            let query = dbRef.collection("users")
-                .whereField("id", isNotEqualTo: self.loginUser.userId)
-                .whereField("gender", in: gender.map { $0.rawValue })
-            
-            query.getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print(error)
-                } else {
-                    var users = [User]()
-                    for document in querySnapshot!.documents {
-                        var user: User?
-                        var blocks: Block = Block(userId: "")
-                        var reports: Report = Report(userId: "")
-                        var subInfos: SubInfo = SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [], personalities: [], favoriteMBTIs: [])
-                        
-                        self.queryBlocks(for: document.documentID) { block in
-                            blocks = block ?? Block(userId: "")
-                        }
-                        self.queryReports(for: document.documentID) { report in
-                            reports = report ?? Report(userId: "")
-                        }
-                        self.querySubInfo(for: document.documentID) { subInfo in
-                            subInfos = subInfo ?? SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [], personalities: [], favoriteMBTIs: [])
-                        }
-                        
-                        if let userdata = try? document.data(as: User.self) {
-                            user = userdata
-                            user?.subInfo = subInfos
-                            user?.blocks = [blocks]
-                            user?.reports = [reports]
-                            users.append(user ?? User.userData)
-                        }
-                    }
-                    self.otherUsers.accept(users)
-                    print(users.count)
-                    
-                }
-            }
-        }
-    }
-    
-    private func loadMyLikesRx() {
-        FirestoreService.shared.loadDocumentRx(collectionId: .likes, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Like.self)
-            .map { like -> [Like.LikeInfo] in
-                if let like = like {
-                    return like.sendedlikes ?? []
-                }
-                return []
-            }
-            .bind(to: myLikes)
-            .disposed(by: disposeBag)
-    }
-    
-    private func loadFilterDefault() {
-        if let filterAgeMin = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterAgeMin.rawValue) as? Int {
-            HomeViewModel.filterAgeMin = filterAgeMin
-        }
-        
-        if let filterAgeMax = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterAgeMax.rawValue) as? Int {
-            HomeViewModel.filterAgeMax = filterAgeMax
-        }
-        
-        if let filterDistance = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterDistance.rawValue) as? Int {
-            HomeViewModel.filterDistance = filterDistance
-        }
-        
-        if let genderData = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterGender.rawValue) as? Data,
-           let filterGender = try? JSONDecoder().decode([GenderType].self, from: genderData) {
-            HomeViewModel.filterGender = filterGender
-        }
-        
-        if let mbtiData = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterMbti.rawValue) as? Data,
-           let filterMbti = try? JSONDecoder().decode([MBTIType].self, from: mbtiData) {
-            HomeViewModel.filterMbti = filterMbti
         }
     }
 }
