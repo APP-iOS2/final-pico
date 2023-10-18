@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 
-/*음주, 흡연, 종교, 교육 */
+/*음주, 흡연, 종교, 교육  mbti */
 final class ProfileEditCollectionModalViewController: UIViewController {
     
     private let backButton: UIButton = {
@@ -56,9 +56,9 @@ final class ProfileEditCollectionModalViewController: UIViewController {
     
     let profileEditViewModel: ProfileEditViewModel
     private let disposeBag = DisposeBag()
-    
     private var selectedData = ""
-    
+    private var selectedIndexs = [Int]()
+        
     init(profileEditViewModel: ProfileEditViewModel) {
         self.profileEditViewModel = profileEditViewModel
         
@@ -75,7 +75,7 @@ final class ProfileEditCollectionModalViewController: UIViewController {
         addViews()
         makeConstraints()
         binds()
-        colleciotionConfigure()
+        viewConfigure()
     }
     
     private func binds() {
@@ -89,7 +89,20 @@ final class ProfileEditCollectionModalViewController: UIViewController {
         completeButton.rx.tap
             .bind { [weak self] _ in
                 guard let self else { return }
-                self.profileEditViewModel.updateData(data: self.selectedData)
+                switch profileEditViewModel.modalType {
+                case .favoriteMBTIs:
+                    if let selectedIndexPaths = self.collectionView.indexPathsForSelectedItems {
+                        var selectedInedx = [String]()
+                        let data = MBTIType.allCases.map { $0.rawValue }
+                        for indexPath in selectedIndexPaths {
+                            selectedInedx.append(data[indexPath.row])
+                        }
+                        self.profileEditViewModel.updateData(data: selectedInedx)
+                    }
+                default:
+                    self.profileEditViewModel.updateData(data: self.selectedData)
+                }
+              
                 self.dismiss(animated: true)
             }
             .disposed(by: disposeBag)
@@ -99,9 +112,11 @@ final class ProfileEditCollectionModalViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    private func colleciotionConfigure() {
+    private func viewConfigure() {
         if profileEditViewModel.modalType == .favoriteMBTIs {
             collectionView.allowsMultipleSelection = true
+            completeButton.isEnabled = true
+            completeButton.backgroundColor = .picoBlue
         } else {
             collectionView.allowsMultipleSelection = false
         }
@@ -127,7 +142,7 @@ final class ProfileEditCollectionModalViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(30)
             make.height.equalTo(300)
         }
-
+        
         completeButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(30)
             make.height.equalTo(40)
@@ -143,7 +158,7 @@ extension ProfileEditCollectionModalViewController: UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-
+        
         let label = UILabel()
         let text = profileEditViewModel.modalCollectionData[indexPath.item]
         label.text = text
@@ -159,11 +174,16 @@ extension ProfileEditCollectionModalViewController: UICollectionViewDataSource, 
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch profileEditViewModel.modalType {
-           
         case .favoriteMBTIs:
             let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditModalMbtiCell.self)
             cell.configure(content: profileEditViewModel.modalCollectionData[indexPath.row])
+            guard let indexs = profileEditViewModel.selectedIndexs else { return cell }
+            if indexs.firstIndex(of: indexPath.row) != nil {
+                cell.isSelected = true
+                collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .init())
+            }
             return cell
+            
         default:
             let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditModalCollectionCell.self)
             cell.configure(content: profileEditViewModel.modalCollectionData[indexPath.row])
@@ -177,22 +197,27 @@ extension ProfileEditCollectionModalViewController: UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let selectedIndex = profileEditViewModel.selectedIndex else {
-            completeButton.isEnabled = true
-            completeButton.backgroundColor = .picoBlue
-            changeModalType(index: indexPath.row)
-            return
+        switch profileEditViewModel.modalType {
+            
+        case .favoriteMBTIs:
+            break
+        default:
+            guard let selectedIndex = profileEditViewModel.selectedIndex else {
+                completeButton.isEnabled = true
+                completeButton.backgroundColor = .picoBlue
+                changeModalType(index: indexPath.row)
+                return
+            }
+            
+            if indexPath.row != selectedIndex {
+                completeButton.isEnabled = true
+                completeButton.backgroundColor = .picoBlue
+                changeModalType(index: indexPath.row)
+            } else {
+                completeButton.isEnabled = false
+                completeButton.backgroundColor = .picoGray
+            }
         }
-        
-        if indexPath.row != selectedIndex {
-            completeButton.isEnabled = true
-            completeButton.backgroundColor = .picoBlue
-            changeModalType(index: indexPath.row)
-        } else {
-            completeButton.isEnabled = false
-            completeButton.backgroundColor = .picoGray
-        }
-        print(indexPath.row)
     }
     
     func changeModalType(index: Int) {
