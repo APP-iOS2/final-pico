@@ -7,16 +7,32 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class StoreViewController: UIViewController {
     
     private let tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .insetGrouped)
-        view.register(cell: StoreTableCell.self)
         view.backgroundColor = .clear
-        view.addShadow(offset: CGSize(width: 10, height: 10), opacity: 0.07, radius: 5)
+        view.addShadow(offset: CGSize(width: 3, height: 5), opacity: 0.2, radius: 5)
         return view
     }()
+    
+    private let viewModel: StoreViewModel
+    private let disposeBag: DisposeBag = DisposeBag()
+    
+    private let purchaseChuCountPublish = PublishSubject<StoreModel>()
+    private let consumeChuCountPublish = PublishSubject<Int>()
+    
+    init(viewModel: StoreViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +40,7 @@ final class StoreViewController: UIViewController {
         configTableView()
         addViews()
         makeConstraints()
+        bind()
     }
     
     private func configView() {
@@ -34,12 +51,31 @@ final class StoreViewController: UIViewController {
     private func configTableView() {
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.register(cell: StoreTableCell.self)
+    }
+    
+    private func bind() {
+        let input = StoreViewModel.Input(
+            purchaseChuCount: purchaseChuCountPublish.asObservable(),
+            consumeChuCount: consumeChuCountPublish.asObservable()
+        )
+        let output = viewModel.transform(input: input)
+        
+        output.resultPurchase
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                DispatchQueue.main.async {
+                    viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "결제 확인", messageText: "결제되셨습니다.", confirmButtonText: "확인", comfrimAction: {
+                        viewController.navigationController?.popViewController(animated: true)
+                        print(UserDefaultsManager.shared.getChuCount())
+                    })
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     private func addViews() {
-        [tableView].forEach {
-            view.addSubview($0)
-        }
+        view.addSubview(tableView)
     }
     
     private func makeConstraints() {
@@ -60,13 +96,9 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: StoreTableCell.self)
-        switch indexPath.section {
-        case 0: cell.configure(count: "50", price: "5,500", discount: nil)
-        case 1: cell.configure(count: "100", price: "11,000", discount: nil)
-        case 2: cell.configure(count: "500", price: "50,000", discount: "10")
-        case 3: cell.configure(count: "1000", price: "88,000", discount: "20")
-        default: break
-        }
+        guard let storeModel = viewModel.storeModels[safe: indexPath.section] else { return UITableViewCell() }
+        
+        cell.configure(storeModel)
         return cell
     }
     
@@ -80,14 +112,16 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            return 20.0
-        } else {
-            return 10.0
-        }
+        return 10.0
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        self.showCustomAlert(alertType: .canCancel, titleText: "결제 알림", messageText: "결제하시겠습니까 ?", confirmButtonText: "결제", comfrimAction: { [weak self] in
+            guard let self = self else { return }
+            guard let storeModel = viewModel.storeModels[safe: indexPath.section] else { return }
+            
+            purchaseChuCountPublish.onNext(storeModel)
+        })
     }
 }

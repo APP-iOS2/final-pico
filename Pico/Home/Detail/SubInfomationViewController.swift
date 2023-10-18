@@ -62,10 +62,12 @@ final class SubInfomationViewController: BaseViewController {
         configCollectionView()
     }
     
-    func config(hobbies: [String], personalities: [String], likeMbtis: [MBTIType]) {
-        self.hobbies = hobbies
-        self.personalities = personalities
-        self.likeMbtis = likeMbtis
+    func config(hobbies: [String]?, personalities: [String]?, likeMbtis: [MBTIType]?) {
+//        
+//            self.hobbies = hobbies
+//            self.personalities = personalities
+//            self.likeMbtis = likeMbtis
+    
     }
     
     private func configCollectionView() {

@@ -60,9 +60,16 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
             backgroundColor = mbtiButton.isSelected ? UIColor(hex: mbti.colorName) : .picoGray
             if mbtiButton.isSelected {
                 HomeViewModel.filterMbti.append(mbti)
+                
+                let mbtiData = try? JSONEncoder().encode(HomeViewModel.filterMbti)
+                UserDefaults.standard.set(mbtiData, forKey: UserDefaultsManager.Key.filterMbti.rawValue)
+                
             } else {
                 if let index = HomeViewModel.filterMbti.firstIndex(of: mbti) {
                     HomeViewModel.filterMbti.remove(at: index)
+                    
+                    let mbtiData = try? JSONEncoder().encode(HomeViewModel.filterMbti)
+                    UserDefaults.standard.set(mbtiData, forKey: UserDefaultsManager.Key.filterMbti.rawValue)
                 }
             }
             HomeFilterViewController.filterChangeState = true

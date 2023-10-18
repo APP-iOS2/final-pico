@@ -164,6 +164,7 @@ final class MailListTableViewCell: UITableViewCell {
     // MARK: - MailCell +config
     private func configViews (user: User) {
         guard let url = URL(string: user.imageURLs[0]) else { return }
+        userImage.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         userImage.kf.setImage(with: url)
         nameLabel.text = user.nickName
         nameLabel.sizeToFit()

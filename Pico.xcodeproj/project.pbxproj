@@ -60,6 +60,11 @@
 		53836F552ACC90FC00D98F77 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53836F542ACC90FC00D98F77 /* Loading.swift */; };
 		53B529592ADCBD0D00A9C9D8 /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B529582ADCBD0D00A9C9D8 /* FooterView.swift */; };
 		53B5295B2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B5295A2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift */; };
+		53DD41B32ADF627000C5FE39 /* APIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53DD41B22ADF627000C5FE39 /* APIKeys.plist */; };
+		53DD41B52ADF62F500C5FE39 /* Bundle+Extenstions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD41B42ADF62F500C5FE39 /* Bundle+Extenstions.swift */; };
+		53DD41B82ADF65EF00C5FE39 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */; };
+		53DD41BE2ADF672B00C5FE39 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 53DD41BD2ADF672B00C5FE39 /* FirebaseMessaging */; };
+		53DD41C02ADF675F00C5FE39 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD41BF2ADF675F00C5FE39 /* Token.swift */; };
 		547C4C212AD8381F00028AFB /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */; };
 		547C4C292AD8393700028AFB /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C242AD8393700028AFB /* UserDetailViewController.swift */; };
 		547C4C2A2AD8393700028AFB /* SubInfomationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C252AD8393700028AFB /* SubInfomationViewController.swift */; };
@@ -138,6 +143,9 @@
 		B15ABE2D2AC2B22100529C29 /* CommonTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE2C2AC2B22100529C29 /* CommonTextField.swift */; };
 		B15ABE372AC31DD200529C29 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE362AC31DD200529C29 /* UIViewController+Extensions.swift */; };
 		B15ABE392AC31E0800529C29 /* UIButton+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15ABE382AC31E0800529C29 /* UIButton+Extensions.swift */; };
+		B15F16152ADE8129002952B4 /* StoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F16142ADE8129002952B4 /* StoreViewModel.swift */; };
+		B15F16172ADE847C002952B4 /* StoreModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F16162ADE847C002952B4 /* StoreModel.swift */; };
+		B15F16192ADE8587002952B4 /* Int+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F16182ADE8587002952B4 /* Int+Extensions.swift */; };
 		B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B161B8712AC414DD00257A9C /* PopupViewController.swift */; };
 		B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F8F2AD033B70014850D /* Double+Extensions.swift */; };
 		B1701F922AD4351A0014850D /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F912AD4351A0014850D /* Array+Extensions.swift */; };
@@ -184,7 +192,6 @@
 		BC0D29312ACF1F8C0043554B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */; };
 		BC0D29332ACF1FD70043554B /* HomeUserCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */; };
 		BC5DE6642AC6EFB00082D18D /* HomeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */; };
-		BC5DE6662ACCFFB70082D18D /* UserDummyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5DE6652ACCFFB70082D18D /* UserDummyData.swift */; };
 		BC6F61922AD834160067F500 /* RangeSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6F61912AD834160067F500 /* RangeSlider.swift */; };
 		BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */; };
 		BCEACEF52AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */; };
@@ -258,6 +265,11 @@
 		53836F542ACC90FC00D98F77 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
 		53B529582ADCBD0D00A9C9D8 /* FooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 		53B5295A2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFooterLoadingCell.swift; sourceTree = "<group>"; };
+		53DD41B22ADF627000C5FE39 /* APIKeys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = APIKeys.plist; sourceTree = "<group>"; };
+		53DD41B42ADF62F500C5FE39 /* Bundle+Extenstions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extenstions.swift"; sourceTree = "<group>"; };
+		53DD41B62ADF652100C5FE39 /* Pico.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pico.entitlements; sourceTree = "<group>"; };
+		53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		53DD41BF2ADF675F00C5FE39 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
 		547C4C242AD8393700028AFB /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		547C4C252AD8393700028AFB /* SubInfomationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubInfomationViewController.swift; sourceTree = "<group>"; };
@@ -338,6 +350,9 @@
 		B15ABE362AC31DD200529C29 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		B15ABE382AC31E0800529C29 /* UIButton+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extensions.swift"; sourceTree = "<group>"; };
 		B15F16022ADCFA5C002952B4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Pico/Config/Info.plist; sourceTree = SOURCE_ROOT; };
+		B15F16142ADE8129002952B4 /* StoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreViewModel.swift; sourceTree = "<group>"; };
+		B15F16162ADE847C002952B4 /* StoreModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreModel.swift; sourceTree = "<group>"; };
+		B15F16182ADE8587002952B4 /* Int+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extensions.swift"; sourceTree = "<group>"; };
 		B161B8712AC414DD00257A9C /* PopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
 		B1701F8F2AD033B70014850D /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
 		B1701F912AD4351A0014850D /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
@@ -379,7 +394,6 @@
 		BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewModel.swift; sourceTree = "<group>"; };
 		BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyView.swift; sourceTree = "<group>"; };
-		BC5DE6652ACCFFB70082D18D /* UserDummyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDummyData.swift; sourceTree = "<group>"; };
 		BC6F61912AD834160067F500 /* RangeSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
 		BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFilterViewController.swift; sourceTree = "<group>"; };
 		BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTILabelCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -391,6 +405,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53DD41BE2ADF672B00C5FE39 /* FirebaseMessaging in Frameworks */,
 				B18C1DA62ACC95B200BBB207 /* RxRelay in Frameworks */,
 				B18C1DA42ACC95B200BBB207 /* RxCocoa in Frameworks */,
 				B18C1DA82ACC95B200BBB207 /* RxSwift in Frameworks */,
@@ -611,7 +626,9 @@
 		6ADDE2E02AC30EEA00CE4482 /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				B15F16162ADE847C002952B4 /* StoreModel.swift */,
 				6ADDE2DD2AC2D3B500CE4482 /* StoreViewController.swift */,
+				B15F16142ADE8129002952B4 /* StoreViewModel.swift */,
 				6ADDE2DB2AC2D3A200CE4482 /* StoreTableCell.swift */,
 			);
 			path = Store;
@@ -723,6 +740,7 @@
 			children = (
 				B14805242ACCE8120009FF71 /* FirestoreService.swift */,
 				360854F02AD04C7900F28168 /* StorageService.swift */,
+				53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -763,6 +781,7 @@
 		B14B58C82AC0A230009889DA /* Pico */ = {
 			isa = PBXGroup;
 			children = (
+				53DD41B62ADF652100C5FE39 /* Pico.entitlements */,
 				B14B58F92AC0A243009889DA /* Config */,
 				B14B59052AC0A41B009889DA /* UserDefaults */,
 				B14805232ACCE70B0009FF71 /* Service */,
@@ -793,6 +812,7 @@
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
 				B14B58D42AC0A232009889DA /* LaunchScreen.storyboard */,
+				53DD41B22ADF627000C5FE39 /* APIKeys.plist */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -850,7 +870,6 @@
 				BCEACEF62AC3DF5F00C93699 /* MBTICollectionViewController.swift */,
 				BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */,
 				BC6F61912AD834160067F500 /* RangeSlider.swift */,
-				BC5DE6652ACCFFB70082D18D /* UserDummyData.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -941,6 +960,7 @@
 				B17D679B2AC0B063006F91DC /* Like */,
 				B17D679C2AC0B06B006F91DC /* Mail */,
 				B17D679D2AC0B076006F91DC /* Payment */,
+				53DD41BF2ADF675F00C5FE39 /* Token.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1035,6 +1055,8 @@
 				B1701F8F2AD033B70014850D /* Double+Extensions.swift */,
 				B1701F912AD4351A0014850D /* Array+Extensions.swift */,
 				B17D67A02AC0B1FA006F91DC /* Encodable+Extensions.swift */,
+				B15F16182ADE8587002952B4 /* Int+Extensions.swift */,
+				53DD41B42ADF62F500C5FE39 /* Bundle+Extenstions.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1208,6 +1230,7 @@
 				53817BE22ACED57B00AEE9AE /* FirebaseDatabaseSwift */,
 				6ABA9E712ACFC54800DC6570 /* RxDataSources */,
 				B1E30BDF2AD5E7B500F95C66 /* Kingfisher */,
+				53DD41BD2ADF672B00C5FE39 /* FirebaseMessaging */,
 			);
 			productName = Pico;
 			productReference = B14B58C62AC0A230009889DA /* Pico.app */;
@@ -1306,6 +1329,7 @@
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
 				4BF01A482ADE72C000181708 /* GoogleService-Info.plist in Resources */,
+				53DD41B32ADF627000C5FE39 /* APIKeys.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1391,7 +1415,6 @@
 				6ABA9E542ACE8F4100DC6570 /* CircularProgressBarViewModel.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				6ADDE2F72AC3BA7E00CE4482 /* ProfileEditLoactionTabelCell.swift in Sources */,
-				BC5DE6662ACCFFB70082D18D /* UserDummyData.swift in Sources */,
 				53389AEF2AC16D120076DA9B /* EmptyViewController.swift in Sources */,
 				B14B59082AC0A4FD009889DA /* TabBarController.swift in Sources */,
 				6ADDE2F12AC3BA2500CE4482 /* ProfileEditImageTableCell.swift in Sources */,
@@ -1433,6 +1456,7 @@
 				B104FCF72ADB2A470093739B /* AdminUserDetailViewModel.swift in Sources */,
 				69B99BE62ACE815600695567 /* MailViewModel.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIView+Extensions.swift in Sources */,
+				B15F16172ADE847C002952B4 /* StoreModel.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
 				36CD4D042ADBB86000FC317B /* SignLoadingAnimationView.swift in Sources */,
 				5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */,
@@ -1454,6 +1478,7 @@
 				368D4DA12ADCC9DF00322D91 /* YoloManager.swift in Sources */,
 				693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */,
 				B11D2B8C2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift in Sources */,
+				53DD41B82ADF65EF00C5FE39 /* NotificationService.swift in Sources */,
 				B146A3CE2AD45795003143DD /* UITableView+Extensions.swift in Sources */,
 				B17D679F2AC0B116006F91DC /* UserDefaultsManager.swift in Sources */,
 				B15ABE392AC31E0800529C29 /* UIButton+Extensions.swift in Sources */,
@@ -1488,6 +1513,7 @@
 				6A9F734C2AD8E537002F13AC /* ProfileEditTextModalViewController.swift in Sources */,
 				B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */,
 				4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */,
+				B15F16192ADE8587002952B4 /* Int+Extensions.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
 				6A9F734E2AD8E544002F13AC /* ProfileEditCollTextModalViewController.swift in Sources */,
 				6915C84D2ADA8F7200994F55 /* UIStackView+Extensions.swift in Sources */,
@@ -1499,8 +1525,10 @@
 				B14D2AC22AD912120014DE29 /* RecordHeaderTableViewCell.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
 				B14D2ABA2AD8E2900014DE29 /* MbtiCollectionViewCell.swift in Sources */,
+				53DD41B52ADF62F500C5FE39 /* Bundle+Extenstions.swift in Sources */,
 				B17D67902AC0AC15006F91DC /* Block.swift in Sources */,
 				6A2060482ACD28E100435723 /* CircularProgressBarView.swift in Sources */,
+				53DD41C02ADF675F00C5FE39 /* Token.swift in Sources */,
 				4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */,
 				4B26653B2AC3E3250074D4E2 /* WorldCupViewController.swift in Sources */,
 				6ADDE2EA2AC31D1300CE4482 /* SettingNotiTableCell.swift in Sources */,
@@ -1517,6 +1545,7 @@
 				6ADDE2DC2AC2D3A200CE4482 /* StoreTableCell.swift in Sources */,
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
 				368D4DA72ADCDBE800322D91 /* KeyboardManager.swift in Sources */,
+				B15F16152ADE8129002952B4 /* StoreViewModel.swift in Sources */,
 				B1701F922AD4351A0014850D /* Array+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1691,6 +1720,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Pico/Pico.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6R3M7VGRP2;
@@ -1730,6 +1760,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Pico/Pico.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6R3M7VGRP2;
@@ -1936,6 +1967,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B18C1D9E2ACC956C00BBB207 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseDatabaseSwift;
+		};
+		53DD41BD2ADF672B00C5FE39 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B18C1D9E2ACC956C00BBB207 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 		6ABA9E712ACFC54800DC6570 /* RxDataSources */ = {
 			isa = XCSwiftPackageProductDependency;

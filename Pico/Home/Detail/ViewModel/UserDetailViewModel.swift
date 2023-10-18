@@ -18,12 +18,12 @@ final class UserDetailViewModel {
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let sendedlikesUpdateFiled = "sendedlikes"
     private let recivedlikesUpdateFiled = "recivedlikes"
-    private let myID = UserDefaultsManager.shared.getUserData().userId
     
     init(user: User) {
-         loadUser(user: user)
+        loadUser(user: user)
     }
     
+    // 유저 불러오기
     func loadUser(user: User) {
         FirestoreService.shared.loadDocumentRx(collectionId: .users, documentId: user.id, dataType: User.self)
             .compactMap { $0 }
@@ -31,28 +31,105 @@ final class UserDetailViewModel {
             .disposed(by: disposeBag)
     }
     
-    // document 에 들어가는 ID만 수정
-    func reportUser(report: Report, completion: @escaping () -> () ) {
+    // 신고
+    func reportUser(reportedUser: User, reason: String, completion: @escaping () -> ()) {
         DispatchQueue.global().async {
-            self.dbRef.document("\(report.reportedId)").updateData([
-                "reports": FieldValue.arrayUnion([report.asDictionary()])
-            ])
-            print("Success to save new document at users \(report.reportedId)")
+            let sendReportInfo: Report.ReportInfo = Report.ReportInfo(reportedUserId: reportedUser.id,
+                                                                      reason: reason,
+                                                                      birth: reportedUser.birth,
+                                                                      nickName: reportedUser.nickName,
+                                                                      mbti: reportedUser.mbti,
+                                                                      imageURL: reportedUser.imageURLs[0],
+                                                                      createdDate: Date().timeIntervalSince1970)
+            
+            let recivedReportInfo: Report.ReportInfo = Report.ReportInfo(reportedUserId: self.loginUser.userId,
+                                                                         reason: reason,
+                                                                         birth: self.loginUser.birth,
+                                                                         nickName: self.loginUser.nickName,
+                                                                         mbti: MBTIType(rawValue: self.loginUser.mbti) ?? .enfj,
+                                                                         imageURL: self.loginUser.imageURL,
+                                                                         createdDate: Date().timeIntervalSince1970)
+            
+            // sendReport (신고한 사람)
+            self.dbRef.document(self.loginUser.userId)
+                .collection("Report")
+                .document(self.loginUser.userId)
+                .setData([
+                    "sendReport": FieldValue.arrayUnion([sendReportInfo.asDictionary()])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("신고 업데이트 에러: \(error)")
+                    } else {
+                        print("Success to save new document at SendReport \(sendReportInfo)")
+                    }
+                }
+            
+            // RecivedReport (신고당한 사람)
+            self.dbRef.document(reportedUser.id)
+                .collection("Report")
+                .document(reportedUser.id)
+                .setData([
+                    "recivedReport": FieldValue.arrayUnion([recivedReportInfo.asDictionary()])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("신고 업데이트 에러: \(error)")
+                    } else {
+                        print("Success to save new document at RecivedReport \(recivedReportInfo)")
+                    }
+                }
         }
         completion()
     }
     
-    func blockUser(block: Block, completion: @escaping () -> () ) {
+    // 차단
+    func blockUser(blockedUser: User, completion: @escaping () -> ()) {
         DispatchQueue.global().async {
-            self.dbRef.document(self.myID).updateData([
-                // document("내 아이디") Blocks[상대방 정보]
-                "blocks": FieldValue.arrayUnion([block.asDictionary()])
-            ])
-            print("Success to save new document at users \(block)")
+            let sendBlockInfo = Block.BlockInfo(userId: blockedUser.id,
+                                                birth: blockedUser.birth,
+                                                nickName: blockedUser.nickName,
+                                                mbti: blockedUser.mbti,
+                                                imageURL: blockedUser.imageURLs[0],
+                                                createdDate: Date().timeIntervalSince1970)
+            
+            let recivedBlockInfo = Block.BlockInfo(userId: self.loginUser.userId,
+                                                   birth: self.loginUser.birth,
+                                                   nickName: self.loginUser.nickName,
+                                                   mbti: MBTIType(rawValue: self.loginUser.mbti) ?? .enfj,
+                                                   imageURL: self.loginUser.imageURL,
+                                                   createdDate: Date().timeIntervalSince1970)
+            
+            // SendBlock (내가 차단한 사람)
+            self.dbRef.document(self.loginUser.userId)
+                .collection("Block")
+                .document(self.loginUser.userId)
+                .setData([
+                    "sendBlock": FieldValue.arrayUnion([sendBlockInfo.asDictionary()])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("블록 업데이트 에러: \(error)")
+                    } else {
+                        print("Success to save new document at sendBlock \(sendBlockInfo)")
+                    }
+                }
+            
+            // RecivedBlock (누구에게 차단 당했는지)
+            self.dbRef.document(blockedUser.id)
+                .collection("Block")
+                .document(blockedUser.id)
+                .setData([
+                    "recivedBlock": FieldValue.arrayUnion([recivedBlockInfo.asDictionary()])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("블록 업데이트 에러: \(error)")
+                    } else {
+                        print("Success to save new document at sendBlock \(recivedBlockInfo)")
+                    }
+                }
         }
         completion()
     }
     
+    // Like 클릭시 저장 함수
     func saveLikeData(receiveUserInfo: User, likeType: Like.LikeType) {
         let docRef = Firestore.firestore().collection(Collections.likes.name)
         let myLikeUser: Like.LikeInfo = Like.LikeInfo(likedUserId: receiveUserInfo.id,
@@ -60,7 +137,7 @@ final class UserDetailViewModel {
                                                       birth: receiveUserInfo.birth,
                                                       nickName: receiveUserInfo.nickName,
                                                       mbti: receiveUserInfo.mbti,
-                                                      imageURL: receiveUserInfo.imageURLs[0], 
+                                                      imageURL: receiveUserInfo.imageURLs[0],
                                                       createdDate: Date().timeIntervalSince1970)
         let myLikeUserDic = myLikeUser.asDictionary()
         let myInfo: Like.LikeInfo = Like.LikeInfo(likedUserId: loginUser.userId,
@@ -68,7 +145,7 @@ final class UserDetailViewModel {
                                                   birth: loginUser.birth,
                                                   nickName: loginUser.nickName,
                                                   mbti: MBTIType(rawValue: loginUser.mbti) ?? .entp,
-                                                  imageURL: loginUser.imageURL, 
+                                                  imageURL: loginUser.imageURL,
                                                   createdDate: Date().timeIntervalSince1970)
         let myInfoDic = myInfo.asDictionary()
         HomeUserCardViewModel.passedMyData.append(myLikeUserDic)

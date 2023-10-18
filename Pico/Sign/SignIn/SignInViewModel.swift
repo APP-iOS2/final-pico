@@ -11,7 +11,7 @@ import FirebaseFirestoreSwift
 
 final class SignInViewModel {
     private let dbRef = Firestore.firestore()
-    var loginUser: User = UserDummyData.users[0]
+    var loginUser: User?
     var isRightUser = false
     
     func signIn(userNumber: String, completion: @escaping (User?) -> ()) {
@@ -43,8 +43,8 @@ final class SignInViewModel {
                 let imageURLs = data["imageURLs"] as? [String] ?? []
                 let createdDate = data["createdDate"] as? Double ?? 0.0
                 let subInfo = data["subInfo"] as? SubInfo ?? SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [""], personalities: [""], favoriteMBTIs: [.enfj])
-                let reports = data["reports"] as? Report ?? Report(id: id, reportedId: "", reason: "", reportedDate: 0)
-                let blocks = data["blocks"] as? Block ?? Block(blockedId: "", blockedDate: 0)
+                let reports = data["reports"] as? Report ?? Report(userId: "")
+                let blocks = data["blocks"] as? Block ?? Block(userId: "")
                 let chuCount = data["chuCount"] as? Int ?? 0
                 let isSubscribe = data["isSubscribe"] as? Bool ?? false
                 let retrievedUser = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfo, reports: [reports], blocks: [blocks], chuCount: chuCount, isSubscribe: isSubscribe)

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 enum AlertType {
     case onlyConfirm /// 확인 버튼만 있는 Alert Type
@@ -156,11 +157,15 @@ final class CustomPopupViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-20)
             make.width.equalTo(titleLabel)
-            make.height.greaterThanOrEqualTo(80)
+            make.height.equalTo(90)
         }
         switch alertType {
         case .onlyConfirm:
-            buttonsView.snp.updateConstraints { make in
+            buttonsView.snp.remakeConstraints { make in
+                make.top.equalTo(messageLabel.snp.bottom).offset(20)
+                make.centerX.equalToSuperview()
+                make.bottom.equalToSuperview().offset(-20)
+                make.width.equalTo(titleLabel)
                 make.height.equalTo(40)
             }
             confirmButton.snp.makeConstraints { make in
@@ -169,9 +174,11 @@ final class CustomPopupViewController: UIViewController {
         case .canCancel:
             confirmButton.snp.makeConstraints { make in
                 make.top.leading.trailing.equalToSuperview()
+                make.height.equalTo(40)
             }
             cancelButton.snp.makeConstraints { make in
                 make.leading.trailing.bottom.equalToSuperview()
+                make.height.equalTo(40)
             }
         }
     }

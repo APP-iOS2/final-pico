@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 final class HomeViewController: BaseViewController {
     
@@ -16,7 +17,6 @@ final class HomeViewController: BaseViewController {
     var userCards: [User] = []
     var users = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
-//    private let myLikesUpdated = PublishSubject<[Like.LikeInfo]>()
 
     lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
     lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
@@ -26,6 +26,7 @@ final class HomeViewController: BaseViewController {
     private let disposeBag = DisposeBag()
     private let viewModel = HomeViewModel()
     private let loadingView = LoadingAnimationView()
+    private let currentUser = UserDefaultsManager.shared.getUserData()
     
     // MARK: - override
     override func viewDidLoad() {
@@ -54,11 +55,22 @@ final class HomeViewController: BaseViewController {
             mbti = HomeViewModel.filterMbti
         }
         Observable.combineLatest(users, myLikes)
-            .map { users, myLikes in
+            .map { [self] users, myLikes in
                 let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
                 let myMbti = Set(mbti.map { $0.rawValue })
                 return users.filter { user in
-                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue)
+                    var maxAge = HomeViewModel.filterAgeMax
+                    var maxDistance = HomeViewModel.filterDistance
+                    if HomeViewModel.filterAgeMax == 61 {
+                        maxAge = 100
+                    }
+                    if HomeViewModel.filterDistance == 501 {
+                        maxDistance = 10000
+                    }
+                    let filterAge = (HomeViewModel.filterAgeMin..<maxAge + 1).contains(user.age)
+                    let distance = calculateDistance(user: user)
+                    let filterDistance = (0..<maxDistance + 1).contains(Int(distance / 1000))
+                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance
                 }
             }
             .observe(on: MainScheduler.instance)
@@ -102,6 +114,12 @@ final class HomeViewController: BaseViewController {
             self.view.insertSubview(tabImageViewController.view, at: 1)
             userCards.removeFirst()
         }
+    }
+    
+    private func calculateDistance(user: User) -> CLLocationDistance {
+        let currentUserLoc = CLLocation(latitude: currentUser.latitude, longitude: currentUser.longitude)
+        let otherUserLoc = CLLocation(latitude: user.location.latitude, longitude: user.location.longitude)
+        return  currentUserLoc.distance(from: otherUserLoc)
     }
     
     private func makeConstraints() {
