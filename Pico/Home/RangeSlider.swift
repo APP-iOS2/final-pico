@@ -158,12 +158,12 @@ final class RangeSlider: UIView {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
                     HomeViewModel.filterAgeMin = leftBallValue
                     HomeFilterViewController.filterChangeState = true
-                    UserDefaults.standard.set(HomeViewModel.filterAgeMin, forKey: "filterAgeMin")
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMin, forKey: UserDefaultsManager.Key.filterAgeMin.rawValue)
                 } else {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
                     HomeViewModel.filterAgeMin = leftBallValue
                     HomeFilterViewController.filterChangeState = true
-                    UserDefaults.standard.set(HomeViewModel.filterAgeMin, forKey: "filterAgeMin")
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMin, forKey: UserDefaultsManager.Key.filterAgeMin.rawValue)
                 }
             }
             if ball == rightBall {
@@ -180,12 +180,12 @@ final class RangeSlider: UIView {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
                     HomeViewModel.filterAgeMax = 61
                     HomeFilterViewController.filterChangeState = true
-                    UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: "filterAgeMax")
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: UserDefaultsManager.Key.filterAgeMax.rawValue)
                 } else {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
                     HomeViewModel.filterAgeMax = rightBallValue
                     HomeFilterViewController.filterChangeState = true
-                    UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: "filterAgeMax")
+                    UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: UserDefaultsManager.Key.filterAgeMax.rawValue)
                 }
             }
         case .ended:

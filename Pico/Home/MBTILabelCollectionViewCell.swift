@@ -62,14 +62,14 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
                 HomeViewModel.filterMbti.append(mbti)
                 
                 let mbtiData = try? JSONEncoder().encode(HomeViewModel.filterMbti)
-                UserDefaults.standard.set(mbtiData, forKey: "filterMbti")
+                UserDefaults.standard.set(mbtiData, forKey: UserDefaultsManager.Key.filterMbti.rawValue)
                 
             } else {
                 if let index = HomeViewModel.filterMbti.firstIndex(of: mbti) {
                     HomeViewModel.filterMbti.remove(at: index)
                     
                     let mbtiData = try? JSONEncoder().encode(HomeViewModel.filterMbti)
-                    UserDefaults.standard.set(mbtiData, forKey: "filterMbti")
+                    UserDefaults.standard.set(mbtiData, forKey: UserDefaultsManager.Key.filterMbti.rawValue)
                 }
             }
             HomeFilterViewController.filterChangeState = true

@@ -192,12 +192,12 @@ final class HomeFilterViewController: UIViewController {
             if sender.isSelected {
                 HomeViewModel.filterGender.append(genderType)
                 let genderData = try? JSONEncoder().encode(HomeViewModel.filterGender)
-                UserDefaults.standard.set(genderData, forKey: "filterGender")
+                UserDefaults.standard.set(genderData, forKey: UserDefaultsManager.Key.filterGender.rawValue)
             } else {
                 if let index = HomeViewModel.filterGender.firstIndex(of: genderType) {
                     HomeViewModel.filterGender.remove(at: index)
                     let genderData = try? JSONEncoder().encode(HomeViewModel.filterGender)
-                    UserDefaults.standard.set(genderData, forKey: "filterGender")
+                    UserDefaults.standard.set(genderData, forKey: UserDefaultsManager.Key.filterGender.rawValue)
                 }
             }
             updateButtonAppearance(sender)
@@ -208,7 +208,7 @@ final class HomeFilterViewController: UIViewController {
     @objc func distanceSliderValueChanged() {
         let selectedValue = Int(distanceSlider.value)
         HomeViewModel.filterDistance = selectedValue
-        UserDefaults.standard.set(HomeViewModel.filterDistance, forKey: "filterDistance")
+        UserDefaults.standard.set(HomeViewModel.filterDistance, forKey: UserDefaultsManager.Key.filterDistance.rawValue)
         if selectedValue > 500 {
             distanceValueLabel.text = "0km ~ 500km +"
         } else {

@@ -72,24 +72,24 @@ final class HomeViewModel {
     }
     
     private func loadFilterDefault() {
-        if let filterAgeMin = UserDefaults.standard.object(forKey: "filterAgeMin") as? Int {
+        if let filterAgeMin = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterAgeMin.rawValue) as? Int {
             HomeViewModel.filterAgeMin = filterAgeMin
         }
 
-        if let filterAgeMax = UserDefaults.standard.object(forKey: "filterAgeMax") as? Int {
+        if let filterAgeMax = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterAgeMax.rawValue) as? Int {
             HomeViewModel.filterAgeMax = filterAgeMax
         }
 
-        if let filterDistance = UserDefaults.standard.object(forKey: "filterDistance") as? Int {
+        if let filterDistance = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterDistance.rawValue) as? Int {
             HomeViewModel.filterDistance = filterDistance
         }
         
-        if let genderData = UserDefaults.standard.object(forKey: "filterGender") as? Data,
+        if let genderData = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterGender.rawValue) as? Data,
            let filterGender = try? JSONDecoder().decode([GenderType].self, from: genderData) {
             HomeViewModel.filterGender = filterGender
         }
 
-        if let mbtiData = UserDefaults.standard.object(forKey: "filterMbti") as? Data,
+        if let mbtiData = UserDefaults.standard.object(forKey: UserDefaultsManager.Key.filterMbti.rawValue) as? Data,
            let filterMbti = try? JSONDecoder().decode([MBTIType].self, from: mbtiData) {
             HomeViewModel.filterMbti = filterMbti
         }
