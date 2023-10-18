@@ -114,8 +114,11 @@ final class NotificationViewModel: ViewModelType {
     }
     
     private func refresh() {
+        let didSet = isEmptyPublisher
+        isEmptyPublisher = PublishSubject<Bool>()
         notifications = []
         lastDocumentSnapshot = nil
+        isEmptyPublisher = didSet
         loadNextPage()
     }
 }
