@@ -76,12 +76,10 @@ final class SignUpPhoneNumberViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
-        button.imageView?.contentMode = .scaleAspectFit
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight:
-                .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .picoGray
         return button
     }()
     
@@ -215,10 +213,11 @@ extension SignUpPhoneNumberViewController {
         showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") { [weak self] in
             guard let self = self else { return }
             guard let text = self.phoneNumberTextField.text else { return }
-            self.viewModel.checkPhoneNumber(userNumber: text) {
+            self.viewModel.checkPhoneNumber(userNumber: text) { [weak self] message in
+                guard let self = self else { return }
                 guard self.viewModel.isRightUser else {
                     SignLoadingManager.hideLoading()
-                    self.showAlert(message: "이미 등록된 번호입니다.") {
+                    self.showAlert(message: message) {
                         self.configReset()
                     }
                     return

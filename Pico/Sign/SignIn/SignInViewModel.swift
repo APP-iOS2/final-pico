@@ -14,9 +14,17 @@ final class SignInViewModel {
     var loginUser: User?
     var isRightUser = false
     
-    func signIn(userNumber: String, completion: @escaping (User?) -> ()) {
+    func signIn(userNumber: String, completion: @escaping (User?, String) -> ()) {
+        let phoneNumberRegex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
+        let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", phoneNumberRegex)
+        
+        if !phoneNumberPredicate.evaluate(with: userNumber) {
+            completion(nil, "유효하지 않은 전화번호 형식입니다.")
+            return
+        }
         Loading.showLoading()
         self.isRightUser = false
+        
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
@@ -27,9 +35,8 @@ final class SignInViewModel {
                 }
                 
                 guard let document = documents.first else {
-                    print("번호와 맞는게 없는걸?")
                     self.isRightUser = false
-                    completion(nil)
+                    completion(nil, "일치하는 번호가 없습니다.")
                     return
                 }
                 
@@ -52,7 +59,7 @@ final class SignInViewModel {
                 self.isRightUser = true
                 
                 self.loginUser = retrievedUser
-                completion(retrievedUser)
+                completion(retrievedUser, "인증번호를 입력해주세요!")
             }
         }
     }
