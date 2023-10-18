@@ -11,13 +11,13 @@ import RxSwift
 import RxCocoa
 
 final class SignInViewController: UIViewController {
+    private let authManager = SmsAuthManager()
     private let keyboardManager = KeyboardManager()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
     private let phoneNumberSubject = BehaviorSubject<String>(value: "")
     private var isFullPhoneNumber: Bool = false
     private var isTappedAuthButton: Bool = false
-    private var isAuth: Bool = false
     private var authTextFields: [UITextField] = []
     private var authText: String = ""
     
@@ -117,19 +117,10 @@ extension SignInViewController {
         phoneNumberTextField.delegate = self
     }
     
-    private func configAuthText() {
-        var authStrings: [String] = []
-        for text in authTextFields {
-            authStrings.append(text.text ?? "")
-        }
-        authText = authStrings.joined()
-    }
-    
     private func configReset() {
         keyboardManager.registerKeyboard(with: nextButton)
         isFullPhoneNumber = false
         isTappedAuthButton = false
-        isAuth = false
         for authTextField in authTextFields {
             authTextField.text = ""
         }
@@ -142,6 +133,24 @@ extension SignInViewController {
         updateAuthButton(isEnable: false, isHidden: true)
         updateAuthTextFieldStack(isShow: false)
         updateNextButton(isEnabled: false)
+    }
+    
+    private func configAuthText() {
+        var authStrings: [String] = []
+        for text in authTextFields {
+            authStrings.append(text.text ?? "")
+        }
+        authText = authStrings.joined()
+    }
+    
+    private func configTappedAuthButtonState() {
+        self.authTextFields[0].becomeFirstResponder()
+        self.isTappedAuthButton = true
+        self.updatePhoneNumberTextField(isFull: true)
+        self.updateCancelButton(isHidden: true)
+        self.updateAuthButton(isEnable: false, isHidden: false)
+        self.updateAuthTextFieldStack(isShow: true)
+        self.updateNextButton(isEnabled: true)
     }
     
     private func configButton() {
@@ -163,14 +172,10 @@ extension SignInViewController {
                         if let user = user {
                             UserDefaultsManager.shared.setUserData(userData: user)
                         }
+                        NotificationService.shared.saveToken()
                         Loading.hideLoading()
-                        self.authTextFields[0].becomeFirstResponder()
-                        self.isTappedAuthButton = true
-                        self.updatePhoneNumberTextField(isFull: true)
-                        self.updateCancelButton(isHidden: true)
-                        self.updateAuthButton(isEnable: false, isHidden: false)
-                        self.updateAuthTextFieldStack(isShow: true)
-                        self.updateNextButton(isEnabled: true)
+                        self.configTappedAuthButtonState()
+                        self.authManager.sendVerificationCode()
                     }
                 }
             })
@@ -190,13 +195,12 @@ extension SignInViewController {
             .subscribe(onNext: { [weak self] in
                 self?.configAuthText()
                 guard let self = self else { return }
-                isAuth = true
-                guard isAuth else {
+               
+                guard authManager.checkRightCode(code: authText) else {
                     showAlert(message: "비상비상 인증실패") { self.configReset() }
                     return
                 }
                 showAlert(message: "인증에 성공하셨습니다.") {
-                    print("\(self.authText)")
                     let viewController = LoginSuccessViewController()
                     self.navigationController?.pushViewController(viewController, animated: true)
                 }

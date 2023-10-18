@@ -14,7 +14,6 @@ final class ProfileEditModalMbtiCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .picoContentFont
         label.textColor = .picoFontGray
-        label.text = "하이하이"
         label.textAlignment = .center
         return label
     }()

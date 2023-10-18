@@ -13,9 +13,12 @@ final class EmptyViewController: UIViewController {
         case iLikeU = "누른 Like가 표시됩니다."
         case uLikeMe = "받은 Like가 표시됩니다."
         case message = "마음의 드는 분과 대화를 나눠보세요."
+        case notification = "도착한 알림이 없습니다."
     }
     
     private var viewType: EmptyViewType = .message
+    
+    private let contentsView = UIView()
     
     private let chuImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "chu"))
@@ -66,19 +69,24 @@ final class EmptyViewController: UIViewController {
     }
     
     private func addViews() {
-        view.addSubview([chuImage, infomationLabel])
+        view.addSubview(contentsView)
+        contentsView.addSubview([chuImage, infomationLabel])
         if viewType == .iLikeU {
-            view.addSubview(linkButton)
+            contentsView.addSubview(linkButton)
         }
         if viewType == .message {
-            view.addSubview(messageSubLabel)
+            contentsView.addSubview(messageSubLabel)
         }
     }
     
     private func makeConstraints() {
+        contentsView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
         chuImage.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
-            make.size.equalTo(Screen.width * 0.5)
+
         }
         
         infomationLabel.snp.makeConstraints { make in

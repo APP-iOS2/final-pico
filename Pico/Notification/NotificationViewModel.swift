@@ -11,8 +11,17 @@ import RxRelay
 import FirebaseFirestore
 
 final class NotificationViewModel: ViewModelType {
-    var notifications: [Noti] = []
+    var notifications: [Noti] = [] {
+        didSet {
+            if notifications.isEmpty {
+                isEmptyPublisher.onNext(true)
+            } else {
+                isEmptyPublisher.onNext(false)
+            }
+        }
+    }
     private let reloadTableViewPublisher = PublishSubject<Void>()
+    private var isEmptyPublisher = PublishSubject<Bool>()
     private let disposeBag: DisposeBag = DisposeBag()
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 90)
     var lastDocumentSnapshot: DocumentSnapshot?
@@ -20,10 +29,12 @@ final class NotificationViewModel: ViewModelType {
     struct Input {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
+        let checkEmpty: Observable<Void>
     }
     
     struct Output {
         let reloadTableView: Observable<Void>
+        let notificationIsEmpty: Observable<Bool>
     }
     
     func transform(input: Input) -> Output {
@@ -40,7 +51,29 @@ final class NotificationViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        return Output(reloadTableView: reloadTableViewPublisher.asObservable())
+        let didset = isEmptyPublisher.asObservable()
+            .map { result in
+                return result
+            }
+        
+        let check = input.checkEmpty
+            .withUnretained(self)
+            .map { viewModel, _ -> Bool in
+                if viewModel.notifications.isEmpty {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        let isEmpty = Observable.of(didset, check).merge()
+            .flatMapLatest { bool -> Observable<Bool> in
+                return Observable.create { emitter in
+                    emitter.onNext(bool)
+                    return Disposables.create()
+                }
+            }
+        
+        return Output(reloadTableView: reloadTableViewPublisher.asObservable(), notificationIsEmpty: isEmpty)
     }
     
     private func loadNextPage() {

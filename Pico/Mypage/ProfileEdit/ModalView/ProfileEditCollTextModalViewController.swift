@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 import RxSwift
-/*취미, 성격, mbti*/
+/*취미, 성격*/
 final class ProfileEditCollTextModalViewController: UIViewController {
     private let backButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
@@ -93,7 +93,6 @@ final class ProfileEditCollTextModalViewController: UIViewController {
     
     init(profileEditViewModel: ProfileEditViewModel) {
         self.profileEditViewModel = profileEditViewModel
-        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -149,10 +148,8 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         profileEditViewModel.modalName
             .bind(to: titleLabel.rx.text)
             .disposed(by: disposeBag)
-        
         let loadData = profileEditViewModel.collectionData ?? []
         collectionData = loadData
-       
     }
     
     private func textFieldConfigure() {

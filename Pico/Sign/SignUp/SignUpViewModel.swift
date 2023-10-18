@@ -47,7 +47,7 @@ final class SignUpViewModel {
     
     init() {
         locationSubject.subscribe { location in
-            SignLoadingManager.showLoading(text: "위치정보를 받는중이에요!!")
+            SignLoadingManager.showLoading(text: "")
             self.newUser.location = location
             self.saveImage()
         }
@@ -106,22 +106,39 @@ final class SignUpViewModel {
         }
     }
     
-    func checkNickName(name: String, completion: @escaping () -> ()) {
+    func checkNickName(name: String, completion: @escaping (_ message: String) -> ()) {
         SignLoadingManager.showLoading(text: "중복된 닉네임을 찾고 있어요!")
-        self.dbRef.collection("users").whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
-            guard err == nil, let documents = snapShot?.documents else {
-                print(err ?? "서버오류 비상비상")
-                self.isRightName = false
-                return
-            }
+        
+        do {
+            let pattern = "([ㄱ-ㅎㅏ-ㅣ]){2,8}"
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
+            let matches = regex.matches(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))
             
-            guard documents.first != nil else {
-                self.isRightName = true
-                completion()
+            if matches.isEmpty {
+                self.dbRef.collection("users").whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
+                    guard err == nil, let documents = snapShot?.documents else {
+                        print(err ?? "서버오류 비상비상")
+                        self.isRightName = false
+                        return
+                    }
+                    
+                    guard documents.first != nil else {
+                        self.isRightName = true
+                        completion("사용가능한 닉네임이에요!!")
+                        return
+                    }
+                    self.isRightName = false
+                    completion("이미 포함된 닉네임이네요..")
+                }
+            } else {
+                self.isRightName = false
+                completion("연속된 자음 또는 모음이 포함되어 있어요! 제대로 지어주세요 😁")
                 return
             }
+        } catch {
             self.isRightName = false
-            completion()
+            completion("정규식 에러: \(error)")
+            return
         }
     }
 }

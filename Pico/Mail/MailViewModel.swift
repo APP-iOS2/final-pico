@@ -75,18 +75,16 @@ final class MailViewModel {
     }
     
     func refresh() {
-        //mailSendList = []
-        //mailRecieveList = []
         loadNextMailPage()
     }
     
-    func saveMailData(receiveUserId: String, message: String) {
-        let senderUserId: String = UserDefaultsManager.shared.getUserData().userId
+    func saveMailData(receiveUser: User, message: String) {
+        let senderUser = UserDefaultsManager.shared.getUserData()
         
         let sendMessages: [String: Any] = [
             "id": UUID().uuidString,
-            "sendedUserId": senderUserId,
-            "receivedUserId": receiveUserId,
+            "sendedUserId": senderUser.userId,
+            "receivedUserId": receiveUser.id,
             "message": message,
             "sendedDate": Date().timeIntervalSince1970.toString(),
             "mailType": "send",
@@ -95,8 +93,8 @@ final class MailViewModel {
         
         let receiveMessages: [String: Any] = [
             "id": UUID().uuidString,
-            "sendedUserId": senderUserId,
-            "receivedUserId": receiveUserId,
+            "sendedUserId": senderUser.userId,
+            "receivedUserId": receiveUser.id,
             "message": message,
             "sendedDate": Date().timeIntervalSince1970.toString(),
             "mailType": "receive",
@@ -104,9 +102,9 @@ final class MailViewModel {
         ]
         
         // 보내는 사람
-        dbRef.collection(Collections.mail.name).document(senderUserId).setData(
+        dbRef.collection(Collections.mail.name).document(senderUser.userId).setData(
             [
-                "userId": senderUserId,
+                "userId": senderUser.userId,
                 "sendMailInfo": FieldValue.arrayUnion([sendMessages])
             ], merge: true) { error in
                 if let error = error {
@@ -117,9 +115,9 @@ final class MailViewModel {
             }
         
         // 받는 사람
-        dbRef.collection(Collections.mail.name).document(receiveUserId).setData(
+        dbRef.collection(Collections.mail.name).document(receiveUser.id).setData(
             [
-                "userId": receiveUserId,
+                "userId": receiveUser.id,
                 "receiveMailInfo": FieldValue.arrayUnion([receiveMessages])
             ], merge: true) { error in
                 if let error = error {
@@ -128,6 +126,12 @@ final class MailViewModel {
                     print("평가 업데이트 성공")
                 }
             }
+        
+        // noti 데이터 넣기
+        guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
+        let receiverNoti = Noti(receiveId: receiveUser.id, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+        
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
     }
     
     func getUser(userId: String, completion: @escaping () -> ()) {

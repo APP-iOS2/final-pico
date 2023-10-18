@@ -6,6 +6,12 @@
 //
 
 import UIKit
+import SnapKit
+import PhotosUI
+
+protocol ProfileEditImageDelegate: AnyObject {
+    func presentPickerView()
+}
 
 final class ProfileEditImageTableCell: UITableViewCell {
     
@@ -28,7 +34,9 @@ final class ProfileEditImageTableCell: UITableViewCell {
         return view
     }()
     
+    weak var profileEditImageDelegate: ProfileEditImageDelegate?
     private var images = [String]()
+    private var profileEditViewModel: ProfileEditViewModel?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -48,8 +56,9 @@ final class ProfileEditImageTableCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func config(images: [String]) {
+    func config(images: [String], viewModel: ProfileEditViewModel) {
         self.images = images
+        profileEditViewModel = viewModel
         collectionView.reloadData()
     }
     
@@ -71,6 +80,15 @@ final class ProfileEditImageTableCell: UITableViewCell {
             make.top.bottom.equalToSuperview()
         }
     }
+    @objc private func tappedDeleteButton(_ sender: UIButton) {
+        let index = sender.tag
+        images.remove(at: index)
+        profileEditViewModel?.modalType = .imageURLs
+        profileEditViewModel?.collectionData = images
+        profileEditViewModel?.updateData(data: images)
+
+    }
+
 }
 
 extension ProfileEditImageTableCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -83,6 +101,8 @@ extension ProfileEditImageTableCell: UICollectionViewDataSource, UICollectionVie
         if indexPath.row < images.count {
             let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditCollectionCell.self)
             cell.configure(imageName: self.images[indexPath.row])
+            cell.deleteButton.tag = indexPath.row
+            cell.deleteButton.addTarget(self, action: #selector(tappedDeleteButton), for: .touchUpInside)
             cell.cellConfigure()
             return cell
         } else {
@@ -99,5 +119,10 @@ extension ProfileEditImageTableCell: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if images.count == indexPath.row {
+            profileEditViewModel?.modalType = .imageURLs
+            profileEditViewModel?.collectionData = images
+            profileEditImageDelegate?.presentPickerView()
+        }
     }
 }

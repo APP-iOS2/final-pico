@@ -18,7 +18,7 @@ final class ProfileEditCollectionCell: UICollectionViewCell {
         return imageView
     }()
     
-    private let deleteButton: UIButton = {
+    let deleteButton: UIButton = {
         let button = UIButton(configuration: .plain())
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 17, weight: .light)
         let image = UIImage(systemName: "xmark.circle.fill", withConfiguration: imageConfig)
