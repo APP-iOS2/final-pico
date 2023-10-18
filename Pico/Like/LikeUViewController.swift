@@ -17,15 +17,17 @@ final class LikeUViewController: UIViewController {
     private let refreshControl = UIRefreshControl()
     private let listLoadPublisher = PublishSubject<Void>()
     private let refreshPublisher = PublishSubject<Void>()
+    private let checkEmptyPublisher = PublishSubject<Void>()
     private var isLoading = false
     private var isRefresh = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        collectionView.reloadData()
         if viewModel.likeUList.isEmpty {
             refreshPublisher.onNext(())
         }
+        collectionView.reloadData()
+        checkEmptyPublisher.onNext(())
     }
     
     override func viewDidLoad() {
@@ -154,7 +156,7 @@ extension LikeUViewController: UIScrollViewDelegate {
 // MARK: - bind
 extension LikeUViewController {
     private func bind() {
-        let input = LikeUViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher)
+        let input = LikeUViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher)
         let output = viewModel.transform(input: input)
         
         output.likeUIsEmpty
@@ -181,6 +183,7 @@ extension LikeUViewController {
             .withUnretained(self)
             .subscribe { viewController, _ in
                 viewController.collectionView.reloadData()
+                viewController.checkEmptyPublisher.onNext(())
             }
             .disposed(by: disposeBag)
     }
