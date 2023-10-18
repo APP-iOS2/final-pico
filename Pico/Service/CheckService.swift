@@ -33,7 +33,7 @@ final class CheckService {
                     completion("서버오류 비상비상", false)
                     return
                 }
-                
+
                 guard documents.first != nil else {
                     completion("사용가능한 전화번호 입니다.", true)
                     return
@@ -59,16 +59,12 @@ final class CheckService {
                         print(err ?? "서버오류 비상비상")
                         return
                     }
-//                    self.dbRef.collection("users").document("nickName").getDocument { DocumentSnapshot?, err in
-//                                                
-//                    }
-//                        
+                        
                     guard documents.first != nil else {
                         completion("사용가능한 닉네임이에요!!", true)
                         return
                     }
                     completion("이미 포함된 닉네임이네요..", false)
-                    
                 }
             } else {
                 completion("연속된 자음 또는 모음이 포함되어 있어요! 제대로 지어주세요 😁", false)
