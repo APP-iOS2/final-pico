@@ -226,18 +226,19 @@ extension SignUpNickNameViewController {
 extension SignUpNickNameViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
+        if string == " " {
+            return false
+        }
         let currentText = textField.text ?? ""
         var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
         newText = newText.replacingOccurrences(of: " ", with: "")
-        
         updateCheckButton(isFull: false)
         
         if newText.count > minNickNameWordCount {
             updateCheckButton(isFull: true)
         }
         
-        return newText.count < maxNickNameWordCount + 1
+        return newText.count <= maxNickNameWordCount
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
