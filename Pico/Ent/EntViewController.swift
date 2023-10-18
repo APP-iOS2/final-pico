@@ -30,7 +30,7 @@ final class EntViewController: BaseViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            make.height.equalTo(Screen.height * 0.12)
+            make.height.equalTo(Screen.height * 0.15)
         }
         
         worldCupViewController.view.snp.makeConstraints { make in
