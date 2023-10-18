@@ -20,6 +20,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
         UIApplication.shared.registerForRemoteNotifications()
+        if launchOptions != nil {
+            let userInfo = launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification]
+            if userInfo != nil {
+                moveNotificationView()
+            }
+        }
         return true
     }
 
@@ -50,15 +56,27 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        let userInfo = response.notification.request.content.userInfo
-        Messaging.messaging().appDidReceiveMessage(userInfo)
+        moveNotificationView()
         completionHandler()
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         completionHandler(UIBackgroundFetchResult.newData)
     }
-
+    
+    private func moveNotificationView() {
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            guard var rootViewController = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window?.rootViewController else { return }
+            let notificationViewController = NotificationViewController()
+            if let tabBarController = rootViewController as? UITabBarController {
+                if let selectedNavigationController = tabBarController.selectedViewController as? UINavigationController {
+                    selectedNavigationController.pushViewController(notificationViewController, animated: true)
+                }
+            } else if let navigationController = rootViewController as? UINavigationController {
+                rootViewController.navigationController?.pushViewController(notificationViewController, animated: true)
+            }
+        }
+    }
 }
 
 extension AppDelegate: MessagingDelegate {
