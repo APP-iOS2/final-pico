@@ -12,6 +12,7 @@ import RxCocoa
 /* TODOs:
  like OR disLike 됐는지 판단 해 버튼 모양 다르게 -> 판단은 어떻게? [🔥]  DB로 판단?
  자동 높이 조절
+ 서브인포 있을때마다 추가,,
  
  */
 
@@ -25,7 +26,7 @@ final class UserDetailViewController: UIViewController {
     private let basicInformationViewContoller = BasicInformationViewContoller()
     private let aboutMeViewController = AboutMeViewController()
     private let subInfomationViewController = SubInfomationViewController()
-    //
+    
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isScrollEnabled = true
@@ -37,7 +38,6 @@ final class UserDetailViewController: UIViewController {
         stackView.axis = .vertical
         stackView.distribution = .fillProportionally
         stackView.alignment = .fill
-        stackView.spacing = 10
         return stackView
     }()
     
@@ -66,7 +66,7 @@ final class UserDetailViewController: UIViewController {
     }()
     
     private let actionSheetController = UIAlertController()
-    
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         Loading.showLoading()
@@ -79,12 +79,13 @@ final class UserDetailViewController: UIViewController {
         configActionSheet()
         buttonAction()
         bind()
+        Loading.hideLoading()
     }
-    
+    // MARK: - objc
     @objc func tappedNavigationButton() {
         self.present(actionSheetController, animated: true)
     }
-    
+    // MARK: - RxSwift
     // 버튼 클릭시 액션 (Like, DisLike)
     private func buttonAction() {
         likeButton.rx.tap
@@ -126,21 +127,21 @@ final class UserDetailViewController: UIViewController {
                 self.basicInformationViewContoller.config(mbti: user.mbti, nameAgeText: "\(user.nickName),  \(user.age)", locationText: "\(user.location.address)", heightText: "\(1756)")
                 guard let subInfo = user.subInfo else { return }
                 self.configSubInfoView()
-                self.aboutMeViewController.config(intro: subInfo.intro ?? "", eduText: "\(subInfo.education)", religionText: "\(subInfo.religion)", smokeText: "\(subInfo.smokeStatus)", jobText: "\(subInfo.job)", drinkText: "\(subInfo.drinkStatus)")
-                self.subInfomationViewController.config(hobbies: subInfo.hobbies ?? [], personalities: subInfo.personalities ?? [], likeMbtis: subInfo.favoriteMBTIs ?? [])
+                self.aboutMeViewController.config(intro: subInfo.intro, eduText: "\(subInfo.education)", religionText: "\(subInfo.religion)", smokeText: "\(subInfo.smokeStatus)", jobText: subInfo.job ?? "", drinkText: "\(subInfo.drinkStatus)")
+                self.subInfomationViewController.config(hobbies: subInfo.hobbies, personalities: subInfo.personalities, likeMbtis: subInfo.favoriteMBTIs)
             }, onCompleted: {
                 Loading.hideLoading()
             })
             .disposed(by: disposeBag)
     }
     
-    // 네비게이션 바 설정
+    // MARK: - NavigaionBar Config
     private func configureNavigationBar() {
         let rightBarButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(tappedNavigationButton))
         self.navigationItem.rightBarButtonItem = rightBarButton
         self.navigationController?.navigationBar.tintColor = .black
     }
-    
+    // MARK: - RightBarButtonItem Cofing
     // 바 버튼 아이템 클릭시 액션시트
     private func configActionSheet() {
         // 신고 버튼 클릭 시 다음 액션 시트로 이동
@@ -151,7 +152,7 @@ final class UserDetailViewController: UIViewController {
         // 차단 버튼 클릭 시 ShowAlert
         let actionBlock = UIAlertAction(title: "차단", style: .default) { _ in
             self.showAlert(message: "차단 하시겠습니까?", title: "차단하기", isCancelButton: true) {
-                self.viewModel.blockUser(block: Block(blockedId: "12066FD9-5F5E-4F62-9F7B-FFF1113E8FCD", blockedDate: Date().timeIntervalSince1970)) {
+                self.viewModel.blockUser(blockedUser: self.user) {
                     self.showAlert(message: "차단 완료", yesAction: nil)
                 }
             }
@@ -192,7 +193,7 @@ final class UserDetailViewController: UIViewController {
     
     // DB에 신고 내용 저장
     private func reportAction(reason: String) {
-        self.viewModel.reportUser(report: Report(reportedId: "\(self.user.id)", reason: reason, reportedDate: Date().timeIntervalSince1970)) {
+        self.viewModel.reportUser(reportedUser: user, reason: reason) {
             self.showAlert(message: "신고완료", yesAction: nil)
         }
     }
@@ -202,8 +203,8 @@ final class UserDetailViewController: UIViewController {
 extension UserDetailViewController {
     // subInfo가 있을 시 뷰에 추가
     private func configSubInfoView() {
-        verticalStackView.addArrangedSubview(aboutMeViewController.view)
-        verticalStackView.addArrangedSubview(subInfomationViewController.view)
+        [aboutMeViewController.view, subInfomationViewController.view].forEach { verticalStackView.addArrangedSubview($0) }
+        
         subInfomationViewController.view.snp.makeConstraints { make in
             make.height.equalTo(Screen.height * 0.7)
         }
@@ -222,10 +223,8 @@ extension UserDetailViewController {
     
     private func addViews() {
         [scrollView, disLikeButton, likeButton].forEach { view.addSubview($0) }
-        scrollView.addSubview(verticalStackView)
-        scrollView.addSubview(userImageViewController.view)
-        [basicInformationViewContoller.view]
-            .forEach { verticalStackView.addArrangedSubview($0) }
+        [verticalStackView, userImageViewController.view].forEach { scrollView.addSubview($0) }
+      verticalStackView.addArrangedSubview(basicInformationViewContoller.view)
     }
     
     private func makeConstraints() {
@@ -292,3 +291,4 @@ extension UserDetailViewController {
         }
     }
 }
+    
