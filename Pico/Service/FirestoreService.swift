@@ -16,6 +16,8 @@ enum Collections {
     case notifications
     case mail
     case payment
+    case tokens
+    case unsubscribe
     
     var name: String {
         switch self {
@@ -29,6 +31,10 @@ enum Collections {
             return "mail"
         case .payment:
             return "payment"
+        case .tokens:
+            return "tokens"
+        case .unsubscribe:
+            return "unsubscribe"
         }
     }
 }
@@ -105,7 +111,7 @@ final class FirestoreService {
         }
     }
     
-    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type, completion: @escaping (Result<[T]?, Error>) -> Void) {
+    func searchDocumentWithEqualField<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type, completion: @escaping (Result<[T], Error>) -> Void) {
         DispatchQueue.global().async {
             let query = self.dbRef.collection(collectionId.name).whereField(field, isEqualTo: compareWith)
             query.getDocuments { (querySnapshot, error) in
@@ -117,7 +123,7 @@ final class FirestoreService {
                 
                 if querySnapshot?.documents.isEmpty == true {
                     print("At \(collectionId.name) document is Empty")
-                    completion(.success(nil))
+                    completion(.success([]))
                 } else {
                     var result: [T] = []
                     for document in querySnapshot!.documents {
@@ -209,7 +215,9 @@ final class FirestoreService {
     }
     
     func updataDocuments<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
-            let jsonData = data.asDictionary()
+        let jsonData = data.asDictionary()
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
             dbRef.collection(collectionId.name).document(documentId).updateData([field: jsonData]) { error in
                 if let error = error {
                     completion(.failure(error))
@@ -219,8 +227,25 @@ final class FirestoreService {
                     print("Document successfully updated")
                 }
             }
+        }
     }
     
+    func removeDocument(collectionId: Collections, documentId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            dbRef.collection(collectionId.name).document(documentId).delete { err in
+                if let err = err {
+                    completion(.failure(err))
+                    print("Error updating document: \(err)")
+                } else {
+                    completion(.success(()))
+                    print("Document successfully updated")
+                }
+            }
+        }
+    }
+    
+    // MARK: - Rx
     func saveDocumentRx<T: Codable>(collectionId: Collections, documentId: String, data: T) -> Observable<Void> {
         return Observable.create { emitter in
             self.saveDocument(collectionId: collectionId, documentId: documentId, data: data) { result in
@@ -307,6 +332,36 @@ final class FirestoreService {
                 switch result {
                 case .success(let data):
                     emitter.onNext(data)
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func searchDocumentWithEqualFieldRx<T: Codable>(collectionId: Collections, field: String, compareWith: Any, dataType: T.Type) -> Observable<[T]> {
+        return Observable.create { [weak self] emitter in
+            guard let self = self else { return Disposables.create() }
+            searchDocumentWithEqualField(collectionId: collectionId, field: field, compareWith: compareWith, dataType: dataType) { result in
+                switch result {
+                case .success(let data):
+                    emitter.onNext(data)
+                case .failure(let error):
+                    emitter.onError(error)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func removeDocumentRx(collectionId: Collections, documentId: String) -> Observable<Void> {
+        return Observable.create { [weak self] emitter in
+            guard let self = self else { return Disposables.create() }
+            removeDocument(collectionId: collectionId, documentId: documentId) { result in
+                switch result {
+                case .success:
+                    emitter.onNext(())
                 case .failure(let error):
                     emitter.onError(error)
                 }

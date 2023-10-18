@@ -79,6 +79,8 @@ final class MailViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.viewModel.refresh()
+        viewRefresh()
         mailListTableView.reloadData()
     }
     
@@ -273,7 +275,7 @@ extension MailViewController {
             .subscribe(onNext: { item in
                 let mailReceiveView = MailReceiveViewController()
                 mailReceiveView.modalPresentationStyle = .formSheet
-                mailReceiveView.getReceiver(mailSender: item)
+                mailReceiveView.configData(mailSender: item)
                 self.present(mailReceiveView, animated: true, completion: nil)
             })
             .disposed(by: disposeBag)

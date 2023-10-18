@@ -13,6 +13,7 @@ enum RecordType: CaseIterable {
     case report
     case block
     case like
+    case payment
     
     var name: String {
         switch self {
@@ -22,6 +23,8 @@ enum RecordType: CaseIterable {
             return "차단 기록"
         case .like:
             return "좋아요 기록"
+        case .payment:
+            return "결제 기록"
         }
     }
 }

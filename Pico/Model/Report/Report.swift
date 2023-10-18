@@ -8,7 +8,7 @@
 import Foundation
 
 struct Report: Codable {
-    let userId: String
+    let userId: String?
     var sendReport: [ReportInfo]?
     var recivedReport: [ReportInfo]?
     

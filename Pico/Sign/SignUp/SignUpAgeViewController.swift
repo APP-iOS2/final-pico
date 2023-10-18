@@ -90,9 +90,6 @@ final class SignUpAgeViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 4)
     }
-    override func viewDidDisappear(_ animated: Bool) {
-        SignLoadingManager.hideLoading()
-    }
 }
 // MARK: - Config
 extension SignUpAgeViewController {
@@ -118,10 +115,8 @@ extension SignUpAgeViewController {
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isChoiceAge {
-
             viewModel.birth = userAge
             sender.tappedAnimation()
-            SignLoadingManager.showLoading(text: "넘어가는중!")
             let viewController = SignUpNickNameViewController(viewModel: viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }

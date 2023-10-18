@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 final class HomeViewController: BaseViewController {
     
@@ -16,7 +17,6 @@ final class HomeViewController: BaseViewController {
     var userCards: [User] = []
     var users = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
-//    private let myLikesUpdated = PublishSubject<[Like.LikeInfo]>()
 
     lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
     lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
@@ -42,7 +42,6 @@ final class HomeViewController: BaseViewController {
             .disposed(by: disposeBag)
         loadCards()
     }
-    
     private func addSubView() {
         view.addSubview([likeLabel, passLabel])
     }
@@ -54,11 +53,22 @@ final class HomeViewController: BaseViewController {
             mbti = HomeViewModel.filterMbti
         }
         Observable.combineLatest(users, myLikes)
-            .map { users, myLikes in
+            .map { [self] users, myLikes in
                 let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
                 let myMbti = Set(mbti.map { $0.rawValue })
                 return users.filter { user in
-                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue)
+                    var maxAge = HomeViewModel.filterAgeMax
+                    var maxDistance = HomeViewModel.filterDistance
+                    if HomeViewModel.filterAgeMax == 61 {
+                        maxAge = 100
+                    }
+                    if HomeViewModel.filterDistance == 501 {
+                        maxDistance = 10000
+                    }
+                    let filterAge = (HomeViewModel.filterAgeMin..<maxAge + 1).contains(user.age)
+                    let distance = viewModel.calculateDistance(user: user)
+                    let filterDistance = (0..<maxDistance + 1).contains(Int(distance / 1000))
+                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance
                 }
             }
             .observe(on: MainScheduler.instance)

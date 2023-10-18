@@ -13,6 +13,7 @@ final class SmsAuthManager {
     let serviceId = "ncp:sms:kr:312998324468:pico"
     let senderPhoneNumber = "01095570253"
     let receiverPhoneNumber = "01094863904"
+    var smsCode = ""
     
     struct SMSMessage: Codable {
         let type: String
@@ -24,22 +25,8 @@ final class SmsAuthManager {
     }
 
     struct Message: Codable {
-        let too: String
-    }
-
-    func encodeJson(type: String, contentType: String, countryCode: String, from: String, content: String, too: String) -> Data? {
-        let tempSms = SMSMessage(type: type, contentType: contentType, countryCode: countryCode, from: from, content: content, messages: [Message(too: too)])
-
-        do {
-            let jsonData = try JSONEncoder().encode(tempSms)
-            // 성공적으로 인코딩된 데이터를 사용할 수 있음
-            print("Encoded JSON Data: \(jsonData)")
-            return jsonData
-        } catch {
-            // 인코딩 중에 에러가 발생한 경우 에러 처리
-            print("에러에러 비상비상: \(error)")
-            return nil
-        }
+        let too: String // 린트때매 too 라고 함..
+        let content: String
     }
     
     func sendVerificationCode() {
@@ -102,7 +89,28 @@ final class SmsAuthManager {
             let digit = digits[digits.index(digits.startIndex, offsetBy: randomIndex)]
             randomCode.append(digit)
         }
+        smsCode = randomCode
         return randomCode
+    }
+    
+    func checkRightCode(code: String) -> Bool {
+        print(code)
+        // MARK: - 이제 비교해야함
+        return true
+    }
+    
+    func encodeJson(type: String, contentType: String, countryCode: String, from: String, content: String, too: String) -> Data? {
+        let tempSms = SMSMessage(type: type, contentType: contentType, countryCode: countryCode, from: from, content: content, messages: [Message(too: too, content: "api 테스트")])
+
+        do {
+            let jsonData = try JSONEncoder().encode(tempSms)
+            // 성공적으로 인코딩된 데이터를 사용할 수 있음
+            return jsonData
+        } catch {
+            // 인코딩 중에 에러가 발생한 경우 에러 처리
+            print("에러에러 비상비상: \(error)")
+            return nil
+        }
     }
     
     func configSignature(accessKey: String, secretKey: String, timestamp: String, url: String, body: String) -> String {

@@ -10,8 +10,8 @@ import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
-    let viewModel: SignUpViewModel
-    
+    private let viewModel: SignUpViewModel
+    private let checkNickNameService = CheckService()
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -81,11 +81,10 @@ final class SignUpNickNameViewController: UIViewController {
     
     private lazy var nickNameCancleButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
-        button.imageView?.contentMode = .scaleAspectFit
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .picoGray
         return button
     }()
     
@@ -119,10 +118,6 @@ final class SignUpNickNameViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         keyboardManager.unregisterKeyboard()
-    }
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        SignLoadingManager.hideLoading()
     }
 }
 // MARK: - Config
@@ -177,18 +172,24 @@ extension SignUpNickNameViewController {
     // MARK: - @objc
     @objc private func tappedCheckButton(_ sender: UIButton) {
         sender.tappedAnimation()
-        guard let text = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
-        userNickName = text
-        showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) {
-            self.viewModel.checkNickName(name: self.userNickName) {
-                guard self.viewModel.isRightName else {
+        guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
+        showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) { [weak self] in
+            guard let self = self else { return }
+            self.checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
+                guard let self = self else { return }
+                guard isRight else {
                     SignLoadingManager.hideLoading()
-                    self.showAlert(message: "이미 등록된 이름입니다.") {
+                    self.showAlert(message: message) {
+                        self.viewModel.isRightName = isRight
                         self.reset()
                     }
                     return
                 }
                 SignLoadingManager.hideLoading()
+                self.showAlert(message: message) {
+                    self.viewModel.isRightName = isRight
+                    self.userNickName = userNickName
+                }
             }
             self.updateCheckButton(isFull: true, ischeck: true)
             self.updateNextButton(isCheck: true)
@@ -215,8 +216,7 @@ extension SignUpNickNameViewController {
          
          위에 메시지가 뜨면서 다음 뷰컨으로 넘어가는게 조금 걸립니다 !
          */
-        self.viewModel.nickName = userNickName
-        SignLoadingManager.showLoading(text: "넘어가는중!")
+        viewModel.nickName = userNickName
         let viewController = SignUpPictureViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -226,18 +226,19 @@ extension SignUpNickNameViewController {
 extension SignUpNickNameViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
+        if string == " " {
+            return false
+        }
         let currentText = textField.text ?? ""
         var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
         newText = newText.replacingOccurrences(of: " ", with: "")
-        
         updateCheckButton(isFull: false)
         
         if newText.count > minNickNameWordCount {
             updateCheckButton(isFull: true)
         }
         
-        return newText.count < maxNickNameWordCount + 1
+        return newText.count <= maxNickNameWordCount
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

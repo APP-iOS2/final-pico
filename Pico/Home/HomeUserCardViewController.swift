@@ -8,15 +8,19 @@
 import UIKit
 import SnapKit
 import RxSwift
+import CoreLocation
 
 final class HomeUserCardViewController: UIViewController {
     
     weak var homeViewController: HomeViewController?
     private let user: User
+    private var distance = CLLocationDistance()
     private let disposeBag = DisposeBag()
     private var panGesture = UIPanGestureRecognizer()
     private var initialCenter = CGPoint()
     private let viewModel = HomeUserCardViewModel()
+    private let currentUser = UserDefaultsManager.shared.getUserData()
+    private var distanceLabel = UILabel()
     
     init(user: User) {
         self.user = user
@@ -100,9 +104,8 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func addSubView() {
-        for viewItem in [scrollView, pageControl, pageRightButton, pageLeftButton, pickBackButton, disLikeButton, likeButton, infoHStack, infoMBTILabel] {
-            view.addSubview(viewItem)
-        }
+        view.addSubview([scrollView, pageControl, pageRightButton, pageLeftButton, pickBackButton, disLikeButton, likeButton, infoHStack, infoMBTILabel, distanceLabel])
+        
         infoHStack.addArrangedSubview(infoVStack)
         infoHStack.addArrangedSubview(infoButton)
         
@@ -177,6 +180,14 @@ final class HomeUserCardViewController: UIViewController {
             make.bottom.equalTo(infoLocationLabel.snp.bottom).offset(40)
             make.width.equalTo(infoMBTILabel.frame.size.width)
         }
+        
+        distanceLabel.snp.makeConstraints { make in
+            make.top.equalTo(infoNameAgeLabel.snp.top)
+            make.trailing.equalTo(infoNameAgeLabel.snp.trailing).offset(-15)
+            make.bottom.equalTo(infoNameAgeLabel.snp.bottom)
+            make.width.equalTo(100)
+        }
+        
     }
     
     private func configButtons() {
@@ -188,6 +199,12 @@ final class HomeUserCardViewController: UIViewController {
     private func configLabels() {
         infoNameAgeLabel.text = "\(user.nickName) \(user.age)"
         infoLocationLabel.text = user.location.address
+        
+        distance = calculateDistance(user: user)
+        distanceLabel.text = "\(String(format: "%.2f", distance / 1000))km"
+        distanceLabel.textColor = .white
+        distanceLabel.textAlignment = .right
+        distanceLabel.font = .picoSubTitleFont
     }
     
     private func configGesture() {
@@ -248,6 +265,12 @@ final class HomeUserCardViewController: UIViewController {
                 scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(user.imageURLs.count), height: scrollView.frame.height)
             }
         }
+    }
+    
+    private func calculateDistance(user: User) -> CLLocationDistance {
+        let currentUserLoc = CLLocation(latitude: currentUser.latitude, longitude: currentUser.longitude)
+        let otherUserLoc = CLLocation(latitude: user.location.latitude, longitude: user.location.longitude)
+        return  currentUserLoc.distance(from: otherUserLoc)
     }
     
     @objc func touchGesture(_ gesture: UIPanGestureRecognizer) {

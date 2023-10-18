@@ -53,13 +53,10 @@ final class ProfileEditTextTabelCell: UITableViewCell {
     
     func configure(titleLabel: String, contentLabel: String?) {
         self.titleLabel.text = titleLabel
-       
         guard let contentLabel else { return }
-        print(contentLabel)
         if !contentLabel.isEmpty {
             self.contentLabel.text = contentLabel
         }
-        
     }
     
     private func addSubView() {

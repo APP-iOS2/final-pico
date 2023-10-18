@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct User: Codable {
+struct User: Codable, Hashable {
     var id: String = UUID().uuidString
     let mbti: MBTIType
     let phoneNumber: String
@@ -19,11 +19,11 @@ struct User: Codable {
     let createdDate: Double
     
     /// 추가정보
-    let subInfo: SubInfo?
+    var subInfo: SubInfo?
     /// 나를 신고한 기록
-    let reports: [Report]?
+    var reports: [Report]?
     /// 내가 차단한 기록
-    let blocks: [Block]?
+    var blocks: [Block]?
     
     let chuCount: Int
     let isSubscribe: Bool
@@ -34,6 +34,14 @@ struct User: Codable {
         let birthdate = birth.toDate()
         let ageComponents = calendar.dateComponents([.year], from: birthdate, to: currentDate)
         return ageComponents.year ?? 0
+    }
+    
+    static func == (lhs: User, rhs: User) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 

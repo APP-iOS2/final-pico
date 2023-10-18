@@ -25,7 +25,10 @@ final class WorldCupUserInfoStackView: UIView {
         label.textAlignment = .right
         label.textColor = UIColor.picoBlue
         label.font = UIFont.picoDescriptionFont
+        label.numberOfLines = 0
         label.setContentHuggingPriority(.required, for: .horizontal)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.heightAnchor.constraint(lessThanOrEqualToConstant: 60).isActive = true
         return label
     }
     
@@ -79,11 +82,6 @@ final class WorldCupUserInfoStackView: UIView {
 
         for (index, text) in texts.enumerated() {
             dataLabels[index].text = text
-
-            if index == 2, !text.isEmpty, text.count > 6 {
-                let truncatedText = String(text.prefix(6)) + "..."
-                dataLabels[index].text = truncatedText
-            }
         }
     }
 }

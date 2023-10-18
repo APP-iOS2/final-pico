@@ -11,6 +11,7 @@ final class UserDefaultsManager {
     enum Key: String, CaseIterable {
         case userId, nickName, mbti, imageURL, birth
         case latitude, longitude
+        case filterGender, filterMbti, filterDistance, filterAgeMin, filterAgeMax
         case chuCount
     }
     
