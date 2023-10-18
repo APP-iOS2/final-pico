@@ -98,9 +98,6 @@ final class SignUpPictureViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 6)
     }
-    override func viewDidDisappear(_ animated: Bool) {
-        SignLoadingManager.hideLoading()
-    }
     // MARK: - Config
     private func configCollectionView() {
         collectionView.configBackgroundColor()
@@ -146,7 +143,6 @@ final class SignUpPictureViewController: UIViewController {
                     self.showAlert(message: "이미지가 등록되었습니다.") {
                         self.viewModel.imageArray = self.userImages
                         
-                        SignLoadingManager.showLoading(text: "넘어가는중!")
                         let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
                         self.navigationController?.pushViewController(viewController, animated: true)
                     }
