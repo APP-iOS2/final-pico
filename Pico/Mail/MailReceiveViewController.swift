@@ -130,27 +130,6 @@ final class MailReceiveViewController: UIViewController {
     }
     
     // MARK: - MailReceive +UI
-    func getReceiver(mailSender: Mail.MailInfo) {
-        sendMailInfo = mailSender
-        navItem.title = mailSender.mailType.typeString
-        
-        if mailSender.mailType == .receive {
-            viewModel.getUser(userId: mailSender.sendedUserId) {
-                if let user = self.viewModel.user {
-                    self.configViews(user: user)
-                }
-            }
-        } else {
-            viewModel.getUser(userId: mailSender.receivedUserId) {
-                if let user = self.viewModel.user {
-                    self.configViews(user: user)
-                }
-            }
-        }
-        self.sendDateLabel.text = mailSender.sendedDate
-        self.messageView.text = mailSender.message
-    }
-
     private func addViews() {
         userNameStack.addArrangedSubview([userNameLabel, mbtiLabelView])
         userInfoStack.addArrangedSubview( [userNameStack, sendDateLabel])
@@ -197,7 +176,7 @@ final class MailReceiveViewController: UIViewController {
             .bind { [weak self] in
                 let mailSendView = MailSendViewController()
                 if let mailUser = self?.sendMailInfo {
-                    mailSendView.getReceiver(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId)
+                    mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId)
                 }
                 mailSendView.modalPresentationStyle = .formSheet
                 mailSendView.modalTransitionStyle = .flipHorizontal
@@ -207,8 +186,30 @@ final class MailReceiveViewController: UIViewController {
     }
     
     // MARK: - MailReceive + config
+    func configData(mailSender: Mail.MailInfo) {
+        sendMailInfo = mailSender
+        navItem.title = mailSender.mailType.typeString
+        
+        if mailSender.mailType == .receive {
+            viewModel.getUser(userId: mailSender.sendedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
+                }
+            }
+        } else {
+            viewModel.getUser(userId: mailSender.receivedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
+                }
+            }
+        }
+        self.sendDateLabel.text = mailSender.sendedDate
+        self.messageView.text = mailSender.message
+    }
+    
     private func configViews(user: User) {
         guard let url = URL(string: user.imageURLs[0]) else { return }
+        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         userImageView.kf.setImage(with: url)
         userNameLabel.text = user.nickName
         userNameLabel.sizeToFit()

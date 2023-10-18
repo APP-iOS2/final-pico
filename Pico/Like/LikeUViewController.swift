@@ -77,7 +77,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
         cell.messageButtonTapObservable
             .subscribe { [weak self] _ in
                 let mailSendView = MailSendViewController()
-                mailSendView.getReceiver(userId: item.likedUserId)
+                mailSendView.configData(userId: item.likedUserId)
                 mailSendView.modalPresentationStyle = .formSheet
                 self?.present(mailSendView, animated: true, completion: nil)
             }
