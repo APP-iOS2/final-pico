@@ -128,13 +128,10 @@ final class MailViewModel {
             }
         
         // noti 데이터 넣기
-        let myNoti = Noti(receiveId: senderUser.userId, name: receiveUser.nickName, birth: receiveUser.birth, imageUrl: receiveUser.imageURLs[0], notiType: .matching, mbti: receiveUser.mbti, createDate: Date().timeIntervalSince1970)
+        guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
+        let receiverNoti = Noti(receiveId: receiveUser.id, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
         
-        guard let yourMbti = MBTIType(rawValue: senderUser.mbti) else { return }
-        let yourNoti = Noti(receiveId: receiveUser.id, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)
-        
-        FirestoreService.shared.saveDocument(collectionId: .notifications, data: myNoti)
-        FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
     }
     
     func getUser(userId: String, completion: @escaping () -> ()) {
