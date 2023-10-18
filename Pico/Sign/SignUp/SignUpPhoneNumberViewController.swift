@@ -212,7 +212,8 @@ extension SignUpPhoneNumberViewController {
     @objc private func tappedAuthButton(_ sender: UIButton) {
         sender.tappedAnimation()
         isTappedCheckButton = true
-        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") {
+        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") { [weak self] in
+            guard let self = self else { return }
             guard let text = self.phoneNumberTextField.text else { return }
             self.viewModel.checkPhoneNumber(userNumber: text) {
                 guard self.viewModel.isRightUser else {
@@ -235,10 +236,14 @@ extension SignUpPhoneNumberViewController {
         // 문자인증 기능이 완료 될 때 까지는 넘어가세요 :)
         configAuthText()
         guard smsAuthManager.checkRightCode(code: authText) else {
-            self.showAlert(message: "비상비상 인증실패") { self.configReset() }
+            self.showAlert(message: "비상비상 인증실패") { [weak self] in
+                guard let self = self else { return }
+                self.configReset()
+            }
             return
         }
-        self.showAlert(message: "인증에 성공하셨습니다.") {
+        self.showAlert(message: "인증에 성공하셨습니다.") { [weak self] in
+            guard let self = self else { return }
             let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
@@ -248,7 +253,7 @@ extension SignUpPhoneNumberViewController {
 extension SignUpPhoneNumberViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard isTappedCheckButton else {
+        guard isTappedCheckButton else { 
             let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isEnable in
                 let isHidden = !isEnable
                 updateAuthButton(isEnable: isEnable, isHidden: isHidden)

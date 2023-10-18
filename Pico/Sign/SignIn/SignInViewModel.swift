@@ -17,7 +17,8 @@ final class SignInViewModel {
     func signIn(userNumber: String, completion: @escaping (User?) -> ()) {
         Loading.showLoading()
         self.isRightUser = false
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
             self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
                 guard err == nil, let documents = snapShot?.documents else {
                     print(err ?? "서버오류 비상비상")

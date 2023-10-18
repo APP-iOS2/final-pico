@@ -121,7 +121,8 @@ final class SignUpPictureViewController: UIViewController {
         let detectionGroup = DispatchGroup()
         
         SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
             var allImagesDetected = true
             
             for image in self.userImages {
@@ -136,7 +137,8 @@ final class SignUpPictureViewController: UIViewController {
                 }
             }
             
-            detectionGroup.notify(queue: .main) {
+            detectionGroup.notify(queue: .main) { [weak self] in
+                guard let self = self else { return }
                 SignLoadingManager.hideLoading()
                 
                 if allImagesDetected {
@@ -185,7 +187,8 @@ extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePi
                 
                 guard selectedImages.count == results.count else { return }
                 self.userImages = selectedImages
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     self.collectionView.reloadData()
                     self.configNextButton(isEnabled: true)
                 }
