@@ -41,11 +41,10 @@ final class SignInViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
-        button.imageView?.contentMode = .scaleAspectFit
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .picoGray
         return button
     }()
     
@@ -161,10 +160,10 @@ extension SignInViewController {
                 guard self.isFullPhoneNumber else { return }
                 guard let text = self.phoneNumberTextField.text else { return }
                 showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
-                    self.viewModel.signIn(userNumber: text) { user in
+                    self.viewModel.signIn(userNumber: text) { user, string in
                         guard self.viewModel.isRightUser else {
                             Loading.hideLoading()
-                            self.showAlert(message: "등록되지 않은 번호입니다.") {
+                            self.showAlert(message: string) {
                                 self.configReset()
                             }
                             return

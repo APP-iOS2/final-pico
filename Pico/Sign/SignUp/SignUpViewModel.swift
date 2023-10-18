@@ -46,7 +46,8 @@ final class SignUpViewModel {
     var progressStatus: Float = 0.0
     
     init() {
-        locationSubject.subscribe { location in
+        locationSubject.subscribe { [weak self] location in
+            guard let self = self else { return }
             SignLoadingManager.showLoading(text: "")
             self.newUser.location = location
             self.saveImage()
@@ -55,13 +56,15 @@ final class SignUpViewModel {
         
         imagesSubject
             .flatMap { images -> Observable<[String]> in
+               
                 return StorageService.shared.getUrlStrings(images: images, userId: self.id)
             }
             .subscribe(onNext: urlStringsSubject.onNext(_:))
             .disposed(by: disposeBag)
         
         urlStringsSubject
-            .subscribe { strings in
+            .subscribe { [weak self] strings in
+                guard let self = self else { return }
                 print("스트링 저장완료")
                 self.newUser.imageURLs = strings
                 self.saveNewUser()
@@ -87,22 +90,36 @@ final class SignUpViewModel {
             .disposed(by: disposeBag)
     }
     
-    func checkPhoneNumber(userNumber: String, completion: @escaping () -> ()) {
-        SignLoadingManager.showLoading(text: "중복된 번호를 찾고 있어요!")
-        self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
-            guard err == nil, let documents = snapShot?.documents else {
-                print(err ?? "서버오류 비상비상")
-                self.isRightUser = false
-                return
-            }
-            
-            guard documents.first != nil else {
-                self.isRightUser = true
-                completion()
-                return
-            }
+    func checkPhoneNumber(userNumber: String, completion: @escaping (_ message: String) -> ()) {
+        let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
+        let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        
+        if !phoneNumberPredicate.evaluate(with: userNumber) {
             self.isRightUser = false
-            completion()
+            completion("유효하지 않은 전화번호입니다..")
+            return
+        }
+        
+        SignLoadingManager.showLoading(text: "중복된 번호를 찾고 있어요!")
+        
+        self.dbRef.collection("users")
+            .whereField("phoneNumber", isEqualTo: userNumber)
+            .getDocuments { [weak self] snapShot, err in
+                guard let self = self else { return }
+                    
+                guard err == nil, let documents = snapShot?.documents else {
+                    self.isRightUser = false
+                    completion("서버오류 비상비상")
+                    return
+                }
+                
+                guard documents.first != nil else {
+                    self.isRightUser = true
+                    completion("사용가능한 전화번호 입니다.")
+                    return
+                }
+                self.isRightUser = false
+                completion("이미 회원가입을 하셨어요!!")
         }
     }
     
@@ -115,7 +132,10 @@ final class SignUpViewModel {
             let matches = regex.matches(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))
             
             if matches.isEmpty {
-                self.dbRef.collection("users").whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
+                self.dbRef
+                    .collection("users").whereField("nickName", isEqualTo: name)
+                    .getDocuments { [weak self] snapShot, err in
+                    guard let self = self else { return }
                     guard err == nil, let documents = snapShot?.documents else {
                         print(err ?? "서버오류 비상비상")
                         self.isRightName = false

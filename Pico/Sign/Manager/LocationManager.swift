@@ -18,13 +18,16 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
     var currentLocation: CLLocationCoordinate2D?
     var longitude: Double?
     var latitude: Double?
+    
     func accessLocation() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             let alertController = UIAlertController(title: "위치 권한 필요",
                                                     message: "이 앱을 사용하려면 위치 권한이 필요합니다. 설정에서 권한을 변경할 수 있습니다.",
                                                     preferredStyle: .alert)
             
-            let settingsAction = UIAlertAction(title: "설정으로 이동", style: .default) { _ in
+            let settingsAction = UIAlertAction(title: "설정으로 이동", style: .default) { [weak self] _ in
+                guard let self = self else { return }
                 if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
                 }
@@ -41,6 +44,7 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
             }
         }
     }
+    
     func configLocation() {
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -65,7 +69,8 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
         let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
         let geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) { (placemarks, error) in
+        geocoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) { [weak self] (placemarks, error) in
+            guard let self = self else { return }
             if let error = error {
                 print("Geocoding Error: \(error)")
                 completion(nil)
@@ -77,17 +82,12 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
                 if let administrativeArea = placemark.administrativeArea {
                     addressComponents.append(administrativeArea)
                 }
-//                
-//                if let locality = placemark.locality {
-//                    addressComponents.append(locality)
-//                }
-//                
+
                 if let subLocality = placemark.subLocality {
                     addressComponents.append(subLocality)
                 }
                 
                 let addressString = addressComponents.joined(separator: " ")
-                print("addressString: \(addressString)")
                 let location = Location(address: addressString, latitude: latitude ?? 0, longitude: longitude ?? 0)
                 completion(location)
             } else {

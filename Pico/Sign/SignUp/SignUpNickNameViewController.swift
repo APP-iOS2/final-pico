@@ -81,11 +81,10 @@ final class SignUpNickNameViewController: UIViewController {
     
     private lazy var nickNameCancleButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
-        button.imageView?.contentMode = .scaleAspectFit
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .picoGray
         return button
     }()
     
@@ -175,8 +174,10 @@ extension SignUpNickNameViewController {
         sender.tappedAnimation()
         guard let text = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
         userNickName = text
-        showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) {
-            self.viewModel.checkNickName(name: self.userNickName) { message in
+        showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) { [weak self] in
+            guard let self = self else { return }
+            self.viewModel.checkNickName(name: self.userNickName) { [weak self] message in
+                guard let self = self else { return }
                 guard self.viewModel.isRightName else {
                     SignLoadingManager.hideLoading()
                     self.showAlert(message: message) {
@@ -212,7 +213,7 @@ extension SignUpNickNameViewController {
          
          위에 메시지가 뜨면서 다음 뷰컨으로 넘어가는게 조금 걸립니다 !
          */
-        self.viewModel.nickName = userNickName
+        viewModel.nickName = userNickName
         let viewController = SignUpPictureViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
