@@ -20,9 +20,11 @@ final class AdminUserDetailViewModel: ViewModelType {
     
     struct Input {
         let selectedRecordType: Observable<RecordType>
+        let isUnsubscribe: Observable<Void>
     }
     
     struct Output {
+        let resultIsUnsubscribe: Observable<Void>
         let needToReload: Observable<Void>
     }
     
@@ -31,8 +33,19 @@ final class AdminUserDetailViewModel: ViewModelType {
             .map { type in
                 return type
             }
+        
+        let responseUnsubscribe = input.isUnsubscribe
+            .withUnretained(self)
+            .flatMap { viewModel, _ in
+                return FirestoreService.shared.saveDocumentRx(collectionId: .unsubscribe, documentId: viewModel.selectedUser.id, data: viewModel.selectedUser)
+            }
+            .withUnretained(self)
+            .flatMap { viewModel, _ in
+                return FirestoreService.shared.removeDocumentRx(collectionId: .users, documentId: viewModel.selectedUser.id)
+            }
     
         return Output(
+            resultIsUnsubscribe: responseUnsubscribe,
             needToReload: reloadPublisher.asObservable()
         )
     }
@@ -42,7 +55,11 @@ final class AdminUserDetailViewModel: ViewModelType {
         loadNextPage()
     }
     
-    func loadNextPage() {
+    private func unsubscribe() {
+        
+    }
+    
+    private func loadNextPage() {
         let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(selectedUser.id)
         let endIndex = startIndex + pageSize
