@@ -81,7 +81,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
         
         cell.deleteButtonTapObservable
             .subscribe(onNext: { [weak self] in
-                self?.showAlert(message: "\(item.nickName)님을 disLike합니다.", isCancelButton: true, yesAction: {
+                self?.showCustomAlert(alertType: .canCancel, titleText: "DisLike", messageText: "\(item.nickName)님을 disLike합니다.\n 받은 좋아요 목록에서 삭제 됩니다.", confirmButtonText: "삭제", comfrimAction: {
                     self?.deleteUserPublisher.onNext(item.likedUserId)
                 })
             })
@@ -89,7 +89,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
         
         cell.likeButtonTapObservalbe
             .subscribe(onNext: { [weak self] in
-                self?.showAlert(message: "\(item.nickName)님께 좋아요를 보냅니다.\n 바로 매칭되어 쪽지가 가능합니다.", isCancelButton: true, yesAction: {
+                self?.showCustomAlert(alertType: .canCancel, titleText: "Matching", messageText: "\(item.nickName)님께 좋아요를 보냅니다.\n 바로 매칭되어 쪽지가 가능합니다.", confirmButtonText: "확인", comfrimAction: {
                     self?.likeUserPublisher.onNext(item.likedUserId)
                 })
             })

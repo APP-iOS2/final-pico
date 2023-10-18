@@ -22,6 +22,7 @@ final class EmptyViewController: UIViewController {
     
     private let chuImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "chu"))
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
@@ -86,7 +87,7 @@ final class EmptyViewController: UIViewController {
         
         chuImage.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
-
+            make.height.equalToSuperview().multipliedBy(0.4)
         }
         
         infomationLabel.snp.makeConstraints { make in

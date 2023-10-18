@@ -89,4 +89,30 @@ final class NotificationService {
             }
         }
     }
+    
+    func registerRemoteNotification() {
+        if #available(iOS 10.0, *) {
+             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+             UNUserNotificationCenter.current().requestAuthorization(
+               options: authOptions,
+               completionHandler: {_, _ in })
+           } else {
+             let settings: UIUserNotificationSettings =
+             UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+               UIApplication.shared.registerUserNotificationSettings(settings)
+           }
+        UIApplication.shared.registerForRemoteNotifications()
+    }
+    
+    func fcmTokenDelete() {
+        let emptyToken = Token(fcmToken: "")
+        FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: emptyToken) { result in
+            switch result {
+            case .success(_):
+                print("토큰 비우기 성공")
+            case .failure(let error):
+                print("토큰 비우기 실패: \(error)")
+            }
+        }
+    }
 }
