@@ -13,7 +13,7 @@ import FirebaseFirestoreSwift
 
 final class CheckService {
     private let dbRef = Firestore.firestore()
-    
+    private let fireService = FirestoreService()
     func checkPhoneNumber(userNumber: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
         let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
         let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
@@ -54,6 +54,7 @@ final class CheckService {
                     .collection("users").whereField("nickName", isEqualTo: name)
                     .getDocuments { [weak self] snapShot, err in
                     guard let self = self else { return }
+                        
                     guard err == nil, let documents = snapShot?.documents else {
                         print(err ?? "서버오류 비상비상")
                         return
