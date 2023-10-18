@@ -47,7 +47,7 @@ final class SignUpViewModel {
     
     init() {
         locationSubject.subscribe { location in
-            SignLoadingManager.showLoading(text: "위치정보를 받는중이에요!!")
+            SignLoadingManager.showLoading(text: "")
             self.newUser.location = location
             self.saveImage()
         }

@@ -26,6 +26,7 @@ final class SmsAuthManager {
 
     struct Message: Codable {
         let too: String // 린트때매 too 라고 함..
+        let content: String
     }
     
     func sendVerificationCode() {
@@ -99,7 +100,7 @@ final class SmsAuthManager {
     }
     
     func encodeJson(type: String, contentType: String, countryCode: String, from: String, content: String, too: String) -> Data? {
-        let tempSms = SMSMessage(type: type, contentType: contentType, countryCode: countryCode, from: from, content: content, messages: [Message(too: too)])
+        let tempSms = SMSMessage(type: type, contentType: contentType, countryCode: countryCode, from: from, content: content, messages: [Message(too: too, content: "api 테스트")])
 
         do {
             let jsonData = try JSONEncoder().encode(tempSms)
