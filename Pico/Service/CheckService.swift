@@ -53,9 +53,8 @@ final class CheckService {
             if matches.isEmpty {
                 self.dbRef
                     .collection("users").whereField("nickName", isEqualTo: name)
-                    .getDocuments { [weak self] snapShot, err in
-                    guard let self = self else { return }
-                    guard err == nil, let documents = snapShot?.documents else {
+                    .getDocuments { snapShot, err in
+                        guard err == nil, let documents = snapShot?.documents else {
                         print(err ?? "서버오류 비상비상")
                         return
                     }

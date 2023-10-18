@@ -47,11 +47,7 @@ final class AdminUserViewController: UIViewController {
         return menu
     }
 
-    private let textFieldView: CommonTextField = {
-        let textField = CommonTextField()
-        textField.textField.placeholder = "이름을 검색하세요."
-        return textField
-    }()
+    private let textFieldView: CommonTextField = CommonTextField()
     
     private let searchButton: UIButton = {
         let button = UIButton()
@@ -141,6 +137,10 @@ final class AdminUserViewController: UIViewController {
             refreshable: refreshablePublisher.asObservable()
         )
         let output = viewModel.transform(input: input)
+        
+        output.resultTitleLabel
+            .bind(to: textFieldView.textField.rx.placeholder)
+            .disposed(by: disposeBag)
 
         let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList, output.resultPagingList)
         
