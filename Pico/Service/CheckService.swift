@@ -59,7 +59,10 @@ final class CheckService {
                         print(err ?? "서버오류 비상비상")
                         return
                     }
-                    
+//                    self.dbRef.collection("users").document("nickName").getDocument { DocumentSnapshot?, err in
+//                                                
+//                    }
+//                        
                     guard documents.first != nil else {
                         completion("사용가능한 닉네임이에요!!", true)
                         return
