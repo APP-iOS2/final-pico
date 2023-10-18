@@ -46,7 +46,7 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
     }
     
     @objc private func tappedButton() {
-        print("tap")
+       // TODO: 추가하기
     }
     
     private func addSubView() {
