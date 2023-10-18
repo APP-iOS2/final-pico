@@ -50,8 +50,7 @@ final class AdminUserViewController: UIViewController {
     
     private let userListTableView = UITableView()
     
-    // 질문: 이니셜라이저에서 받는건데 ! 써도 되는 지 ? (깃허브에는 !로 되어있어서요)
-    private var viewModel: AdminUserViewModel!
+    private var viewModel: AdminUserViewModel
     private let disposeBag: DisposeBag = DisposeBag()
     
     private let viewDidLoadPublisher = PublishSubject<Void>()
@@ -63,8 +62,8 @@ final class AdminUserViewController: UIViewController {
     private let refreshControl = UIRefreshControl()
     
     init(viewModel: AdminUserViewModel) {
-        super.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
     
     @available(*, unavailable)

@@ -141,7 +141,14 @@ final class ProfileEditViewModel {
                 SignLoadingManager.hideLoading()
             }
         } else {
-            FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: field, data: data)
+            FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: field, data: data) { result in
+                switch result {
+                case .success(let data):
+                    print("업데이트 성공 \(data)")
+                case .failure(let error):
+                    print("업데이트 실패, 에러메시지 : \(error)")
+                }
+            }
         }
         loadUserData()
     }
