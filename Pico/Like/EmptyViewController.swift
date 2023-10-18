@@ -13,6 +13,7 @@ final class EmptyViewController: UIViewController {
         case iLikeU = "누른 Like가 표시됩니다."
         case uLikeMe = "받은 Like가 표시됩니다."
         case message = "마음의 드는 분과 대화를 나눠보세요."
+        case notification = "도착한 알림이 없습니다."
     }
     
     private var viewType: EmptyViewType = .message

@@ -59,6 +59,7 @@ final class LikeUViewModel: ViewModelType {
             .map { result in
                 return result
             }
+        
         let check = input.checkEmpty
             .withUnretained(self)
             .map { viewModel, _ -> Bool in
@@ -68,6 +69,7 @@ final class LikeUViewModel: ViewModelType {
                     return false
                 }
             }
+        
         let isEmpty = Observable.of(didset, check).merge()
             .flatMapLatest { bool -> Observable<Bool> in
                 return Observable.create { emitter in

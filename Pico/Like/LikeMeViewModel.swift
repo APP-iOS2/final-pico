@@ -164,7 +164,7 @@ final class LikeMeViewModel: ViewModelType {
         
         let newRecivedData = Like.LikeInfo(likedUserId: currentUser.userId, likeType: .dislike, birth: currentUser.birth, nickName: currentUser.nickName, mbti: myMbtiType, imageURL: currentUser.imageURL, createdDate: Date().timeIntervalSince1970)
         dbRef.collection(Collections.likes.name).document(removeData.likedUserId).updateData([
-            "recivedlikes" : FieldValue.arrayUnion([newRecivedData.asDictionary()])
+            "recivedlikes": FieldValue.arrayUnion([newRecivedData.asDictionary()])
         ])
     }
     
