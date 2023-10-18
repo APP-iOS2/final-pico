@@ -11,7 +11,7 @@ import FirebaseFirestoreSwift
 
 final class SignInViewModel {
     private let dbRef = Firestore.firestore()
-    var loginUser: User = UserDummyData.users[0]
+    var loginUser: User?
     var isRightUser = false
     
     func signIn(userNumber: String, completion: @escaping (User?) -> ()) {
