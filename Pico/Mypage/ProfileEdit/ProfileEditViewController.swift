@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxDataSources
+import PhotosUI
 
 final class ProfileEditViewController: UIViewController {
     
@@ -25,6 +26,10 @@ final class ProfileEditViewController: UIViewController {
     
     private let profileEditViewModel = ProfileEditViewModel()
     private let disposeBag = DisposeBag()
+    weak var profileEditImageDelegate: ProfileEditImageDelegate?
+    private let yoloManager: YoloManager = YoloManager()
+    private let pictureManager = PictureManager()
+    private var userImages: [UIImage] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +38,8 @@ final class ProfileEditViewController: UIViewController {
         addViews()
         makeConstraints()
         binds()
+        profileEditImageDelegate = self
+        yoloManager.loadYOLOv3Model()
     }
     
     private func binds() {
@@ -40,7 +47,8 @@ final class ProfileEditViewController: UIViewController {
             switch item {
             case .profileEditImageTableCell(let images):
                 let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditImageTableCell.self)
-                cell.config(images: images)
+                cell.config(images: images, viewModel: self.profileEditViewModel)
+                cell.profileEditImageDelegate = self.profileEditImageDelegate
                 return cell
                 
             case .profileEditNicknameTabelCell:
@@ -162,7 +170,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalType = .height
                 profileEditViewModel.textData = String(profileEditViewModel.userData?.subInfo?.height ?? 0)
                 presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
-
+                
             case 2:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.job.name)
                 profileEditViewModel.modalType = .job
@@ -206,7 +214,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.collectionData = profileEditViewModel.userData?.subInfo?.personalities
                 
                 presentModalView(viewController: ProfileEditCollTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 250)
-     
+                
             case 8:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.hobbies.name)
                 profileEditViewModel.modalType = .hobbies
@@ -225,5 +233,80 @@ extension ProfileEditViewController: UITableViewDelegate {
         default: break
         }
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension ProfileEditViewController: ProfileEditImageDelegate {
+    
+    func presentPickerView() {
+        pictureManager.requestPhotoLibraryAccess(in: self)
+        if PHPhotoLibrary.authorizationStatus() == .authorized {
+            var configuration = PHPickerConfiguration()
+            if let count = profileEditViewModel.collectionData?.count {
+                configuration.selectionLimit = 3 - count
+            }
+            let picker = PHPickerViewController(configuration: configuration)
+            picker.delegate = self
+            present(picker, animated: true, completion: nil)
+        } else {
+            pictureManager.unauthorized(in: self)
+        }
+    }
+}
+
+extension ProfileEditViewController {
+    func detectionYolo() {
+        let detectionGroup = DispatchGroup()
+        
+        SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
+        DispatchQueue.global().async {
+            var allImagesDetected = true
+            
+            for image in self.userImages {
+                detectionGroup.enter()
+                
+                self.yoloManager.detectPeople(image: image) {
+                    detectionGroup.leave()
+                }
+                
+                if !(self.yoloManager.isDetectedImage ?? true) {
+                    allImagesDetected = false
+                }
+            }
+            if allImagesDetected {
+                self.profileEditViewModel.userImages = self.userImages
+                self.profileEditViewModel.saveImage()
+            }
+            detectionGroup.notify(queue: .main) {
+                SignLoadingManager.hideLoading()
+               //TODO: 알럿호출시점 바꾸기
+                if allImagesDetected {
+                    self.showAlert(message: "이미지가 등록되었습니다.", yesAction: nil)
+                } else {
+                    self.showAlert(message: "이미지 등록에 실패하셨습니다.") {
+                        self.userImages.removeAll()
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension ProfileEditViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        var selectedImages: [UIImage] = []
+        
+        for result in results where result.itemProvider.canLoadObject(ofClass: UIImage.self) {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self ](image, _ ) in
+                
+                guard let image = image as? UIImage else { return }
+                selectedImages.append(image)
+                guard selectedImages.count == results.count else { return }
+                self?.userImages = selectedImages
+                self?.detectionYolo()
+            }
+        }
     }
 }
