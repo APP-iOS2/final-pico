@@ -33,7 +33,7 @@ final class ProfileEditViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configNavigation()
+        configView()
         configTableView()
         addViews()
         makeConstraints()
@@ -74,8 +74,9 @@ final class ProfileEditViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    private func configNavigation() {
+    private func configView() {
         title = "프로필 수정"
+        view.configBackgroundColor()
     }
     
     private func configTableView() {
@@ -88,7 +89,8 @@ final class ProfileEditViewController: UIViewController {
     
     private func makeConstraints() {
         tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-15)
         }
     }
     
@@ -212,7 +214,6 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.personalities.name)
                 profileEditViewModel.modalType = .personalities
                 profileEditViewModel.collectionData = profileEditViewModel.userData?.subInfo?.personalities
-                
                 presentModalView(viewController: ProfileEditCollTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 250)
                 
             case 8:
@@ -224,8 +225,8 @@ extension ProfileEditViewController: UITableViewDelegate {
             case 9:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.favoriteMBTIs.name)
                 profileEditViewModel.modalType = .favoriteMBTIs
+                profileEditViewModel.selectedIndexs = profileEditViewModel.findMbtiIndex(for: profileEditViewModel.userData?.subInfo?.favoriteMBTIs?.map({ $0.rawValue }) ?? [], in: MBTIType.allCases.map { $0.rawValue })
                 profileEditViewModel.modalCollectionData = MBTIType.allCases.map { $0.nameString }
-                
                 presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 290)
             default:
                 break
@@ -279,7 +280,7 @@ extension ProfileEditViewController {
             }
             detectionGroup.notify(queue: .main) {
                 SignLoadingManager.hideLoading()
-               //TODO: 알럿호출시점 바꾸기
+                //TODO: 알럿호출시점 바꾸기
                 if allImagesDetected {
                     self.showAlert(message: "이미지가 등록되었습니다.", yesAction: nil)
                 } else {

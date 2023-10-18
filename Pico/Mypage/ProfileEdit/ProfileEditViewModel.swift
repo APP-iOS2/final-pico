@@ -102,6 +102,7 @@ final class ProfileEditViewModel {
     private let disposeBag = DisposeBag()
     
     var selectedIndex: Int?/*컬렉션뷰만잇는뷰에서 사용*/
+    var selectedIndexs: [Int]?/*컬렉션뷰만잇는뷰에서 사용*/
     var textData: String? /*텍스트만잇는뷰 사용*/
     var collectionData: [String]? /*콜렉션텍스트뷰 사용*/
     var userImages: [UIImage]?
@@ -156,6 +157,16 @@ final class ProfileEditViewModel {
             return index
         }
         return nil
+    }
+    
+    func findMbtiIndex(for targetStrings: [String], in array: [String]) -> [Int] {
+        var indexs = [Int]()
+        for targetString in targetStrings {
+            if let index = array.firstIndex(of: targetString) {
+                indexs.append(index)
+            }
+        }
+        return indexs
     }
     
     func updateData<T: Codable>(data: T) {
