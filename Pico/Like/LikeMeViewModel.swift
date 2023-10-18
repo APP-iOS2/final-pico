@@ -193,6 +193,8 @@ final class LikeMeViewModel: ViewModelType {
                 let yourNoti = Noti(receiveId: likeData.likedUserId, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: myNoti)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)
+                NotificationService.shared.sendNotification(userId: likeData.likedUserId, sendUserName: currentUser.nickName, notiType: .matching)
+                NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: likeData.nickName, notiType: .matching)
             case .failure(let error):
                 print(error)
                 return
