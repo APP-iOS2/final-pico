@@ -236,8 +236,21 @@ final class MailReceiveViewController: UIViewController {
     @objc func tappedSenderStack() {
         dismiss(animated: true)
         let viewController = UserDetailViewController()
-        // user 정보 넘겨주세용
-        //viewController.viewModel = UserDetailViewModel(user: user)
+        if let user = sendMailInfo {
+            if user.mailType == .receive {
+                viewModel.getUser(userId: user.sendedUserId) {
+                    if let user = self.viewModel.user {
+                        viewController.viewModel = UserDetailViewModel(user: user)
+                    }
+                }
+            } else {
+                viewModel.getUser(userId: user.receivedUserId) {
+                    if let user = self.viewModel.user {
+                        viewController.viewModel = UserDetailViewModel(user: user)
+                    }
+                }
+            }
+        }
         self.navigationController?.pushViewController(viewController, animated: true)
         print("tap senderStack")
     }
