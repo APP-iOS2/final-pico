@@ -16,6 +16,7 @@ enum Collections {
     case notifications
     case mail
     case payment
+    case tokens
     
     var name: String {
         switch self {
@@ -29,6 +30,8 @@ enum Collections {
             return "mail"
         case .payment:
             return "payment"
+        case .tokens:
+            return "tokens"
         }
     }
 }
