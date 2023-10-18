@@ -65,7 +65,6 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         locationManager.getAddress(latitude: lat, longitude: long) { [weak self] location in
             guard let self else { return }
             if let location = location {
-                print(location)
                 profileEditViewModel?.updateData(data: location)
             } else {
                 self.locationManager.configLocation()

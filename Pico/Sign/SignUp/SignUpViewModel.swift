@@ -121,6 +121,7 @@ final class SignUpViewModel {
                         self.isRightName = false
                         return
                     }
+                   
                     
                     guard documents.first != nil else {
                         self.isRightName = true
