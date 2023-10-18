@@ -193,7 +193,7 @@ final class LikeMeViewModel: ViewModelType {
                 let yourNoti = Noti(receiveId: likeData.likedUserId, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: myNoti)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)               
-                let mailModel = MailViewModel()
+                let mailModel = MailSendModel()
                 let receiverUser = User(id: likeData.likedUserId, mbti: likeData.mbti, phoneNumber: "", gender: .etc, birth: likeData.birth, nickName: likeData.nickName, location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [likeData.imageURL], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
                 mailModel.saveMailData(receiveUser: receiverUser, message: "서로 매칭되었습니다.")
                 

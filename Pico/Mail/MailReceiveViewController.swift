@@ -12,8 +12,8 @@ import RxCocoa
 
 final class MailReceiveViewController: UIViewController {
     
-    private let viewModel = MailViewModel()
-    private var disposeBag = DisposeBag()
+    private let viewModel = MailReceiveModel()
+    private let disposeBag = DisposeBag()
     
     private var sendMailInfo: Mail.MailInfo?
     
@@ -174,13 +174,14 @@ final class MailReceiveViewController: UIViewController {
     private func tappedNavigationButton() {
         rightBarButton.rx.tap
             .bind { [weak self] in
+                guard let self = self else { return }
                 let mailSendView = MailSendViewController()
-                if let mailUser = self?.sendMailInfo {
+                if let mailUser = self.sendMailInfo {
                     mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId)
                 }
                 mailSendView.modalPresentationStyle = .formSheet
                 mailSendView.modalTransitionStyle = .flipHorizontal
-                self?.present(mailSendView, animated: true, completion: nil)
+                self.present(mailSendView, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
     }
@@ -203,7 +204,7 @@ final class MailReceiveViewController: UIViewController {
                 }
             }
         }
-        self.sendDateLabel.text = mailSender.sendedDate
+        self.sendDateLabel.text = mailSender.sendedDate.toStringTime()
         self.messageView.text = mailSender.message
     }
     
