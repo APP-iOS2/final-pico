@@ -90,6 +90,7 @@ final class WorldCupResultViewController: UIViewController {
         [backgroundImageView, worldCupTitleLabel, pickMeLabel, contentLabel, resultUserView, chatButton, guideLabel, cancelButton].forEach { item in
             view.addSubview(item)
         }
+        navigationController?.isNavigationBarHidden = true
     }
     
     private func makeConstraints() {

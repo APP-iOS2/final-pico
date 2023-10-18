@@ -25,10 +25,10 @@ final class WorldCupUserInfoStackView: UIView {
         label.textAlignment = .right
         label.textColor = UIColor.picoBlue
         label.font = UIFont.picoDescriptionFont
-        label.numberOfLines = 0  // Allow multiple lines
+        label.numberOfLines = 0
         label.setContentHuggingPriority(.required, for: .horizontal)
-        label.translatesAutoresizingMaskIntoConstraints = false  // Enable auto layout
-        label.heightAnchor.constraint(lessThanOrEqualToConstant: 60).isActive = true  // Set a max height (adjust as needed)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.heightAnchor.constraint(lessThanOrEqualToConstant: 60).isActive = true
         return label
     }
     
