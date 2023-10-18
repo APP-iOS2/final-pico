@@ -163,6 +163,7 @@ extension SignInViewController {
                         if let user = user {
                             UserDefaultsManager.shared.setUserData(userData: user)
                         }
+                        NotificationService.shared.saveToken()
                         Loading.hideLoading()
                         self.authTextFields[0].becomeFirstResponder()
                         self.isTappedAuthButton = true

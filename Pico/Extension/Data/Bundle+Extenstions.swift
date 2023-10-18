@@ -8,7 +8,7 @@
 import Foundation
 
 extension Bundle {
-    var NOTIFICATION_KEY: String {
+    var notificationKey: String {
         guard let file = self.path(forResource: "APIKeys", ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
