@@ -180,14 +180,15 @@ extension SignUpNickNameViewController {
         guard let text = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
         userNickName = text
         showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) {
-            self.viewModel.checkNickName(name: self.userNickName) {
+            self.viewModel.checkNickName(name: self.userNickName) { message in
                 guard self.viewModel.isRightName else {
                     SignLoadingManager.hideLoading()
-                    self.showAlert(message: "이미 등록된 이름입니다.") {
+                    self.showAlert(message: message) {
                         self.reset()
                     }
                     return
                 }
+                self.showAlert(message: message) {}
                 SignLoadingManager.hideLoading()
             }
             self.updateCheckButton(isFull: true, ischeck: true)
