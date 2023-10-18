@@ -13,7 +13,6 @@ import RxRelay
 
 final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
     
-    static var shared = LocationManager()
     var locationManager: CLLocationManager = CLLocationManager()
     var currentLocation: CLLocationCoordinate2D?
     var longitude: Double?

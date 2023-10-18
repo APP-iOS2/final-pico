@@ -20,7 +20,7 @@ final class SignUpViewModel {
     var isSaveSuccess: PublishSubject<Void> = PublishSubject()
     private let disposeBag = DisposeBag()
     
-    var isRightUser: Bool = false
+    var isRightPhoneNumber: Bool = false
     var isRightName: Bool = false
     let id = UUID().uuidString
     var userMbti = ""
@@ -88,77 +88,5 @@ final class SignUpViewModel {
         FirestoreService().saveDocumentRx(collectionId: .users, documentId: newUser.id, data: newUser)
             .subscribe(onNext: isSaveSuccess.onNext(_:))
             .disposed(by: disposeBag)
-    }
-    
-    func checkPhoneNumber(userNumber: String, completion: @escaping (_ message: String) -> ()) {
-        let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
-        let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
-        
-        if !phoneNumberPredicate.evaluate(with: userNumber) {
-            self.isRightUser = false
-            completion("유효하지 않은 전화번호입니다..")
-            return
-        }
-        
-        SignLoadingManager.showLoading(text: "중복된 번호를 찾고 있어요!")
-        
-        self.dbRef.collection("users")
-            .whereField("phoneNumber", isEqualTo: userNumber)
-            .getDocuments { [weak self] snapShot, err in
-                guard let self = self else { return }
-                    
-                guard err == nil, let documents = snapShot?.documents else {
-                    self.isRightUser = false
-                    completion("서버오류 비상비상")
-                    return
-                }
-                
-                guard documents.first != nil else {
-                    self.isRightUser = true
-                    completion("사용가능한 전화번호 입니다.")
-                    return
-                }
-                self.isRightUser = false
-                completion("이미 회원가입을 하셨어요!!")
-        }
-    }
-    
-    func checkNickName(name: String, completion: @escaping (_ message: String) -> ()) {
-        SignLoadingManager.showLoading(text: "중복된 닉네임을 찾고 있어요!")
-        
-        do {
-            let pattern = "([ㄱ-ㅎㅏ-ㅣ]){2,8}"
-            let regex = try NSRegularExpression(pattern: pattern, options: [])
-            let matches = regex.matches(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))
-            
-            if matches.isEmpty {
-                self.dbRef
-                    .collection("users").whereField("nickName", isEqualTo: name)
-                    .getDocuments { [weak self] snapShot, err in
-                    guard let self = self else { return }
-                    guard err == nil, let documents = snapShot?.documents else {
-                        print(err ?? "서버오류 비상비상")
-                        self.isRightName = false
-                        return
-                    }
-                    
-                    guard documents.first != nil else {
-                        self.isRightName = true
-                        completion("사용가능한 닉네임이에요!!")
-                        return
-                    }
-                    self.isRightName = false
-                    completion("이미 포함된 닉네임이네요..")
-                }
-            } else {
-                self.isRightName = false
-                completion("연속된 자음 또는 모음이 포함되어 있어요! 제대로 지어주세요 😁")
-                return
-            }
-        } catch {
-            self.isRightName = false
-            completion("정규식 에러: \(error)")
-            return
-        }
     }
 }

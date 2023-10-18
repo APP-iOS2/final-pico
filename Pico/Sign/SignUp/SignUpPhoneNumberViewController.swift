@@ -12,6 +12,7 @@ import RxSwift
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
     private let smsAuthManager = SmsAuthManager()
+    private let checkService = CheckService()
     let viewModel: SignUpViewModel
     
     init(viewModel: SignUpViewModel) {
@@ -213,17 +214,19 @@ extension SignUpPhoneNumberViewController {
         showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") { [weak self] in
             guard let self = self else { return }
             guard let text = self.phoneNumberTextField.text else { return }
-            self.viewModel.checkPhoneNumber(userNumber: text) { [weak self] message in
+            self.checkService.checkPhoneNumber(userNumber: text) { [weak self] message, isRight in
                 guard let self = self else { return }
-                guard self.viewModel.isRightUser else {
+                guard isRight else {
                     SignLoadingManager.hideLoading()
                     self.showAlert(message: message) {
+                        self.viewModel.isRightPhoneNumber = isRight
                         self.configReset()
                     }
                     return
                 }
                 SignLoadingManager.hideLoading()
                 self.updateViewState(num: text)
+                self.viewModel.isRightPhoneNumber = isRight
                 self.smsAuthManager.sendVerificationCode()
             }
         }

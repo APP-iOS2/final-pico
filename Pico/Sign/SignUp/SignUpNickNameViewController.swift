@@ -10,8 +10,8 @@ import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
-    let viewModel: SignUpViewModel
-    
+    private let viewModel: SignUpViewModel
+    private let checkNickNameService = CheckService()
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -172,21 +172,24 @@ extension SignUpNickNameViewController {
     // MARK: - @objc
     @objc private func tappedCheckButton(_ sender: UIButton) {
         sender.tappedAnimation()
-        guard let text = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
-        userNickName = text
+        guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
         showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) { [weak self] in
             guard let self = self else { return }
-            self.viewModel.checkNickName(name: self.userNickName) { [weak self] message in
+            self.checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
-                guard self.viewModel.isRightName else {
+                guard isRight else {
                     SignLoadingManager.hideLoading()
                     self.showAlert(message: message) {
+                        self.viewModel.isRightName = isRight
                         self.reset()
                     }
                     return
                 }
-                self.showAlert(message: message) {}
                 SignLoadingManager.hideLoading()
+                self.showAlert(message: message) {
+                    self.viewModel.isRightName = isRight
+                    self.userNickName = userNickName
+                }
             }
             self.updateCheckButton(isFull: true, ischeck: true)
             self.updateNextButton(isCheck: true)
