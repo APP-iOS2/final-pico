@@ -17,6 +17,8 @@ final class EmptyViewController: UIViewController {
     
     private var viewType: EmptyViewType = .message
     
+    private let contentsView = UIView()
+    
     private let chuImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "chu"))
         return imageView
@@ -66,19 +68,24 @@ final class EmptyViewController: UIViewController {
     }
     
     private func addViews() {
-        view.addSubview([chuImage, infomationLabel])
+        view.addSubview(contentsView)
+        contentsView.addSubview([chuImage, infomationLabel])
         if viewType == .iLikeU {
-            view.addSubview(linkButton)
+            contentsView.addSubview(linkButton)
         }
         if viewType == .message {
-            view.addSubview(messageSubLabel)
+            contentsView.addSubview(messageSubLabel)
         }
     }
     
     private func makeConstraints() {
+        contentsView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
         chuImage.snp.makeConstraints { make in
             make.centerX.centerY.equalToSuperview()
-            make.size.equalTo(Screen.width * 0.5)
+
         }
         
         infomationLabel.snp.makeConstraints { make in
