@@ -31,8 +31,6 @@ final class NotificationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configViewController()
-        addViews()
-        makeConstraints()
         configTableView()
         configRefresh()
         bind()
@@ -60,16 +58,6 @@ final class NotificationViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
         tableView.refreshControl = refreshControl
-    }
-    
-    private func addViews() {
-        view.addSubview(tableView)
-    }
-    
-    private func makeConstraints() {
-        tableView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
     }
     
     @objc func refreshTable(refresh: UIRefreshControl) {
