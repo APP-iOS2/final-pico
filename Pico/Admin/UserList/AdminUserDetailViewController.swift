@@ -74,7 +74,6 @@ final class AdminUserDetailViewController: UIViewController {
         tableView.register(cell: DetailUserImageTableViewCell.self)
         tableView.register(cell: DetailUserInfoTableViewCell.self)
         tableView.register(cell: RecordHeaderTableViewCell.self)
-        tableView.register(cell: RecordSubHeaderTableViewCell.self)
         tableView.register(cell: NotificationTableViewCell.self)
         tableView.separatorStyle = .none
     }
@@ -133,7 +132,7 @@ final class AdminUserDetailViewController: UIViewController {
 extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSource {
     enum TableViewCase: CaseIterable {
         case image, info
-        case recordHeader, recordSubHeader
+        case recordHeader
         case record
     }
 
@@ -141,7 +140,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         guard let tableViewCase = TableViewCase.allCases[safe: section] else { return 0 }
         
         switch tableViewCase {
-        case .image, .info, .recordHeader, .recordSubHeader:
+        case .image, .info, .recordHeader:
             return 1
         case .record:
             return viewModel.likeList.count
@@ -180,11 +179,6 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
                 .disposed(by: disposeBag)
             return cell
             
-        case .recordSubHeader:
-            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RecordHeaderTableViewCell.self)
-            cell.selectionStyle = .none
-            return cell
-            
         case .record:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: NotificationTableViewCell.self)
             
@@ -204,9 +198,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case .info:
             return UITableView.automaticDimension
         case .recordHeader:
-            return 50
-        case .recordSubHeader:
-            return 50
+            return 70
         case .record:
             return 80
         }
