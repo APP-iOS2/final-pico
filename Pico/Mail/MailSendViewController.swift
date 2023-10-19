@@ -15,7 +15,7 @@ final class MailSendViewController: UIViewController {
     private let viewModel = MailSendModel()
     private let disposeBag = DisposeBag()
     
-    private var receiver: User?
+    private var receiver: User = User(mbti: .infj, phoneNumber: "", gender: .etc, birth: "", nickName: "", location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [], createdDate: 0, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
     private var isMessageView = true
     
     private let navigationBar: UINavigationBar = {
@@ -203,13 +203,12 @@ final class MailSendViewController: UIViewController {
                 self.sendButton.tappedAnimation()
                 if let text = self.messageView.text {
                     // sender: 로그인한 사람, recevie 받는 사람
-                    if let receiver = self.receiver {
-                        self.viewModel.saveMailData(receiveUser: receiver, message: text, type: .message)
-                        if isMessageView {
-                            self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-                        } else {
-                            dismiss(animated: true)
-                        }
+                    self.viewModel.saveMailData(receiveUser: receiver, message: text, type: .message)
+                    if isMessageView {
+                        self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                    } else {
+                        dismiss(animated: true)
+                        
                     }
                 }
             }

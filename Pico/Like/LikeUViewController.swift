@@ -98,7 +98,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
                 let mailSendView = MailSendViewController()
                 mailSendView.configData(userId: item.likedUserId, atMessageView: false)
                 mailSendView.modalPresentationStyle = .formSheet
-                self?.present(mailSendView, animated: true, completion: nil)
+                self.present(mailSendView, animated: true, completion: nil)
             })
             .disposed(by: cell.disposeBag)
         return cell
