@@ -30,7 +30,7 @@ final class NotificationService {
                 if UserDefaultsManager.shared.isLogin() {
                     FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: newToken) { result in
                         switch result {
-                        case .success(_):
+                        case .success:
                             print("토큰 저장 성공 Token: \(token)")
                         case .failure(let error):
                             print("토큰 저장 실패: \(error)")
@@ -109,7 +109,7 @@ final class NotificationService {
         let emptyToken = Token(fcmToken: "", badgeCount: 0)
         FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: emptyToken) { result in
             switch result {
-            case .success(_):
+            case .success:
                 print("토큰 비우기 성공")
             case .failure(let error):
                 print("토큰 비우기 실패: \(error)")
@@ -134,7 +134,7 @@ final class NotificationService {
                 let resetToken = Token(fcmToken: token.fcmToken, badgeCount: 0)
                 FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: resetToken) { result in
                     switch result {
-                    case .success(_):
+                    case .success:
                         print("뱃지 카운트 리셋 성공")
                     case .failure(let error):
                         print("뱃지 카운트 리셋 실패 : \(error)")
@@ -155,7 +155,7 @@ final class NotificationService {
                 let newToken = Token(fcmToken: token.fcmToken, badgeCount: token.badgeCount + 1)
                 FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: userId, data: newToken) { result in
                     switch result {
-                    case .success(_):
+                    case .success:
                         print("뱃지 카운트 업데이트 성공")
                     case .failure(let error):
                         print("뱃지 카운트 업데이트 실패 : \(error)")
