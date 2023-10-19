@@ -89,7 +89,7 @@ final class HomeViewModel {
                         }
                     }
                     self.otherUsers.accept(users)
-                    print(users.count)
+                    print("유저 로드: \(users.count)명")
                 }
             }
         }
