@@ -22,7 +22,7 @@ final class SignUpPictureViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    private let yoloManager: YoloManager = YoloManager()
+    
     private let pictureManager: PictureManager = PictureManager()
     private var isDetectedImage: Bool? = false
     private var objectDetectionRequest: VNCoreMLRequest?
@@ -92,7 +92,6 @@ final class SignUpPictureViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configCollectionView()
-        yoloManager.loadYOLOv3Model()
         pictureManager.requestPhotoLibraryAccess(in: self)
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -117,10 +116,11 @@ final class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
+        SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
+        let yoloManager: YoloManager = YoloManager()
+        yoloManager.loadYOLOv3Model()
         
         let detectionGroup = DispatchGroup()
-        
-        SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             var allImagesDetected = true
@@ -128,11 +128,11 @@ final class SignUpPictureViewController: UIViewController {
             for image in self.userImages {
                 detectionGroup.enter()
                 
-                self.yoloManager.detectPeople(image: image) {
+                yoloManager.detectPeople(image: image) {
                     detectionGroup.leave()
                 }
                 
-                if !(self.yoloManager.isDetectedImage ?? true) {
+                if !(yoloManager.isDetectedImage ?? true) {
                     allImagesDetected = false
                 }
             }

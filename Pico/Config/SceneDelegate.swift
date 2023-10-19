@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window?.rootViewController = rootViewController
         }
         
-//        let rootViewController = UINavigationController(rootViewController: SignUpPhoneNumberViewController(viewModel: SignUpViewModel()))
+//        let rootViewController = UINavigationController(rootViewController: AdminViewController())
 //        window?.rootViewController = rootViewController
         
         window?.makeKeyAndVisible()
