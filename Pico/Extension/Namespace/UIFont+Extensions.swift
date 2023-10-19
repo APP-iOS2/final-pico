@@ -59,6 +59,7 @@ extension UIFont {
     /// 엔터 뷰 얇은 폰트 사이트 (12, thin)
     static var picoEntSubLabelFont: UIFont {
         return UIFont.systemFont(ofSize: 12, weight: .thin)
+    }
     /// 프로필 라벨 폰트 사이즈 (14, regular)
     static var picoProfileLabelFont: UIFont {
         return UIFont.systemFont(ofSize: 14)
