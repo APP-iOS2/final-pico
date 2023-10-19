@@ -31,6 +31,8 @@ final class MyPageCollectionTableCell: UITableViewCell {
         return view
     }()
     
+    private let chuCount = UserDefaultsManager.shared.getChuCount()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configCollectionView()
@@ -77,10 +79,18 @@ extension MyPageCollectionTableCell: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyPageCollectionCell", for: indexPath) as? MyPageCollectionCell else { return UICollectionViewCell() }
-        cell.configure(imageName: "chu", title: "Store", subTitle: "돈을 주세요")
+        
         cell.backgroundColor = .white
         cell.layer.masksToBounds = true
         cell.layer.cornerRadius = 10
+        switch indexPath.row {
+        case 0:
+            cell.configure(imageName: "chu", title: "내 포인트", subTitle: "\(chuCount) 츄")
+        case 1:
+            cell.configure(imageName: "tempImage", title: "MbTI검사", subTitle: "내 성향 알아보기")
+        default:
+            break
+        }
         return cell
     }
     
@@ -91,9 +101,6 @@ extension MyPageCollectionTableCell: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        switch indexPath.row {
-        default:
-            delegate?.didSelectItem(item: 0)
-        }
+        delegate?.didSelectItem(item: indexPath.row)
     }
 }
