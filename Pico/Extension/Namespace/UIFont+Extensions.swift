@@ -56,8 +56,8 @@ extension UIFont {
     static var picoProfileLabelFont: UIFont {
         return UIFont.systemFont(ofSize: 14)
     }
-    /// 프로필 이름 폰트 사이즈 (22, regular)
+    /// 프로필 이름 폰트 사이즈 (25, medium)
     static var picoProfileNameFont: UIFont {
-        return UIFont.systemFont(ofSize: 26, weight: .medium)
+        return UIFont.systemFont(ofSize: 25, weight: .medium)
     }
 }
