@@ -13,6 +13,7 @@ import RxCocoa
 final class SignInViewController: UIViewController {
     private let authManager = SmsAuthManager()
     private let keyboardManager = KeyboardManager()
+    private let checkService = CheckService()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
     private let phoneNumberSubject = BehaviorSubject<String>(value: "")
@@ -160,15 +161,26 @@ extension SignInViewController {
                 authButton.tappedAnimation()
                 guard self.isFullPhoneNumber else { return }
                 guard let text = self.phoneNumberTextField.text else { return }
-                showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
+                
+                showAlert(message: "\(text) 번호로 인증번호를 전송합니다.", isCancelButton: true) {
                     self.viewModel.signIn(userNumber: text) { user, string in
                         guard self.viewModel.isRightUser else {
-                            Loading.hideLoading()
-                            self.showAlert(message: string) {
-                                self.configReset()
+                            self.checkService.checkBlockUser(userNumber: text) { isBlock in
+                                if isBlock {
+                                    Loading.hideLoading()
+                                    self.showAlert(message: "차단된 유저입니다.") {
+                                        self.configReset()
+                                    }
+                                } else {
+                                    Loading.hideLoading()
+                                    self.showAlert(message: string) {
+                                        self.configReset()
+                                    }
+                                }
                             }
                             return
                         }
+                        
                         if let user = user {
                             UserDefaultsManager.shared.setUserData(userData: user)
                         }
@@ -195,7 +207,6 @@ extension SignInViewController {
             .subscribe(onNext: { [weak self] in
                 self?.configAuthText()
                 guard let self = self else { return }
-               
                 guard authManager.checkRightCode(code: authText) else {
                     showAlert(message: "비상비상 인증실패") { self.configReset() }
                     return

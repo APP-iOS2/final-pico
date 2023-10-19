@@ -87,8 +87,7 @@ final class SignLoadingAnimationView: UIView {
         
         for (index, circle) in circles.enumerated() {
             let delay = jumpDuration * 2 * TimeInterval(index) / TimeInterval(circles.count)
-            UIView.animateKeyframes(withDuration: totalDuration, delay: delay, options: [.repeat], animations: { [weak self] in 
-                guard let self = self else { return }
+            UIView.animateKeyframes(withDuration: totalDuration, delay: delay, options: [.repeat], animations: {
                 UIView.addKeyframe(withRelativeStartTime: jumpRelativeTime, relativeDuration: jumpRelativeDuration) {
                     circle.frame.origin.y -= 30
                 }
