@@ -17,11 +17,13 @@ final class LikeUViewModel: ViewModelType {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
         let checkEmpty: Observable<Void>
+        let sendMessage: Observable<(Int)>
     }
     
     struct Output {
         let likeUIsEmpty: Observable<Bool>
         let reloadCollectionView: Observable<Void>
+        let resultMessage: Observable<Void>
     }
     
     private(set) var likeUList: [Like.LikeInfo] = [] {
@@ -37,6 +39,7 @@ final class LikeUViewModel: ViewModelType {
     private let reloadTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     private let currentUser = UserDefaultsManager.shared.getUserData()
+    private var currentChuCount = UserDefaultsManager.shared.getChuCount()
     private let pageSize = 6
     var startIndex = 0
 
@@ -78,7 +81,22 @@ final class LikeUViewModel: ViewModelType {
                 }
             }
         
-        return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadTableViewPublisher.asObservable())
+        let resultMessage = input.sendMessage
+            .withUnretained(self)
+            .flatMap { viewModel, chu in
+                viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() - 50
+                return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
+                    .flatMap { _ -> Observable<Void> in
+                        let payment: Payment = Payment(purchases: [Payment.Purchase(price: 0, purchaseChuCount: -chu)])
+                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "purchases", data: payment)
+                    }
+            }
+            .withUnretained(self)
+            .map { viewModel, _ in
+                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
+            }
+            
+        return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadTableViewPublisher.asObservable(), resultMessage: resultMessage)
     }
     
     private func loadNextPage() {

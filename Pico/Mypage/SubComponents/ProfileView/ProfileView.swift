@@ -39,9 +39,10 @@ final class ProfileView: UIView {
         label.layer.cornerRadius = 15
         label.textColor = .white
         label.backgroundColor = .picoBlue
+        label.font = .picoProfileLabelFont
         return label
     }()
-    
+
     private let stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
@@ -51,13 +52,15 @@ final class ProfileView: UIView {
     
     private let userNameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.picoTitleFont
+        label.font = UIFont.picoProfileNameFont
+        label.textColor = .picoFontBlack
         return label
     }()
     
     private let userAgeLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.picoTitleFont
+        label.font = .picoProfileNameFont
+        label.textColor = .picoFontBlack
         return label
     }()
     
@@ -77,6 +80,13 @@ final class ProfileView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func configBaseView(gesture: UIGestureRecognizer) {
+        [userImage, editImageView, profilPercentLabel, circularProgressBarView].forEach {
+            $0.addGestureRecognizer(gesture)
+        }
+    }
+    
     func configViewModel(viewModel: ProfileViewModel) {
         self.viewModel = viewModel
         circularProgressBarView.binds(viewModel.circularProgressBarViewModel)
@@ -107,7 +117,6 @@ final class ProfileView: UIView {
                        }
                    })
                    .disposed(by: disposeBag)
-        
     }
 
      func configProgressBarView() {
@@ -116,11 +125,12 @@ final class ProfileView: UIView {
          circularProgressBarView.triggerLayoutSubviews()
     }
     private func addViews() {
-        [circularProgressBarView, userImage, editImageView, profilPercentLabel, stackView].forEach {
-            addSubview($0)
-        }
         [userNameLabel, userAgeLabel].forEach {
             stackView.addArrangedSubview($0)
+        }
+        
+        [circularProgressBarView, userImage, editImageView, profilPercentLabel, stackView].forEach {
+            addSubview($0)
         }
     }
     
