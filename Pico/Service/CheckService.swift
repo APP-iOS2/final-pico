@@ -20,7 +20,7 @@ final class CheckService {
         let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
         
         if !phoneNumberPredicate.evaluate(with: userNumber) {
-            completion("유효하지 않은 전화번호입니다..", false)
+            completion("유효하지 않은 전화번호입니다.", false)
             return
         }
         
@@ -30,7 +30,7 @@ final class CheckService {
             .whereField("phoneNumber", isEqualTo: userNumber)
             .getDocuments { snapShot, err in
                 guard err == nil, let documents = snapShot?.documents else {
-                    completion("서버오류 비상비상", false)
+                    completion("서버에 문제가 있습니다.", false)
                     return
                 }
 
@@ -47,6 +47,8 @@ final class CheckService {
             let pattern = "([ㄱ-ㅎㅏ-ㅣ]){1,8}"
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let matches = regex.matches(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))
+            
+            SignLoadingManager.showLoading(text: "")
             
             if matches.isEmpty {
                 self.dbRef

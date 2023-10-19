@@ -173,32 +173,34 @@ extension SignUpNickNameViewController {
     @objc private func tappedCheckButton(_ sender: UIButton) {
         sender.tappedAnimation()
         guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
-        showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) { [weak self] in
+        
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "\(userNickName) 이름으로 설정합니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
-            
             checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
                 
+                SignLoadingManager.hideLoading()
                 guard isRight else {
-                    showAlert(message: message) { [weak self] in
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         
                         viewModel.isRightName = isRight
                         reset()
-                    }
+                    })
                     return
                 }
-                showAlert(message: message) { [weak self] in
+                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
                     guard let self = self else { return }
                     
                     viewModel.isRightName = isRight
                     self.userNickName = userNickName
-                }
+                })
             }
             updateCheckButton(isFull: true, ischeck: true)
             updateNextButton(isCheck: true)
             nickNameTextField.textColor = .picoBlue
-        }
+            
+        })
     }
     
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
