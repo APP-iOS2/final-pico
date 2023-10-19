@@ -59,6 +59,7 @@ final class RandomBoxView: UIView {
     private func configStyle() {
         self.layer.borderWidth = 1.0
         self.layer.cornerRadius = 10
+        self.layer.borderColor = UIColor.picoBlue.cgColor
     }
     
     private func addViews() {
