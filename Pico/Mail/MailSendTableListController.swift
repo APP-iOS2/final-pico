@@ -21,6 +21,7 @@ final class MailSendTableListController: BaseViewController {
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkSendEmptyPublisher = PublishSubject<Void>()
+    private let deleteSendPublisher = PublishSubject<String>()
     
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -38,13 +39,14 @@ final class MailSendTableListController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        if viewModel.sendList.isEmpty {
+            refreshPublisher.onNext(())
+        }
         checkSendEmptyPublisher.onNext(())
         mailListTableView.reloadData()
     }
     // MARK: - config
     private func configTableView() {
-        mailListTableView.rowHeight = 80
         mailListTableView.dataSource = self
         mailListTableView.delegate = self
     }
@@ -82,20 +84,30 @@ extension MailSendTableListController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = viewModel.sendList[indexPath.row]
-        configTableviewSelect(item: item)
-    }
-    
-    private func configTableviewSelect(item: Mail.MailInfo) {
         let mailReceiveView = MailReceiveViewController()
         mailReceiveView.modalPresentationStyle = .formSheet
         mailReceiveView.configData(mailSender: item)
         self.present(mailReceiveView, animated: true, completion: nil)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard let item = viewModel.sendList[safe: indexPath.row] else { return }
+        self.deleteSendPublisher.onNext(item.id)
     }
 }
 // MARK: - bind
 extension MailSendTableListController {
     private func bind() {
         let input = MailSendModel.Input(listLoad: loadDataPublsher,
+                                        deleteUser: deleteSendPublisher,
                                         refresh: refreshPublisher,
                                         isSendEmptyChecked: checkSendEmptyPublisher)
         let output = viewModel.transform(input: input)
@@ -113,8 +125,9 @@ extension MailSendTableListController {
                 } else {
                     viewController.view.addSubview(viewController.mailListTableView)
                     viewController.mailListTableView.snp.makeConstraints { make in
-                        make.top.leading.equalToSuperview().offset(10)
-                        make.trailing.bottom.equalToSuperview().offset(-10)
+                        make.top.equalToSuperview().offset(10)
+                        make.leading.trailing.equalToSuperview()
+                        make.bottom.equalToSuperview().offset(-10)
                     }
                 }
             })
