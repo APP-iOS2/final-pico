@@ -79,7 +79,6 @@ final class RandomBoxViewController: UIViewController {
         configNavigationBackButton()
         addViews()
         makeConstraints()
-        configRxBinding()
         bind()
     }
     
@@ -141,22 +140,6 @@ final class RandomBoxViewController: UIViewController {
             make.width.equalTo(buttonWidth)
             make.height.equalTo(padding * 2)
         }
-    }
-    
-    private func configRxBinding() {
-        openOneBoxButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                self.tappedBoxButton()
-            })
-            .disposed(by: disposeBag)
-        
-        openTenBoxButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                self.tappedTenBoxButton()
-            })
-            .disposed(by: disposeBag)
     }
     
     private func tappedBoxButton() {
@@ -221,6 +204,20 @@ extension RandomBoxViewController {
                 })
             })
             .disposed(by: disposeBag)
-
+        
+        openOneBoxButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.tappedBoxButton()
+            })
+            .disposed(by: disposeBag)
+        
+        openTenBoxButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                self.tappedTenBoxButton()
+            })
+            .disposed(by: disposeBag)
+        
     }
 }
