@@ -128,7 +128,7 @@ extension NotificationTableViewCell {
         nameLabel.text = "\(nickName), \(age)"
         mbitLabel.setMbti(mbti: mbti)
         createDateLabel.isHidden = false
-        createDateLabel.text = date.toStringTime()
+        createDateLabel.text = date.toStringTime(dateSeparator: .dot)
     }
     
     func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
