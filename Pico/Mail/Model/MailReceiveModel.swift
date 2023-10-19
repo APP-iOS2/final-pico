@@ -106,7 +106,7 @@ final class MailReceiveModel {
                         print("받은 문서를 찾을 수 없습니다.")
                     }
                 }
-                receiveList.reverse()
+                receiveList.sort(by: {$0.sendedDate > $1.sendedDate})
                 
                 reloadMailTableViewPublisher.onNext(())
             }
@@ -147,12 +147,12 @@ final class MailReceiveModel {
         let updateData: Mail.MailInfo = Mail.MailInfo(id: data.id, sendedUserId: data.sendedUserId, receivedUserId: data.receivedUserId, mailType: data.mailType, message: data.message, sendedDate: data.sendedDate, isReading: true)
         
         DispatchQueue.global().async {
-            self.dbRef.collection(Collections.mail.name).document(UserDefaultsManager.shared.getUserData().userId).setData([
-                "receiveMailInfo": FieldValue.arrayUnion([updateData.asDictionary()])], merge: true) { error in
-                    if let error = error {
-                        print("Error updateNewData \(error)")
-                    }
-                }
+            self.dbRef.collection(Collections.mail.name).document(UserDefaultsManager.shared.getUserData().userId).updateData([
+                "receiveMailInfo": FieldValue.arrayRemove([data.asDictionary()])
+            ])
+            self.dbRef.collection(Collections.mail.name).document(UserDefaultsManager.shared.getUserData().userId).updateData([
+                "receiveMailInfo": FieldValue.arrayUnion([updateData.asDictionary()])
+            ])
         }
     }
     

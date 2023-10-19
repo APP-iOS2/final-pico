@@ -150,14 +150,13 @@ final class MailSendViewController: UIViewController {
         }
         
         receiverStack.snp.makeConstraints { make in
-            make.top.equalTo(receiverImageView).offset(10)
+            make.top.equalTo(receiverImageView).offset(12)
             make.leading.equalTo(receiverImageView.snp.trailing).offset(10)
         }
         
         mbtiLabelView.snp.makeConstraints { make in
-            make.centerY.equalTo(receiverNameLabel)
-            make.height.equalTo(mbtiLabelView.frame.size.height)
             make.width.equalTo(mbtiLabelView.frame.size.width)
+            make.height.equalTo(mbtiLabelView.frame.size.height)
         }
         
         contentView.snp.makeConstraints { make in
@@ -205,7 +204,7 @@ final class MailSendViewController: UIViewController {
                 if let text = self.messageView.text {
                     // sender: 로그인한 사람, recevie 받는 사람
                     if let receiver = self.receiver {
-                        self.viewModel.saveMailData(receiveUser: receiver, message: text)
+                        self.viewModel.saveMailData(receiveUser: receiver, message: text, type: .message)
                         if isMessageView {
                             self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
                         } else {

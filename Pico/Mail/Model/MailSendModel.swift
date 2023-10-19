@@ -108,7 +108,7 @@ final class MailSendModel {
                         print("보낸 문서를 찾을 수 없습니다.")
                     }
                 }
-                sendList.reverse()
+                sendList.sort(by: {$0.sendedDate > $1.sendedDate})
                 
                 reloadMailTableViewPublisher.onNext(())
             }
@@ -124,7 +124,7 @@ final class MailSendModel {
         loadNextMailPage()
     }
     
-    func saveMailData(receiveUser: User, message: String) {
+    func saveMailData(receiveUser: User, message: String, type: MailSendType) {
         let senderUser = UserDefaultsManager.shared.getUserData()
         
         let sendMessages: [String: Any] = [
@@ -160,24 +160,40 @@ final class MailSendModel {
                 }
             }
         
-        // 받는 사람
-        dbRef.collection(Collections.mail.name).document(receiveUser.id).setData(
-            [
-                "userId": receiveUser.id,
-                "receiveMailInfo": FieldValue.arrayUnion([receiveMessages])
-            ], merge: true) { error in
-                if let error = error {
-                    print("평가 업데이트 에러: \(error)")
-                } else {
-                    print("평가 업데이트 성공")
+        if type == .message { // 메시지를 보내는 경우
+            // 받는 사람
+            dbRef.collection(Collections.mail.name).document(receiveUser.id).setData(
+                [
+                    "userId": receiveUser.id,
+                    "receiveMailInfo": FieldValue.arrayUnion([receiveMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("평가 업데이트 에러: \(error)")
+                    } else {
+                        print("평가 업데이트 성공")
+                    }
                 }
-            }
+            
+            NotificationService.shared.sendNotification(userId: receiveUser.id, sendUserName: senderUser.nickName, notiType: .message)
+            
+        } else { // 매칭의 경우
+            dbRef.collection(Collections.mail.name).document(receiveUser.id).setData(
+                [
+                    "userId": receiveUser.id,
+                    "sendMailInfo": FieldValue.arrayUnion([sendMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("평가 업데이트 에러: \(error)")
+                    } else {
+                        print("평가 업데이트 성공")
+                    }
+                }
+        }
         
         guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
         let receiverNoti = Noti(receiveId: receiveUser.id, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
         
         FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
-        NotificationService.shared.sendNotification(userId: receiveUser.id, sendUserName: senderUser.nickName, notiType: .message)
     }
     
     func getUser(userId: String, completion: @escaping () -> ()) {

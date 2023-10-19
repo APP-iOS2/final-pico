@@ -84,10 +84,6 @@ extension MailSendTableListController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = viewModel.sendList[indexPath.row]
-        configTableviewSelect(item: item)
-    }
-    
-    private func configTableviewSelect(item: Mail.MailInfo) {
         let mailReceiveView = MailReceiveViewController()
         mailReceiveView.modalPresentationStyle = .formSheet
         mailReceiveView.configData(mailSender: item)
@@ -115,8 +111,9 @@ extension MailSendTableListController {
                 } else {
                     viewController.view.addSubview(viewController.mailListTableView)
                     viewController.mailListTableView.snp.makeConstraints { make in
-                        make.top.leading.equalToSuperview().offset(10)
-                        make.trailing.bottom.equalToSuperview().offset(-10)
+                        make.top.equalToSuperview().offset(10)
+                        make.leading.trailing.equalToSuperview()
+                        make.bottom.equalToSuperview().offset(-10)
                     }
                 }
             })

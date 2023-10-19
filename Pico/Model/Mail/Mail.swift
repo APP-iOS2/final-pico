@@ -36,3 +36,8 @@ enum MailType: String, Codable {
         }
     }
 }
+
+enum MailSendType: Codable {
+    case message
+    case matching
+}
