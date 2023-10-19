@@ -26,6 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 moveNotificationView()
             }
         }
+
         return true
     }
 
@@ -50,9 +51,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        let userInfo = notification.request.content.userInfo
-        Messaging.messaging().appDidReceiveMessage(userInfo)
-        completionHandler([.list, .banner, .badge, .sound])
+        NotificationService.shared.displayResetBadge()
+        completionHandler([.list, .banner, .sound])
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -61,18 +61,25 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        if let aps = userInfo["aps"] as? [String: Any], let badge = aps["badge"] as? Int {
+            if #available(iOS 16.0, *) {
+                UNUserNotificationCenter.current().setBadgeCount(badge)
+            } else {
+                UIApplication.shared.applicationIconBadgeNumber = badge
+            }
+        }
         completionHandler(UIBackgroundFetchResult.newData)
     }
     
     private func moveNotificationView() {
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-            guard var rootViewController = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window?.rootViewController else { return }
+        if UIApplication.shared.connectedScenes.first?.delegate is SceneDelegate {
+            guard let rootViewController = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window?.rootViewController else { return }
             let notificationViewController = NotificationViewController()
             if let tabBarController = rootViewController as? UITabBarController {
                 if let selectedNavigationController = tabBarController.selectedViewController as? UINavigationController {
                     selectedNavigationController.pushViewController(notificationViewController, animated: true)
                 }
-            } else if let navigationController = rootViewController as? UINavigationController {
+            } else if rootViewController is UINavigationController {
                 rootViewController.navigationController?.pushViewController(notificationViewController, animated: true)
             }
         }

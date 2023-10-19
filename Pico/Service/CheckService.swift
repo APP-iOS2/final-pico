@@ -55,6 +55,7 @@ final class CheckService {
                     .collection("users").whereField("nickName", isEqualTo: name)
                     .getDocuments { snapShot, err in
                     guard err == nil, let documents = snapShot?.documents else {
+
                         print(err ?? "서버오류 비상비상")
                         return
                     }

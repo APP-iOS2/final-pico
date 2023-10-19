@@ -15,7 +15,7 @@ final class AdminUserDetailViewModel: ViewModelType {
     private let pageSize = 12
     var startIndex = 0
     
-    private(set) var recordList: [Like.LikeInfo] = []
+    private(set) var likeList: [Like.LikeInfo] = []
     private let reloadPublisher = PublishSubject<Void>()
     
     struct Input {
@@ -55,10 +55,6 @@ final class AdminUserDetailViewModel: ViewModelType {
         loadNextPage()
     }
     
-    private func unsubscribe() {
-        
-    }
-    
     private func loadNextPage() {
         let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(selectedUser.id)
@@ -77,7 +73,7 @@ final class AdminUserDetailViewModel: ViewModelType {
                         return
                     }
                     let currentPageDatas: [Like.LikeInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
-                    recordList.append(contentsOf: currentPageDatas)
+                    likeList.append(contentsOf: currentPageDatas)
                     startIndex += currentPageDatas.count
                     reloadPublisher.onNext(())
                 }

@@ -11,7 +11,7 @@ import RxSwift
 
 final class MailListTableViewCell: UITableViewCell {
     
-    private let viewModel = MailViewModel()
+    private let viewModel = MailReceiveModel()
     private let disposeBag = DisposeBag()
     
     private var mailInfo: Mail.MailInfo?
@@ -67,6 +67,7 @@ final class MailListTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontBlack
+        label.textAlignment = .center
         return label
     }()
     
@@ -74,6 +75,7 @@ final class MailListTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .red
+        label.textAlignment = .center
         return label
     }()
     
@@ -93,7 +95,7 @@ final class MailListTableViewCell: UITableViewCell {
     func getData(senderUser: Mail.MailInfo, type: MailType) {
         self.mailInfo = senderUser
         
-        if senderUser.mailType == .receive {
+        if type == .receive {
             viewModel.getUser(userId: senderUser.sendedUserId) {
                 if let user = self.viewModel.user {
                     self.configViews(user: user)
@@ -108,11 +110,12 @@ final class MailListTableViewCell: UITableViewCell {
         }
         self.message.text = senderUser.message
         
-        let date = senderUser.sendedDate
+        let date = senderUser.sendedDate.toStringTime()
         let startIndex = date.index(date.startIndex, offsetBy: 5)
-        let range = startIndex...
+        let lastIndex = date.index(date.startIndex, offsetBy: 9)
+        let range = startIndex...lastIndex
         self.dateLabel.text = "\(date[range].prefix(2)).\(date[range].suffix(2))"
-        
+
         if type == .receive {
             if !senderUser.isReading {
                 self.newLabel.text = "new"
@@ -148,7 +151,7 @@ final class MailListTableViewCell: UITableViewCell {
         }
         
         userStackView.snp.makeConstraints { make in
-            make.top.equalTo(userImage).offset(10)
+            make.top.equalTo(userImage).offset(5)
             make.leading.equalTo(nameStackView)
             make.trailing.equalTo(contentView).offset(-70)
             make.bottom.equalTo(userImage).offset(-10)
