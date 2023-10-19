@@ -119,7 +119,7 @@ final class SubInfomationViewController: BaseViewController {
 extension SubInfomationViewController {
     
     private func addViews() {
-        //view.addSubview(verticalStackView)
+        // view.addSubview(verticalStackView)
         [personalLabel, personalCollectionView, hobbyLabel, hobbyCollectionView, likeMbtiLabel, mbtiCollectionView].forEach {
             view.addSubview($0)
         }

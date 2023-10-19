@@ -5,7 +5,7 @@
 //  Created by 오영석 on 2023/10/10.
 //
 
-import Foundation
+import UIKit
 import RxSwift
 import RxCocoa
 import Firebase
@@ -73,22 +73,19 @@ final class WorldCupViewModel {
     }
     
     func animateNextRound(collectionView: UICollectionView) {
-        UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: { [weak self] in
-            guard let self else { return }
+        UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: {
             collectionView.reloadData()
-        }, completion: nil)
+        })
     }
 
     func changeRoundLabel(withText text: String, roundLabel: UILabel) {
-        UIView.transition(with: roundLabel, duration: 1.5, options: .transitionCrossDissolve, animations: { [weak self] in
-            guard let self else { return }
+        UIView.transition(with: roundLabel, duration: 1.5, options: .transitionCrossDissolve, animations: {
             roundLabel.text = text
-        }, completion: nil)
+        })
     }
 
     func animateSelectedCell(selectedCell: WorldCupCollectionViewCell) {
-        UIView.animate(withDuration: 0.3, animations: { [weak self] in
-            guard let self else { return }
+        UIView.animate(withDuration: 0.3, animations: {
             selectedCell.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         }, completion: { _ in
             UIView.animate(withDuration: 0.3) {

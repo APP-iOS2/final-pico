@@ -299,7 +299,7 @@ extension ProfileEditViewController {
             }
             detectionGroup.notify(queue: .main) {
                 SignLoadingManager.hideLoading()
-                //TODO: 알럿호출시점 바꾸기
+                // TODO: 알럿호출시점 바꾸기
                 if allImagesDetected {
                     self.showAlert(message: "이미지가 등록되었습니다.", yesAction: nil)
                 } else {
