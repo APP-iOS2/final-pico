@@ -26,7 +26,7 @@ final class NotificationService {
                 print("토큰 가져오기 실패 : \(error)")
                 return
             } else if let token = token {
-                let newToken = Token(fcmToken: token)
+                let newToken = Token(fcmToken: token, badgeCount: 0)
                 if UserDefaultsManager.shared.isLogin() {
                     FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: newToken) { result in
                         switch result {
@@ -46,7 +46,8 @@ final class NotificationService {
     func sendNotification(userId: String, sendUserName: String, notiType: PushNotiType) {
         let title: String = "Pico"
         var body: String = ""
-        FirestoreService.shared.loadDocument(collectionId: .tokens, documentId: userId, dataType: Token.self) { result in
+        FirestoreService.shared.loadDocument(collectionId: .tokens, documentId: userId, dataType: Token.self) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let data):
                 switch notiType {
@@ -61,7 +62,7 @@ final class NotificationService {
                 let urlString = "https://fcm.googleapis.com/fcm/send"
                 let url = NSURL(string: urlString)!
                 let paramString: [String: Any] = ["to": token.fcmToken,
-                                                  "notification": ["title": title, "body": body, "sound": "default"],
+                                                  "notification": ["title": title, "body": body, "sound": "default", "badge": token.badgeCount + 1],
                                                   "data": ["title": title, "body": body],
                                                   "content_available": true
                 ]
@@ -83,7 +84,7 @@ final class NotificationService {
                     }
                 }
                 task.resume()
-                
+                updateBadgeCount(userId: userId)
             case .failure(let error):
                 print("토큰 불러오기 실패: \(error)")
             }
@@ -105,13 +106,64 @@ final class NotificationService {
     }
     
     func fcmTokenDelete() {
-        let emptyToken = Token(fcmToken: "")
+        let emptyToken = Token(fcmToken: "", badgeCount: 0)
         FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: emptyToken) { result in
             switch result {
             case .success(_):
                 print("토큰 비우기 성공")
             case .failure(let error):
                 print("토큰 비우기 실패: \(error)")
+            }
+        }
+    }
+    
+    func displayResetBadge() {
+        if #available(iOS 16.0, *) {
+            UNUserNotificationCenter.current().setBadgeCount(0)
+        } else {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
+        NotificationService.shared.resetBadgeCount()
+    }
+    
+    private func resetBadgeCount() {
+        FirestoreService.shared.loadDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Token.self) { result in
+            switch result {
+            case .success(let data):
+                guard let token = data else { return }
+                let resetToken = Token(fcmToken: token.fcmToken, badgeCount: 0)
+                FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: resetToken) { result in
+                    switch result {
+                    case .success(_):
+                        print("뱃지 카운트 리셋 성공")
+                    case .failure(let error):
+                        print("뱃지 카운트 리셋 실패 : \(error)")
+                    }
+                }
+            case .failure(let error):
+                print("토큰 정보 가져오기 실패 : \(error)")
+                return
+            }
+        }
+    }
+    
+    private func updateBadgeCount(userId: String) {
+        FirestoreService.shared.loadDocument(collectionId: .tokens, documentId: userId, dataType: Token.self) { result in
+            switch result {
+            case .success(let data):
+                guard let token = data else { return }
+                let newToken = Token(fcmToken: token.fcmToken, badgeCount: token.badgeCount + 1)
+                FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: userId, data: newToken) { result in
+                    switch result {
+                    case .success(_):
+                        print("뱃지 카운트 업데이트 성공")
+                    case .failure(let error):
+                        print("뱃지 카운트 업데이트 실패 : \(error)")
+                    }
+                }
+            case .failure(let error):
+                print("토큰 정보 가져오기 실패 : \(error)")
+                return
             }
         }
     }
