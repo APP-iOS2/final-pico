@@ -37,7 +37,7 @@ final class RecordHeaderTableViewCell: UITableViewCell {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = .clear
         view.showsHorizontalScrollIndicator = false
-        view.contentInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 20)
+        view.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         return view
     }()
     
