@@ -107,8 +107,7 @@ final class ProfileEditViewController: UIViewController {
     
     private func makeConstraints() {
         tableView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-20)
+            make.edges.equalToSuperview()
         }
     }
     
@@ -151,12 +150,29 @@ extension ProfileEditViewController: UITableViewDelegate {
         }
     }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        switch section {
+        case 2: 
+            let view = UIView()
+            return view
+        default:
+            return nil
+        }
+    }
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
-        case 0:
-            return 0
         case 1:
-            return 25
+            return 5
+        case 2:
+            return 20
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        switch section {
         case 2:
             return 20
         default:
