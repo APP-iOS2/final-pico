@@ -45,7 +45,7 @@ final class SignUpNickNameViewController: UIViewController {
     
     private let subNotifyLabel: UILabel = {
         let label = UILabel()
-        label.text = "신중하게 정해주세요😁"
+        label.text = "신중하게 정해주세요😁(추후 변경은 유료)"
         label.numberOfLines = 2
         label.lineBreakMode = .byWordWrapping
         label.textColor = .picoFontGray
@@ -162,12 +162,12 @@ extension SignUpNickNameViewController {
     }
     
     private func reset() {
-        self.nickNameTextField.text = ""
-        self.nickNameCancleButton.isEnabled = true
-        self.nickNameTextField.isEnabled = true
-        self.nickNameTextField.becomeFirstResponder()
-        self.updateCheckButton(isFull: false)
-        self.updateNextButton(isCheck: false)
+        nickNameTextField.text = ""
+        nickNameCancleButton.isEnabled = true
+        nickNameTextField.isEnabled = true
+        nickNameTextField.becomeFirstResponder()
+        updateCheckButton(isFull: false)
+        updateNextButton(isCheck: false)
     }
     // MARK: - @objc
     @objc private func tappedCheckButton(_ sender: UIButton) {
@@ -175,47 +175,40 @@ extension SignUpNickNameViewController {
         guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
         showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) { [weak self] in
             guard let self = self else { return }
-            self.checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
+            
+            checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
+                
                 guard isRight else {
-                    SignLoadingManager.hideLoading()
-                    self.showAlert(message: message) {
-                        self.viewModel.isRightName = isRight
-                        self.reset()
+                    showAlert(message: message) { [weak self] in
+                        guard let self = self else { return }
+                        
+                        viewModel.isRightName = isRight
+                        reset()
                     }
                     return
                 }
-                SignLoadingManager.hideLoading()
-                self.showAlert(message: message) {
-                    self.viewModel.isRightName = isRight
+                showAlert(message: message) { [weak self] in
+                    guard let self = self else { return }
+                    
+                    viewModel.isRightName = isRight
                     self.userNickName = userNickName
                 }
             }
-            self.updateCheckButton(isFull: true, ischeck: true)
-            self.updateNextButton(isCheck: true)
-            self.nickNameTextField.textColor = .picoBlue
+            updateCheckButton(isFull: true, ischeck: true)
+            updateNextButton(isCheck: true)
+            nickNameTextField.textColor = .picoBlue
         }
     }
     
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
         sender.tappedAnimation()
         nickNameTextField.text = ""
-        self.nickNameTextField.textColor = .gray
+        nickNameTextField.textColor = .gray
         updateCheckButton(isFull: false)
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        /*
-         !!!: 멘토링 질문
-         2023-10-16 18:25:04.804179+0900 Pico[8452:2229602] Metal API Validation Enabled
-         2023-10-16 18:25:09.469090+0900 Pico[8452:2229938] Task <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1> finished with error [-1002] Error Domain=NSURLErrorDomain Code=-1002 "unsupported URL" UserInfo={NSLocalizedDescription=unsupported URL, NSErrorFailingURLStringKey=chu, NSErrorFailingURLKey=chu, _NSURLErrorRelatedURLSessionTaskErrorKey=(
-             "LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>"
-         ), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>, NSUnderlyingError=0x281268f90 {Error Domain=kCFErrorDomainCFNetwork Code=-1002 "(null)"}}
-         Pico[8452:2229602] [SystemGestureGate] <0x10600de80> Gesture: System gesture gate timed out.
-         Pico[8452:2229602] [Presentation] Attempt to present <UIAlertController: 0x105abde00> on <Pico.PictureManager: 0x1064935e0> (from <Pico.PictureManager: 0x1064935e0>) whose view is not in the window hierarchy.
-         
-         위에 메시지가 뜨면서 다음 뷰컨으로 넘어가는게 조금 걸립니다 !
-         */
         viewModel.nickName = userNickName
         let viewController = SignUpPictureViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(viewController, animated: true)

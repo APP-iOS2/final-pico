@@ -4,7 +4,6 @@
 //
 //  Created by LJh on 10/18/23.
 //
-
 import Foundation
 import RxSwift
 import RxRelay
@@ -14,6 +13,7 @@ import FirebaseFirestoreSwift
 
 final class CheckService {
     private let dbRef = Firestore.firestore()
+    private let fireService = FirestoreService()
     
     func checkPhoneNumber(userNumber: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
         let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
@@ -24,7 +24,7 @@ final class CheckService {
             return
         }
         
-        SignLoadingManager.showLoading(text: "중복된 번호를 찾고 있어요!")
+        SignLoadingManager.showLoading(text: "")
         
         self.dbRef.collection("users")
             .whereField("phoneNumber", isEqualTo: userNumber)
@@ -43,19 +43,17 @@ final class CheckService {
     }
     
     func checkNickName(name: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
-        SignLoadingManager.showLoading(text: "중복된 닉네임을 찾고 있어요!")
-        
         do {
-            let pattern = "([ㄱ-ㅎㅏ-ㅣ]){2,8}"
+            let pattern = "([ㄱ-ㅎㅏ-ㅣ]){1,8}"
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let matches = regex.matches(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))
             
             if matches.isEmpty {
                 self.dbRef
                     .collection("users").whereField("nickName", isEqualTo: name)
-                    .getDocuments { [weak self] snapShot, err in
-                    guard let self = self else { return }
+                    .getDocuments { snapShot, err in
                     guard err == nil, let documents = snapShot?.documents else {
+
                         print(err ?? "서버오류 비상비상")
                         return
                     }
@@ -74,5 +72,30 @@ final class CheckService {
             completion("정규식 에러: \(error)", false)
             return
         }
+    }
+    
+    func checkBlockUser(userNumber: String, completion: @escaping (Bool) -> Void) {
+        let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
+        let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        
+        if !phoneNumberPredicate.evaluate(with: userNumber) {
+            completion(false)
+            return
+        }
+        
+        self.dbRef.collection("unsubscribe")
+            .whereField("phoneNumber", isEqualTo: userNumber)
+            .getDocuments { snapshot, error in
+                guard error == nil, let documents = snapshot?.documents else {
+                    completion(false) // 에러 발생 또는 문서가 없음
+                    return
+                }
+                
+                if !documents.isEmpty {
+                    completion(true) // 차단된 사용자임
+                } else {
+                    completion(false) // 차단된 사용자가 아님
+                }
+            }
     }
 }

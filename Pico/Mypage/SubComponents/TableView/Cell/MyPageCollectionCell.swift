@@ -18,13 +18,13 @@ final class MyPageCollectionCell: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
-        label.font = .picoSubTitleFont
+        label.font = .picoSubTitleSmallFont
         return label
     }()
     private let subTitleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .picoFontGray
-        label.font = .picoDescriptionFont
+        label.textColor = .picoGradientMedium
+        label.font = .picoSubTitleSmallFont
         return label
     }()
     
@@ -55,7 +55,7 @@ final class MyPageCollectionCell: UICollectionViewCell {
         image.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(3)
             make.centerX.equalToSuperview()
-            make.height.width.equalTo(55)
+            make.height.width.equalTo(45)
         }
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(image.snp.bottom).offset(-6)

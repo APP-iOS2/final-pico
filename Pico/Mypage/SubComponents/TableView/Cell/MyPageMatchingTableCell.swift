@@ -6,14 +6,10 @@
 //
 
 import UIKit
+import SnapKit
 
 final class MyPageMatchingTableCell: UITableViewCell {
 
-    private let tableImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
-        return imageView
-    }()
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
@@ -32,12 +28,12 @@ final class MyPageMatchingTableCell: UITableViewCell {
         let label = UILabel()
         label.textColor = .picoFontBlack
         label.font = UIFont.picoSubTitleFont
-        label.text = "premium"
+        label.text = "Premium"
         label.textAlignment = .center
         label.textColor = .white
         label.backgroundColor = .purple
         label.layer.masksToBounds = true
-        label.layer.cornerRadius = 20
+        label.layer.cornerRadius = 17
         return label
     }()
     
@@ -59,17 +55,17 @@ final class MyPageMatchingTableCell: UITableViewCell {
     }
     
     private func addSubView() {
-        [tableImageView, titleLabel, subtitleLabel, premiumLabel].forEach {
+        [premiumLabel, titleLabel, subtitleLabel].forEach {
             contentView.addSubview($0)
         }
     }
     
     private func makeConstraints() {
-        tableImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
+        premiumLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(15)
             make.leading.equalToSuperview().offset(15)
-            make.height.equalTo(25)
-            make.width.equalTo(90)
+            make.height.equalTo(35)
+            make.width.equalTo(100)
         }
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(15)
@@ -80,12 +76,6 @@ final class MyPageMatchingTableCell: UITableViewCell {
             make.bottom.equalToSuperview().offset(-15)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().inset(10)
-        }
-        premiumLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-10)
-            make.width.equalTo(110)
-            make.height.equalTo(40)
         }
     }
 }

@@ -55,28 +55,33 @@ final class LikeMeViewModel: ViewModelType {
                 viewModel.refresh()
             }
             .disposed(by: disposeBag)
+        
         input.listLoad
             .withUnretained(self)
             .subscribe { viewModel, _ in
                 viewModel.loadNextPage()
             }
             .disposed(by: disposeBag)
+        
         input.deleteUser
             .withUnretained(self)
             .subscribe { viewModel, userId in
                 viewModel.deleteUser(userId: userId)
             }
             .disposed(by: disposeBag)
+        
         input.likeUser
             .withUnretained(self)
             .subscribe { viewModel, userId in
                 viewModel.likeUser(userId: userId)
             }
             .disposed(by: disposeBag)
+        
         let didset = isEmptyPublisher.asObservable()
             .map { result in
                 return result
             }
+        
         let check = input.checkEmpty
             .withUnretained(self)
             .map { viewModel, _ -> Bool in
@@ -86,6 +91,7 @@ final class LikeMeViewModel: ViewModelType {
                     return false
                 }
             }
+        
         let isEmpty = Observable.of(didset, check).merge()
             .flatMapLatest { bool -> Observable<Bool> in
                 return Observable.create { emitter in
@@ -94,7 +100,10 @@ final class LikeMeViewModel: ViewModelType {
                 }
             }
         
-        return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadTableViewPublisher.asObservable())
+        return Output(
+            likeUIsEmpty: isEmpty,
+            reloadCollectionView: reloadTableViewPublisher.asObservable()
+        )
     }
     
     private func loadNextPage() {

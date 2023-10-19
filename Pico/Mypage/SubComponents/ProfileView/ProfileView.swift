@@ -39,9 +39,10 @@ final class ProfileView: UIView {
         label.layer.cornerRadius = 15
         label.textColor = .white
         label.backgroundColor = .picoBlue
+        label.font = .picoProfileLabelFont
         return label
     }()
-    
+
     private let stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
@@ -51,18 +52,21 @@ final class ProfileView: UIView {
     
     private let userNameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.picoTitleFont
+        label.font = UIFont.picoProfileNameFont
+        label.textColor = .picoFontBlack
         return label
     }()
     
     private let userAgeLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.picoTitleFont
+        label.font = .picoProfileNameFont
+        label.textColor = .picoFontBlack
         return label
     }()
     
     private let circularProgressBarView = CircularProgressBarView()
     private let disposeBag = DisposeBag()
+    private var viewModel: ProfileViewModel?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -70,7 +74,6 @@ final class ProfileView: UIView {
         addViews()
         makeConstraints()
         configProgressBarView()
-        bindings(viewModel: ProfileViewModel())
     }
     
     @available(*, unavailable)
@@ -78,9 +81,16 @@ final class ProfileView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func bindings(viewModel: ProfileViewModel) {
+    func configBaseView(gesture: UIGestureRecognizer) {
+        [userImage, editImageView, profilPercentLabel, circularProgressBarView].forEach {
+            $0.addGestureRecognizer(gesture)
+        }
+    }
+    
+    func configViewModel(viewModel: ProfileViewModel) {
+        self.viewModel = viewModel
         circularProgressBarView.binds(viewModel.circularProgressBarViewModel)
-        
+
         viewModel.userName
             .map {
                 $0 + ","
@@ -107,19 +117,20 @@ final class ProfileView: UIView {
                        }
                    })
                    .disposed(by: disposeBag)
-
     }
-    
+
      func configProgressBarView() {
         let circularViewDuration: TimeInterval = 2
         circularProgressBarView.progressAnimation(duration: circularViewDuration)
+         circularProgressBarView.triggerLayoutSubviews()
     }
     private func addViews() {
-        [circularProgressBarView, userImage, editImageView, profilPercentLabel, stackView].forEach {
-            addSubview($0)
-        }
         [userNameLabel, userAgeLabel].forEach {
             stackView.addArrangedSubview($0)
+        }
+        
+        [circularProgressBarView, userImage, editImageView, profilPercentLabel, stackView].forEach {
+            addSubview($0)
         }
     }
     

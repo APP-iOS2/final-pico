@@ -14,11 +14,9 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
     
     private let disposeBag = DisposeBag()
     
-    lazy var mbtiLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.picoTitleFont
-        return label
+    lazy var mbtiLabel: MBTILabelView = {
+        let view = MBTILabelView(mbti: .esfj, scale: .small)
+        return view
     }()
     
     lazy var userImage: UIImageView = {
@@ -75,8 +73,10 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
             make.top.equalTo(contentView.snp.top).offset(padding)
             make.leading.equalTo(contentView.snp.leading).offset(padding)
             make.trailing.equalTo(contentView.snp.trailing).offset(-padding)
+            make.width.equalTo(mbtiLabel.frame.size.width)
+            make.height.equalTo(mbtiLabel.frame.size.height)
         }
-
+        
         userImage.snp.makeConstraints { make in
             make.top.equalTo(mbtiLabel.snp.bottom).offset(padding * half)
             make.leading.equalTo(contentView.snp.leading).offset(padding)

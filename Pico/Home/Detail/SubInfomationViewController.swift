@@ -13,6 +13,14 @@ final class SubInfomationViewController: BaseViewController {
     private var personalities: [String] = []
     private var likeMbtis: [MBTIType] = []
     
+    //    private let verticalStackView: UIStackView = {
+    //        let stackView = UIStackView()
+    //        stackView.axis = .vertical
+    //        stackView.distribution = .fillProportionally
+    //        stackView.alignment = .fill
+    //        return stackView
+    //    }()
+    
     private let hobbyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -48,26 +56,49 @@ final class SubInfomationViewController: BaseViewController {
         return label
     }()
     
-    private let likeMbtiLable: UILabel = {
+    private let likeMbtiLabel: UILabel = {
         let label = UILabel()
         label.text = "선호하는 MBTI"
         label.font = UIFont.picoSubTitleFont
         return label
     }()
-    
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         addViews()
         makeConstraints()
         configCollectionView()
     }
-    
+    // MARK: - Config
     func config(hobbies: [String]?, personalities: [String]?, likeMbtis: [MBTIType]?) {
-//        
-//            self.hobbies = hobbies
-//            self.personalities = personalities
-//            self.likeMbtis = likeMbtis
-    
+        if hobbies == nil && personalities == nil && likeMbtis == nil {
+            view.isHidden = true
+        }
+        
+        if let personalities {
+            self.personalities = personalities
+        } else {
+            personalLabel.removeFromSuperview()
+            personalCollectionView.removeFromSuperview()
+        }
+        
+        if let hobbies {
+            self.hobbies = hobbies
+        } else {
+            hobbyLabel.removeFromSuperview()
+            hobbyCollectionView.removeFromSuperview()
+        }
+        
+        if let likeMbtis {
+            self.likeMbtis = likeMbtis
+        } else {
+            likeMbtiLabel.removeFromSuperview()
+            mbtiCollectionView.removeFromSuperview()
+        }
+        
+        hobbyCollectionView.reloadData()
+        personalCollectionView.reloadData()
+        mbtiCollectionView.reloadData()
     }
     
     private func configCollectionView() {
@@ -83,19 +114,28 @@ final class SubInfomationViewController: BaseViewController {
         mbtiCollectionView.delegate = self
         mbtiCollectionView.dataSource = self
     }
+}
+// MARK: - UI관련
+extension SubInfomationViewController {
     
     private func addViews() {
-        [hobbyLabel, personalLabel, hobbyCollectionView, personalCollectionView, likeMbtiLable, mbtiCollectionView].forEach {
+        // view.addSubview(verticalStackView)
+        [personalLabel, personalCollectionView, hobbyLabel, hobbyCollectionView, likeMbtiLabel, mbtiCollectionView].forEach {
             view.addSubview($0)
         }
     }
     
     private func makeConstraints() {
+        
+        //        verticalStackView.snp.makeConstraints { make in
+        //            make.edges.equalToSuperview()
+        //        }
+        
         personalLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
             make.leading.equalToSuperview()
         }
-        
+        //
         personalCollectionView.snp.makeConstraints { make in
             make.top.equalTo(personalLabel.snp.bottom).offset(20)
             make.leading.equalTo(personalLabel.snp.leading)
@@ -117,7 +157,7 @@ final class SubInfomationViewController: BaseViewController {
             make.height.equalTo(Screen.height * 0.2)
         }
         
-        likeMbtiLable.snp.makeConstraints { make in
+        likeMbtiLabel.snp.makeConstraints { make in
             make.top.equalTo(hobbyCollectionView.snp.bottom).offset(20)
             make.leading.equalTo(hobbyLabel.snp.leading)
             make.trailing.equalToSuperview()
@@ -125,8 +165,8 @@ final class SubInfomationViewController: BaseViewController {
         }
         
         mbtiCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(likeMbtiLable.snp.bottom).offset(20)
-            make.leading.equalTo(likeMbtiLable.snp.leading)
+            make.top.equalTo(likeMbtiLabel.snp.bottom).offset(20)
+            make.leading.equalTo(likeMbtiLabel.snp.leading)
             make.trailing.equalToSuperview()
             make.height.equalTo(Screen.height * 0.2)
             
@@ -134,11 +174,12 @@ final class SubInfomationViewController: BaseViewController {
     }
 }
 
+// MARK: - CollecionView Config
 extension SubInfomationViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         switch collectionView {
+            
         case hobbyCollectionView:
             return hobbies.count
             
@@ -158,7 +199,6 @@ extension SubInfomationViewController: UICollectionViewDelegate, UICollectionVie
         switch collectionView {
         case hobbyCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hobbyCollectionCell", for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
-            
             cell.config(labelText: hobbies[indexPath.row])
             return cell
             

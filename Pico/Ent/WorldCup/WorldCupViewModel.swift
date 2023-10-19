@@ -5,15 +5,17 @@
 //  Created by 오영석 on 2023/10/10.
 //
 
-import Foundation
+import UIKit
 import RxSwift
 import RxCocoa
 import Firebase
+import AVFoundation
 
 final class WorldCupViewModel {
     
-    var users: BehaviorRelay<[User]> = BehaviorRelay(value: [])
     private let disposeBag = DisposeBag()
+    private var audioPlayer: AVAudioPlayer?
+    var users: BehaviorRelay<[User]> = BehaviorRelay(value: [])
     var selectedIndexPath: IndexPath?
     
     init() {
@@ -38,8 +40,8 @@ final class WorldCupViewModel {
     }
     
     func configure(cell: WorldCupCollectionViewCell, with user: User) {
-        cell.mbtiLabel.text = user.mbti.rawValue.uppercased()
-        cell.userNickname.text = String(user.nickName.prefix(6))
+        cell.mbtiLabel.setMbti(mbti: user.mbti)
+        cell.userNickname.text = String(user.nickName)
         cell.userAge.text = "\(user.age)세"
         
         let dataLabelTexts = addDataLabels(user)
@@ -52,29 +54,37 @@ final class WorldCupViewModel {
     
     private func addDataLabels(_ currentUser: User) -> [String] {
         var dataLabelTexts: [String] = []
-
+        
         if let height = currentUser.subInfo?.height {
             dataLabelTexts.append("\(height)")
         } else {
             dataLabelTexts.append("")
         }
-
+        
         if let job = currentUser.subInfo?.job {
             dataLabelTexts.append("\(job)")
         } else {
             dataLabelTexts.append("")
         }
-
+        
         dataLabelTexts.append("\(currentUser.location.address)")
-
+        
         return dataLabelTexts
     }
     
-    func animateSelectedCell(collectionView: UICollectionView, indexPath: IndexPath) {
-        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else {
-            return
-        }
+    func animateNextRound(collectionView: UICollectionView) {
+        UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: {
+            collectionView.reloadData()
+        })
+    }
 
+    func changeRoundLabel(withText text: String, roundLabel: UILabel) {
+        UIView.transition(with: roundLabel, duration: 1.5, options: .transitionCrossDissolve, animations: {
+            roundLabel.text = text
+        })
+    }
+
+    func animateSelectedCell(selectedCell: WorldCupCollectionViewCell) {
         UIView.animate(withDuration: 0.3, animations: {
             selectedCell.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         }, completion: { _ in
@@ -82,5 +92,22 @@ final class WorldCupViewModel {
                 selectedCell.transform = .identity
             }
         })
+    }
+    
+    func playBackgroundMusic() {
+        guard let url = Bundle.main.url(forResource: "gameMusic", withExtension: "mp3") else { return }
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.numberOfLoops = -1
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+        } catch {
+            print("Error: \(error.localizedDescription)")
+        }
+    }
+    
+    func stopBackgroundMusic() {
+        audioPlayer?.stop()
     }
 }

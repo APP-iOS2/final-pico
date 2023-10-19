@@ -102,6 +102,7 @@ final class AdminUserViewModel: ViewModelType {
     
     struct Output {
         let resultToViewDidLoad: Observable<[User]>
+        let resultTitleLabel: Observable<String>
         let resultSearchUserList: Observable<[User]>
         let resultPagingList: Observable<[User]>
         let needToReload: Observable<Void>
@@ -133,6 +134,11 @@ final class AdminUserViewModel: ViewModelType {
         
         let sortedType = input.sortedTpye.asObservable()
         let userListType = input.userListType.asObservable()
+        
+        let responseTitleLabel = input.userListType
+            .map { userListType in
+                return "\"\(userListType.name)\"의 이름을 입력하세요"
+            }
         
         let responseTableViewPaging = input.tableViewOffset
             .withUnretained(self)
@@ -178,6 +184,7 @@ final class AdminUserViewModel: ViewModelType {
         
         return Output(
             resultToViewDidLoad: responseViewDidLoad,
+            resultTitleLabel: responseTitleLabel,
             resultSearchUserList: combinedResults,
             resultPagingList: responseTableViewPaging,
             needToReload: reloadPublisher.asObservable()

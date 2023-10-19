@@ -12,9 +12,17 @@ extension UIFont {
     static var picoTitleFont: UIFont {
         return UIFont.systemFont(ofSize: 22, weight: .bold)
     }
+    /// 제목 폰트 큰사이즈 (25, bold)
+    static var picoLargeTitleFont: UIFont {
+        return UIFont.systemFont(ofSize: 25, weight: .bold)
+    }
     /// 부제목 폰트사이즈 (18, semibold)
     static var picoSubTitleFont: UIFont {
         return UIFont.systemFont(ofSize: 18, weight: .semibold)
+    }
+    /// 부제목 폰트사이즈 (16, semibold)
+    static var picoSubTitleSmallFont: UIFont {
+        return UIFont.systemFont(ofSize: 16, weight: .semibold)
     }
     /// 제목에 대한 설명 폰트사이즈 (13, regular)
     static var picoDescriptionFont: UIFont {
@@ -47,5 +55,17 @@ extension UIFont {
     /// 로그인 뷰 MBTI 설명 라벨 폰트 사이트 (13, thin)
     static var picoMBTISelectedSubLabelFont: UIFont {
         return UIFont.systemFont(ofSize: 13, weight: .thin)
+    }
+    /// 엔터 뷰 얇은 폰트 사이트 (12, thin)
+    static var picoEntSubLabelFont: UIFont {
+        return UIFont.systemFont(ofSize: 12, weight: .thin)
+    }
+    /// 프로필 라벨 폰트 사이즈 (14, regular)
+    static var picoProfileLabelFont: UIFont {
+        return UIFont.systemFont(ofSize: 14)
+    }
+    /// 프로필 이름 폰트 사이즈 (25, medium)
+    static var picoProfileNameFont: UIFont {
+        return UIFont.systemFont(ofSize: 25, weight: .medium)
     }
 }

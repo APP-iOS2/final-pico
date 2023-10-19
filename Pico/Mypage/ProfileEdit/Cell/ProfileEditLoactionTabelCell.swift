@@ -82,12 +82,12 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(15)
             make.centerY.equalToSuperview()
+            make.trailing.equalTo(locationChangeButton.snp.leading).offset(-120)
         }
         
         locationChangeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-15)
             make.centerY.equalToSuperview()
-            make.width.equalTo(150)
         }
     }
 }

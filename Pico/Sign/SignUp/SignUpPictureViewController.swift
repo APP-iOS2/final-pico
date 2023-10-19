@@ -22,7 +22,7 @@ final class SignUpPictureViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    private let yoloManager: YoloManager = YoloManager()
+    
     private let pictureManager: PictureManager = PictureManager()
     private var isDetectedImage: Bool? = false
     private var objectDetectionRequest: VNCoreMLRequest?
@@ -92,7 +92,6 @@ final class SignUpPictureViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configCollectionView()
-        yoloManager.loadYOLOv3Model()
         pictureManager.requestPhotoLibraryAccess(in: self)
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -117,42 +116,47 @@ final class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
+        SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
+        let yoloManager: YoloManager = YoloManager()
+        yoloManager.loadYOLOv3Model()
         
         let detectionGroup = DispatchGroup()
-        
-        SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
+            
             var allImagesDetected = true
             
-            for image in self.userImages {
+            for image in userImages {
                 detectionGroup.enter()
                 
-                self.yoloManager.detectPeople(image: image) {
+                yoloManager.detectPeople(image: image) {
                     detectionGroup.leave()
                 }
                 
-                if !(self.yoloManager.isDetectedImage ?? true) {
+                if !(yoloManager.isDetectedImage ?? true) {
                     allImagesDetected = false
                 }
             }
             
             detectionGroup.notify(queue: .main) { [weak self] in
                 guard let self = self else { return }
-                SignLoadingManager.hideLoading()
                 
+                SignLoadingManager.hideLoading()
                 if allImagesDetected {
-                    self.showAlert(message: "이미지가 등록되었습니다.") {
-                        self.viewModel.imageArray = self.userImages
+                    showAlert(message: "이미지가 등록되었습니다.") { [weak self] in
+                        guard let self = self else { return }
                         
+                        viewModel.imageArray = self.userImages
                         let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
-                        self.navigationController?.pushViewController(viewController, animated: true)
+                        navigationController?.pushViewController(viewController, animated: true)
                     }
                 } else {
-                    self.showAlert(message: "이미지 등록에 실패하셨습니다.") {
-                        self.userImages.removeAll()
-                        self.collectionView.reloadData()
-                        self.configNextButton(isEnabled: false)
+                    showAlert(message: "이미지 등록에 실패하셨습니다.") { [weak self] in
+                        guard let self = self else { return }
+                        
+                        userImages.removeAll()
+                        collectionView.reloadData()
+                        configNextButton(isEnabled: false)
                     }
                 }
             }
@@ -180,17 +184,19 @@ extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePi
         var selectedImages: [UIImage] = []
         
         for result in results where result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-            result.itemProvider.loadObject(ofClass: UIImage.self) { (image, _ ) in
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, _ ) in
+                guard let self = self else { return }
                 
                 guard let image = image as? UIImage else { return }
                 selectedImages.append(image)
                 
                 guard selectedImages.count == results.count else { return }
-                self.userImages = selectedImages
+                userImages = selectedImages
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    self.collectionView.reloadData()
-                    self.configNextButton(isEnabled: true)
+                    
+                    collectionView.reloadData()
+                    configNextButton(isEnabled: true)
                 }
             }
         }

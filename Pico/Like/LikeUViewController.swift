@@ -18,6 +18,8 @@ final class LikeUViewController: UIViewController {
     private let listLoadPublisher = PublishSubject<Void>()
     private let refreshPublisher = PublishSubject<Void>()
     private let checkEmptyPublisher = PublishSubject<Void>()
+    private let sendMessagePublisher = PublishSubject<Int>()
+    private let pushSendConrollerPublisher = PublishSubject<Void>()
     private var isLoading = false
     private var isRefresh = false
     
@@ -35,7 +37,6 @@ final class LikeUViewController: UIViewController {
         bind()
         configCollectionView()
         configRefresh()
-        bind()
         listLoadPublisher.onNext(())
     }
     
@@ -77,21 +78,28 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
         guard let item = viewModel.likeUList[safe: indexPath.row] else { return cell }
         cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
         cell.messageButtonTapObservable
-            .subscribe { [weak self] _ in
-                self?.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭되지 않은 사용자에게 메일을 보내기 위해서는 50츄가 필요합니다.", confirmButtonText: "보내기 (50츄)", comfrimAction: {
-                    if UserDefaultsManager.shared.getChuCount() < 50 {
-                        self?.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭되지 않은 사용자에게 메일을 보내기 위해서는 50츄가 필요합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", confirmButtonText: "보내기 (50츄)", comfrimAction: {
+                    let resultChu = UserDefaultsManager.shared.getChuCount() - 50
+                    if resultChu < 0 {
+                        viewController.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
                             let storeViewController = StoreViewController(viewModel: StoreViewModel())
-                            self?.navigationController?.pushViewController(storeViewController, animated: true)
+                            viewController.navigationController?.pushViewController(storeViewController, animated: true)
                         })
                     } else {
-                        let mailSendView = MailSendViewController()
-                        mailSendView.configData(userId: item.likedUserId, atMessageView: false)
-                        mailSendView.modalPresentationStyle = .formSheet
-                        self?.present(mailSendView, animated: true, completion: nil)
+                        viewController.sendMessagePublisher.onNext(50)
                     }
                 })
             }
+            .disposed(by: cell.disposeBag)
+        pushSendConrollerPublisher
+            .subscribe(onNext: { _ in
+                let mailSendView = MailSendViewController()
+                mailSendView.configData(userId: item.likedUserId, atMessageView: false)
+                mailSendView.modalPresentationStyle = .formSheet
+                self?.present(mailSendView, animated: true, completion: nil)
+            })
             .disposed(by: cell.disposeBag)
         return cell
     }
@@ -117,8 +125,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
             guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer", for: indexPath) as? CollectionViewFooterLoadingCell else {
                 return CollectionViewFooterLoadingCell()
             }
-            footer.startLoading()
-            
+            footer.startLoading()  
             return footer
         }
         return UICollectionReusableView()
@@ -165,7 +172,7 @@ extension LikeUViewController: UIScrollViewDelegate {
 // MARK: - bind
 extension LikeUViewController {
     private func bind() {
-        let input = LikeUViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher)
+        let input = LikeUViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher, sendMessage: sendMessagePublisher)
         let output = viewModel.transform(input: input)
         
         output.likeUIsEmpty
@@ -193,6 +200,13 @@ extension LikeUViewController {
             .subscribe { viewController, _ in
                 viewController.collectionView.reloadData()
                 viewController.checkEmptyPublisher.onNext(())
+            }
+            .disposed(by: disposeBag)
+        
+        output.resultMessage
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.pushSendConrollerPublisher.onNext(())
             }
             .disposed(by: disposeBag)
     }

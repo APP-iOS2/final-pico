@@ -11,10 +11,11 @@ import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
-    private let smsAuthManager = SmsAuthManager()
+    private let smsAuthManager: SMSAuthManager = SMSAuthManager()
     private let checkService = CheckService()
     let viewModel: SignUpViewModel
-    
+    private var cooldownTimer: Timer?
+    private var cooldownSeconds = 180
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -105,7 +106,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.configBackgroundColor()
-        view.tappedDismissKeyboard()
+        tappedDismissKeyboard(without: [nextButton])
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
@@ -121,7 +122,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
     }
-   
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         keyboardManager.unregisterKeyboard()
@@ -129,7 +130,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
 }
 // MARK: - Config
 extension SignUpPhoneNumberViewController {
-  
+    
     private func configButtons() {
         cancelButton.addTarget(self, action: #selector(tappedCancelButton), for: .touchUpInside)
         authButton.addTarget(self, action: #selector(tappedAuthButton), for: .touchUpInside)
@@ -172,7 +173,7 @@ extension SignUpPhoneNumberViewController {
         phoneNumberTextField.isEnabled = !isFull
         phoneNumberTextField.textColor = isFull ? .picoBlue : .gray
     }
-
+    
     private func updateCancelButton(isHidden: Bool) {
         cancelButton.isHidden = isHidden
     }
@@ -195,67 +196,121 @@ extension SignUpPhoneNumberViewController {
     
     private func updateViewState(num: String) {
         self.viewModel.phoneNumber = num
-        self.authTextFields[0].becomeFirstResponder()
+        self.authTextFields[safe: 0]?.becomeFirstResponder()
         self.updatePhoneNumberTextField(isFull: true)
         self.updateCancelButton(isHidden: true)
         self.updateAuthButton(isEnable: false, isHidden: false)
         self.updateAuthTextFieldStack(isShow: true)
         self.updateNextButton(isEnabled: true)
     }
+    
+    @objc private func updateCooldown() {
+        cooldownSeconds -= 1
+        
+        if cooldownSeconds <= 0 {
+            cooldownTimer?.invalidate()
+            cooldownTimer = nil
+            cooldownSeconds = 180
+            updateAuthButton(isEnable: true, isHidden: false)
+            authButton.setTitle("  재전송  ", for: .normal)
+        } else {
+            authButton.setTitle("\(cooldownSeconds)초", for: .normal)
+        }
+    }
     // MARK: - @objc
     @objc private func tappedCancelButton(_ sender: UIButton) {
         sender.tappedAnimation()
         configReset()
     }
-    
     @objc private func tappedAuthButton(_ sender: UIButton) {
         sender.tappedAnimation()
+        
+        guard cooldownTimer == nil else {
+            return
+        }
+        
         isTappedCheckButton = true
-        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") { [weak self] in
+        
+        guard let phoneNumber = self.phoneNumberTextField.text else { return }
+        checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isRight in
             guard let self = self else { return }
-            guard let text = self.phoneNumberTextField.text else { return }
-            self.checkService.checkPhoneNumber(userNumber: text) { [weak self] message, isRight in
-                guard let self = self else { return }
-                guard isRight else {
-                    SignLoadingManager.hideLoading()
-                    self.showAlert(message: message) {
-                        self.viewModel.isRightPhoneNumber = isRight
-                        self.configReset()
-                    }
-                    return
+            
+            if isRight {
+                showAlert(message: "차단된 번호로는 가입이 불가능합니다..") { [weak self] in
+                    guard let self = self else { return }
+                    
+                    configReset()
                 }
-                SignLoadingManager.hideLoading()
-                self.updateViewState(num: text)
-                self.viewModel.isRightPhoneNumber = isRight
-                self.smsAuthManager.sendVerificationCode()
+            } else {
+                checkService.checkPhoneNumber(userNumber: phoneNumber) { [weak self] message, isRight in
+                    guard let self = self else { return }
+                    
+                    guard isRight else {
+                        SignLoadingManager.hideLoading()
+                        showAlert(message: message) { [weak self] in
+                            guard let self = self else { return }
+                            
+                            viewModel.isRightPhoneNumber = isRight
+                            configReset()
+                        }
+                        return
+                    }
+                    SignLoadingManager.hideLoading()
+                    showAlert(message: "\(phoneNumber)로 인증번호를 전송합니다.") { [weak self] in
+                        guard let self = self else { return }
+                        
+                        cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
+                        RunLoop.main.add(cooldownTimer!, forMode: .common)
+                        
+                        updateViewState(num: phoneNumber)
+                        viewModel.isRightPhoneNumber = isRight
+                        smsAuthManager.sendVerificationCode(number: phoneNumber)
+                    }
+                }
             }
         }
+        
     }
-   
+    
     @objc private func tappedNextButton(_ sender: UIButton) {
         sender.tappedAnimation()
-        // MARK: - 문자인증 시작하면 건드려야해용
-        // 문자인증 기능이 완료 될 때 까지는 넘어가세요 :)
         configAuthText()
         guard smsAuthManager.checkRightCode(code: authText) else {
-            self.showAlert(message: "비상비상 인증실패") { [weak self] in
-                guard let self = self else { return }
-                self.configReset()
-            }
+            self.showAlert(message: "인증번호를 다시 확인해주세요.", yesAction: nil)
             return
         }
         self.showAlert(message: "인증에 성공하셨습니다.") { [weak self] in
             guard let self = self else { return }
+            
             let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
+    }
+}
+extension SignUpPhoneNumberViewController: UIGestureRecognizerDelegate {
+    func tappedDismissKeyboard(without buttons: [UIButton]) {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard(_:)))
+        tapGesture.cancelsTouchesInView = false
+        tapGesture.delegate = self
+        self.view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if let view = touch.view as? UIButton {
+            return false
+        }
+        return true
     }
 }
 // MARK: - 텍스트필드 관련
 extension SignUpPhoneNumberViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard isTappedCheckButton else { 
+        guard isTappedCheckButton else {
             let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isEnable in
                 let isHidden = !isEnable
                 updateAuthButton(isEnable: isEnable, isHidden: isHidden)

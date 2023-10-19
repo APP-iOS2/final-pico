@@ -24,13 +24,19 @@ final class ProfileEditViewController: UIViewController {
         return view
     }()
     
-    private let profileEditViewModel = ProfileEditViewModel()
     private let disposeBag = DisposeBag()
     weak var profileEditImageDelegate: ProfileEditImageDelegate?
     weak var profileEditNicknameDelegate: ProfileEditNicknameDelegate?
     private let yoloManager: YoloManager = YoloManager()
     private let pictureManager = PictureManager()
     private var userImages: [UIImage] = []
+    private let profileViewModel: ProfileViewModel
+    private lazy var profileEditViewModel = ProfileEditViewModel(profileViewModel: self.profileViewModel)
+    
+    init(profileViewModel: ProfileViewModel) {
+        self.profileViewModel = profileViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +47,11 @@ final class ProfileEditViewController: UIViewController {
         binds()
         delegateConfig()
         yoloManager.loadYOLOv3Model()
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func delegateConfig() {
@@ -96,8 +107,7 @@ final class ProfileEditViewController: UIViewController {
     
     private func makeConstraints() {
         tableView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-20)
+            make.edges.equalToSuperview()
         }
     }
     
@@ -140,12 +150,29 @@ extension ProfileEditViewController: UITableViewDelegate {
         }
     }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        switch section {
+        case 2: 
+            let view = UIView()
+            return view
+        default:
+            return nil
+        }
+    }
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
-        case 0:
-            return 0
         case 1:
-            return 25
+            return 5
+        case 2:
+            return 20
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        switch section {
         case 2:
             return 20
         default:
@@ -288,7 +315,7 @@ extension ProfileEditViewController {
             }
             detectionGroup.notify(queue: .main) {
                 SignLoadingManager.hideLoading()
-                //TODO: 알럿호출시점 바꾸기
+                // TODO: 알럿호출시점 바꾸기
                 if allImagesDetected {
                     self.showAlert(message: "이미지가 등록되었습니다.", yesAction: nil)
                 } else {

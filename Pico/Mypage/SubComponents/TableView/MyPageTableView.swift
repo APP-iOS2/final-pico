@@ -13,6 +13,7 @@ import UIKit
 // 질문 Using 'class' keyword to define a class-constrained protocol is deprecated; use 'AnyObject' instead
 protocol MyPageViewDelegate: AnyObject {
     func updateProfileViewLayout(newHeight: CGFloat)
+    func tabelDidSelectItem(item: Int)
 }
 
 final class MyPageTableView: UITableView {
@@ -63,9 +64,13 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
         case 1:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageMatchingTableCell.self)
             return cell
+        case 2:
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageDefaultTableCell.self)
+            cell.configure(imageName: "person", title: "고객 센터")
+            return cell
         default:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageDefaultTableCell.self)
-            cell.configure(imageName: "person", title: "상담원 연결")
+            cell.configure(imageName: "gift", title: "츄 내고 광고 보기")
             return cell
         }
     }
@@ -96,6 +101,7 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        myPageViewDelegate?.tabelDidSelectItem(item: indexPath.section)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

@@ -25,13 +25,13 @@ final class CustomPopupViewController: UIViewController {
 
     private let dimView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
         return view
     }()
     
     private let alertView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 20
+        view.layer.cornerRadius = 15
         view.backgroundColor = .white
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOpacity = 0.3
@@ -44,7 +44,7 @@ final class CustomPopupViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .picoTitleFont
+        label.font = .picoSubTitleFont
         label.textAlignment = .center
         label.numberOfLines = 0
         label.textColor = .black
@@ -52,10 +52,20 @@ final class CustomPopupViewController: UIViewController {
         return label
     }()
     
+    private let messageLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = .picoDescriptionFont
+        label.textColor = .gray
+        label.numberOfLines = 0
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
+    
     private let cancelButton: UIButton = {
         let button = UIButton(configuration: .plain())
         button.clipsToBounds = true
-        button.layer.cornerRadius = 15
+        button.layer.cornerRadius = 10
         button.backgroundColor = .white
         button.setTitleColor(.picoBlue, for: .normal)
         button.layer.borderColor = UIColor.picoBlue.cgColor
@@ -67,21 +77,11 @@ final class CustomPopupViewController: UIViewController {
     private let confirmButton: UIButton = {
         let button = UIButton(configuration: .plain())
         button.clipsToBounds = true
-        button.layer.cornerRadius = 15
+        button.layer.cornerRadius = 10
         button.backgroundColor = .picoBlue
         button.setTitleColor(.white, for: .normal)
         button.tintColor = .clear
         return button
-    }()
-    
-    private let messageLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = .picoDescriptionFont
-        label.textColor = .gray
-        label.numberOfLines = 0
-        label.adjustsFontSizeToFitWidth = true
-        return label
     }()
     
     private lazy var buttonsView: UIView = UIView()
@@ -135,13 +135,13 @@ final class CustomPopupViewController: UIViewController {
         alertView.snp.makeConstraints { make in
             make.centerX.centerY.equalTo(safeArea)
             make.height.lessThanOrEqualTo(safeArea).multipliedBy(0.4)
-            make.width.equalTo(safeArea).multipliedBy(0.8)
+            make.width.equalTo(safeArea).multipliedBy(0.7)
         }
         
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
             make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.8)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(titleLabel.font.pointSize)
         }
         
@@ -155,8 +155,8 @@ final class CustomPopupViewController: UIViewController {
         buttonsView.snp.makeConstraints { make in
             make.top.equalTo(messageLabel.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
+            make.leading.trailing.equalTo(titleLabel)
             make.bottom.equalToSuperview().offset(-20)
-            make.width.equalTo(titleLabel)
             make.height.equalTo(90)
         }
         switch alertType {

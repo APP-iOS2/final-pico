@@ -11,21 +11,16 @@ import SnapKit
 final class RecordHeaderCollectionViewCell: UICollectionViewCell {
     
     private let view: UIView = {
-        let view = UIView()
-        view.backgroundColor = .picoBlue
+       let view = UIView()
         view.layer.cornerRadius = 15
         return view
     }()
-    
-    private let label: UILabel = {
-        let label = UILabel()
-        label.textColor = .white
-        return label
-    }()
+    private let label: UILabel = UILabel()
     
     var isSelectedCell: Bool = false {
         didSet {
-            view.backgroundColor = isSelectedCell ? .picoBlue : .picoGray
+            view.backgroundColor = isSelectedCell ? .systemGray6 : .clear
+            label.textColor = isSelectedCell ? .picoFontBlack : .picoFontGray
             label.font = isSelectedCell ? .picoSubTitleFont : .picoContentFont
         }
     }

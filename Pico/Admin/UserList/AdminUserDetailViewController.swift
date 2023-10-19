@@ -131,8 +131,7 @@ final class AdminUserDetailViewController: UIViewController {
 
 extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSource {
     enum TableViewCase: CaseIterable {
-        case image
-        case info
+        case image, info
         case recordHeader
         case record
     }
@@ -144,7 +143,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case .image, .info, .recordHeader:
             return 1
         case .record:
-            return viewModel.recordList.count
+            return viewModel.likeList.count
         }
     }
 
@@ -183,8 +182,9 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case .record:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: NotificationTableViewCell.self)
             
-            guard let user = viewModel.recordList[safe: indexPath.row] else { return UITableViewCell() }
+            guard let user = viewModel.likeList[safe: indexPath.row] else { return UITableViewCell() }
             cell.configData(notitype: .like, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, date: Date().timeIntervalSince1970)
+            cell.selectionStyle = .none
             return cell
         }
     }
@@ -198,7 +198,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case .info:
             return UITableView.automaticDimension
         case .recordHeader:
-            return 50
+            return 70
         case .record:
             return 80
         }

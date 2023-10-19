@@ -143,7 +143,7 @@ final class ProfileEditNicknameModalViewController: UIViewController {
                 guard let self else { return }
                 self.profileEditViewModel.updateData(data: self.textField.text?.trimmed())
                 self.dismiss(animated: true)
-                //TODO: chucount 연결하기
+                // TODO: chucount 연결하기
             }.disposed(by: disposeBag)
     }
     

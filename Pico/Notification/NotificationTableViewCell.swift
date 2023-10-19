@@ -40,6 +40,7 @@ final class NotificationTableViewCell: UITableViewCell {
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.adjustsFontSizeToFitWidth = true
+        label.font = .picoContentFont
         return label
     }()
     private let labelView: UIView = UIView()
@@ -63,18 +64,14 @@ final class NotificationTableViewCell: UITableViewCell {
     }
     
     private func addViews() {
-        [profileImageView, iconImageView, labelView].forEach { item in
-            contentView.addSubview(item)
-        }
-        
-        [nameLabel, mbitLabel, contentLabel, createDateLabel].forEach { item in
-            labelView.addSubview(item)
-        }
+        contentView.addSubview([profileImageView, iconImageView, labelView])
+        labelView.addSubview([nameLabel, mbitLabel, contentLabel, createDateLabel])
     }
     
     private func makeConstraints() {
         profileImageView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(10)
+            make.leading.equalToSuperview()
             make.bottom.equalToSuperview().offset(-10)
             make.width.equalTo(profileImageView.snp.height)
         }
@@ -85,7 +82,7 @@ final class NotificationTableViewCell: UITableViewCell {
         }
         
         labelView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-10)
             make.leading.equalTo(profileImageView.snp.trailing).offset(10)
             make.centerY.equalTo(profileImageView)
         }
@@ -128,7 +125,7 @@ extension NotificationTableViewCell {
         nameLabel.text = "\(nickName), \(age)"
         mbitLabel.setMbti(mbti: mbti)
         createDateLabel.isHidden = false
-        createDateLabel.text = date.toStringTime()
+        createDateLabel.text = date.toStringTime(dateSeparator: .dot)
     }
     
     func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {

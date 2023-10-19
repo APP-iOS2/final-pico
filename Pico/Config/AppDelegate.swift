@@ -26,6 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 moveNotificationView()
             }
         }
+
         return true
     }
 
@@ -50,19 +51,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        let userInfo = notification.request.content.userInfo
-        Messaging.messaging().appDidReceiveMessage(userInfo)
-        completionHandler([.list, .banner, .badge, .sound])
+        NotificationService.shared.displayResetBadge()
+        completionHandler([.list, .banner, .sound])
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        let userInfo = response.notification.request.content.userInfo
-        Messaging.messaging().appDidReceiveMessage(userInfo)
         moveNotificationView()
         completionHandler()
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        if let aps = userInfo["aps"] as? [String: Any], let badge = aps["badge"] as? Int {
+            if #available(iOS 16.0, *) {
+                UNUserNotificationCenter.current().setBadgeCount(badge)
+            } else {
+                UIApplication.shared.applicationIconBadgeNumber = badge
+            }
+        }
         completionHandler(UIBackgroundFetchResult.newData)
     }
     

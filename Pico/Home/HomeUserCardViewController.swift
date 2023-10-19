@@ -14,16 +14,19 @@ final class HomeUserCardViewController: UIViewController {
     
     weak var homeViewController: HomeViewController?
     private let user: User
-    private var distance = CLLocationDistance()
     private let disposeBag = DisposeBag()
-    private var panGesture = UIPanGestureRecognizer()
-    private var initialCenter = CGPoint()
     private let viewModel = HomeUserCardViewModel()
     private let currentUser = UserDefaultsManager.shared.getUserData()
+    private var compatibilityView: CompatibilityView
+    private var panGesture = UIPanGestureRecognizer()
+    private var initialCenter = CGPoint()
+    private var distance = CLLocationDistance()
     private var distanceLabel = UILabel()
+    private var pageCount = 0
     
     init(user: User) {
         self.user = user
+        compatibilityView = CompatibilityView(currentUser: currentUser, cardUser: user)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -88,7 +91,7 @@ final class HomeUserCardViewController: UIViewController {
     private lazy var infoHStack: UIStackView = createHomeStack(axis: .horizontal, alignment: .top, spacing: 0)
     private lazy var infoVStack: UIStackView = createHomeStack(axis: .vertical, alignment: nil, spacing: 5)
     
-    private lazy var infoNameAgeLabel: UILabel = createHomeLabel(text: "", font: .picoTitleFont, textColor: .white)
+    private lazy var infoNameAgeLabel: UILabel = createHomeLabel(text: "", font: .picoLargeTitleFont, textColor: .white)
     private lazy var infoLocationLabel: UILabel = createHomeLabel(text: "", font: .picoSubTitleFont, textColor: .white)
     
     // MARK: - viewDidLoad
@@ -182,12 +185,11 @@ final class HomeUserCardViewController: UIViewController {
         }
         
         distanceLabel.snp.makeConstraints { make in
-            make.top.equalTo(infoNameAgeLabel.snp.top)
-            make.trailing.equalTo(infoNameAgeLabel.snp.trailing).offset(-15)
-            make.bottom.equalTo(infoNameAgeLabel.snp.bottom)
+            make.top.equalTo(infoNameAgeLabel.snp.bottom)
+            make.trailing.equalTo(infoButton)
+            make.bottom.equalTo(infoLocationLabel.snp.bottom).offset(10)
             make.width.equalTo(100)
         }
-        
     }
     
     private func configButtons() {
@@ -197,11 +199,15 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func configLabels() {
-        infoNameAgeLabel.text = "\(user.nickName) \(user.age)"
+        infoNameAgeLabel.text = "\(user.nickName), \(user.age)"
         infoLocationLabel.text = user.location.address
         
         distance = calculateDistance(user: user)
-        distanceLabel.text = "\(String(format: "%.2f", distance / 1000))km"
+        if distance < 1000.0 {
+            distanceLabel.text = "가까워요!"
+        } else {
+            distanceLabel.text = "\(String(format: "%.2f", distance / 1000))km"
+        }
         distanceLabel.textColor = .white
         distanceLabel.textAlignment = .right
         distanceLabel.font = .picoSubTitleFont
@@ -264,6 +270,13 @@ final class HomeUserCardViewController: UIViewController {
             if index == user.imageURLs.count - 1 {
                 scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(user.imageURLs.count), height: scrollView.frame.height)
             }
+            
+            if index == 1 {
+                imageView.addSubview(compatibilityView)
+                compatibilityView.snp.makeConstraints { make in
+                    make.edges.equalTo(imageView)
+                }
+            }
         }
     }
     
@@ -298,6 +311,12 @@ final class HomeUserCardViewController: UIViewController {
                     HomeUserCardViewModel.cardCounting = -1
                     homeViewController?.addUserCards()
                 }
+                
+                NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
+                guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+                let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+                FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+                
                 UIView.animate(withDuration: 0.5) { [self] in
                     viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                     homeViewController?.removedView.append(view)
@@ -338,6 +357,12 @@ final class HomeUserCardViewController: UIViewController {
             HomeUserCardViewModel.cardCounting = -1
             homeViewController?.addUserCards()
         }
+        
+        NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
+        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+        let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+        
         UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
         } completion: { _ in
@@ -362,16 +387,25 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     @objc func tappedPickBackButton() {
-        HomeUserCardViewModel.cardCounting -= 1
         if let lastView = homeViewController?.removedView.last {
-            self.viewModel.deleteLikeData()
-            UIView.animate(withDuration: 0.3) {
-                lastView.center = self.view.center
-                lastView.transform = CGAffineTransform(rotationAngle: 0)
-            }
-            homeViewController?.removedView.removeLast()
+            showCustomAlert(
+                alertType: .canCancel,
+                titleText: "이전 평가로 돌아가시겠습니까?",
+                messageText: "10 츄를 소모합니다",
+                cancelButtonText: "취소",
+                confirmButtonText: "확인",
+                comfrimAction: {
+                    HomeUserCardViewModel.cardCounting -= 1
+                    self.viewModel.deleteLikeData()
+                    UIView.animate(withDuration: 0.3) {
+                        lastView.center = self.view.center
+                        lastView.transform = CGAffineTransform(rotationAngle: 0)
+                    }
+                    self.homeViewController?.removedView.removeLast()
+                }
+            )
         } else {
-            showAlert(message: "첫번째 추천입니다.", yesAction: nil)
+            showCustomAlert(alertType: .onlyConfirm, titleText: "첫번째 추천입니다.", messageText: "", confirmButtonText: "확인")
         }
     }
     

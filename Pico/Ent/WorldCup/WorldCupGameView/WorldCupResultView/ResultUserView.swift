@@ -9,20 +9,15 @@ import UIKit
 
 final class ResultUserView: UIView {
     
-    lazy var mbtiLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.picoTitleFont
-        return label
-    }()
-    
-    lazy var userImage: UIImageView = {
+    let mbtiLabel: MBTILabelView = MBTILabelView(mbti: .esfj, scale: .small)
+
+    let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
-    lazy var userNickname: UILabel = {
+    let userNickname: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoSubTitleFont
@@ -30,7 +25,7 @@ final class ResultUserView: UIView {
         return label
     }()
     
-    lazy var userAge: UILabel = {
+    let userAge: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoButtonFont
@@ -50,9 +45,7 @@ final class ResultUserView: UIView {
     }
     
     private func addViews() {
-        [mbtiLabel, userImage, userNickname, userAge].forEach { item in
-            addSubview(item)
-        }
+        addSubview([mbtiLabel, userImage, userNickname, userAge])
     }
     
     private func makeConstraints() {
@@ -63,6 +56,8 @@ final class ResultUserView: UIView {
             make.top.equalTo(self.snp.top).offset(padding)
             make.leading.equalTo(self.snp.leading).offset(padding)
             make.trailing.equalTo(self.snp.trailing).offset(-padding)
+            make.width.equalTo(mbtiLabel.frame.size.width)
+            make.height.equalTo(mbtiLabel.frame.size.height)
         }
 
         userImage.snp.makeConstraints { make in
@@ -77,11 +72,10 @@ final class ResultUserView: UIView {
             make.top.equalTo(userImage.snp.bottom).offset(padding * half)
             make.centerX.equalTo(self.snp.centerX)
         }
-
+        
         userAge.snp.makeConstraints { make in
-            make.leading.equalTo(userNickname.snp.trailing).offset(padding * half)
-            make.trailing.equalTo(self.snp.trailing).offset(-padding)
-            make.centerY.equalTo(userNickname.snp.centerY)
+            make.top.equalTo(userNickname.snp.bottom)
+            make.centerX.equalTo(self.snp.centerX)
         }
     }
 }

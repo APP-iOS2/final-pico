@@ -45,9 +45,7 @@ final class StoreViewModel: ViewModelType {
             .withUnretained(self)
             .map { viewModel, _ in
                 UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
-                return DispatchQueue.global().asyncAfter(deadline: .now() + 2.0) {
-                    Loading.hideLoading()
-                }
+                return Loading.hideLoading()
             }
         return Output(
             resultPurchase: responsePurchase

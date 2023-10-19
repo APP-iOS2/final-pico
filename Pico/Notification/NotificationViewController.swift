@@ -41,6 +41,7 @@ final class NotificationViewController: UIViewController {
         view.configBackgroundColor()
         configNavigationBackButton()
         navigationItem.title = "알림"
+        tabBarController?.tabBar.isHidden = true
     }
     
     private func configTableView() {
