@@ -76,10 +76,11 @@ final class SignUpTermsOfServiceViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .bind { [weak self] _ in
                 guard let self = self else { return }
-                showAlert(message: "회원가입이 완료되었습니다! 🎉") { [weak self] in
+                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "회원가입이 완료되었습니다! 🎉", confirmButtonText: "확인", comfrimAction: { [weak self] in
                     guard let self = self else { return }
+                    
                     navigationController?.popToRootViewController(animated: true)
-                }
+                })
             }
             .disposed(by: disposeBag)
     }

@@ -143,21 +143,21 @@ final class SignUpPictureViewController: UIViewController {
                 
                 SignLoadingManager.hideLoading()
                 if allImagesDetected {
-                    showAlert(message: "이미지가 등록되었습니다.") { [weak self] in
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "이미지가 등록되었습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         
                         viewModel.imageArray = self.userImages
                         let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
                         navigationController?.pushViewController(viewController, animated: true)
-                    }
+                    })
                 } else {
-                    showAlert(message: "이미지 등록에 실패하셨습니다.") { [weak self] in
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "이미지 등록에 실패하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         
                         userImages.removeAll()
                         collectionView.reloadData()
                         configNextButton(isEnabled: false)
-                    }
+                    })
                 }
             }
         }
