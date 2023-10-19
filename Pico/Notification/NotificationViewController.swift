@@ -20,6 +20,7 @@ final class NotificationViewController: UIViewController {
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkEmptyPublisher = PublishSubject<Void>()
     private let footerView = FooterView()
+    private var isRefresh = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -30,8 +31,6 @@ final class NotificationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configViewController()
-        addViews()
-        makeConstraints()
         configTableView()
         configRefresh()
         bind()
@@ -61,21 +60,13 @@ final class NotificationViewController: UIViewController {
         tableView.refreshControl = refreshControl
     }
     
-    private func addViews() {
-        view.addSubview(tableView)
-    }
-    
-    private func makeConstraints() {
-        tableView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-    }
-    
     @objc func refreshTable(refresh: UIRefreshControl) {
+        isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             refreshPublisher.onNext(())
             refresh.endRefreshing()
+            isRefresh = false
         }
     }
 }
@@ -161,7 +152,7 @@ extension NotificationViewController: UIScrollViewDelegate {
         let contentOffsetY = scrollView.contentOffset.y
         let tableViewContentSizeY = tableView.contentSize.height
         
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
+        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
             
             tableView.tableFooterView = footerView
             

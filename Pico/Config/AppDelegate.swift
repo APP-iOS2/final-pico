@@ -56,6 +56,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        Messaging.messaging().appDidReceiveMessage(userInfo)
         moveNotificationView()
         completionHandler()
     }
@@ -65,14 +67,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     private func moveNotificationView() {
-        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-            guard var rootViewController = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window?.rootViewController else { return }
+        if UIApplication.shared.connectedScenes.first?.delegate is SceneDelegate {
+            guard let rootViewController = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window?.rootViewController else { return }
             let notificationViewController = NotificationViewController()
             if let tabBarController = rootViewController as? UITabBarController {
                 if let selectedNavigationController = tabBarController.selectedViewController as? UINavigationController {
                     selectedNavigationController.pushViewController(notificationViewController, animated: true)
                 }
-            } else if let navigationController = rootViewController as? UINavigationController {
+            } else if rootViewController is UINavigationController {
                 rootViewController.navigationController?.pushViewController(notificationViewController, animated: true)
             }
         }

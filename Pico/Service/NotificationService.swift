@@ -61,9 +61,9 @@ final class NotificationService {
                 let urlString = "https://fcm.googleapis.com/fcm/send"
                 let url = NSURL(string: urlString)!
                 let paramString: [String: Any] = ["to": token.fcmToken,
-                                                   "notification": ["title": title, "body": body],
-                                                   "data": ["title": title, "body": body],
-                                                   "content_available": true
+                                                  "notification": ["title": title, "body": body, "sound": "default"],
+                                                  "data": ["title": title, "body": body],
+                                                  "content_available": true
                 ]
                 let request = NSMutableURLRequest(url: url as URL)
                 request.httpMethod = "POST"
