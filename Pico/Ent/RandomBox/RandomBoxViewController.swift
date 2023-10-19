@@ -98,14 +98,14 @@ final class RandomBoxViewController: UIViewController {
         }
 
         purchaseChuButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(padding * 5)
-            make.trailing.equalTo(infoButton.snp.leading).offset(-padding)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.trailing.equalTo(infoButton.snp.leading).offset(-padding * half)
             make.width.height.equalTo(padding * 2)
         }
 
         infoButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(padding * 5)
-            make.trailing.equalToSuperview().offset(-padding)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.trailing.equalToSuperview().offset(-padding * half)
             make.width.height.equalTo(padding * 2)
         }
 

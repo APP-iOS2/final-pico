@@ -61,7 +61,7 @@ final class WorldCupResultViewController: UIViewController {
     private let guideLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.picoButtonFont
+        label.font = UIFont.picoEntSubLabelFont
         label.text = "채팅 신청 비용 50츄 (50%)"
         label.textColor = .picoFontGray
         return label
@@ -118,15 +118,15 @@ final class WorldCupResultViewController: UIViewController {
         resultUserView.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(padding * 2)
             make.centerX.equalToSuperview()
-            make.width.equalTo(200)
-            make.height.equalTo(250)
+            make.width.equalTo(Screen.width * 0.5)
+            make.height.equalTo(Screen.height * 0.5)
         }
         
         chatButton.snp.makeConstraints { make in
-            make.top.equalTo(resultUserView.userNickname.snp.bottom).offset(padding * 2)
+            make.top.equalTo(resultUserView.userAge.snp.bottom).offset(padding)
             make.centerX.equalToSuperview().offset(half)
-            make.leading.equalToSuperview().offset(Screen.width / 4)
-            make.trailing.equalToSuperview().offset(-Screen.width / 4)
+            make.leading.equalToSuperview().offset(Screen.width / 3.5)
+            make.trailing.equalToSuperview().offset(-Screen.width / 3.5)
             make.height.equalTo(Screen.width / 10)
         }
         
@@ -143,8 +143,8 @@ final class WorldCupResultViewController: UIViewController {
     
     private func configResultUserCell() {
         if let selectedItem = selectedItem {
-            resultUserView.mbtiLabel.text = "\(selectedItem.mbti)".uppercased()
-            resultUserView.userNickname.text = String(selectedItem.nickName.prefix(6))
+            resultUserView.mbtiLabel.setMbti(mbti: selectedItem.mbti)
+            resultUserView.userNickname.text = String(selectedItem.nickName)
             resultUserView.userAge.text = "\(selectedItem.age)세"
             
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {
@@ -178,33 +178,50 @@ final class WorldCupResultViewController: UIViewController {
     }
     
     private func tappedChatButton() {
-        let alertController = UIAlertController(title: "채팅 신청 고?", message: "오늘 결혼쌉가능", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        let confirmAction = UIAlertAction(title: "바로 고", style: .default) { [weak self] _ in
+        let customPopup = CustomPopupViewController()
+        customPopup.alertType = .canCancel
+        customPopup.titleText = "채팅 신청"
+        customPopup.messageText = "이상형 월드컵 우승자와 매칭 시 매칭 성공률이 높아집니다!"
+        customPopup.confirmButtonText = "신청"
+        customPopup.cancelButtonText = "취소"
+        
+        customPopup.confirmAction = { [weak self] in
             if let navigationController = self?.navigationController {
                 navigationController.popToRootViewController(animated: true)
             } else {
                 self?.dismiss(animated: true, completion: nil)
             }
         }
-        alertController.addAction(cancelAction)
-        alertController.addAction(confirmAction)
-        self.present(alertController, animated: true, completion: nil)
+        
+        customPopup.cancelAction = {
+            customPopup.dismiss(animated: true, completion: nil)
+        }
+        
+        customPopup.modalPresentationStyle = .overFullScreen
+        present(customPopup, animated: true, completion: nil)
     }
-    
+
     private func tappedCancelButton() {
-        let alertController = UIAlertController(title: "정말로 나가실건가용~?", message: "지금 채팅 신청하면 50% 할인해드리는뎅ㅋ", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "나가기", style: .cancel, handler: nil)
-        let confirmAction = UIAlertAction(title: "고민해볼래", style: .default) { [weak self] _ in
+        let customPopup = CustomPopupViewController()
+        customPopup.alertType = .canCancel
+        customPopup.titleText = "신청하지 않고 나가기"
+        customPopup.messageText = "매칭 성공률이 높은 상대가 채팅 신청을 기다리고 있습니다"
+        customPopup.confirmButtonText = "나가기"
+        customPopup.cancelButtonText = "취소"
+        
+        customPopup.confirmAction = { [weak self] in
             if let navigationController = self?.navigationController {
                 navigationController.popToRootViewController(animated: true)
             } else {
                 self?.dismiss(animated: true, completion: nil)
             }
         }
-        alertController.addAction(cancelAction)
-        alertController.addAction(confirmAction)
-        self.present(alertController, animated: true, completion: nil)
+        
+        customPopup.cancelAction = {
+            customPopup.dismiss(animated: true, completion: nil)
+        }
+        
+        customPopup.modalPresentationStyle = .overFullScreen
+        present(customPopup, animated: true, completion: nil)
     }
-    
 }

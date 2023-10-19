@@ -61,6 +61,12 @@ final class WorldCupGameViewController: UIViewController {
         makeConstraints()
         configCollectionView()
         configUserData()
+        worldCupViewModel.playBackgroundMusic()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        worldCupViewModel.stopBackgroundMusic()
     }
     
     private func configCollectionView() {
@@ -107,8 +113,19 @@ final class WorldCupGameViewController: UIViewController {
     }
     
     private func cellClickAction(indexPath: IndexPath) {
-        worldCupViewModel.selectedIndexPath = indexPath
-        worldCupViewModel.animateSelectedCell(collectionView: collectionView, indexPath: indexPath)
+        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else {
+            return
+        }
+        worldCupViewModel.animateSelectedCell(selectedCell: selectedCell)
+        collectionView.reloadData()
+    }
+
+    private func animateToNextRound() {
+        worldCupViewModel.animateNextRound(collectionView: collectionView)
+    }
+
+    private func changeRoundLabel(withText text: String) {
+        worldCupViewModel.changeRoundLabel(withText: text, roundLabel: roundLabel)
     }
     
     private func makeConstraints() {
@@ -161,6 +178,7 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             round = 8
             currentUser = users.value[index + indexPath.item]
             worldCupViewModel.configure(cell: cell, with: currentUser)
+            self.roundLabel.text = "\(round)강"
         case 8..<12:
             round = 4
             currentUser = semifinals[index - 8 + indexPath.item]
@@ -173,7 +191,6 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             round = 0
             currentUser = winner[0]
         }
-        self.roundLabel.text = round == 2 ? "결승" : "\(round)강"
         return cell
     }
     
@@ -187,18 +204,28 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch index {
-        case 0..<8:
+        case 0..<6:
             let selectedItem = users.value[index + indexPath.item]
             semifinals.append(selectedItem)
             index += 2
             cellClickAction(indexPath: indexPath)
-            collectionView.reloadData()
-        case 8..<12:
+        case 6..<8:
+            let selectedItem = users.value[index + indexPath.item]
+            semifinals.append(selectedItem)
+            index += 2
+            animateToNextRound()
+            changeRoundLabel(withText: "4강")
+        case 8..<10:
             let selectedItem = semifinals[index - 8 + indexPath.item]
             finals.append(selectedItem)
             index += 2
             cellClickAction(indexPath: indexPath)
-            collectionView.reloadData()
+        case 10..<12:
+            let selectedItem = semifinals[index - 8 + indexPath.item]
+            finals.append(selectedItem)
+            index += 2
+            animateToNextRound()
+            changeRoundLabel(withText: "결승")
         default:
             let selectedItem = finals[index - 12 + indexPath.item]
             cellClickAction(indexPath: indexPath)
