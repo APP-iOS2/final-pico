@@ -168,12 +168,6 @@ extension SignInViewController {
                 guard isFullPhoneNumber else { return }
                 guard let text = phoneNumberTextField.text else { return }
                 
-                guard !goAdmin(number: text) else {
-                    let viewController = AdminViewController()
-                    self.navigationController?.pushViewController(viewController, animated: true)
-                    return
-                }
-                
                 guard cooldownTimer == nil else {
                     return
                 }
@@ -283,14 +277,6 @@ extension SignInViewController {
             authButton.setTitle("\(cooldownSeconds)초", for: .normal)
         }
     }
-    
-    private func goAdmin(number: String) -> Bool {
-        if number.replacingOccurrences(of: "-", with: "") == "48610041004" {
-            return true
-        } else {
-            return false
-        }
-    }
 }
 extension SignInViewController: UIGestureRecognizerDelegate {
     func tappedDismissKeyboard(without buttons: [UIButton]) {
@@ -316,6 +302,11 @@ extension SignInViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard isTappedAuthButton else {
+            let text = textField.text
+            if text == "486" {
+                let viewController = AdminViewController()
+                self.navigationController?.pushViewController(viewController, animated: true)
+            }
             let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isEnable in
                 let isHidden = !isEnable
                 updateAuthButton(isEnable: isEnable, isHidden: isHidden)
