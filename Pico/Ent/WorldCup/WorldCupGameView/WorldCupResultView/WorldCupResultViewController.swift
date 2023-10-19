@@ -157,10 +157,17 @@ extension WorldCupResultViewController {
         chatButton.rx.tap
             .withUnretained(self)
             .subscribe(onNext: { viewController, _ in
-                guard let resultUser = viewController.selectedItem else { return }
-                viewController.showCustomAlert(alertType: .canCancel, titleText: "쪽지 신청", messageText: "월드컵 우승자에게 쪽지를 보낼 시 50% 할인된 가격으로 보낼 수 있습니다!", confirmButtonText: "신청", comfrimAction: {
-                    viewController.requestMessagePublisher.onNext(resultUser)
-                })
+                if UserDefaultsManager.shared.getChuCount() <= 25 {
+                    viewController.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                        let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                        viewController.navigationController?.pushViewController(storeViewController, animated: true)
+                    })
+                } else {
+                    guard let resultUser = viewController.selectedItem else { return }
+                    viewController.showCustomAlert(alertType: .canCancel, titleText: "쪽지 신청", messageText: "월드컵 우승자에게 쪽지를 보낼 시 50% 할인된 가격으로 보낼 수 있습니다!", confirmButtonText: "신청", comfrimAction: {
+                        viewController.requestMessagePublisher.onNext(resultUser)
+                    })
+                }
             })
             .disposed(by: disposeBag)
         
@@ -182,12 +189,14 @@ extension WorldCupResultViewController {
         
         output.resultRequestMessage
             .withUnretained(self)
-            .subscribe { viewModel, _ in
-                if let navigationController = viewModel.navigationController {
-                    navigationController.popToRootViewController(animated: true)
-                } else {
-                    viewModel.dismiss(animated: true)
-                }
+            .subscribe { viewController, _ in
+                viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "쪽지 요청 성공", messageText: "받은 메일함을 확인해 주세요.", confirmButtonText: "확인", comfrimAction: {
+                    if let navigationController = self.navigationController {
+                        navigationController.popToRootViewController(animated: true)
+                    } else {
+                        self.dismiss(animated: true)
+                    }
+                })
             }
             .disposed(by: disposeBag)
     }

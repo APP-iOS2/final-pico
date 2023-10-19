@@ -9,11 +9,8 @@ import UIKit
 
 final class ResultUserView: UIView {
     
-    lazy var mbtiLabel: MBTILabelView = {
-        let view = MBTILabelView(mbti: .esfj, scale: .small)
-        return view
-    }()
-    
+    lazy var mbtiLabel: MBTILabelView = MBTILabelView(mbti: .esfj, scale: .small)
+
     lazy var userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -48,9 +45,7 @@ final class ResultUserView: UIView {
     }
     
     private func addViews() {
-        [mbtiLabel, userImage, userNickname, userAge].forEach { item in
-            addSubview(item)
-        }
+        addSubview([mbtiLabel, userImage, userNickname, userAge])
     }
     
     private func makeConstraints() {
