@@ -111,13 +111,12 @@ final class RandomBoxViewController: UIViewController {
         
         randomBoxTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(infoButton.snp.bottom).offset(Screen.height / 12)
-            make.centerX.equalToSuperview().offset(half)
+            make.centerX.equalToSuperview()
         }
         
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(randomBoxTitleLabel.snp.bottom).offset(padding)
-            make.centerX.equalToSuperview().offset(half)
-        }
+            make.centerX.equalToSuperview()
         
         randomBoxImage.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(padding)
