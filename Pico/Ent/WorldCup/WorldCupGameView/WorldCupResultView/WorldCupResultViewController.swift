@@ -38,19 +38,54 @@ final class WorldCupResultViewController: UIViewController {
         label.textAlignment = .center
         label.font = UIFont.picoButtonFont
         label.textColor = .picoFontGray
-        label.text = "농치기 아쉽다면?\n채팅을 신청해보세요!"
+        label.text = "농치기 아쉽다면?\n 메일을 신청해보세요!"
         label.numberOfLines = 0
         return label
     }()
     
-    private let resultUserView: ResultUserView = {
-        let view = ResultUserView()
+    private let cardView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 10
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.3
+        view.layer.shadowRadius = 10
+        view.layer.shadowOffset = CGSize(width: 10, height: 10)
+        view.layer.shadowPath = nil
         return view
     }()
     
-    private lazy var chatButton: CommonButton = {
+    private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: .esfj, scale: .small)
+
+    private let userImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 5
+        return imageView
+    }()
+    
+    private let userTitle: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.picoSubTitleFont
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
+    
+    private let userLocation: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.picoDescriptionFont
+        label.textColor = .darkGray
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
+    
+    private let chatButton: CommonButton = {
         let button = CommonButton()
-        button.setTitle("채팅 신청하기", for: .normal)
+        button.setTitle("메일 신청하기", for: .normal)
+        button.layer.cornerRadius = 5
         return button
     }()
     
@@ -58,14 +93,14 @@ final class WorldCupResultViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoEntSubLabelFont
-        label.text = "채팅 신청 비용 25츄 (50%)"
+        label.text = "메일 신청 비용 25츄 (50%)"
         label.textColor = .picoFontGray
         return label
     }()
     
-    private lazy var cancelButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("채팅 신청하지 않고 나가기", for: .normal)
+        button.setTitle("신청하지 않고 나가기", for: .normal)
         button.setTitleColor(.picoAlphaBlue, for: .normal)
         button.titleLabel?.font = UIFont.picoButtonFont
         return button
@@ -78,12 +113,12 @@ final class WorldCupResultViewController: UIViewController {
         addViews()
         makeConstraints()
         configResultUserCell()
-        addShadow()
         bind()
     }
     
     private func addViews() {
-        view.addSubview([worldCupTitleLabel, pickMeLabel, contentLabel, resultUserView, chatButton, guideLabel, cancelButton])
+        cardView.addSubview([mbtiLabel, userImage, userTitle, userLocation, chatButton, guideLabel])
+        view.addSubview([worldCupTitleLabel, pickMeLabel, contentLabel, cardView, cancelButton])
     }
     
     private func makeConstraints() {
@@ -91,7 +126,7 @@ final class WorldCupResultViewController: UIViewController {
         let half: CGFloat = 0.5
         
         worldCupTitleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Screen.height / 8)
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.centerX.equalToSuperview().offset(half)
         }
         
@@ -105,50 +140,63 @@ final class WorldCupResultViewController: UIViewController {
             make.centerX.equalToSuperview().offset(half)
         }
         
-        resultUserView.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(padding * 2)
+        cardView.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(padding)
             make.centerX.equalToSuperview()
-            make.width.equalTo(Screen.width * 0.5)
-            make.height.equalTo(Screen.height * 0.5)
+            make.width.equalTo(Screen.width * 0.6)
+        }
+        
+        mbtiLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(padding * half)
+            make.leading.equalToSuperview().offset(padding)
+            make.trailing.equalToSuperview().offset(-padding)
+            make.height.equalTo(mbtiLabel.frame.size.height + 10)
+        }
+
+        userImage.snp.makeConstraints { make in
+            make.top.equalTo(mbtiLabel.snp.bottom).offset(padding * half)
+            make.leading.trailing.equalTo(mbtiLabel)
+            make.height.equalTo(userImage.snp.width)
+        }
+
+        userTitle.snp.makeConstraints { make in
+            make.top.equalTo(userImage.snp.bottom).offset(padding * half)
+            make.leading.trailing.equalTo(userImage)
+        }
+        
+        userLocation.snp.makeConstraints { make in
+            make.top.equalTo(userTitle.snp.bottom)
+            make.leading.trailing.equalTo(userImage)
         }
         
         chatButton.snp.makeConstraints { make in
-            make.top.equalTo(resultUserView.userAge.snp.bottom).offset(padding)
-            make.centerX.equalToSuperview().offset(half)
-            make.leading.equalToSuperview().offset(Screen.width / 3.5)
-            make.trailing.equalToSuperview().offset(-Screen.width / 3.5)
-            make.height.equalTo(Screen.width / 10)
+            make.top.equalTo(userLocation.snp.bottom).offset(padding)
+            make.leading.equalToSuperview().offset(padding)
+            make.trailing.equalToSuperview().offset(-padding)
         }
         
         guideLabel.snp.makeConstraints { make in
             make.top.equalTo(chatButton.snp.bottom).offset(padding * half)
             make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-padding)
         }
         
         cancelButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview().offset(0.5)
-            make.bottom.equalToSuperview().offset(-padding * 1.5)
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-padding )
         }
     }
     
     private func configResultUserCell() {
         if let selectedItem = selectedItem {
-            resultUserView.mbtiLabel.setMbti(mbti: selectedItem.mbti)
-            resultUserView.userNickname.text = String(selectedItem.nickName)
-            resultUserView.userAge.text = "\(selectedItem.age)세"
-            
+            mbtiLabel.setMbti(mbti: selectedItem.mbti)
+            userTitle.text = "\(String(selectedItem.nickName)), \(selectedItem.age)세"
+            userLocation.text = "\(selectedItem.location.address)"
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {
-                resultUserView.userImage.load(url: url)
+                userImage.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+                userImage.kf.setImage(with: url)
             }
         }
-    }
-
-    private func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
-        resultUserView.layer.masksToBounds = false
-        resultUserView.layer.shadowColor = UIColor.black.cgColor
-        resultUserView.layer.shadowOffset = CGSize(width: 10, height: 10)
-        resultUserView.layer.shadowOpacity = opacity
-        resultUserView.layer.shadowRadius = radius
     }
 }
 
@@ -164,7 +212,7 @@ extension WorldCupResultViewController {
                     })
                 } else {
                     guard let resultUser = viewController.selectedItem else { return }
-                    viewController.showCustomAlert(alertType: .canCancel, titleText: "쪽지 신청", messageText: "월드컵 우승자에게 쪽지를 보낼 시 50% 할인된 가격으로 보낼 수 있습니다!", confirmButtonText: "신청", comfrimAction: {
+                    viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 신청", messageText: "월드컵 우승자에게 메일을 보낼 시 50% 할인된 가격으로 보낼 수 있습니다!", confirmButtonText: "신청", comfrimAction: {
                         viewController.requestMessagePublisher.onNext(resultUser)
                     })
                 }
