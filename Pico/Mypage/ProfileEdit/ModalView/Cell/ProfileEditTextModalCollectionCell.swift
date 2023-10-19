@@ -21,9 +21,9 @@ final class ProfileEditTextModalCollectionCell: UICollectionViewCell {
      let deleteButton: UIButton = {
         let button = UIButton(configuration: .plain())
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 13, weight: .light)
-        let image = UIImage(systemName: "xmark.circle.fill", withConfiguration: imageConfig)
+        let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
-        button.tintColor = .black.withAlphaComponent(0.8)
+         button.tintColor = .gray.withAlphaComponent(0.9)
         return button
     }()
     
