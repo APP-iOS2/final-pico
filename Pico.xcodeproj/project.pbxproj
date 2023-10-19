@@ -35,7 +35,6 @@
 		4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */; };
 		4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */; };
 		4B2665492ACD76F00074D4E2 /* ResultUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665482ACD76F00074D4E2 /* ResultUserView.swift */; };
-		4B576BBE2ADFB77700C49D43 /* APIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B576BBD2ADFB77700C49D43 /* APIKeys.plist */; };
 		4B89E12D2AD528E500BFBAA3 /* WorldCupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */; };
 		4BF01A3C2ADE1FF200181708 /* PercentModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF01A3B2ADE1FF200181708 /* PercentModalViewController.swift */; };
 		4BF01A462ADE729500181708 /* (null) in Sources */ = {isa = PBXBuildFile; };
