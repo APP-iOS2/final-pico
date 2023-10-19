@@ -128,7 +128,6 @@ extension SignInViewController {
             authTextField.text = ""
         }
         authText = ""
-        
         phoneNumberTextField.becomeFirstResponder()
         phoneNumberTextField.text = ""
         updatePhoneNumberTextField(isFull: false)
@@ -168,52 +167,58 @@ extension SignInViewController {
                 authButton.tappedAnimation()
                 guard isFullPhoneNumber else { return }
                 guard let text = phoneNumberTextField.text else { return }
-                 
-                    guard cooldownTimer == nil else {
-                        return
-                    }
+                
+                guard !goAdmin(number: text) else {
+                    let viewController = AdminViewController()
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                    return
+                }
+                
+                guard cooldownTimer == nil else {
+                    return
+                }
+                
+                viewModel.signIn(userNumber: text) { [weak self] user, string in
+                    guard let self = self else { return }
                     
-                    viewModel.signIn(userNumber: text) { [weak self] user, string in
-                        guard let self = self else { return }
-                        
-                        guard self.viewModel.isRightUser else {
-                            self.checkService.checkBlockUser(userNumber: text) { [weak self] isBlock in
-                                guard let self = self else { return }
-                                
-                                if isBlock {
-                                    Loading.hideLoading()
-                                    showAlert(message: "차단된 유저입니다.") { [weak self] in
-                                        guard let self = self else { return }
-                                        
-                                        configReset()
-                                    }
-                                } else {
-                                    Loading.hideLoading()
-                                    showAlert(message: string) { [weak self] in
-                                        guard let self = self else { return }
-                                        
-                                        configReset()
-                                    }
-                                }
-                            }
-                            return
-                        }
-                        Loading.hideLoading()
-                        if let user = user {
-                            UserDefaultsManager.shared.setUserData(userData: user)
-                        }
-                        
-                        showAlert(message: "\(text)로 인증번호를 전송합니다.") { [weak self] in
+                    guard self.viewModel.isRightUser else {
+                        self.checkService.checkBlockUser(userNumber: text) { [weak self] isBlock in
                             guard let self = self else { return }
                             
-                            cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
-                                RunLoop.main.add(cooldownTimer!, forMode: .common)
-                            
-                            NotificationService.shared.saveToken()
-                            configTappedAuthButtonState()
-                            authManager.sendVerificationCode(number: text)
+                            if isBlock {
+                                Loading.hideLoading()
+                                showAlert(message: "차단된 유저입니다.") { [weak self] in
+                                    guard let self = self else { return }
+                                    
+                                    configReset()
+                                }
+                            } else {
+                                Loading.hideLoading()
+                                showAlert(message: string) { [weak self] in
+                                    guard let self = self else { return }
+                                    
+                                    configReset()
+                                }
+                            }
                         }
+                        return
                     }
+                    Loading.hideLoading()
+                    if let user = user {
+                        UserDefaultsManager.shared.setUserData(userData: user)
+                    }
+                    
+                    showAlert(message: "\(text)로 인증번호를 전송합니다.") { [weak self] in
+                        guard let self = self else { return }
+                        
+                        cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
+                        RunLoop.main.add(cooldownTimer!, forMode: .common)
+                        
+                        NotificationService.shared.saveToken()
+                        configTappedAuthButtonState()
+                        authManager.sendVerificationCode(number: text)
+                    }
+                }
                 
             })
             .disposed(by: disposeBag)
@@ -235,7 +240,6 @@ extension SignInViewController {
                 
                 configAuthText()
                 if authManager.checkRightCode(code: authText) {
-                    print("안녕")
                     showAlert(message: "인증에 성공하셨습니다.") { [weak self] in
                         guard let self = self else { return }
                         
@@ -243,7 +247,6 @@ extension SignInViewController {
                         self.navigationController?.pushViewController(viewController, animated: true)
                     }
                 } else {
-                    print("안녕2")
                     showAlert(message: "비상비상 인증실패") { [weak self] in
                         guard let self = self else { return }
                     }
@@ -291,6 +294,14 @@ extension SignInViewController {
             authButton.tintColor = .red
         }
     }
+    
+    private func goAdmin(number: String) -> Bool {
+        if number.replacingOccurrences(of: "-", with: "") == "48610041004" {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 extension SignInViewController: UIGestureRecognizerDelegate {
     func tappedDismissKeyboard(without buttons: [UIButton]) {
@@ -305,7 +316,7 @@ extension SignInViewController: UIGestureRecognizerDelegate {
     }
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        if let view = touch.view as? UIButton {
+        if touch.view is UIButton {
             return false
         }
         return true

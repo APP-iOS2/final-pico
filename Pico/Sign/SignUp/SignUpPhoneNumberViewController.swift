@@ -196,7 +196,7 @@ extension SignUpPhoneNumberViewController {
     
     private func updateViewState(num: String) {
         self.viewModel.phoneNumber = num
-        self.authTextFields[0].becomeFirstResponder()
+        self.authTextFields[safe: 0]?.becomeFirstResponder()
         self.updatePhoneNumberTextField(isFull: true)
         self.updateCancelButton(isHidden: true)
         self.updateAuthButton(isEnable: false, isHidden: false)
@@ -276,9 +276,7 @@ extension SignUpPhoneNumberViewController {
         sender.tappedAnimation()
         configAuthText()
         guard smsAuthManager.checkRightCode(code: authText) else {
-            self.showAlert(message: "비상비상 인증실패") { [weak self] in
-                guard let self = self else { return }
-            }
+            self.showAlert(message: "인증번호를 다시 확인해주세요.", yesAction: nil)
             return
         }
         self.showAlert(message: "인증에 성공하셨습니다.") { [weak self] in
