@@ -214,20 +214,28 @@ extension SignUpPhoneNumberViewController {
         showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") { [weak self] in
             guard let self = self else { return }
             guard let text = self.phoneNumberTextField.text else { return }
-            self.checkService.checkPhoneNumber(userNumber: text) { [weak self] message, isRight in
-                guard let self = self else { return }
-                guard isRight else {
-                    SignLoadingManager.hideLoading()
-                    self.showAlert(message: message) {
-                        self.viewModel.isRightPhoneNumber = isRight
+            self.checkService.checkBlockUser(userNumber: text) { isRight in
+                if isRight {
+                    self.showAlert(message: "차단된 번호로는 가입이 불가능합니다..") {
                         self.configReset()
                     }
-                    return
+                } else {
+                    self.checkService.checkPhoneNumber(userNumber: text) { [weak self] message, isRight in
+                        guard let self = self else { return }
+                        guard isRight else {
+                            SignLoadingManager.hideLoading()
+                            self.showAlert(message: message) {
+                                self.viewModel.isRightPhoneNumber = isRight
+                                self.configReset()
+                            }
+                            return
+                        }
+                        SignLoadingManager.hideLoading()
+                        self.updateViewState(num: text)
+                        self.viewModel.isRightPhoneNumber = isRight
+                        self.smsAuthManager.sendVerificationCode()
+                    }
                 }
-                SignLoadingManager.hideLoading()
-                self.updateViewState(num: text)
-                self.viewModel.isRightPhoneNumber = isRight
-                self.smsAuthManager.sendVerificationCode()
             }
         }
     }

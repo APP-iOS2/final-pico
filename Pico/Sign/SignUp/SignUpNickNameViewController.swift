@@ -36,7 +36,7 @@ final class SignUpNickNameViewController: UIViewController {
     
     private let notifyLabel: UILabel = {
         let label = UILabel()
-        label.text = "닉네임을 정해주세요(추후 변경은 유료)"
+        label.text = "닉네임을 정해주세요"
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.picoTitleFont
@@ -45,7 +45,7 @@ final class SignUpNickNameViewController: UIViewController {
     
     private let subNotifyLabel: UILabel = {
         let label = UILabel()
-        label.text = "신중하게 정해주세요😁"
+        label.text = "신중하게 정해주세요😁(추후 변경은 유료)"
         label.numberOfLines = 2
         label.lineBreakMode = .byWordWrapping
         label.textColor = .picoFontGray
