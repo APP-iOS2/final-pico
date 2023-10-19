@@ -90,6 +90,13 @@ final class AdminUserDetailViewController: UIViewController {
         )
         let output = viewModel.transform(input: input)
         
+        output.currentRecordType
+            .withUnretained(self)
+            .subscribe { viewController, recordType in
+                viewController.currentRecordType = recordType
+            }
+            .disposed(by: disposeBag)
+        
         output.resultIsUnsubscribe
             .withUnretained(self)
             .observe(on: MainScheduler.instance)
@@ -143,7 +150,16 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case .image, .info, .recordHeader:
             return 1
         case .record:
-            return viewModel.likeList.count
+            switch currentRecordType {
+            case .report:
+                return 0
+            case .block:
+                return 0
+            case .like:
+                return viewModel.likeList.count
+            case .payment:
+                return 0
+            }
         }
     }
 
@@ -173,7 +189,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
             cell.selectedRecordTypePublisher.asObservable()
                 .withUnretained(self)
                 .subscribe(onNext: { viewController, recordType in
-                    viewController.currentRecordType = recordType
+                    print(recordType)
                     viewController.recordTypePublish.onNext(recordType)
                 })
                 .disposed(by: disposeBag)
@@ -182,8 +198,21 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case .record:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: NotificationTableViewCell.self)
             
-            guard let user = viewModel.likeList[safe: indexPath.row] else { return UITableViewCell() }
-            cell.configData(notitype: .like, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, date: Date().timeIntervalSince1970)
+            switch currentRecordType {
+            case .report:
+                break
+                
+            case .block:
+                break
+                
+            case .like:
+                guard let user = viewModel.likeList[safe: indexPath.row] else { return UITableViewCell() }
+                cell.configData(notitype: .like, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, date: Date().timeIntervalSince1970)
+                
+            case .payment:
+                break
+            }
+
             cell.selectionStyle = .none
             return cell
         }

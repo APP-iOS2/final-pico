@@ -107,7 +107,6 @@ final class AdminUserViewController: UIViewController {
     private func configRefresh() {
         refreshControl.addTarget(self, action: #selector(refreshTable), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
-        userListTableView.refreshControl = refreshControl
     }
     
     private func configButtons() {
@@ -122,6 +121,7 @@ final class AdminUserViewController: UIViewController {
     }
     
     private func configTableView() {
+        userListTableView.refreshControl = refreshControl
         userListTableView.register(cell: NotificationTableViewCell.self)
         userListTableView.rowHeight = 80
     }

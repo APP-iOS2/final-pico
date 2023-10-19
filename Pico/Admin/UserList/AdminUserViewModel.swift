@@ -107,7 +107,7 @@ final class AdminUserViewModel: ViewModelType {
         let resultPagingList: Observable<[User]>
         let needToReload: Observable<Void>
     }
-    //  질문: withUnretained 이거 바로 아래밖에 적용이 안되는지 ?
+    
     func transform(input: Input) -> Output {
         // 질문:
         // 밑으로 당겨서 새로고침 refreshTable 에서 input.sortedTpye 변경으로 호출되는데
@@ -118,12 +118,14 @@ final class AdminUserViewModel: ViewModelType {
                 let (userListType, sortedTpye, _) = value
                 return FirestoreService.shared.loadDocumentRx(collectionId: userListType.collectionId, dataType: User.self, orderBy: sortedTpye.orderBy, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
             }
-            .map { users, snapShot in
-                self.userList.removeAll()
-                self.lastDocumentSnapshot = snapShot
-                self.userList = users
+            .withUnretained(self)
+            .map { viewModel, usersAndSnapshot in
+                let (users, snapShot) = usersAndSnapshot
+                viewModel.userList.removeAll()
+                viewModel.lastDocumentSnapshot = snapShot
+                viewModel.userList = users
                 Loading.hideLoading()
-                return self.userList
+                return viewModel.userList
             }
         
         _ = input.viewWillAppear
@@ -203,17 +205,16 @@ final class AdminUserViewModel: ViewModelType {
     
     private func loadNextPage(collectionId: Collections, orderBy: (String, Bool)) -> Observable<[User]> {
         let dbRef = Firestore.firestore()
+        var query = dbRef.collection(collectionId.name)
+            .order(by: orderBy.0, descending: orderBy.1)
+            .limit(to: itemsPerPage)
+        
+        if let lastSnapshot = lastDocumentSnapshot {
+            query = query.start(afterDocument: lastSnapshot)
+        }
         
         return Observable.create { [weak self] emitter in
             guard let self = self else { return Disposables.create()}
-            
-            var query = dbRef.collection(collectionId.name)
-                .order(by: orderBy.0, descending: orderBy.1)
-                .limit(to: itemsPerPage)
-            
-            if let lastSnapshot = lastDocumentSnapshot {
-                query = query.start(afterDocument: lastSnapshot)
-            }
             
             DispatchQueue.global().async {
                 query.getDocuments { [weak self] snapshot, error in

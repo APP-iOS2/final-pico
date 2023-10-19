@@ -71,7 +71,7 @@ final class NotificationTableViewCell: UITableViewCell {
     private func makeConstraints() {
         profileImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(10)
-            make.leading.equalToSuperview()
+            make.leading.equalTo(10)
             make.bottom.equalToSuperview().offset(-10)
             make.width.equalTo(profileImageView.snp.height)
         }
