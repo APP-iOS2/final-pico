@@ -21,6 +21,7 @@ final class MailSendTableListController: BaseViewController {
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkSendEmptyPublisher = PublishSubject<Void>()
+    private let deleteSendPublisher = PublishSubject<String>()
     
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -46,7 +47,6 @@ final class MailSendTableListController: BaseViewController {
     }
     // MARK: - config
     private func configTableView() {
-        mailListTableView.rowHeight = 80
         mailListTableView.dataSource = self
         mailListTableView.delegate = self
     }
@@ -89,11 +89,25 @@ extension MailSendTableListController: UITableViewDataSource, UITableViewDelegat
         mailReceiveView.configData(mailSender: item)
         self.present(mailReceiveView, animated: true, completion: nil)
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard let item = viewModel.sendList[safe: indexPath.row] else { return }
+        self.deleteSendPublisher.onNext(item.id)
+    }
 }
 // MARK: - bind
 extension MailSendTableListController {
     private func bind() {
         let input = MailSendModel.Input(listLoad: loadDataPublsher,
+                                        deleteUser: deleteSendPublisher,
                                         refresh: refreshPublisher,
                                         isSendEmptyChecked: checkSendEmptyPublisher)
         let output = viewModel.transform(input: input)

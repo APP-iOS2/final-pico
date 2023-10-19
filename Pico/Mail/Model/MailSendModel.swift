@@ -33,6 +33,7 @@ final class MailSendModel {
     
     struct Input {
         let listLoad: Observable<Void>
+        let deleteUser: Observable<String>
         let refresh: Observable<Void>
         let isSendEmptyChecked: Observable<Void>
     }
@@ -54,6 +55,13 @@ final class MailSendModel {
             .withUnretained(self)
             .subscribe { viewModel, _ in
                 viewModel.loadNextMailPage()
+            }
+            .disposed(by: disposeBag)
+        
+        input.deleteUser
+            .withUnretained(self)
+            .subscribe { viewModel, mailId in
+                viewModel.deleteMail(mailId: mailId)
             }
             .disposed(by: disposeBag)
         
@@ -122,6 +130,31 @@ final class MailSendModel {
         startIndex = 0
         isSendEmptyPublisher = didSet
         loadNextMailPage()
+    }
+    
+    private func deleteMail(mailId: String) {
+        let currentUser = UserDefaultsManager.shared.getUserData()
+        
+        guard let index = sendList.firstIndex(where: {
+            $0.id == mailId
+            
+        }) else {
+            return
+        }
+        guard let removeData: Mail.MailInfo = sendList[safe: index] else {
+            print("삭제 실패: 해당 유저 정보 얻기 실패")
+            return
+        }
+        print(index)
+        sendList.remove(at: index)
+        reloadMailTableViewPublisher.onNext(())
+        
+        DispatchQueue.global().async {
+            // 마지막 꺼 삭제됨 -> 해당 필드 삭제 필요
+            self.dbRef.collection(Collections.mail.name).document(currentUser.userId).updateData([
+                "sendMailInfo": FieldValue.arrayRemove([removeData.asDictionary()])
+            ])
+        }
     }
     
     func saveMailData(receiveUser: User, message: String, type: MailSendType) {
