@@ -237,7 +237,7 @@ extension SignUpPhoneNumberViewController {
             guard let self = self else { return }
             
             if isBlocked {
-                showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "탈퇴한 번호로는 가입이 불가능합니다..", confirmButtonText: "확인", comfrimAction: configReset)
+                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴한 번호로는 가입이 불가능합니다..", confirmButtonText: "확인", comfrimAction: configReset)
             } else {
                 checkService.checkPhoneNumber(userNumber: phoneNumber) { [weak self] message, isRight in
                     guard let self = self else { return }
@@ -272,7 +272,7 @@ extension SignUpPhoneNumberViewController {
         sender.tappedAnimation()
         configAuthText()
         guard smsAuthManager.checkRightCode(code: authText) else {
-            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호를 확인해주세요.", confirmButtonText: "확인")
+            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 확인해주세요.", confirmButtonText: "확인")
             return
         }
         showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
