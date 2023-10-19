@@ -9,15 +9,15 @@ import UIKit
 
 final class ResultUserView: UIView {
     
-    lazy var mbtiLabel: MBTILabelView = MBTILabelView(mbti: .esfj, scale: .small)
+    let mbtiLabel: MBTILabelView = MBTILabelView(mbti: .esfj, scale: .small)
 
-    lazy var userImage: UIImageView = {
+    let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
-    lazy var userNickname: UILabel = {
+    let userNickname: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoSubTitleFont
@@ -25,7 +25,7 @@ final class ResultUserView: UIView {
         return label
     }()
     
-    lazy var userAge: UILabel = {
+    let userAge: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoButtonFont
