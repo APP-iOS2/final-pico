@@ -63,11 +63,6 @@ final class WorldCupGameViewController: UIViewController {
         configUserData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        startBackgroundAnimation()
-    }
-    
     private func configCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -129,13 +124,6 @@ final class WorldCupGameViewController: UIViewController {
         }, completion: nil)
     }
     
-    private func startBackgroundAnimation() {
-        backgroundImageView.transform = CGAffineTransform(translationX: Screen.width, y: 0)
-        UIView.animate(withDuration: 10.0, delay: 0, options: [.curveLinear, .autoreverse, .repeat], animations: {
-            self.backgroundImageView.transform = .identity
-        }, completion: nil)
-    }
-
     private func makeConstraints() {
         let padding: CGFloat = 20
         let half: CGFloat = 0.5
