@@ -17,6 +17,14 @@ final class SettingTableCell: UITableViewCell {
         return label
     }()
    
+    private let nextImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "chevron.right")
+        imageView.tintColor = .lightGray
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubView()
@@ -34,12 +42,15 @@ final class SettingTableCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(contentLabel: String) {
+    func configure(contentLabel: String, isHiddenNextImage: Bool = false) {
         self.contentLabel.text = contentLabel
+        if isHiddenNextImage == true {
+            nextImageView.isHidden = true
+        }
     }
     
     private func addSubView() {
-        [contentLabel].forEach {
+        [contentLabel, nextImageView].forEach {
             contentView.addSubview($0)
         }
     }
@@ -49,6 +60,11 @@ final class SettingTableCell: UITableViewCell {
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
+        }
+        nextImageView.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-15)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(20)
         }
     }
 }

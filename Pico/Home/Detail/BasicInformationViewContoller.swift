@@ -50,13 +50,24 @@ final class BasicInformationViewContoller: UIViewController {
         
     }
     
-    func config(mbti: MBTIType, nameAgeText: String, locationText: String, heightText: String) {
+    func config(mbti: MBTIType, nameAgeText: String, locationText: String, heightText: String?) {
         mbtiLabelView.setMbti(mbti: mbti)
         nameAgeLabel.text = nameAgeText
         locationLabel.text = locationText
-        heightLabel.text = "\(heightText) cm"
+        
+        if let heightText = heightText {
+            heightLabel.text = " \(heightText) cm"
+        } else {
+            [heightImageView, heightLabel].forEach {
+                $0.removeFromSuperview()
+                $0.isHidden = true
+            }
+        }
     }
-    
+}
+
+// MARK: - UI 관련
+extension BasicInformationViewContoller {
     private func addViews() {
         [mbtiLabelView, nameAgeLabel, locationLabel, locationImageView, heightLabel, heightImageView].forEach { view.addSubview($0) }
     }
@@ -81,17 +92,19 @@ final class BasicInformationViewContoller: UIViewController {
         
         locationLabel.snp.makeConstraints { make in
             make.top.equalTo(locationImageView.snp.top)
-            make.leading.trailing.equalTo(locationImageView.snp.trailing).offset(5).priority(.medium)
+            make.leading.equalTo(locationImageView.snp.trailing).offset(5)
+            make.trailing.equalToSuperview().priority(.low)
         }
         
         heightImageView.snp.makeConstraints { make in
             make.top.equalTo(locationLabel.snp.bottom).offset(10)
-            make.leading.equalTo(safeArea)
+            make.leading.equalTo(view.safeAreaLayoutGuide)
         }
         
         heightLabel.snp.makeConstraints { make in
             make.top.equalTo(heightImageView.snp.top)
-            make.leading.trailing.equalTo(heightImageView.snp.trailing).offset(5).priority(.medium)
+            make.leading.equalTo(heightImageView.snp.trailing).offset(5)
+            make.trailing.equalToSuperview().priority(.low)
         }
     }
 }

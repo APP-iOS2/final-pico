@@ -16,27 +16,38 @@ final class AdminUserViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "slider.horizontal.3"), for: .normal)
         button.tintColor = .picoFontGray
-        button.menu = UIMenu(title: "정렬", options: [.singleSelection], children: sortedMenuItems)
+        button.menu = createMenu()
         button.showsMenuAsPrimaryAction = true
         return button
     }()
-    
-    private lazy var sortedMenuItems: [UIAction] = {
-        return SortType.allCases.map { sortType in
-            let title = sortType.name
-            
-            return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
+
+    private func createMenu() -> UIMenu {
+        let usingMenu = UIAction(title: "사용중인 유저", image: UIImage(), handler: { [weak self] _ in
+            guard let self = self else { return }
+            userListTypeBehavior.onNext(.using)
+        })
+        
+        let unsubscribedMenu = UIAction(title: "탈퇴된 회원", image: UIImage(), handler: { [weak self] _ in
+            guard let self = self else { return }
+            userListTypeBehavior.onNext(.unsubscribe)
+        })
+        
+        let secondSectionActions = SortType.allCases.map { sortType in
+            return UIAction(title: sortType.name, image: UIImage(), handler: { [weak self] _ in
                 guard let self = self else { return }
                 sortedTpyeBehavior.onNext(sortType)
             })
         }
-    }()
-    
-    private let textFieldView: CommonTextField = {
-        let textField = CommonTextField()
-        textField.textField.placeholder = "이름을 검색하세요."
-        return textField
-    }()
+
+        let menu = UIMenu(title: "구분", children: [
+            usingMenu, unsubscribedMenu,
+            UIMenu(title: "정렬 구분", children: secondSectionActions)
+        ])
+
+        return menu
+    }
+
+    private let textFieldView: CommonTextField = CommonTextField()
     
     private let searchButton: UIButton = {
         let button = UIButton()
@@ -54,7 +65,9 @@ final class AdminUserViewController: UIViewController {
     private let disposeBag: DisposeBag = DisposeBag()
     
     private let viewDidLoadPublisher = PublishSubject<Void>()
+    private let viewWillAppearPublisher = PublishSubject<Void>()
     private let sortedTpyeBehavior = BehaviorSubject(value: SortType.dateDescending)
+    private let userListTypeBehavior = BehaviorSubject(value: UserListType.using)
     private let searchButtonPublisher = PublishSubject<String>()
     private let tableViewOffsetPublisher = PublishSubject<Void>()
     private let refreshablePublisher = PublishSubject<Void>()
@@ -88,6 +101,7 @@ final class AdminUserViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
+        viewWillAppearPublisher.onNext(())
     }
     
     private func configRefresh() {
@@ -109,18 +123,24 @@ final class AdminUserViewController: UIViewController {
     
     private func configTableView() {
         userListTableView.register(cell: NotificationTableViewCell.self)
-        userListTableView.rowHeight = 180
+        userListTableView.rowHeight = 80
     }
     
     private func bind() {
         let input = AdminUserViewModel.Input(
             viewDidLoad: viewDidLoadPublisher.asObservable(),
+            viewWillAppear: viewWillAppearPublisher.asObservable(),
             sortedTpye: sortedTpyeBehavior.asObservable(),
+            userListType: userListTypeBehavior.asObservable(),
             searchButton: searchButtonPublisher.asObservable(),
             tableViewOffset: tableViewOffsetPublisher.asObservable(),
             refreshable: refreshablePublisher.asObservable()
         )
         let output = viewModel.transform(input: input)
+        
+        output.resultTitleLabel
+            .bind(to: textFieldView.textField.rx.placeholder)
+            .disposed(by: disposeBag)
 
         let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList, output.resultPagingList)
         
@@ -134,6 +154,8 @@ final class AdminUserViewController: UIViewController {
         output.needToReload
             .withUnretained(self)
             .subscribe(onNext: { viewController, _ in
+                // 질문 :
+                // 데이터 삭제하고 viewWillAppear 가 실행되고 오면 리로드했는데 배열이 안사라짐 ㅜ
                 viewController.userListTableView.reloadData()
             })
             .disposed(by: disposeBag)

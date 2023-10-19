@@ -63,6 +63,7 @@ final class ProfileView: UIView {
     
     private let circularProgressBarView = CircularProgressBarView()
     private let disposeBag = DisposeBag()
+    private var viewModel: ProfileViewModel?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -70,17 +71,16 @@ final class ProfileView: UIView {
         addViews()
         makeConstraints()
         configProgressBarView()
-        bindings(viewModel: ProfileViewModel())
     }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func bindings(viewModel: ProfileViewModel) {
+    func configViewModel(viewModel: ProfileViewModel) {
+        self.viewModel = viewModel
         circularProgressBarView.binds(viewModel.circularProgressBarViewModel)
-        
+
         viewModel.userName
             .map {
                 $0 + ","
@@ -107,12 +107,13 @@ final class ProfileView: UIView {
                        }
                    })
                    .disposed(by: disposeBag)
-
+        
     }
-    
+
      func configProgressBarView() {
         let circularViewDuration: TimeInterval = 2
         circularProgressBarView.progressAnimation(duration: circularViewDuration)
+         circularProgressBarView.triggerLayoutSubviews()
     }
     private func addViews() {
         [circularProgressBarView, userImage, editImageView, profilPercentLabel, stackView].forEach {

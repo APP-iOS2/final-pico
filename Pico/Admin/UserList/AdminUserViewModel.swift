@@ -11,6 +11,29 @@ import RxCocoa
 import FirebaseFirestore
 
 // 질문: enum 을 여기에서만 쓰는데 어디에다 관리하는 게 좋을까용~?
+enum UserListType: CaseIterable {
+    case using
+    case unsubscribe
+    
+    var name: String {
+        switch self {
+        case .using:
+            return "사용중인 회원"
+        case .unsubscribe:
+            return "탈퇴된 회원"
+        }
+    }
+    
+    var collectionId: Collections {
+        switch self {
+        case .using:
+            return .users
+        case .unsubscribe:
+            return .unsubscribe
+        }
+    }
+}
+
 enum SortType: CaseIterable {
     /// 가입일 내림차순
     case dateDescending
@@ -61,15 +84,17 @@ enum SortType: CaseIterable {
 }
 
 final class AdminUserViewModel: ViewModelType {
-    private let itemsPerPage: Int = 5
+    private let itemsPerPage: Int = 15
     private var lastDocumentSnapshot: DocumentSnapshot?
     
     private(set) var userList: [User] = []
     private let reloadPublisher = PublishSubject<Void>()
-
+    
     struct Input {
         let viewDidLoad: Observable<Void>
+        let viewWillAppear: Observable<Void>
         let sortedTpye: Observable<SortType>
+        let userListType: Observable<UserListType>
         let searchButton: Observable<String>
         let tableViewOffset: Observable<Void>
         let refreshable: Observable<Void>
@@ -77,6 +102,7 @@ final class AdminUserViewModel: ViewModelType {
     
     struct Output {
         let resultToViewDidLoad: Observable<[User]>
+        let resultTitleLabel: Observable<String>
         let resultSearchUserList: Observable<[User]>
         let resultPagingList: Observable<[User]>
         let needToReload: Observable<Void>
@@ -84,13 +110,13 @@ final class AdminUserViewModel: ViewModelType {
     //  질문: withUnretained 이거 바로 아래밖에 적용이 안되는지 ?
     func transform(input: Input) -> Output {
         // 질문:
-        // refreshTable 에서 input.sortedTpye 변경으로 호출되는데
+        // 밑으로 당겨서 새로고침 refreshTable 에서 input.sortedTpye 변경으로 호출되는데
         // refreshablePublisher.onNext(()) 가 호출되었을 때 할 수 있는 방법이 있을 까여?
-        let responseViewDidLoad = Observable.combineLatest(input.sortedTpye, input.viewDidLoad)
+        let responseViewDidLoad = Observable.combineLatest(input.userListType, input.sortedTpye, input.viewDidLoad)
             .withUnretained(self)
             .flatMapLatest { (viewModel, value) -> Observable<([User], DocumentSnapshot?)> in
-                let (sortedTpye, _) = value
-                return FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self, orderBy: sortedTpye.orderBy, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
+                let (userListType, sortedTpye, _) = value
+                return FirestoreService.shared.loadDocumentRx(collectionId: userListType.collectionId, dataType: User.self, orderBy: sortedTpye.orderBy, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
             }
             .map { users, snapShot in
                 self.userList.removeAll()
@@ -100,7 +126,19 @@ final class AdminUserViewModel: ViewModelType {
                 return self.userList
             }
         
+        _ = input.viewWillAppear
+            .withUnretained(self)
+            .subscribe(onNext: { viewModel, _ in
+                viewModel.reloadPublisher.onNext(())
+            })
+        
         let sortedType = input.sortedTpye.asObservable()
+        let userListType = input.userListType.asObservable()
+        
+        let responseTitleLabel = input.userListType
+            .map { userListType in
+                return "\"\(userListType.name)\"의 이름을 입력하세요"
+            }
         
         let responseTableViewPaging = input.tableViewOffset
             .withUnretained(self)
@@ -108,7 +146,10 @@ final class AdminUserViewModel: ViewModelType {
                 Loading.showLoading()
                 return sortedType
                     .map { sortType in
-                        return viewModel.loadNextPage(orderBy: sortType.orderBy)
+                        return userListType
+                            .flatMap { usrListType in
+                                return viewModel.loadNextPage(collectionId: usrListType.collectionId, orderBy: sortType.orderBy)
+                            }
                     }
                     .switchLatest()
             }
@@ -120,36 +161,53 @@ final class AdminUserViewModel: ViewModelType {
         
         let responseSearchButton = input.searchButton
             .withUnretained(self)
-            .flatMapLatest { viewModel, textFieldText in
-                return Observable.just(viewModel.filterUserList(viewModel.userList, textFieldText))
+            .flatMap { viewModel, textFieldText in
+                if textFieldText.isEmpty {
+                    return Observable.just(viewModel.userList)
+                } else {
+                    return FirestoreService.shared.searchDocumentWithEqualFieldRx(collectionId: .users, field: "nickName", compareWith: textFieldText, dataType: User.self)
+                }
+            }
+        
+        let responseTextFieldSearch = input.searchButton
+            .withUnretained(self)
+            .flatMap { viewModel, textFieldText in
+                return viewModel.searchListTextField(viewModel.userList, textFieldText)
+            }
+        
+        let combinedResults = Observable.zip(responseSearchButton, responseTextFieldSearch)
+            .map { searchList, textFieldList in
+                let list = searchList + textFieldList
+                let setList = Set(list)
+                return Array(setList)
             }
         
         return Output(
             resultToViewDidLoad: responseViewDidLoad,
-            resultSearchUserList: responseSearchButton,
+            resultTitleLabel: responseTitleLabel,
+            resultSearchUserList: combinedResults,
             resultPagingList: responseTableViewPaging,
             needToReload: reloadPublisher.asObservable()
         )
     }
     
-    private func filterUserList(_ userList: [User], _ text: String) -> [User] {
-        if text.isEmpty {
-            return userList
-        } else {
+    private func searchListTextField(_ userList: [User], _ text: String) -> Observable<[User]> {
+        return Observable.create { emitter in
             let users = userList.filter { sortedUser in
                 sortedUser.nickName.contains(text)
             }
-            return users
+            emitter.onNext(users)
+            return Disposables.create()
         }
     }
     
-    private func loadNextPage(orderBy: (String, Bool)) -> Observable<[User]> {
+    private func loadNextPage(collectionId: Collections, orderBy: (String, Bool)) -> Observable<[User]> {
         let dbRef = Firestore.firestore()
         
         return Observable.create { [weak self] emitter in
             guard let self = self else { return Disposables.create()}
             
-            var query = dbRef.collection(Collections.users.name)
+            var query = dbRef.collection(collectionId.name)
                 .order(by: orderBy.0, descending: orderBy.1)
                 .limit(to: itemsPerPage)
             

@@ -16,6 +16,7 @@ final class LikeUViewModel: ViewModelType {
     struct Input {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
+        let checkEmpty: Observable<Void>
     }
     
     struct Output {
@@ -54,7 +55,30 @@ final class LikeUViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        return Output(likeUIsEmpty: isEmptyPublisher.asObservable(), reloadCollectionView: reloadTableViewPublisher.asObservable())
+        let didset = isEmptyPublisher.asObservable()
+            .map { result in
+                return result
+            }
+        
+        let check = input.checkEmpty
+            .withUnretained(self)
+            .map { viewModel, _ -> Bool in
+                if viewModel.likeUList.isEmpty {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        
+        let isEmpty = Observable.of(didset, check).merge()
+            .flatMapLatest { bool -> Observable<Bool> in
+                return Observable.create { emitter in
+                    emitter.onNext(bool)
+                    return Disposables.create()
+                }
+            }
+        
+        return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadTableViewPublisher.asObservable())
     }
     
     private func loadNextPage() {

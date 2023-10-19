@@ -13,6 +13,7 @@ enum RecordType: CaseIterable {
     case report
     case block
     case like
+    case payment
     
     var name: String {
         switch self {
@@ -22,6 +23,8 @@ enum RecordType: CaseIterable {
             return "차단 기록"
         case .like:
             return "좋아요 기록"
+        case .payment:
+            return "결제 기록"
         }
     }
 }
@@ -34,7 +37,7 @@ final class RecordHeaderTableViewCell: UITableViewCell {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = .clear
         view.showsHorizontalScrollIndicator = false
-        view.contentInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 20)
+        view.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         return view
     }()
     

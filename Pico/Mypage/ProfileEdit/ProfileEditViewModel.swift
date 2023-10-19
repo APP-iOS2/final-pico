@@ -102,6 +102,7 @@ final class ProfileEditViewModel {
     private let disposeBag = DisposeBag()
     
     var selectedIndex: Int?/*컬렉션뷰만잇는뷰에서 사용*/
+    var selectedIndexs: [Int]?/*컬렉션뷰만잇는뷰에서 사용*/
     var textData: String? /*텍스트만잇는뷰 사용*/
     var collectionData: [String]? /*콜렉션텍스트뷰 사용*/
     var userImages: [UIImage]?
@@ -126,7 +127,10 @@ final class ProfileEditViewModel {
         ])
     ])
     
-    init() {
+    private let profileViewModel: ProfileViewModel
+    
+    init(profileViewModel: ProfileViewModel) {
+        self.profileViewModel = profileViewModel
         loadUserData()
         binds()
     }
@@ -158,6 +162,16 @@ final class ProfileEditViewModel {
         return nil
     }
     
+    func findMbtiIndex(for targetStrings: [String], in array: [String]) -> [Int] {
+        var indexs = [Int]()
+        for targetString in targetStrings {
+            if let index = array.firstIndex(of: targetString) {
+                indexs.append(index)
+            }
+        }
+        return indexs
+    }
+    
     func updateData<T: Codable>(data: T) {
         guard let field = modalType?.dataName else { return }
         
@@ -170,21 +184,23 @@ final class ProfileEditViewModel {
             FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: field, data: data) { result in
                 switch result {
                 case .success(let data):
-                    print("업데이트 성공 \(data)")
+                    debugPrint("업데이트 성공 \(data)")
                 case .failure(let error):
-                    print("업데이트 실패, 에러메시지 : \(error)")
+                    debugPrint("업데이트 실패, 에러메시지 : \(error)")
                 }
             }
         }
         loadUserData()
+        profileViewModel.loadUserData()
     }
+    
     func transformArrtoString<T: StringProtocol>(stringArr: [T]) -> String {
         var text = ""
         for index in 0..<stringArr.count {
             text += stringArr[index]
             if index < stringArr.count - 1 {
                 text += ","
-               }
+            }
         }
         return text
     }
@@ -196,7 +212,7 @@ final class ProfileEditViewModel {
             text += value.uppercased()
             if index < stringArr.count - 1 {
                 text += ","
-               }
+            }
         }
         return text
     }
@@ -216,8 +232,8 @@ final class ProfileEditViewModel {
                     SectionModel(items: [.profileEditNicknameTabelCell, .profileEditLoactionTabelCell(location: data.location.address)]),
                     SectionModel(items: [
                         .profileEditTextTabelCell(title: SubInfoCase.intro.name, content: data.subInfo?.intro),
-                        .profileEditTextTabelCell(title: SubInfoCase.height.name, content: "\(data.subInfo?.height ?? 0) cm"),
-                        .profileEditTextTabelCell(title: SubInfoCase.job.name, content: data.subInfo?.job),
+                        .profileEditTextTabelCell(title: SubInfoCase.height.name, content: data.subInfo?.height != nil ? "\(data.subInfo?.height ?? 0)cm" : "추가"),
+                            .profileEditTextTabelCell(title: SubInfoCase.job.name, content: data.subInfo?.job),
                         .profileEditTextTabelCell(title: SubInfoCase.religion.name, content: data.subInfo?.religion?.rawValue),
                         .profileEditTextTabelCell(title: SubInfoCase.drink.name, content: data.subInfo?.drinkStatus?.rawValue),
                         .profileEditTextTabelCell(title: SubInfoCase.smoke.name, content: data.subInfo?.smokeStatus?.rawValue),

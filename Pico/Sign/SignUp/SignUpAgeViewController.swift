@@ -13,8 +13,16 @@ final class SignUpAgeViewController: UIViewController {
     private var selectedYear: Int = 2000
     private var selectedMonth: Int = 1
     private var selectedDay: Int = 1
-    
-    private let years = Array(1900...2023)
+    private var currentYear: Int = {
+        let currentYear = Calendar.current.component(.year, from: Date())
+        return currentYear - 100
+    }()
+
+    private let years: [Int] = {
+        let currentYear = Calendar.current.component(.year, from: Date())
+        return Array(currentYear - 100...2023 - 19)
+    }()
+
     private let months = Array(1...12)
     private var days: [Int] = []
     let viewModel: SignUpViewModel
@@ -115,7 +123,6 @@ extension SignUpAgeViewController {
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         if isChoiceAge {
-
             viewModel.birth = userAge
             sender.tappedAnimation()
             let viewController = SignUpNickNameViewController(viewModel: viewModel)

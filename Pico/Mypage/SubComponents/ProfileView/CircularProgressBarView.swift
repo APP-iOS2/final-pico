@@ -33,6 +33,11 @@ final class CircularProgressBarView: UIView {
         createCircularPath()
     }
     
+    func triggerLayoutSubviews() {
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+    
     func binds(_ viewModel: CircularProgressBarViewModel) {
         viewModel.profilePerfection
             .subscribe {

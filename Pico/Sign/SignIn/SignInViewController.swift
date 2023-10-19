@@ -11,13 +11,14 @@ import RxSwift
 import RxCocoa
 
 final class SignInViewController: UIViewController {
+    private let authManager = SMSAuthManager()
     private let keyboardManager = KeyboardManager()
+    private let checkService = CheckService()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
     private let phoneNumberSubject = BehaviorSubject<String>(value: "")
     private var isFullPhoneNumber: Bool = false
     private var isTappedAuthButton: Bool = false
-    private var isAuth: Bool = false
     private var authTextFields: [UITextField] = []
     private var authText: String = ""
     
@@ -41,11 +42,10 @@ final class SignInViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
-        button.imageView?.contentMode = .scaleAspectFit
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .picoGray
         return button
     }()
     
@@ -97,6 +97,7 @@ final class SignInViewController: UIViewController {
         configTextfield()
         configButton()
         configAuthTextField()
+        NotificationService.shared.registerRemoteNotification()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -117,19 +118,10 @@ extension SignInViewController {
         phoneNumberTextField.delegate = self
     }
     
-    private func configAuthText() {
-        var authStrings: [String] = []
-        for text in authTextFields {
-            authStrings.append(text.text ?? "")
-        }
-        authText = authStrings.joined()
-    }
-    
     private func configReset() {
         keyboardManager.registerKeyboard(with: nextButton)
         isFullPhoneNumber = false
         isTappedAuthButton = false
-        isAuth = false
         for authTextField in authTextFields {
             authTextField.text = ""
         }
@@ -144,6 +136,24 @@ extension SignInViewController {
         updateNextButton(isEnabled: false)
     }
     
+    private func configAuthText() {
+        var authStrings: [String] = []
+        for text in authTextFields {
+            authStrings.append(text.text ?? "")
+        }
+        authText = authStrings.joined()
+    }
+    
+    private func configTappedAuthButtonState() {
+        self.authTextFields[0].becomeFirstResponder()
+        self.isTappedAuthButton = true
+        self.updatePhoneNumberTextField(isFull: true)
+        self.updateCancelButton(isHidden: true)
+        self.updateAuthButton(isEnable: false, isHidden: false)
+        self.updateAuthTextFieldStack(isShow: true)
+        self.updateNextButton(isEnabled: true)
+    }
+    
     private func configButton() {
         authButton.rx.tap
             .subscribe(onNext: { [weak self] in
@@ -151,27 +161,33 @@ extension SignInViewController {
                 authButton.tappedAnimation()
                 guard self.isFullPhoneNumber else { return }
                 guard let text = self.phoneNumberTextField.text else { return }
-                showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.", isCancelButton: true) {
-                    self.viewModel.signIn(userNumber: text) { user in
+                
+                showAlert(message: "\(text) 번호로 인증번호를 전송합니다.", isCancelButton: true) {
+                    self.viewModel.signIn(userNumber: text) { user, string in
                         guard self.viewModel.isRightUser else {
-                            Loading.hideLoading()
-                            self.showAlert(message: "등록되지 않은 번호입니다.") {
-                                self.configReset()
+                            self.checkService.checkBlockUser(userNumber: text) { isBlock in
+                                if isBlock {
+                                    Loading.hideLoading()
+                                    self.showAlert(message: "차단된 유저입니다.") {
+                                        self.configReset()
+                                    }
+                                } else {
+                                    Loading.hideLoading()
+                                    self.showAlert(message: string) {
+                                        self.configReset()
+                                    }
+                                }
                             }
                             return
                         }
+                        
                         if let user = user {
                             UserDefaultsManager.shared.setUserData(userData: user)
                         }
                         NotificationService.shared.saveToken()
                         Loading.hideLoading()
-                        self.authTextFields[0].becomeFirstResponder()
-                        self.isTappedAuthButton = true
-                        self.updatePhoneNumberTextField(isFull: true)
-                        self.updateCancelButton(isHidden: true)
-                        self.updateAuthButton(isEnable: false, isHidden: false)
-                        self.updateAuthTextFieldStack(isShow: true)
-                        self.updateNextButton(isEnabled: true)
+                        self.configTappedAuthButtonState()
+                        self.authManager.sendVerificationCode()
                     }
                 }
             })
@@ -191,13 +207,11 @@ extension SignInViewController {
             .subscribe(onNext: { [weak self] in
                 self?.configAuthText()
                 guard let self = self else { return }
-                isAuth = true
-                guard isAuth else {
+                guard authManager.checkRightCode(code: authText) else {
                     showAlert(message: "비상비상 인증실패") { self.configReset() }
                     return
                 }
                 showAlert(message: "인증에 성공하셨습니다.") {
-                    print("\(self.authText)")
                     let viewController = LoginSuccessViewController()
                     self.navigationController?.pushViewController(viewController, animated: true)
                 }

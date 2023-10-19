@@ -16,6 +16,10 @@ extension UIFont {
     static var picoSubTitleFont: UIFont {
         return UIFont.systemFont(ofSize: 18, weight: .semibold)
     }
+    /// 부제목 폰트사이즈 (16, semibold)
+    static var picoSubTitleSmallFont: UIFont {
+        return UIFont.systemFont(ofSize: 16, weight: .semibold)
+    }
     /// 제목에 대한 설명 폰트사이즈 (13, regular)
     static var picoDescriptionFont: UIFont {
         return UIFont.systemFont(ofSize: 13)

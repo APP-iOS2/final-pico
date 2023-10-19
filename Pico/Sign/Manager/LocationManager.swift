@@ -4,7 +4,6 @@
 //
 //  Created by LJh on 10/6/23.
 //
-
 import UIKit
 import SnapKit
 import CoreLocation
@@ -13,11 +12,11 @@ import RxRelay
 
 final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
     
-    static var shared = LocationManager()
     var locationManager: CLLocationManager = CLLocationManager()
     var currentLocation: CLLocationCoordinate2D?
     var longitude: Double?
     var latitude: Double?
+    
     func accessLocation() {
         DispatchQueue.main.async {
             let alertController = UIAlertController(title: "위치 권한 필요",
@@ -41,6 +40,7 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
             }
         }
     }
+    
     func configLocation() {
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -74,16 +74,15 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
             if let placemark = placemarks?.first {
                 var addressComponents = [String]()
                 
-                if let locality = placemark.locality {
-                    addressComponents.append(locality)
+                if let administrativeArea = placemark.administrativeArea {
+                    addressComponents.append(administrativeArea)
                 }
-                
+
                 if let subLocality = placemark.subLocality {
                     addressComponents.append(subLocality)
                 }
                 
                 let addressString = addressComponents.joined(separator: " ")
-                print("addressString: \(addressString)")
                 let location = Location(address: addressString, latitude: latitude ?? 0, longitude: longitude ?? 0)
                 completion(location)
             } else {

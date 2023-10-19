@@ -60,6 +60,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .picoAlphaWhite
         tableView.separatorStyle = .none
+        tableView.allowsSelection = false
         return tableView
     }()
     
@@ -73,9 +74,9 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         locationVM.configLocation()
         viewModel.isSaveSuccess
             .observe(on: MainScheduler.instance)
-            .bind { _ in
+            .bind { [weak self] _ in
                 print("저장완료")
-                self.navigationController?.popToRootViewController(animated: true)
+                self?.navigationController?.popToRootViewController(animated: true)
             }
             .disposed(by: disposeBag)
     }
@@ -108,7 +109,11 @@ extension SignUpTermsOfServiceViewController {
         let lat = space?.latitude
         let long = space?.longitude
         
-        locationVM.getAddress(latitude: lat, longitude: long) { location in
+        locationVM.getAddress(latitude: lat, longitude: long) { [weak self] location in
+            guard let self = self else {
+                return
+            }
+            
             if let location = location {
                 self.viewModel.locationSubject.onNext(location)
             } else {
@@ -116,6 +121,7 @@ extension SignUpTermsOfServiceViewController {
             }
         }
     }
+
 }
 // MARK: - tableView관련
 extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDataSource {

@@ -24,22 +24,39 @@ final class ProfileEditViewController: UIViewController {
         return view
     }()
     
-    private let profileEditViewModel = ProfileEditViewModel()
     private let disposeBag = DisposeBag()
     weak var profileEditImageDelegate: ProfileEditImageDelegate?
+    weak var profileEditNicknameDelegate: ProfileEditNicknameDelegate?
     private let yoloManager: YoloManager = YoloManager()
     private let pictureManager = PictureManager()
     private var userImages: [UIImage] = []
+    private let profileViewModel: ProfileViewModel
+    private lazy var profileEditViewModel = ProfileEditViewModel(profileViewModel: self.profileViewModel)
+    
+    init(profileViewModel: ProfileViewModel) {
+        self.profileViewModel = profileViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configNavigation()
+        configView()
         configTableView()
         addViews()
         makeConstraints()
         binds()
-        profileEditImageDelegate = self
+        delegateConfig()
         yoloManager.loadYOLOv3Model()
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func delegateConfig() {
+        profileEditImageDelegate = self
+        profileEditNicknameDelegate = self
     }
     
     private func binds() {
@@ -53,6 +70,7 @@ final class ProfileEditViewController: UIViewController {
                 
             case .profileEditNicknameTabelCell:
                 let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ProfileEditNicknameTabelCell.self)
+                cell.profileEditNicknameDelegate = self.profileEditNicknameDelegate
                 cell.selectionStyle = .none
                 return cell
                 
@@ -74,8 +92,9 @@ final class ProfileEditViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
-    private func configNavigation() {
+    private func configView() {
         title = "프로필 수정"
+        view.configBackgroundColor()
     }
     
     private func configTableView() {
@@ -88,7 +107,8 @@ final class ProfileEditViewController: UIViewController {
     
     private func makeConstraints() {
         tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-20)
         }
     }
     
@@ -149,15 +169,7 @@ extension ProfileEditViewController: UITableViewDelegate {
         case 0:
             break
         case 1:
-            switch indexPath.row {
-            case 0:
-                profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.nickName.name)
-                profileEditViewModel.modalType = .nickName
-                profileEditViewModel.textData = profileEditViewModel.userData?.nickName
-                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
-            default:
-                break
-            }
+            break
         case 2:
             switch indexPath.row {
             case 0:
@@ -169,7 +181,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.height.name)
                 profileEditViewModel.modalType = .height
                 profileEditViewModel.textData = String(profileEditViewModel.userData?.subInfo?.height ?? 0)
-                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
+                presentModalView(viewController: ProfileEditPickerViewController(profileEditViewModel: profileEditViewModel), viewHeight: 230)
                 
             case 2:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.job.name)
@@ -212,7 +224,6 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.personalities.name)
                 profileEditViewModel.modalType = .personalities
                 profileEditViewModel.collectionData = profileEditViewModel.userData?.subInfo?.personalities
-                
                 presentModalView(viewController: ProfileEditCollTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 250)
                 
             case 8:
@@ -224,8 +235,8 @@ extension ProfileEditViewController: UITableViewDelegate {
             case 9:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.favoriteMBTIs.name)
                 profileEditViewModel.modalType = .favoriteMBTIs
+                profileEditViewModel.selectedIndexs = profileEditViewModel.findMbtiIndex(for: profileEditViewModel.userData?.subInfo?.favoriteMBTIs?.map({ $0.rawValue }) ?? [], in: MBTIType.allCases.map { $0.rawValue })
                 profileEditViewModel.modalCollectionData = MBTIType.allCases.map { $0.nameString }
-                
                 presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 290)
             default:
                 break
@@ -254,6 +265,15 @@ extension ProfileEditViewController: ProfileEditImageDelegate {
     }
 }
 
+extension ProfileEditViewController: ProfileEditNicknameDelegate {
+    func presentEditView() {
+        profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.nickName.name)
+        profileEditViewModel.modalType = .nickName
+        profileEditViewModel.textData = profileEditViewModel.userData?.nickName
+        presentModalView(viewController: ProfileEditNicknameModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
+    }
+}
+
 extension ProfileEditViewController {
     func detectionYolo() {
         let detectionGroup = DispatchGroup()
@@ -279,7 +299,7 @@ extension ProfileEditViewController {
             }
             detectionGroup.notify(queue: .main) {
                 SignLoadingManager.hideLoading()
-               //TODO: 알럿호출시점 바꾸기
+                //TODO: 알럿호출시점 바꾸기
                 if allImagesDetected {
                     self.showAlert(message: "이미지가 등록되었습니다.", yesAction: nil)
                 } else {

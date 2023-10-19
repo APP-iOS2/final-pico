@@ -20,6 +20,7 @@ final class LikeMeViewController: UIViewController {
     private let listLoadPublisher = PublishSubject<Void>()
     private let deleteUserPublisher = PublishSubject<String>()
     private let likeUserPublisher = PublishSubject<String>()
+    private let checkEmptyPublisher = PublishSubject<Void>()
     private var isLoading = false
     private var isRefresh = false
     
@@ -29,6 +30,7 @@ final class LikeMeViewController: UIViewController {
             refreshPublisher.onNext(())
         }
         collectionView.reloadData()
+        checkEmptyPublisher.onNext(())
     }
     
     override func viewDidLoad() {
@@ -79,7 +81,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
         
         cell.deleteButtonTapObservable
             .subscribe(onNext: { [weak self] in
-                self?.showAlert(message: "\(item.nickName)님을 disLike합니다.", isCancelButton: true, yesAction: {
+                self?.showCustomAlert(alertType: .canCancel, titleText: "DisLike", messageText: "\(item.nickName)님을 disLike합니다.\n 받은 좋아요 목록에서 삭제 됩니다.", confirmButtonText: "삭제", comfrimAction: {
                     self?.deleteUserPublisher.onNext(item.likedUserId)
                 })
             })
@@ -87,7 +89,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
         
         cell.likeButtonTapObservalbe
             .subscribe(onNext: { [weak self] in
-                self?.showAlert(message: "\(item.nickName)님께 좋아요를 보냅니다.\n 바로 매칭되어 쪽지가 가능합니다.", isCancelButton: true, yesAction: {
+                self?.showCustomAlert(alertType: .canCancel, titleText: "Matching", messageText: "\(item.nickName)님께 좋아요를 보냅니다.\n 바로 매칭되어 쪽지가 가능합니다.", confirmButtonText: "확인", comfrimAction: {
                     self?.likeUserPublisher.onNext(item.likedUserId)
                 })
             })
@@ -163,7 +165,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
 // MARK: - Bind
 extension LikeMeViewController {
     private func bind() {
-        let input = LikeMeViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher, deleteUser: deleteUserPublisher, likeUser: likeUserPublisher)
+        let input = LikeMeViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher, deleteUser: deleteUserPublisher, likeUser: likeUserPublisher, checkEmpty: checkEmptyPublisher)
         let output = viewModel.transform(input: input)
         
         output.likeUIsEmpty
@@ -190,6 +192,7 @@ extension LikeMeViewController {
             .withUnretained(self)
             .subscribe { viewController, _ in
                 viewController.collectionView.reloadData()
+                viewController.checkEmptyPublisher.onNext(())
             }
             .disposed(by: disposeBag)
     }

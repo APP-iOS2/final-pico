@@ -16,7 +16,8 @@ disabled_rules: # Default Rules에서 비활성화할 규칙
     - type_body_length
     - void_return
     - cyclomatic_complexity
-
+    - file_length
+    - identifier_name
     
 opt_in_rules:  # 기본(default) 룰이 아닌 룰들을 활성화
     # .count==0 보다는 .isEmpty를 사용하는 것이 좋습니다. https://realm.github.io/SwiftLint/empty_count.html

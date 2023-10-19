@@ -9,4 +9,5 @@ import Foundation
 
 struct Token: Codable {
     let fcmToken: String
+    let badgeCount: Int
 }

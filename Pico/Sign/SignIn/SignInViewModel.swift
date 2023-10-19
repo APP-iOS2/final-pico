@@ -14,10 +14,19 @@ final class SignInViewModel {
     var loginUser: User?
     var isRightUser = false
     
-    func signIn(userNumber: String, completion: @escaping (User?) -> ()) {
+    func signIn(userNumber: String, completion: @escaping (User?, String) -> ()) {
+        let phoneNumberRegex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
+        let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", phoneNumberRegex)
+        
+        if !phoneNumberPredicate.evaluate(with: userNumber) {
+            completion(nil, "유효하지 않은 전화번호 형식입니다.")
+            return
+        }
         Loading.showLoading()
         self.isRightUser = false
-        DispatchQueue.global().async {
+        
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
             self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
                 guard err == nil, let documents = snapShot?.documents else {
                     print(err ?? "서버오류 비상비상")
@@ -26,9 +35,8 @@ final class SignInViewModel {
                 }
                 
                 guard let document = documents.first else {
-                    print("번호와 맞는게 없는걸?")
                     self.isRightUser = false
-                    completion(nil)
+                    completion(nil, "일치하는 번호가 없습니다.")
                     return
                 }
                 
@@ -39,7 +47,11 @@ final class SignInViewModel {
                 let gender = data["gender"] as? GenderType ?? .etc
                 let birth = data["birth"] as? String ?? ""
                 let nickName = data["nickName"] as? String ?? ""
-                let location = data["location"] as? Location ?? Location(address: "", latitude: 0.0, longitude: 0.0)
+                // 제현님 여기 컴플릿나면 이거로 해주세요
+                let locationData = data["location"] as? [String: Any]
+                guard let address = locationData?["address"] as? String,
+                      let latitude = locationData?["latitude"] as? Double,
+                      let longitude = locationData?["longitude"] as? Double else { return }
                 let imageURLs = data["imageURLs"] as? [String] ?? []
                 let createdDate = data["createdDate"] as? Double ?? 0.0
                 let subInfo = data["subInfo"] as? SubInfo ?? SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [""], personalities: [""], favoriteMBTIs: [.enfj])
@@ -47,11 +59,11 @@ final class SignInViewModel {
                 let blocks = data["blocks"] as? Block ?? Block(userId: "")
                 let chuCount = data["chuCount"] as? Int ?? 0
                 let isSubscribe = data["isSubscribe"] as? Bool ?? false
-                let retrievedUser = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfo, reports: [reports], blocks: [blocks], chuCount: chuCount, isSubscribe: isSubscribe)
+                let retrievedUser = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: Location(address: address, latitude: latitude, longitude: longitude), imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfo, reports: [reports], blocks: [blocks], chuCount: chuCount, isSubscribe: isSubscribe)
                 self.isRightUser = true
                 
                 self.loginUser = retrievedUser
-                completion(retrievedUser)
+                completion(retrievedUser, "인증번호를 입력해주세요!")
             }
         }
     }

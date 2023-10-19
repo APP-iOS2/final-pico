@@ -11,24 +11,26 @@ import RxSwift
 import RxCocoa
 
 final class NotificationViewController: UIViewController {
+    private let emptyView: EmptyViewController = EmptyViewController(type: .notification)
     private let tableView = UITableView()
     private let viewModel = NotificationViewModel()
     private var disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
+    private let checkEmptyPublisher = PublishSubject<Void>()
     private let footerView = FooterView()
+    private var isRefresh = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
+        checkEmptyPublisher.onNext(())
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configViewController()
-        addViews()
-        makeConstraints()
         configTableView()
         configRefresh()
         bind()
@@ -58,21 +60,13 @@ final class NotificationViewController: UIViewController {
         tableView.refreshControl = refreshControl
     }
     
-    private func addViews() {
-        view.addSubview(tableView)
-    }
-    
-    private func makeConstraints() {
-        tableView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-    }
-    
     @objc func refreshTable(refresh: UIRefreshControl) {
+        isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             refreshPublisher.onNext(())
             refresh.endRefreshing()
+            isRefresh = false
         }
     }
 }
@@ -113,19 +107,39 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
             }
         }
     }
-
 }
 
 // MARK: - Bind
 extension NotificationViewController {
     private func bind() {
-        let input = NotificationViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
+        let input = NotificationViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher)
         let output = viewModel.transform(input: input)
+        
+        output.notificationIsEmpty
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, isEmpty in
+                if isEmpty {
+                    viewController.addChild(viewController.emptyView)
+                    viewController.view.addSubview(viewController.emptyView.view ?? UIView())
+                    viewController.emptyView.didMove(toParent: self)
+                    viewController.emptyView.view.snp.makeConstraints { make in
+                        make.edges.equalToSuperview()
+                    }
+                } else {
+                    viewController.view.addSubview(viewController.tableView)
+                    viewController.tableView.snp.makeConstraints { make in
+                        make.top.leading.equalToSuperview().offset(10)
+                        make.trailing.bottom.equalToSuperview().offset(-10)
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
         
         output.reloadTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
                 viewController.tableView.reloadData()
+                viewController.checkEmptyPublisher.onNext(())
             }
             .disposed(by: disposeBag)
     }
@@ -137,7 +151,7 @@ extension NotificationViewController: UIScrollViewDelegate {
         let contentOffsetY = scrollView.contentOffset.y
         let tableViewContentSizeY = tableView.contentSize.height
         
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
+        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
             
             tableView.tableFooterView = footerView
             

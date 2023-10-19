@@ -11,7 +11,8 @@ import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
-    private let authManager = SmsAuthManager()
+    private let smsAuthManager = SMSAuthManager()
+    private let checkService = CheckService()
     let viewModel: SignUpViewModel
     
     init(viewModel: SignUpViewModel) {
@@ -26,7 +27,6 @@ final class SignUpPhoneNumberViewController: UIViewController {
     private var userPhoneNumber: String = ""
     private var isFullPhoneNumber: Bool = false
     private var isTappedCheckButton: Bool = false
-    private var isAuth: Bool = false
     private var authTextFields: [UITextField] = []
     private var authText: String = ""
     
@@ -77,12 +77,10 @@ final class SignUpPhoneNumberViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
-        button.imageView?.contentMode = .scaleAspectFit
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight:
-                .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .picoGray
         return button
     }()
     
@@ -155,7 +153,6 @@ extension SignUpPhoneNumberViewController {
         userPhoneNumber = ""
         isFullPhoneNumber = false
         isTappedCheckButton = false
-        isAuth = false
         for authTextField in authTextFields {
             authTextField.text = ""
         }
@@ -195,6 +192,16 @@ extension SignUpPhoneNumberViewController {
         nextButton.backgroundColor = isEnabled ? .picoBlue : .picoGray
         nextButton.isEnabled = isEnabled
     }
+    
+    private func updateViewState(num: String) {
+        self.viewModel.phoneNumber = num
+        self.authTextFields[0].becomeFirstResponder()
+        self.updatePhoneNumberTextField(isFull: true)
+        self.updateCancelButton(isHidden: true)
+        self.updateAuthButton(isEnable: false, isHidden: false)
+        self.updateAuthTextFieldStack(isShow: true)
+        self.updateNextButton(isEnabled: true)
+    }
     // MARK: - @objc
     @objc private func tappedCancelButton(_ sender: UIButton) {
         sender.tappedAnimation()
@@ -204,42 +211,51 @@ extension SignUpPhoneNumberViewController {
     @objc private func tappedAuthButton(_ sender: UIButton) {
         sender.tappedAnimation()
         isTappedCheckButton = true
-        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") {
-            guard let text = self.phoneNumberTextField.text else { return }
-            self.viewModel.checkPhoneNumber(userNumber: text) {
-                guard self.viewModel.isRightUser else {
-                    SignLoadingManager.hideLoading()
-                    self.showAlert(message: "이미 등록된 번호입니다.") {
+        showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") { [weak self] in
+            guard let self else { return }
+            guard let text = phoneNumberTextField.text else { return }
+            checkService.checkBlockUser(userNumber: text) { reuslt in
+                switch reuslt {
+                case true:
+                    self.showAlert(message: "차단된 번호로는 가입이 불가능합니다..") {
                         self.configReset()
                     }
-                    return
+                case false:
+                    self.checkService.checkPhoneNumber(userNumber: text) { [weak self] message, reuslt in
+                        guard let self else { return }
+                        SignLoadingManager.hideLoading()
+                        switch reuslt {
+                        case true:
+                            updateViewState(num: text)
+                            viewModel.isRightPhoneNumber = reuslt
+                            smsAuthManager.sendVerificationCode()
+                        case false:
+                            showAlert(message: message) { [weak self] in
+                                guard let self else { return }
+                                viewModel.isRightPhoneNumber = reuslt
+                                configReset()
+                            }
+                        }
+                    }
                 }
-                SignLoadingManager.hideLoading()
-                self.viewModel.phoneNumber = text
-                self.authTextFields[0].becomeFirstResponder()
-                self.updatePhoneNumberTextField(isFull: true)
-                self.updateCancelButton(isHidden: true)
-                self.updateAuthButton(isEnable: false, isHidden: false)
-                self.updateAuthTextFieldStack(isShow: true)
-                self.updateNextButton(isEnabled: true)
             }
         }
     }
-    
+   
     @objc private func tappedNextButton(_ sender: UIButton) {
         sender.tappedAnimation()
-        // 문자인증 시작하면 건드려야해용
+        // MARK: - 문자인증 시작하면 건드려야해용
         // 문자인증 기능이 완료 될 때 까지는 넘어가세요 :)
         configAuthText()
-        isAuth = true
-        authManager.sendVerificationCode()
-        guard isAuth else {
-            print("비상비상")
-            self.showAlert(message: "비상비상 인증실패") { self.configReset() }
+        guard smsAuthManager.checkRightCode(code: authText) else {
+            self.showAlert(message: "비상비상 인증실패") { [weak self] in
+                guard let self = self else { return }
+                self.configReset()
+            }
             return
         }
-        print("성공성공")
-        self.showAlert(message: "인증에 성공하셨습니다.") {
+        self.showAlert(message: "인증에 성공하셨습니다.") { [weak self] in
+            guard let self = self else { return }
             let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }

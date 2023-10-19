@@ -17,15 +17,17 @@ final class LikeUViewController: UIViewController {
     private let refreshControl = UIRefreshControl()
     private let listLoadPublisher = PublishSubject<Void>()
     private let refreshPublisher = PublishSubject<Void>()
+    private let checkEmptyPublisher = PublishSubject<Void>()
     private var isLoading = false
     private var isRefresh = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        collectionView.reloadData()
         if viewModel.likeUList.isEmpty {
             refreshPublisher.onNext(())
         }
+        collectionView.reloadData()
+        checkEmptyPublisher.onNext(())
     }
     
     override func viewDidLoad() {
@@ -76,10 +78,19 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
         cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
         cell.messageButtonTapObservable
             .subscribe { [weak self] _ in
-                let mailSendView = MailSendViewController()
-                mailSendView.configData(userId: item.likedUserId)
-                mailSendView.modalPresentationStyle = .formSheet
-                self?.present(mailSendView, animated: true, completion: nil)
+                self?.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭되지 않은 사용자에게 메일을 보내기 위해서는 50츄가 필요합니다.", confirmButtonText: "보내기 (50츄)", comfrimAction: {
+                    if UserDefaultsManager.shared.getChuCount() < 50 {
+                        self?.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                            let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                            self?.navigationController?.pushViewController(storeViewController, animated: true)
+                        })
+                    } else {
+                        let mailSendView = MailSendViewController()
+                        mailSendView.configData(userId: item.likedUserId)
+                        mailSendView.modalPresentationStyle = .formSheet
+                        self?.present(mailSendView, animated: true, completion: nil)
+                    }
+                })
             }
             .disposed(by: cell.disposeBag)
         return cell
@@ -154,7 +165,7 @@ extension LikeUViewController: UIScrollViewDelegate {
 // MARK: - bind
 extension LikeUViewController {
     private func bind() {
-        let input = LikeUViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher)
+        let input = LikeUViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher)
         let output = viewModel.transform(input: input)
         
         output.likeUIsEmpty
@@ -181,6 +192,7 @@ extension LikeUViewController {
             .withUnretained(self)
             .subscribe { viewController, _ in
                 viewController.collectionView.reloadData()
+                viewController.checkEmptyPublisher.onNext(())
             }
             .disposed(by: disposeBag)
     }

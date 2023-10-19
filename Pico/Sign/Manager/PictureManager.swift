@@ -32,7 +32,8 @@ final class PictureManager {
     }
 
     func requestPhotoLibraryAccess(in viewController: UIViewController) {
-        PHPhotoLibrary.requestAuthorization { status in
+        PHPhotoLibrary.requestAuthorization { [weak self] status in
+            guard let self = self else { return }
             switch status {
             case .authorized:
                 break

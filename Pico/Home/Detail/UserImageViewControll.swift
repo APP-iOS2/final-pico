@@ -16,7 +16,7 @@ struct UserImageViewControllConstraint {
 final class UserImageViewControll: UIViewController {
     
     private let disposeBag = DisposeBag()
-
+    
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
@@ -32,7 +32,7 @@ final class UserImageViewControll: UIViewController {
         pageControl.currentPageIndicatorTintColor = UIColor.white
         return pageControl
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addViews()
@@ -48,21 +48,25 @@ final class UserImageViewControll: UIViewController {
     }
     
     func config(images: [String]) {
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width * CGFloat(images.count), height: scrollView.bounds.height)
+        scrollView.contentSize = CGSize(width: Screen.width * CGFloat(images.count), height: scrollView.bounds.height)
         pageControl.numberOfPages = images.count
         for (index, image) in images.enumerated() {
             let imageView = UIImageView()
             if let image = URL(string: image) {
                 imageView.kf.setImage(with: image)
             }
-            imageView.contentMode = .scaleAspectFill
-            imageView.frame = CGRect(x: UIScreen.main.bounds.width * CGFloat(index),
+            imageView.contentMode = .scaleToFill
+            imageView.frame = CGRect(x: Screen.width * CGFloat(index),
                                      y: 0,
-                                     width: UIScreen.main.bounds.width,
+                                     width: Screen.width,
                                      height: UserImageViewControllConstraint.height)
             scrollView.addSubview(imageView)
         }
     }
+}
+
+// MARK: - UI관련
+extension UserImageViewControll {
     
     private func addViews() {
         view.addSubview([scrollView, pageControl])
