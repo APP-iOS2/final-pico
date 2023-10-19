@@ -16,6 +16,7 @@ final class MailSendViewController: UIViewController {
     private let disposeBag = DisposeBag()
     
     private var receiver: User?
+    private var isMessageView = true
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -174,7 +175,9 @@ final class MailSendViewController: UIViewController {
         }
     }
     // MARK: - MailSend +Config
-    func configData(userId: String) {
+    func configData(userId: String, atMessageView: Bool ) {
+        isMessageView = atMessageView
+        
         viewModel.getUser(userId: userId) {
             if let user = self.viewModel.user {
                 self.receiver = user
@@ -203,7 +206,11 @@ final class MailSendViewController: UIViewController {
                     // sender: 로그인한 사람, recevie 받는 사람
                     if let receiver = self.receiver {
                         self.viewModel.saveMailData(receiveUser: receiver, message: text)
-                        self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                        if isMessageView {
+                            self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                        } else {
+                            dismiss(animated: true)
+                        }
                     }
                 }
             }

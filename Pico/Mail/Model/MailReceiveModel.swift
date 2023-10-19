@@ -114,8 +114,11 @@ final class MailReceiveModel {
     }
     
     private func refresh() {
+        let didSet = isReceiveEmptyPublisher
+        isReceiveEmptyPublisher = PublishSubject<Bool>()
         receiveList = []
         startIndex = 0
+        isReceiveEmptyPublisher = didSet
         loadNextMailPage()
     }
     

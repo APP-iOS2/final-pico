@@ -116,8 +116,11 @@ final class MailSendModel {
     }
     
     private func refresh() {
+        let didSet = isSendEmptyPublisher
+        isSendEmptyPublisher = PublishSubject<Bool>()
         sendList = []
         startIndex = 0
+        isSendEmptyPublisher = didSet
         loadNextMailPage()
     }
     

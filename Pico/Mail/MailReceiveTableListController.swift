@@ -37,8 +37,11 @@ final class MailReceiveTableListController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        mailListTableView.reloadData()
+        if viewModel.receiveList.isEmpty {
+            refreshPublisher.onNext(())
+        }
         checkReceiveEmptyPublisher.onNext(())
+        mailListTableView.reloadData()
     }
     // MARK: - config
     private func configTableView() {

@@ -38,7 +38,9 @@ final class MailSendTableListController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        if viewModel.sendList.isEmpty {
+            refreshPublisher.onNext(())
+        }
         checkSendEmptyPublisher.onNext(())
         mailListTableView.reloadData()
     }

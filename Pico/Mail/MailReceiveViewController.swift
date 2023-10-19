@@ -97,8 +97,7 @@ final class MailReceiveViewController: UIViewController {
         stackView.alignment = .fill
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 20
-        stackView.layer.borderColor = UIColor.picoBlue.cgColor
-        stackView.layer.borderWidth = 2
+        stackView.backgroundColor = .picoLightGray
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
         return stackView
@@ -148,8 +147,6 @@ final class MailReceiveViewController: UIViewController {
         }
         
         mbtiLabelView.snp.makeConstraints { make in
-            make.centerY.equalTo(userNameLabel)
-            make.height.equalTo(mbtiLabelView.frame.size.height)
             make.width.equalTo(mbtiLabelView.frame.size.width)
         }
         
@@ -177,7 +174,7 @@ final class MailReceiveViewController: UIViewController {
                 guard let self = self else { return }
                 let mailSendView = MailSendViewController()
                 if let mailUser = self.sendMailInfo {
-                    mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId)
+                    mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId, atMessageView: true)
                 }
                 mailSendView.modalPresentationStyle = .formSheet
                 mailSendView.modalTransitionStyle = .flipHorizontal
