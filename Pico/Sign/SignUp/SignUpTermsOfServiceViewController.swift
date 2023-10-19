@@ -110,14 +110,12 @@ extension SignUpTermsOfServiceViewController {
         let long = space?.longitude
         
         locationVM.getAddress(latitude: lat, longitude: long) { [weak self] location in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             
             if let location = location {
-                self.viewModel.locationSubject.onNext(location)
+                viewModel.locationSubject.onNext(location)
             } else {
-                self.locationVM.accessLocation()
+                locationVM.accessLocation()
             }
         }
     }

@@ -162,12 +162,12 @@ extension SignUpNickNameViewController {
     }
     
     private func reset() {
-        self.nickNameTextField.text = ""
-        self.nickNameCancleButton.isEnabled = true
-        self.nickNameTextField.isEnabled = true
-        self.nickNameTextField.becomeFirstResponder()
-        self.updateCheckButton(isFull: false)
-        self.updateNextButton(isCheck: false)
+        nickNameTextField.text = ""
+        nickNameCancleButton.isEnabled = true
+        nickNameTextField.isEnabled = true
+        nickNameTextField.becomeFirstResponder()
+        updateCheckButton(isFull: false)
+        updateNextButton(isCheck: false)
     }
     // MARK: - @objc
     @objc private func tappedCheckButton(_ sender: UIButton) {
@@ -175,32 +175,38 @@ extension SignUpNickNameViewController {
         guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
         showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) { [weak self] in
             guard let self = self else { return }
-            self.checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
+            
+            checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
+                
                 guard isRight else {
                     SignLoadingManager.hideLoading()
-                    self.showAlert(message: message) {
-                        self.viewModel.isRightName = isRight
-                        self.reset()
+                    showAlert(message: message) { [weak self] in
+                        guard let self = self else { return }
+                        
+                        viewModel.isRightName = isRight
+                        reset()
                     }
                     return
                 }
                 SignLoadingManager.hideLoading()
-                self.showAlert(message: message) {
-                    self.viewModel.isRightName = isRight
+                showAlert(message: message) { [weak self] in
+                    guard let self = self else { return }
+                    
+                    viewModel.isRightName = isRight
                     self.userNickName = userNickName
                 }
             }
-            self.updateCheckButton(isFull: true, ischeck: true)
-            self.updateNextButton(isCheck: true)
-            self.nickNameTextField.textColor = .picoBlue
+            updateCheckButton(isFull: true, ischeck: true)
+            updateNextButton(isCheck: true)
+            nickNameTextField.textColor = .picoBlue
         }
     }
     
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
         sender.tappedAnimation()
         nickNameTextField.text = ""
-        self.nickNameTextField.textColor = .gray
+        nickNameTextField.textColor = .gray
         updateCheckButton(isFull: false)
     }
     

@@ -46,7 +46,7 @@ final class CheckService {
         SignLoadingManager.showLoading(text: "중복된 닉네임을 찾고 있어요!")
         
         do {
-            let pattern = "([ㄱ-ㅎㅏ-ㅣ]){2,8}"
+            let pattern = "([ㄱ-ㅎㅏ-ㅣ]){1,8}"
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let matches = regex.matches(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))
             
@@ -98,6 +98,6 @@ final class CheckService {
                 } else {
                     completion(false) // 차단된 사용자가 아님
                 }
-        }
+            }
     }
 }

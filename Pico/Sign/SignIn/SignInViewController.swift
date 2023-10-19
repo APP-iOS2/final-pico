@@ -159,22 +159,32 @@ extension SignInViewController {
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 authButton.tappedAnimation()
-                guard self.isFullPhoneNumber else { return }
-                guard let text = self.phoneNumberTextField.text else { return }
+                guard isFullPhoneNumber else { return }
+                guard let text = phoneNumberTextField.text else { return }
                 
-                showAlert(message: "\(text) 번호로 인증번호를 전송합니다.", isCancelButton: true) {
-                    self.viewModel.signIn(userNumber: text) { user, string in
+                showAlert(message: "\(text) 번호로 인증번호를 전송합니다.", isCancelButton: true) { [weak self] in
+                    guard let self = self else { return }
+                    
+                    viewModel.signIn(userNumber: text) { [weak self] user, string in
+                        guard let self = self else { return }
+                        
                         guard self.viewModel.isRightUser else {
-                            self.checkService.checkBlockUser(userNumber: text) { isBlock in
+                            self.checkService.checkBlockUser(userNumber: text) { [weak self] isBlock in
+                                guard let self = self else { return }
+                                
                                 if isBlock {
                                     Loading.hideLoading()
-                                    self.showAlert(message: "차단된 유저입니다.") {
-                                        self.configReset()
+                                    showAlert(message: "차단된 유저입니다.") { [weak self] in
+                                        guard let self = self else { return }
+                                        
+                                        configReset()
                                     }
                                 } else {
                                     Loading.hideLoading()
-                                    self.showAlert(message: string) {
-                                        self.configReset()
+                                    showAlert(message: string) { [weak self] in
+                                        guard let self = self else { return }
+                                        
+                                        configReset()
                                     }
                                 }
                             }
@@ -186,8 +196,8 @@ extension SignInViewController {
                         }
                         NotificationService.shared.saveToken()
                         Loading.hideLoading()
-                        self.configTappedAuthButtonState()
-                        self.authManager.sendVerificationCode()
+                        configTappedAuthButtonState()
+                        authManager.sendVerificationCode()
                     }
                 }
             })
@@ -196,8 +206,9 @@ extension SignInViewController {
         cancelButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
+                
                 cancelButton.tappedAnimation()
-                self.phoneNumberTextField.text = ""
+                phoneNumberTextField.text = ""
                 updateAuthButton(isEnable: false, isHidden: true)
                 phoneNumberTextField.becomeFirstResponder()
             })
@@ -205,13 +216,20 @@ extension SignInViewController {
         
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                self?.configAuthText()
                 guard let self = self else { return }
+                
+                configAuthText()
                 guard authManager.checkRightCode(code: authText) else {
-                    showAlert(message: "비상비상 인증실패") { self.configReset() }
+                    showAlert(message: "비상비상 인증실패") { [weak self] in
+                        guard let self = self else { return }
+                        
+                        configReset()
+                    }
                     return
                 }
-                showAlert(message: "인증에 성공하셨습니다.") {
+                showAlert(message: "인증에 성공하셨습니다.") { [weak self] in
+                    guard let self = self else { return }
+                    
                     let viewController = LoginSuccessViewController()
                     self.navigationController?.pushViewController(viewController, animated: true)
                 }

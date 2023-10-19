@@ -212,30 +212,36 @@ extension SignUpPhoneNumberViewController {
         sender.tappedAnimation()
         isTappedCheckButton = true
         showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") { [weak self] in
-            guard let self else { return }
-            guard let text = phoneNumberTextField.text else { return }
-            checkService.checkBlockUser(userNumber: text) { reuslt in
-                switch reuslt {
-                case true:
-                    self.showAlert(message: "차단된 번호로는 가입이 불가능합니다..") {
-                        self.configReset()
+            guard let self = self else { return }
+            
+            guard let phoneNumber = self.phoneNumberTextField.text else { return }
+            checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isRight in
+                guard let self = self else { return }
+                
+                if isRight {
+                    showAlert(message: "차단된 번호로는 가입이 불가능합니다..") { [weak self] in
+                        guard let self = self else { return }
+                        
+                        configReset()
                     }
-                case false:
-                    self.checkService.checkPhoneNumber(userNumber: text) { [weak self] message, reuslt in
-                        guard let self else { return }
-                        SignLoadingManager.hideLoading()
-                        switch reuslt {
-                        case true:
-                            updateViewState(num: text)
-                            viewModel.isRightPhoneNumber = reuslt
-                            smsAuthManager.sendVerificationCode()
-                        case false:
+                } else {
+                    checkService.checkPhoneNumber(userNumber: phoneNumber) { [weak self] message, isRight in
+                        guard let self = self else { return }
+                        
+                        guard isRight else {
+                            SignLoadingManager.hideLoading()
                             showAlert(message: message) { [weak self] in
-                                guard let self else { return }
-                                viewModel.isRightPhoneNumber = reuslt
+                                guard let self = self else { return }
+                                
+                                viewModel.isRightPhoneNumber = isRight
                                 configReset()
                             }
+                            return
                         }
+                        SignLoadingManager.hideLoading()
+                        updateViewState(num: phoneNumber)
+                        viewModel.isRightPhoneNumber = isRight
+                        smsAuthManager.sendVerificationCode()
                     }
                 }
             }
@@ -250,12 +256,14 @@ extension SignUpPhoneNumberViewController {
         guard smsAuthManager.checkRightCode(code: authText) else {
             self.showAlert(message: "비상비상 인증실패") { [weak self] in
                 guard let self = self else { return }
-                self.configReset()
+                
+                configReset()
             }
             return
         }
         self.showAlert(message: "인증에 성공하셨습니다.") { [weak self] in
             guard let self = self else { return }
+            
             let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
         }
