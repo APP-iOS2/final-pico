@@ -12,6 +12,7 @@ final class MypageViewController: BaseViewController {
     
     private let profileView = ProfileView()
     private let myPageTableView = MyPageTableView()
+    private let profileViewModel = ProfileViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +22,8 @@ final class MypageViewController: BaseViewController {
         makeConstraints()
         myPageTableView.myPageCollectionDelegate = self
         myPageTableView.myPageViewDelegate = self
+        profileView.configViewModel(viewModel: profileViewModel)
+        profileViewModel.loadUserData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,7 +51,7 @@ final class MypageViewController: BaseViewController {
     }
     
     @objc private func tappedProfileView(_ sender: UIBarButtonItem) {
-        let viewController = ProfileEditViewController()
+        let viewController = ProfileEditViewController(profileViewModel: profileViewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
