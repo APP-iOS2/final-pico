@@ -30,8 +30,6 @@ final class HomeViewController: BaseViewController {
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
-        addSubView()
-        makeConstraints()
         configNavigationBarItem()
         configButtons()
         viewModel.otherUsers
@@ -74,6 +72,7 @@ final class HomeViewController: BaseViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] filteredUsers in
                 guard let self = self else { return }
+                print("필터후 유저: \(filteredUsers.count)명")
                 userCards = filteredUsers
                 view.subviews.forEach { subView in
                   subView.removeFromSuperview()
@@ -84,6 +83,8 @@ final class HomeViewController: BaseViewController {
                     self.addEmptyView()
                     self.loadingView.removeFromSuperview()
                 }
+                addSubView()
+                makeConstraints()
             }, onError: { error in
                 print(error)
             })
@@ -105,7 +106,9 @@ final class HomeViewController: BaseViewController {
     }
     
     func addUserCards() {
-        for user in userCards.prefix(self.numberOfCards) {
+        for userCard in userCards.prefix(self.numberOfCards) {
+            var user = userCard
+            user.imageURLs.insert(userCard.imageURLs[0], at: 1)
             let tabImageViewController = HomeUserCardViewController(user: user)
             tabImageViewController.homeViewController = self
             self.addChild(tabImageViewController)

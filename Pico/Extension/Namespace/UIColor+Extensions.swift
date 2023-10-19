@@ -54,4 +54,7 @@ extension UIColor {
     
     /// 폰트 그레이 색상
     static let picoFontGray: UIColor = .secondaryLabel
+    
+    /// 별 옐로우 색상
+    static let picoStarYellow: UIColor = UIColor(hex: "#FFEB84")
 }
