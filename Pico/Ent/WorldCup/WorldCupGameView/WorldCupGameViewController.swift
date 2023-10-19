@@ -121,7 +121,7 @@ final class WorldCupGameViewController: UIViewController {
     }
 
     private func animateToNextRound() {
-        worldCupViewModel.animateToNextRound(collectionView: collectionView)
+        worldCupViewModel.animateNextRound(collectionView: collectionView)
     }
 
     private func changeRoundLabel(withText text: String) {

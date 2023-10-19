@@ -72,7 +72,7 @@ final class WorldCupViewModel {
         return dataLabelTexts
     }
     
-    func animateToNextRound(collectionView: UICollectionView) {
+    func animateNextRound(collectionView: UICollectionView) {
         UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: {
             collectionView.reloadData()
         }, completion: nil)
