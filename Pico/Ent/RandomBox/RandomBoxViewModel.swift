@@ -77,4 +77,22 @@ final class RandomBoxManager {
     func updateChu(with randomValue: Double, number: Int) {
         _ = Int(randomValue)
     }
+    
+    func getChuAndPercent() -> String {
+        let probabilities = getProbabilityInfo()
+        let values = [
+            randomBoxDummy[0].first,
+            randomBoxDummy[0].second,
+            randomBoxDummy[0].third,
+            randomBoxDummy[0].fourth,
+            randomBoxDummy[0].fifth
+        ]
+
+        let infoTextArray = zip(values, probabilities).map { (value, percent) in
+            "\(value)츄 : \(percent)%"
+        }
+
+        return infoTextArray.joined(separator: "\n")
+    }
+
 }

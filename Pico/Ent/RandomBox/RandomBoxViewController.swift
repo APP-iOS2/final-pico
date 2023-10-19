@@ -10,30 +10,30 @@ import RxSwift
 import RxCocoa
 
 final class RandomBoxViewController: UIViewController {
-
+    
     private let randomBoxManager = RandomBoxManager()
-    private let disposeBag = DisposeBag()
+    let disposeBag = DisposeBag()
     
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-
+    
     private let purchaseChuButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "chu"), for: .normal)
         button.contentMode = .scaleAspectFit
         return button
     }()
-
+    
     private let infoButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "info.circle"), for: .normal)
         button.contentMode = .scaleAspectFill
         return button
     }()
-
+    
     private let randomBoxTitleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -42,7 +42,7 @@ final class RandomBoxViewController: UIViewController {
         label.textColor = .picoBlue
         return label
     }()
-
+    
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -51,7 +51,7 @@ final class RandomBoxViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-
+    
     private let randomBoxImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "chu")
@@ -60,19 +60,19 @@ final class RandomBoxViewController: UIViewController {
         imageView.setContentHuggingPriority(.defaultLow, for: .vertical)
         return imageView
     }()
-
+    
     private let openOneBoxButton: CommonButton = {
         let button = CommonButton()
         button.setTitle("1개 열기", for: .normal)
         return button
     }()
-
+    
     private let openTenBoxButton: CommonButton = {
         let button = CommonButton()
         button.setTitle("10개 열기", for: .normal)
         return button
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.configBackgroundColor()
@@ -80,52 +80,53 @@ final class RandomBoxViewController: UIViewController {
         addViews()
         makeConstraints()
         configRxBinding()
+        bind()
     }
-
+    
     private func addViews() {
         [backgroundImageView, purchaseChuButton, infoButton, randomBoxTitleLabel, contentLabel, randomBoxImage, openOneBoxButton, openTenBoxButton].forEach { item in
             view.addSubview(item)
         }
     }
-
+    
     private func makeConstraints() {
         let padding: CGFloat = 20
         let half: CGFloat = 0.5
         let buttonWidth: CGFloat = Screen.width / 2 - padding - 10
-
+        
         backgroundImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-
+        
         purchaseChuButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.trailing.equalTo(infoButton.snp.leading).offset(-padding * half)
             make.width.height.equalTo(padding * 2)
         }
-
+        
         infoButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.trailing.equalToSuperview().offset(-padding * half)
             make.width.height.equalTo(padding * 2)
         }
-
+        
         randomBoxTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(infoButton.snp.bottom).offset(Screen.height / 12)
             make.centerX.equalToSuperview().offset(half)
         }
-
+        
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(randomBoxTitleLabel.snp.bottom).offset(padding)
             make.centerX.equalToSuperview().offset(half)
         }
-
+        
         randomBoxImage.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(padding)
             make.centerX.equalToSuperview()
             make.width.equalTo(randomBoxImage.snp.height)
             make.height.equalTo(Screen.height / 3)
         }
-
+        
         openOneBoxButton.snp.makeConstraints { make in
             make.top.equalTo(randomBoxImage.snp.bottom).offset(padding)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(padding)
@@ -133,7 +134,7 @@ final class RandomBoxViewController: UIViewController {
             make.width.equalTo(buttonWidth)
             make.height.equalTo(padding * 2)
         }
-
+        
         openTenBoxButton.snp.makeConstraints { make in
             make.top.equalTo(randomBoxImage.snp.bottom).offset(padding)
             make.leading.equalTo(openOneBoxButton.snp.trailing).offset(padding)
@@ -156,23 +157,17 @@ final class RandomBoxViewController: UIViewController {
                 self.tappedTenBoxButton()
             })
             .disposed(by: disposeBag)
-        
-        infoButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                self?.tappedInfoButton()
-            })
-            .disposed(by: disposeBag)
     }
     
     private func tappedBoxButton() {
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
-
+        
         randomBoxManager.shake(view: self.randomBoxImage) {
             let randomValue = self.randomBoxManager.getRandomValue()
             self.randomBoxManager.updateChu(with: Double(randomValue), number: 1)
             self.showAlert(with: randomValue)
-
+            
             self.openOneBoxButton.isEnabled = true
             self.openTenBoxButton.isEnabled = true
         }
@@ -180,49 +175,52 @@ final class RandomBoxViewController: UIViewController {
     
     private func tappedTenBoxButton() {
         var boxHistory: [Int] = []
-
+        
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
-
+        
         randomBoxManager.shake(view: self.randomBoxImage) {
             for _ in 0 ..< 10 {
                 let randomValue = self.randomBoxManager.getRandomValue()
                 self.randomBoxManager.updateChu(with: Double(randomValue), number: 10)
                 boxHistory.append(randomValue)
             }
-
+            
             let sumBoxHistory = boxHistory.reduce(0, +)
-
+            
             self.showAlert(with: sumBoxHistory)
-
+            
             self.openOneBoxButton.isEnabled = true
             self.openTenBoxButton.isEnabled = true
         }
     }
-
+    
     private func showAlert(with message: Int) {
         var messageSting: String = ""
-
+        
         if message > 0 {
             messageSting = "+\(message)"
         } else {
             messageSting = "\(message)"
         }
-
+        
         let alert = UIAlertController(title: nil, message: messageSting, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-    
-    @objc private func tappedInfoButton() {
-        let percentCardView = PercentCardView()
-        percentCardView.frame = CGRect(x: 0, y: 0, width: 300, height: 200)
-        percentCardView.center = view.center
-        percentCardView.alpha = 0
-        view.addSubview(percentCardView)
+}
 
-        UIView.animate(withDuration: 0.3) {
-            percentCardView.alpha = 1
-        }
+extension RandomBoxViewController {
+    private func bind() {
+        infoButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                let messageText = self.randomBoxManager.getChuAndPercent()
+                showCustomAlert(alertType: .onlyConfirm, titleText: "확률 정보", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
+                    self.dismiss(animated: true, completion: nil)
+                })
+            })
+            .disposed(by: disposeBag)
+
     }
 }
