@@ -60,6 +60,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .picoAlphaWhite
         tableView.separatorStyle = .none
+        tableView.allowsSelection = false
         return tableView
     }()
     

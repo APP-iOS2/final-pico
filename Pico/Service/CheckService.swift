@@ -4,7 +4,6 @@
 //
 //  Created by LJh on 10/18/23.
 //
-
 import Foundation
 import RxSwift
 import RxRelay
@@ -14,6 +13,7 @@ import FirebaseFirestoreSwift
 
 final class CheckService {
     private let dbRef = Firestore.firestore()
+    private let fireService = FirestoreService()
     
     func checkPhoneNumber(userNumber: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
         let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
@@ -54,7 +54,8 @@ final class CheckService {
                 self.dbRef
                     .collection("users").whereField("nickName", isEqualTo: name)
                     .getDocuments { snapShot, err in
-                        guard err == nil, let documents = snapShot?.documents else {
+                    guard err == nil, let documents = snapShot?.documents else {
+
                         print(err ?? "서버오류 비상비상")
                         return
                     }
@@ -72,6 +73,31 @@ final class CheckService {
         } catch {
             completion("정규식 에러: \(error)", false)
             return
+        }
+    }
+    
+    func checkBlockUser(userNumber: String, completion: @escaping (Bool) -> Void) {
+        let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
+        let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        
+        if !phoneNumberPredicate.evaluate(with: userNumber) {
+            completion(false)
+            return
+        }
+        
+        self.dbRef.collection("unsubscribe")
+            .whereField("phoneNumber", isEqualTo: userNumber)
+            .getDocuments { snapshot, error in
+                guard error == nil, let documents = snapshot?.documents else {
+                    completion(false) // 에러 발생 또는 문서가 없음
+                    return
+                }
+                
+                if !documents.isEmpty {
+                    completion(true) // 차단된 사용자임
+                } else {
+                    completion(false) // 차단된 사용자가 아님
+                }
         }
     }
 }
