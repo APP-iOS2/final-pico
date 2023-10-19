@@ -16,7 +16,6 @@ final class LikeMeViewController: UIViewController {
     private let disposeBag: DisposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
-    private let loadDataPublsher = PublishSubject<Void>()
     private let listLoadPublisher = PublishSubject<Void>()
     private let deleteUserPublisher = PublishSubject<String>()
     private let likeUserPublisher = PublishSubject<String>()
@@ -38,7 +37,7 @@ final class LikeMeViewController: UIViewController {
         configCollectionView()
         bind()
         configRefresh()
-        loadDataPublsher.onNext(())
+        listLoadPublisher.onNext(())
     }
     
     private func configCollectionView() {
@@ -142,8 +141,10 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }
-    
-    // MARK: - 페이징 처리
+}
+
+// MARK: - 페이징 처리
+extension LikeMeViewController: UIScrollViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let contentOffsetY = scrollView.contentOffset.y
         let collectionViewContentSizeY = collectionView.contentSize.height
@@ -151,7 +152,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
         if contentOffsetY > collectionViewContentSizeY - scrollView.frame.size.height && !isRefresh {
             self.isLoading = true
             self.collectionView.reloadData()
-            listLoadPublisher.onNext(())
+            self.listLoadPublisher.onNext(())
             DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
                 self.isLoading = false
                 DispatchQueue.main.async {
@@ -165,7 +166,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
 // MARK: - Bind
 extension LikeMeViewController {
     private func bind() {
-        let input = LikeMeViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher, deleteUser: deleteUserPublisher, likeUser: likeUserPublisher, checkEmpty: checkEmptyPublisher)
+        let input = LikeMeViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher, deleteUser: deleteUserPublisher, likeUser: likeUserPublisher, checkEmpty: checkEmptyPublisher)
         let output = viewModel.transform(input: input)
         
         output.likeUIsEmpty

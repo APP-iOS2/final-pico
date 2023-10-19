@@ -14,13 +14,9 @@ final class WorldCupResultViewController: UIViewController {
     
     var selectedItem: User?
     private let disposeBag = DisposeBag()
-    
-    private let backgroundImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "gameBackground"))
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-    
+    private let viewModel = WorldCupResultViewModel()
+    private let requestMessagePublisher = PublishSubject<User>()
+
     private let worldCupTitleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -62,7 +58,7 @@ final class WorldCupResultViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoEntSubLabelFont
-        label.text = "채팅 신청 비용 50츄 (50%)"
+        label.text = "채팅 신청 비용 25츄 (50%)"
         label.textColor = .picoFontGray
         return label
     }()
@@ -83,22 +79,16 @@ final class WorldCupResultViewController: UIViewController {
         makeConstraints()
         configResultUserCell()
         addShadow()
-        configRxBinding()
+        bind()
     }
     
     private func addViews() {
-        [backgroundImageView, worldCupTitleLabel, pickMeLabel, contentLabel, resultUserView, chatButton, guideLabel, cancelButton].forEach { item in
-            view.addSubview(item)
-        }
+        view.addSubview([worldCupTitleLabel, pickMeLabel, contentLabel, resultUserView, chatButton, guideLabel, cancelButton])
     }
     
     private func makeConstraints() {
         let padding: CGFloat = 20
         let half: CGFloat = 0.5
-        
-        backgroundImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
         
         worldCupTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(Screen.height / 8)
@@ -160,68 +150,54 @@ final class WorldCupResultViewController: UIViewController {
         resultUserView.layer.shadowOpacity = opacity
         resultUserView.layer.shadowRadius = radius
     }
-    
-    private func configRxBinding() {
+}
+
+extension WorldCupResultViewController {
+    private func bind() {
         chatButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                self.tappedChatButton()
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, _ in
+                if UserDefaultsManager.shared.getChuCount() <= 25 {
+                    viewController.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                        let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                        viewController.navigationController?.pushViewController(storeViewController, animated: true)
+                    })
+                } else {
+                    guard let resultUser = viewController.selectedItem else { return }
+                    viewController.showCustomAlert(alertType: .canCancel, titleText: "쪽지 신청", messageText: "월드컵 우승자에게 쪽지를 보낼 시 50% 할인된 가격으로 보낼 수 있습니다!", confirmButtonText: "신청", comfrimAction: {
+                        viewController.requestMessagePublisher.onNext(resultUser)
+                    })
+                }
             })
             .disposed(by: disposeBag)
         
         cancelButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.tappedCancelButton()
+                showCustomAlert(alertType: .canCancel, titleText: "신청하지 않고 나가기", messageText: "이 페이지에서만 50% 할인된 가격으로 신청할 수 있습니다.", confirmButtonText: "나가기", comfrimAction: {
+                    if let navigationController = self.navigationController {
+                        navigationController.popToRootViewController(animated: true)
+                    } else {
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                })
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func tappedChatButton() {
-        let customPopup = CustomPopupViewController()
-        customPopup.alertType = .canCancel
-        customPopup.titleText = "채팅 신청"
-        customPopup.messageText = "이상형 월드컵 우승자와 매칭 시 매칭 성공률이 높아집니다!"
-        customPopup.confirmButtonText = "신청"
-        customPopup.cancelButtonText = "취소"
         
-        customPopup.confirmAction = { [weak self] in
-            if let navigationController = self?.navigationController {
-                navigationController.popToRootViewController(animated: true)
-            } else {
-                self?.dismiss(animated: true, completion: nil)
+        let input = WorldCupResultViewModel.Input(requestMessage: requestMessagePublisher.asObservable())
+        let output = viewModel.transform(input: input)
+        
+        output.resultRequestMessage
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "쪽지 요청 성공", messageText: "받은 메일함을 확인해 주세요.", confirmButtonText: "확인", comfrimAction: {
+                    if let navigationController = self.navigationController {
+                        navigationController.popToRootViewController(animated: true)
+                    } else {
+                        self.dismiss(animated: true)
+                    }
+                })
             }
-        }
-        
-        customPopup.cancelAction = {
-            customPopup.dismiss(animated: true, completion: nil)
-        }
-        
-        customPopup.modalPresentationStyle = .overFullScreen
-        present(customPopup, animated: true, completion: nil)
-    }
-
-    private func tappedCancelButton() {
-        let customPopup = CustomPopupViewController()
-        customPopup.alertType = .canCancel
-        customPopup.titleText = "신청하지 않고 나가기"
-        customPopup.messageText = "매칭 성공률이 높은 상대가 채팅 신청을 기다리고 있습니다"
-        customPopup.confirmButtonText = "나가기"
-        customPopup.cancelButtonText = "취소"
-        
-        customPopup.confirmAction = { [weak self] in
-            if let navigationController = self?.navigationController {
-                navigationController.popToRootViewController(animated: true)
-            } else {
-                self?.dismiss(animated: true, completion: nil)
-            }
-        }
-        
-        customPopup.cancelAction = {
-            customPopup.dismiss(animated: true, completion: nil)
-        }
-        
-        customPopup.modalPresentationStyle = .overFullScreen
-        present(customPopup, animated: true, completion: nil)
+            .disposed(by: disposeBag)
     }
 }

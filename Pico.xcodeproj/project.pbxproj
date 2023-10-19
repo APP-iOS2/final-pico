@@ -49,6 +49,7 @@
 		534172FA2AC129830035E41A /* LikeMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534172F92AC129830035E41A /* LikeMeViewController.swift */; };
 		534790C22AC3B2F20028610D /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C12AC3B2F20028610D /* NotificationViewController.swift */; };
 		534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C32AC3B3190028610D /* NotificationTableViewCell.swift */; };
+		536635EC2AE1521200D3EED3 /* WorldCupResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536635EB2AE1521200D3EED3 /* WorldCupResultViewModel.swift */; };
 		5375E74A2ACD2C09001A571D /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E7492ACD2C09001A571D /* NotificationViewModel.swift */; };
 		5375E74C2ACD4590001A571D /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74B2ACD4590001A571D /* String+Extensions.swift */; };
 		5375E74E2ACD4755001A571D /* LikeMeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74D2ACD4755001A571D /* LikeMeViewModel.swift */; };
@@ -265,6 +266,7 @@
 		534172F92AC129830035E41A /* LikeMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewController.swift; sourceTree = "<group>"; };
 		534790C12AC3B2F20028610D /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		534790C32AC3B3190028610D /* NotificationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTableViewCell.swift; sourceTree = "<group>"; };
+		536635EB2AE1521200D3EED3 /* WorldCupResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewModel.swift; sourceTree = "<group>"; };
 		5375E7492ACD2C09001A571D /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
 		5375E74B2ACD4590001A571D /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		5375E74D2ACD4755001A571D /* LikeMeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewModel.swift; sourceTree = "<group>"; };
@@ -521,6 +523,7 @@
 			children = (
 				4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */,
 				4B2665482ACD76F00074D4E2 /* ResultUserView.swift */,
+				536635EB2AE1521200D3EED3 /* WorldCupResultViewModel.swift */,
 			);
 			path = WorldCupResultView;
 			sourceTree = "<group>";
@@ -1605,6 +1608,7 @@
 				B17D67882AC0AAFF006F91DC /* User.swift in Sources */,
 				368D4DA72ADCDBE800322D91 /* KeyboardManager.swift in Sources */,
 				B15F16152ADE8129002952B4 /* StoreViewModel.swift in Sources */,
+				536635EC2AE1521200D3EED3 /* WorldCupResultViewModel.swift in Sources */,
 				BC4927252AE0156B0073E882 /* MBTICompatibilityChart.swift in Sources */,
 				B1701F922AD4351A0014850D /* Array+Extensions.swift in Sources */,
 			);
