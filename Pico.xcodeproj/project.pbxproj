@@ -543,6 +543,14 @@
 			path = Notification;
 			sourceTree = "<group>";
 		};
+		53FAD4F22AE0B38900957801 /* Token */ = {
+			isa = PBXGroup;
+			children = (
+				53DD41BF2ADF675F00C5FE39 /* Token.swift */,
+			);
+			path = Token;
+			sourceTree = "<group>";
+		};
 		547C4C1C2AD8369D00028AFB /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -982,7 +990,7 @@
 				B17D679B2AC0B063006F91DC /* Like */,
 				B17D679C2AC0B06B006F91DC /* Mail */,
 				B17D679D2AC0B076006F91DC /* Payment */,
-				53DD41BF2ADF675F00C5FE39 /* Token.swift */,
+				53FAD4F22AE0B38900957801 /* Token */,
 			);
 			path = Model;
 			sourceTree = "<group>";
