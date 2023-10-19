@@ -52,4 +52,12 @@ extension UIFont {
     static var picoMBTISelectedSubLabelFont: UIFont {
         return UIFont.systemFont(ofSize: 13, weight: .thin)
     }
+    /// 프로필 라벨 폰트 사이즈 (14, regular)
+    static var picoProfileLabelFont: UIFont {
+        return UIFont.systemFont(ofSize: 14)
+    }
+    /// 프로필 이름 폰트 사이즈 (22, regular)
+    static var picoProfileNameFont: UIFont {
+        return UIFont.systemFont(ofSize: 26, weight: .medium)
+    }
 }

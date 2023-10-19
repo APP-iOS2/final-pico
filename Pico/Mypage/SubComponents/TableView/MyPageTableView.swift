@@ -63,9 +63,13 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
         case 1:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageMatchingTableCell.self)
             return cell
+        case 2:
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageDefaultTableCell.self)
+            cell.configure(imageName: "person", title: "고객 센터")
+            return cell
         default:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageDefaultTableCell.self)
-            cell.configure(imageName: "person", title: "상담원 연결")
+            cell.configure(imageName: "gift", title: "츄 내고 광고 보기")
             return cell
         }
     }
