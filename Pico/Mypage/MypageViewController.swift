@@ -10,8 +10,9 @@ import SnapKit
 
 final class MypageViewController: BaseViewController {
     
-    private let profilView = ProfilView()
+    private let profileView = ProfileView()
     private let myPageTableView = MyPageTableView()
+    private let profileViewModel = ProfileViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,11 +22,14 @@ final class MypageViewController: BaseViewController {
         makeConstraints()
         myPageTableView.myPageCollectionDelegate = self
         myPageTableView.myPageViewDelegate = self
+        profileView.configViewModel(viewModel: profileViewModel)
+        profileViewModel.loadUserData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         resetTableViewScroll()
+        profileView.configProgressBarView()
     }
     
     private func resetTableViewScroll() {
@@ -43,11 +47,11 @@ final class MypageViewController: BaseViewController {
     
     private func configTapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedProfileView))
-        profilView.addGestureRecognizer(tapGesture)
+        profileView.addGestureRecognizer(tapGesture)
     }
     
     @objc private func tappedProfileView(_ sender: UIBarButtonItem) {
-        let viewController = ProfileEditViewController()
+        let viewController = ProfileEditViewController(profileViewModel: profileViewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -57,7 +61,7 @@ final class MypageViewController: BaseViewController {
     }
     
     private func addViews() {
-        [profilView, myPageTableView].forEach {
+        [profileView, myPageTableView].forEach {
             view.addSubview($0)
         }
     }
@@ -65,14 +69,14 @@ final class MypageViewController: BaseViewController {
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
     
-        profilView.snp.makeConstraints { make in
+        profileView.snp.makeConstraints { make in
             make.top.equalTo(safeArea)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(MypageView.profileViewHeight)
         }
         
         myPageTableView.snp.makeConstraints { make in
-            make.top.equalTo(profilView.snp.bottom)
+            make.top.equalTo(profileView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -82,14 +86,14 @@ final class MypageViewController: BaseViewController {
 extension MypageViewController: MyPageViewDelegate {
     
     func updateProfileViewLayout(newHeight: CGFloat) {
-        profilView.snp.updateConstraints { make in
+        profileView.snp.updateConstraints { make in
             make.height.equalTo(newHeight)
         }
     }
 }
 extension MypageViewController: MyPageCollectionDelegate {
     func didSelectItem(item: Int) {
-        let viewController = StoreViewController()
+        let viewController = StoreViewController(viewModel: StoreViewModel())
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

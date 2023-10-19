@@ -101,7 +101,7 @@ final class WorldCupResultViewController: UIViewController {
         }
         
         worldCupTitleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Screen.height / 6)
+            make.top.equalToSuperview().offset(Screen.height / 8)
             make.centerX.equalToSuperview().offset(half)
         }
         
@@ -119,7 +119,7 @@ final class WorldCupResultViewController: UIViewController {
             make.top.equalTo(contentLabel.snp.bottom).offset(padding * 2)
             make.centerX.equalToSuperview()
             make.width.equalTo(200)
-            make.height.equalTo(200)
+            make.height.equalTo(250)
         }
         
         chatButton.snp.makeConstraints { make in
@@ -137,26 +137,22 @@ final class WorldCupResultViewController: UIViewController {
         
         cancelButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview().offset(0.5)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-padding * 1.5)
+            make.bottom.equalToSuperview().offset(-padding * 1.5)
         }
     }
     
     private func configResultUserCell() {
         if let selectedItem = selectedItem {
-            resultUserView.mbtiLabel.text = "\(selectedItem.mbti)"
-            resultUserView.userNickname.text = "\(selectedItem.nickName)"
+            resultUserView.mbtiLabel.text = "\(selectedItem.mbti)".uppercased()
+            resultUserView.userNickname.text = String(selectedItem.nickName.prefix(6))
+            resultUserView.userAge.text = "\(selectedItem.age)세"
             
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {
-                do {
-                    let data = try Data(contentsOf: url)
-                    resultUserView.userImage.image = UIImage(data: data)
-                } catch {
-                    print("이미지 로드 에러")
-                }
+                resultUserView.userImage.load(url: url)
             }
         }
     }
-    
+
     private func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
         resultUserView.layer.masksToBounds = false
         resultUserView.layer.shadowColor = UIColor.black.cgColor

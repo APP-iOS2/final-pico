@@ -9,18 +9,28 @@ import UIKit
 import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
-    var viewModel: SignUpViewModel = .shared
+    private let keyboardManager = KeyboardManager()
+    private let viewModel: SignUpViewModel
+    private let checkNickNameService = CheckService()
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     private let minNickNameWordCount: Int = 2
     private let maxNickNameWordCount: Int = 8
     private var isCheckNickName: Bool = false
-    
-    private let progressView: UIProgressView = {
+    private var userNickName: String = ""
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142 * 5
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -71,11 +81,10 @@ final class SignUpNickNameViewController: UIViewController {
     
     private lazy var nickNameCancleButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
-        button.imageView?.contentMode = .scaleAspectFit
-        button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
+        button.setImage(image, for: .normal)
+        button.tintColor = .picoGray
         return button
     }()
     
@@ -97,22 +106,24 @@ final class SignUpNickNameViewController: UIViewController {
         configButtons()
         configTextField()
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 5)
+    }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        registerKeyboard()
+        keyboardManager.registerKeyboard(with: nextButton)
         nickNameTextField.becomeFirstResponder()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        unregisterKeyboard()
+        keyboardManager.unregisterKeyboard()
     }
 }
 // MARK: - Config
 extension SignUpNickNameViewController {
     private func configButtons() {
-        nickNameCheckButton.addTarget(self, action: #selector(tappedNickNameCheckButton), for: .touchUpInside)
+        nickNameCheckButton.addTarget(self, action: #selector(tappedCheckButton), for: .touchUpInside)
         nickNameCancleButton.addTarget(self, action: #selector(tappedNickNameCancleButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
@@ -122,48 +133,18 @@ extension SignUpNickNameViewController {
         nickNameTextField.becomeFirstResponder()
     }
     
-    private func reset() {
-        nickNameTextField.text = ""
-        nickNameTextField.isEnabled = true
-        nickNameCancleButton.isHidden = false
-        nickNameCheckButton.backgroundColor = .picoBlue
-        
-        updateNickNameTextField(isFull: false)
-        updateNextButton(isCheck: false)
-    }
-    
-    // MARK: - @objc
-    @objc private func tappedNickNameCheckButton(_ sender: UIButton) {
-        sender.tappedAnimation()
-        showAlert(message: "\(nickNameTextField.text ?? "") 이름으로 설정합니다.", isCancelButton: true) {
-            self.nickNameCheckButton.isEnabled = false
-            self.nickNameCheckButton.backgroundColor = .picoGray
-            self.nickNameCancleButton.isHidden = true
-            self.nickNameTextField.textColor = .picoBlue
-            self.nickNameTextField.isEnabled = false
-            
-            self.updateNextButton(isCheck: true)
-        }
-    }
-    
-    @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
-        sender.tappedAnimation()
-        nickNameTextField.text = ""
-        updateNickNameTextField(isFull: false)
-    }
-    
-    @objc private func tappedNextButton(_ sender: UIButton) {
-        viewModel.nickName = nickNameTextField.text!
-        let viewController = SignUpPictureViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    private func updateNickNameTextField(isFull: Bool) {
+    private func updateCheckButton(isFull: Bool, ischeck: Bool = false) {
         switch isFull {
         case true:
             nickNameCheckButton.isHidden = false
         case false:
             nickNameCheckButton.isHidden = true
+        }
+        switch ischeck {
+        case true:
+            nickNameCheckButton.backgroundColor = .picoGray
+        case false:
+            nickNameCheckButton.backgroundColor = .picoBlue
         }
     }
     
@@ -179,63 +160,91 @@ extension SignUpNickNameViewController {
             isCheckNickName = false
         }
     }
+    
+    private func reset() {
+        self.nickNameTextField.text = ""
+        self.nickNameCancleButton.isEnabled = true
+        self.nickNameTextField.isEnabled = true
+        self.nickNameTextField.becomeFirstResponder()
+        self.updateCheckButton(isFull: false)
+        self.updateNextButton(isCheck: false)
+    }
+    // MARK: - @objc
+    @objc private func tappedCheckButton(_ sender: UIButton) {
+        sender.tappedAnimation()
+        guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
+        showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) { [weak self] in
+            guard let self = self else { return }
+            self.checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
+                guard let self = self else { return }
+                guard isRight else {
+                    SignLoadingManager.hideLoading()
+                    self.showAlert(message: message) {
+                        self.viewModel.isRightName = isRight
+                        self.reset()
+                    }
+                    return
+                }
+                SignLoadingManager.hideLoading()
+                self.showAlert(message: message) {
+                    self.viewModel.isRightName = isRight
+                    self.userNickName = userNickName
+                }
+            }
+            self.updateCheckButton(isFull: true, ischeck: true)
+            self.updateNextButton(isCheck: true)
+            self.nickNameTextField.textColor = .picoBlue
+        }
+    }
+    
+    @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
+        sender.tappedAnimation()
+        nickNameTextField.text = ""
+        self.nickNameTextField.textColor = .gray
+        updateCheckButton(isFull: false)
+    }
+    
+    @objc private func tappedNextButton(_ sender: UIButton) {
+        /*
+         !!!: 멘토링 질문
+         2023-10-16 18:25:04.804179+0900 Pico[8452:2229602] Metal API Validation Enabled
+         2023-10-16 18:25:09.469090+0900 Pico[8452:2229938] Task <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1> finished with error [-1002] Error Domain=NSURLErrorDomain Code=-1002 "unsupported URL" UserInfo={NSLocalizedDescription=unsupported URL, NSErrorFailingURLStringKey=chu, NSErrorFailingURLKey=chu, _NSURLErrorRelatedURLSessionTaskErrorKey=(
+             "LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>"
+         ), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>, NSUnderlyingError=0x281268f90 {Error Domain=kCFErrorDomainCFNetwork Code=-1002 "(null)"}}
+         Pico[8452:2229602] [SystemGestureGate] <0x10600de80> Gesture: System gesture gate timed out.
+         Pico[8452:2229602] [Presentation] Attempt to present <UIAlertController: 0x105abde00> on <Pico.PictureManager: 0x1064935e0> (from <Pico.PictureManager: 0x1064935e0>) whose view is not in the window hierarchy.
+         
+         위에 메시지가 뜨면서 다음 뷰컨으로 넘어가는게 조금 걸립니다 !
+         */
+        viewModel.nickName = userNickName
+        let viewController = SignUpPictureViewController(viewModel: viewModel)
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 // MARK: - 텍스트 필드 관련
 extension SignUpNickNameViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
+        if string == " " {
+            return false
+        }
         let currentText = textField.text ?? ""
         var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
         newText = newText.replacingOccurrences(of: " ", with: "")
-        
-        updateNickNameTextField(isFull: false)
+        updateCheckButton(isFull: false)
         
         if newText.count > minNickNameWordCount {
-            updateNickNameTextField(isFull: true)
+            updateCheckButton(isFull: true)
         }
         
-        return newText.count < maxNickNameWordCount + 1
+        return newText.count <= maxNickNameWordCount
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
         return true
     }
 }
-
-// MARK: - 키보드 관련
-extension SignUpNickNameViewController {
-    
-    private func registerKeyboard() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    private func unregisterKeyboard() {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc private func keyboardUp(notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            
-            UIView.animate(
-                withDuration: 0.5,
-                animations: {
-                    self.nextButton.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
-                }
-            )
-        }
-    }
-    
-    @objc private func keyboardDown() {
-        self.nextButton.transform = .identity
-    }
-}
-
 // MARK: - UI 관련
 extension SignUpNickNameViewController {
     

@@ -11,14 +11,25 @@ import RxSwift
 
 final class MailListTableViewCell: UITableViewCell {
     
+    private let viewModel = MailReceiveModel()
     private let disposeBag = DisposeBag()
+    
+    private var mailInfo: Mail.MailInfo?
     
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 40
+        imageView.layer.cornerRadius = 30
         return imageView
+    }()
+    
+    private let userStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 10
+        return stackView
     }()
     
     private let nameStackView: UIStackView = {
@@ -28,19 +39,10 @@ final class MailListTableViewCell: UITableViewCell {
         return stackView
     }()
     
-    private let infoStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 10
-        stackView.alignment = .leading
-        return stackView
-    }()
-    
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.picoSubTitleFont
+        label.font = UIFont.picoContentBoldFont
         label.textColor = .picoFontBlack
-        label.adjustsFontSizeToFitWidth = true
         return label
     }()
     
@@ -56,6 +58,7 @@ final class MailListTableViewCell: UITableViewCell {
     private let dateStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
+        stackView.distribution = .fillEqually
         stackView.spacing = 10
         return stackView
     }()
@@ -64,6 +67,7 @@ final class MailListTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontBlack
+        label.textAlignment = .center
         return label
     }()
     
@@ -71,11 +75,13 @@ final class MailListTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .red
+        label.textAlignment = .center
         return label
     }()
     
+    // MARK: - MailCell +LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)   
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         addViews()
         makeConstraints()
     }
@@ -85,47 +91,55 @@ final class MailListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // 질문! 받아와서 보여줘야하는 경우 코드를 cell 뷰 파일에 두는 것이 맞나요? 또한 rx 처리를 해줘야하나요?
-    func getData(senderUser: DummyMailUsers) {
+    // MARK: - MailCell +UI
+    func getData(senderUser: Mail.MailInfo, type: MailType) {
+        self.mailInfo = senderUser
         
-        userImage.loadImage(url: senderUser.messages.imageUrl, disposeBag: self.disposeBag)
-        nameLabel.text = senderUser.messages.oppenentName
-        nameLabel.sizeToFit()
-        mbtiLabelView.setMbti(mbti: senderUser.messages.mbti)
-        self.message.text = senderUser.messages.message
-        dateLabel.text = senderUser.messages.sendedDate
-        if !senderUser.messages.isReading {
-            newLabel.text = "new"
+        if type == .receive {
+            viewModel.getUser(userId: senderUser.sendedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
+                }
+            }
+        } else {
+            viewModel.getUser(userId: senderUser.receivedUserId) {
+                if let user = self.viewModel.user {
+                    self.configViews(user: user)
+                }
+            }
+        }
+        self.message.text = senderUser.message
+        
+        let date = senderUser.sendedDate.toStringTime()
+        let startIndex = date.index(date.startIndex, offsetBy: 5)
+        let lastIndex = date.index(date.startIndex, offsetBy: 9)
+        let range = startIndex...lastIndex
+        self.dateLabel.text = "\(date[range].prefix(2)).\(date[range].suffix(2))"
+
+        if type == .receive {
+            if !senderUser.isReading {
+                self.newLabel.text = "new"
+            }
         }
     }
     
     private func addViews() {
-        [nameLabel, mbtiLabelView].forEach {
-            nameStackView.addArrangedSubview($0)
-        }
+        nameStackView.addArrangedSubview([nameLabel, mbtiLabelView])
+        userStackView.addArrangedSubview([nameStackView, message])
+        dateStackView.addArrangedSubview([dateLabel, newLabel])
         
-        [nameStackView, message].forEach {
-            infoStackView.addArrangedSubview($0)
-        }
-        
-        [dateLabel, newLabel].forEach {
-            dateStackView.addArrangedSubview($0)
-        }
-        
-        [userImage, infoStackView, dateStackView].forEach {
-            contentView.addSubview($0)
-        }
+        contentView.addSubview([userImage, userStackView, dateStackView])
     }
     
     private func makeConstraints() {
         userImage.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(10)
             make.leading.equalTo(contentView).offset(10)
-            make.width.height.equalTo(80)
+            make.width.height.equalTo(60)
         }
         
         nameStackView.snp.makeConstraints { make in
-            make.top.equalTo(infoStackView)
+            make.top.equalTo(userStackView)
             make.leading.equalTo(userImage.snp.trailing).offset(15)
             
         }
@@ -136,17 +150,27 @@ final class MailListTableViewCell: UITableViewCell {
             make.width.equalTo(mbtiLabelView.frame.size.width)
         }
         
-        infoStackView.snp.makeConstraints { make in
-            make.top.equalTo(userImage).offset(10)
+        userStackView.snp.makeConstraints { make in
+            make.top.equalTo(userImage).offset(5)
             make.leading.equalTo(nameStackView)
             make.trailing.equalTo(contentView).offset(-70)
             make.bottom.equalTo(userImage).offset(-10)
         }
         
         dateStackView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(infoStackView)
+            make.top.bottom.equalTo(userStackView)
             make.trailing.equalTo(contentView.snp.trailing).offset(-10)
             make.width.equalTo(50)
         }
+    }
+    
+    // MARK: - MailCell +config
+    private func configViews (user: User) {
+        guard let url = URL(string: user.imageURLs[0]) else { return }
+        userImage.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+        userImage.kf.setImage(with: url)
+        nameLabel.text = user.nickName
+        nameLabel.sizeToFit()
+        mbtiLabelView.setMbti(mbti: user.mbti)
     }
 }

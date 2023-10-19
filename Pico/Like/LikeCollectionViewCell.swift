@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import RxSwift
+import Kingfisher
 
 final class LikeCollectionViewCell: UICollectionViewCell {
     
@@ -19,6 +20,10 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return messageButton.rx.tap.asObservable()
     }
     
+    var likeButtonTapObservalbe: Observable<Void> {
+        return likeButton.rx.tap.asObservable()
+    }
+    
     var disposeBag: DisposeBag = DisposeBag()
     private var likeMeViewModel: LikeMeViewModel?
     private var likeUViewModel: LikeUViewModel?
@@ -28,6 +33,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 10
         imageView.layer.masksToBounds = true
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -74,6 +80,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         makeConstraints()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -89,7 +96,9 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     }
     
     func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType) {
-        userImageView.loadImage(url: image, disposeBag: self.disposeBag)
+        guard let url = URL(string: image) else { return }
+        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+        userImageView.kf.setImage(with: url)
         nameLabel.text = nameText
         mbtiLabel.setMbti(mbti: mbti)
         messageButton.isHidden = isHiddenMessageButton
@@ -98,9 +107,7 @@ final class LikeCollectionViewCell: UICollectionViewCell {
     }
     
     private func addViews() {
-        [userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton].forEach { item in
-            addSubview(item)
-        }
+        addSubview([userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton])
     }
     
     private func makeConstraints() {

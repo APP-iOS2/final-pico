@@ -6,13 +6,18 @@
 //
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
+import RxDataSources
 
 final class WorldCupGameViewController: UIViewController {
     
-    private var items: [User] = DummyUserData.users
-    private var strong8: [User] = []
-    private var strong4: [User] = []
-    private var strong2: [User] = []
+    private var worldCupViewModel = WorldCupViewModel()
+    private let disposeBag = DisposeBag()
+    private var users = BehaviorRelay<[User]>(value: [])
+    private var semifinals: [User] = []
+    private var finals: [User] = []
+    private var winner: [User] = []
     private var index = 0
     
     private let backgroundImageView: UIImageView = {
@@ -55,6 +60,7 @@ final class WorldCupGameViewController: UIViewController {
         addViews()
         makeConstraints()
         configCollectionView()
+        configUserData()
     }
     
     private func configCollectionView() {
@@ -70,6 +76,16 @@ final class WorldCupGameViewController: UIViewController {
         }
     }
     
+    private func configUserData() {
+        worldCupViewModel.users
+            .map { $0.prefix(8).map { $0 } }
+            .subscribe(onNext: { [weak self] fetchedUsers in
+                self?.users.accept(Array(fetchedUsers))
+                self?.collectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
         collectionView.layer.masksToBounds = false
         collectionView.layer.shadowColor = UIColor.black.cgColor
@@ -78,10 +94,21 @@ final class WorldCupGameViewController: UIViewController {
         collectionView.layer.shadowRadius = radius
     }
     
+    private func showResultViewController(with user: User) {
+        let resultViewController = WorldCupResultViewController()
+        resultViewController.selectedItem = user
+        navigationController?.pushViewController(resultViewController, animated: true)
+    }
+    
     private func addViews() {
         [backgroundImageView, roundLabel, contentLabel, collectionView, vsImageView].forEach { item in
             view.addSubview(item)
         }
+    }
+    
+    private func cellClickAction(indexPath: IndexPath) {
+        worldCupViewModel.selectedIndexPath = indexPath
+        worldCupViewModel.animateSelectedCell(collectionView: collectionView, indexPath: indexPath)
     }
     
     private func makeConstraints() {
@@ -103,10 +130,10 @@ final class WorldCupGameViewController: UIViewController {
         }
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(padding)
-            make.leading.equalToSuperview().offset(padding)
-            make.trailing.equalToSuperview().offset(-padding)
-            make.height.equalTo(view.snp.height).multipliedBy(half)
+            make.top.equalTo(contentLabel.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(view.snp.width).multipliedBy(1.2)
         }
         
         vsImageView.snp.makeConstraints { make in
@@ -116,58 +143,37 @@ final class WorldCupGameViewController: UIViewController {
             make.height.equalTo(25)
         }
     }
-    
-    private func addDataLabels(_ currentItem: User) -> [String] {
-        var dataLabelTexts: [String] = []
-        
-        if let height = currentItem.subInfo?.height {
-            dataLabelTexts.append("\(height)")
-        }
-        
-        if let job = currentItem.subInfo?.job {
-            dataLabelTexts.append("\(job)")
-        }
-        
-        dataLabelTexts.append("\(currentItem.location.address)")
-        return dataLabelTexts
-    }
-    
 }
 
 extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        return 2
+        return users.value.count / 4
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WorldCupCollectionViewCell", for: indexPath) as! WorldCupCollectionViewCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WorldCupCollectionViewCell", for: indexPath) as? WorldCupCollectionViewCell else { return UICollectionViewCell() }
         
-        var round: Int = 16
-        let currentItem: User
+        let round: Int
+        let currentUser: User
         
         switch index {
-        case 0..<16:
-            round = 16
-            currentItem = items[index + indexPath.item]
-        case 16..<24:
+        case 0..<8:
             round = 8
-            currentItem = strong8[index - 16 + indexPath.item]
-        case 24..<28:
+            currentUser = users.value[index + indexPath.item]
+            worldCupViewModel.configure(cell: cell, with: currentUser)
+        case 8..<12:
             round = 4
-            currentItem = strong4[index - 24 + indexPath.item]
-        default:
+            currentUser = semifinals[index - 8 + indexPath.item]
+            worldCupViewModel.configure(cell: cell, with: currentUser)
+        case 12:
             round = 2
-            currentItem = strong2[index - 28 + indexPath.item]
+            currentUser = finals[index - 12 + indexPath.item]
+            worldCupViewModel.configure(cell: cell, with: currentUser)
+        default:
+            round = 0
+            currentUser = winner[0]
         }
-        
-        let dataLabelTexts = self.addDataLabels(currentItem)
-        
         self.roundLabel.text = round == 2 ? "결승" : "\(round)강"
-        cell.mbtiLabel.text = "\(currentItem.mbti)"
-        cell.userNickname.text = currentItem.nickName
-        //        cell.userAge.text = "\(currentItem.age)"
-        cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
         return cell
     }
     
@@ -180,29 +186,23 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         switch index {
-        case 0..<16:
-            let selectedItem = items[index + indexPath.item]
-            strong8.append(selectedItem)
+        case 0..<8:
+            let selectedItem = users.value[index + indexPath.item]
+            semifinals.append(selectedItem)
             index += 2
+            cellClickAction(indexPath: indexPath)
             collectionView.reloadData()
-        case 16..<24:
-            let selectedItem = strong8[index - 16 + indexPath.item]
-            strong4.append(selectedItem)
+        case 8..<12:
+            let selectedItem = semifinals[index - 8 + indexPath.item]
+            finals.append(selectedItem)
             index += 2
-            collectionView.reloadData()
-        case 24..<28:
-            let selectedItem = strong4[index - 24 + indexPath.item]
-            strong2.append(selectedItem)
-            index += 2
+            cellClickAction(indexPath: indexPath)
             collectionView.reloadData()
         default:
-            let selectedItem = strong2[index - 28 + indexPath.item]
-
-            let worldCupResultViewController = WorldCupResultViewController()
-            worldCupResultViewController.selectedItem = selectedItem
-            self.navigationController?.pushViewController(worldCupResultViewController, animated: true)
+            let selectedItem = finals[index - 12 + indexPath.item]
+            cellClickAction(indexPath: indexPath)
+            showResultViewController(with: selectedItem)
         }
     }
 }

@@ -11,7 +11,7 @@ import SnapKit
 final class HomeEmptyView: UIView {
     
     private let tempImage: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "tempImage"))
+        let imageView = UIImageView(image: UIImage(named: "chu"))
         return imageView
     }()
     
@@ -56,7 +56,7 @@ final class HomeEmptyView: UIView {
             make.trailing.equalToSuperview().offset(-20)
         }
         reLoadButton.snp.makeConstraints { make in
-            make.top.equalTo(finishLabel).offset(20)
+            make.top.equalTo(finishLabel).offset(40)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }

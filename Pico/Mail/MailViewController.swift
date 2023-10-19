@@ -7,17 +7,8 @@
 
 import UIKit
 import SnapKit
-import RxSwift
-import RxCocoa
-import RxRelay
 
 final class MailViewController: BaseViewController {
-    
-    private let viewModel = MailViewModel()
-    private var disposeBag = DisposeBag()
-    
-    private let emptyView = EmptyViewController(type: .message)
-    private let refreshControl = UIRefreshControl()
     
     private var mailTypeButtons: [UIButton] = []
     private var mailType: MailType = .receive
@@ -60,46 +51,34 @@ final class MailViewController: BaseViewController {
         return button
     }()
     
-    private let mailListTableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(cell: MailListTableViewCell.self)
-        return tableView
+    private let tableViewController = [MailSendTableListController(), MailReceiveTableListController()]
+    
+    private let contentsView: UIView = {
+        let view = UIView()
+        return view
     }()
     
+    private lazy var pageViewController: UIPageViewController = {
+        let pageController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        pageController.view.frame = contentsView.frame
+        return pageController
+    }()
+    // MARK: - MailView +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        initRefresh()
         addViews()
         makeConstraints()
-        configTableView()
         configMailTypeButtons()
+        configPageView()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        mailListTableView.reloadData()
-    }
-    
+    // MARK: - MailView +UI
     private func addViews() {
-        view.addSubview(mailText)
-        
         [receiveButton, sendButton].forEach { item in
             mailTypeButtons.append(item)
-            buttonStack.addArrangedSubview(item)
         }
-        
-        view.addSubview(buttonStack)
-        
-        viewModel.mailIsEmpty
-            .subscribe(onNext: { [weak self] isEmpty in
-                if isEmpty {
-                    self?.view.addSubview(self?.emptyView.view ?? UIView())
-                    self?.emptyView.didMove(toParent: self)
-                } else {
-                    self?.view.addSubview(self?.mailListTableView ?? UITableView())
-                }
-            })
-            .disposed(by: disposeBag)
+        buttonStack.addArrangedSubview([receiveButton, sendButton])
+        view.addSubview([mailText, buttonStack, contentsView])
+        contentsView.addSubview([pageViewController.view])
     }
     
     private func makeConstraints() {
@@ -124,60 +103,22 @@ final class MailViewController: BaseViewController {
             make.width.equalTo(60)
         }
         
-        viewModel.mailIsEmpty
-            .subscribe(onNext: { [weak self] isEmpty in
-                if isEmpty {
-                    self?.emptyView.view.snp.makeConstraints { make in
-                        make.edges.equalTo(safeArea)
-                    }
-                } else {
-                    self?.mailListTableView.snp.makeConstraints { make in
-                        make.top.equalTo(self?.buttonStack.snp.bottom ?? UIStackView()).offset(10)
-                        make.leading.trailing.bottom.equalTo(safeArea)
-                    }
-                }
-            })
-            .disposed(by: disposeBag)
+        contentsView.snp.makeConstraints { make in
+            make.top.equalTo(buttonStack.snp.bottom).offset(10)
+            make.leading.equalTo(safeArea).offset(10)
+            make.trailing.bottom.equalTo(safeArea).offset(-10)
+        }
     }
-    
+    // MARK: - config
     private func configMailTypeButtons() {
         sendButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
         receiveButton.addTarget(self, action: #selector(tappedMailTypeButton), for: .touchUpInside)
     }
     
-    private func configTableView() {
-        mailListTableView.rowHeight = 100
-        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
-        configTableviewDelegate()
-        
-        refreshControl.endRefreshing()
-        mailListTableView.refreshControl = refreshControl
+    private func configPageView() {
+        pageViewController.setViewControllers([tableViewController[1]], direction: .reverse, animated: true)
     }
-    
-    private func initRefresh() {
-        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
-        refreshControl.tintColor = .picoBlue
-        mailListTableView.refreshControl = refreshControl
-    }
-    
-    private func configTableviewDelegate() {
-        mailListTableView.rx.modelSelected(DummyMailUsers.self)
-            .subscribe(onNext: { item in
-                let mailReceiveView = MailReceiveViewController()
-                mailReceiveView.modalPresentationStyle = .formSheet
-                mailReceiveView.getReceiver(mailSender: item)
-                self.present(mailReceiveView, animated: true, completion: nil)
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    @objc func refreshTable(refresh: UIRefreshControl) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.mailListTableView.reloadData()
-            refresh.endRefreshing()
-        }
-    }
-    
+    // MARK: - objc
     @objc func tappedMailTypeButton(_ sender: UIButton) {
         for button in mailTypeButtons {
             button.isSelected = (button == sender)
@@ -186,14 +127,16 @@ final class MailViewController: BaseViewController {
             case true:
                 sender.backgroundColor = .picoAlphaBlue
                 sender.setTitleColor(.white, for: .normal)
-                mailType = MailType(rawValue: text) ?? .receive
-                
+                mailType = MailReceiveModel().toType(text: text)
+                if mailType == .receive {
+                    pageViewController.setViewControllers([tableViewController[1]], direction: .reverse, animated: true)
+                } else {
+                    pageViewController.setViewControllers([tableViewController[0]], direction: .forward, animated: true)
+                }
             case false:
                 button.backgroundColor = .picoGray
                 button.setTitleColor(.picoBetaBlue, for: .normal)
             }
         }
-        viewModel.configMailTableviewDatasource(tableView: mailListTableView, type: mailType)
-        mailListTableView.reloadData()
     }
 }

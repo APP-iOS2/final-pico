@@ -9,25 +9,23 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 final class HomeViewController: BaseViewController {
     
     var removedView: [UIView] = []
-    var filterGender: [GenderType] = HomeFilterViewController.filterGender
+    var userCards: [User] = []
+    var users = BehaviorRelay<[User]>(value: [])
+    var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
+
     lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
     lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
     
-    private let emptyView: HomeEmptyView = HomeEmptyView()
-    private let tempUser = BehaviorRelay<[User]>(value: [])
+    private let numberOfCards: Int = 4
+    private let emptyView = HomeEmptyView()
     private let disposeBag = DisposeBag()
     private let viewModel = HomeViewModel()
-    
-    private var activityIndicatorView: UIActivityIndicatorView = {
-        let activityIndicator = UIActivityIndicatorView()
-        activityIndicator.style = .large
-        activityIndicator.color = .picoBlue
-        return activityIndicator
-    }()
+    private let loadingView = LoadingAnimationView()
     
     // MARK: - override
     override func viewDidLoad() {
@@ -36,51 +34,87 @@ final class HomeViewController: BaseViewController {
         makeConstraints()
         configNavigationBarItem()
         configButtons()
-        
-        viewModel.users
-            .bind(to: tempUser)
+        viewModel.otherUsers
+            .bind(to: users)
             .disposed(by: disposeBag)
+        viewModel.myLikes
+            .bind(to: myLikes)
+            .disposed(by: disposeBag)
+        loadCards()
     }
-    
-    // 인디케이터뷰 시작 외부 접근
-    func startLoading() {
-        activityIndicatorView.startAnimating()
-        view.isUserInteractionEnabled = false
-    }
-    
-    func stopLoading() {
-        activityIndicatorView.stopAnimating()
-        view.isUserInteractionEnabled = true
-    }
-    
     private func addSubView() {
-        view.addSubview(emptyView)
-        tempUser
-            .map { users in
+        view.addSubview([likeLabel, passLabel])
+    }
+    private func loadCards() {
+        var mbti: [MBTIType] = []
+        if HomeViewModel.filterMbti.isEmpty {
+            mbti = MBTIType.allCases
+        } else {
+            mbti = HomeViewModel.filterMbti
+        }
+        Observable.combineLatest(users, myLikes)
+            .map { [self] users, myLikes in
+                let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
+                let myMbti = Set(mbti.map { $0.rawValue })
                 return users.filter { user in
-                    return self.filterGender.contains(user.gender)
+                    var maxAge = HomeViewModel.filterAgeMax
+                    var maxDistance = HomeViewModel.filterDistance
+                    if HomeViewModel.filterAgeMax == 61 {
+                        maxAge = 100
+                    }
+                    if HomeViewModel.filterDistance == 501 {
+                        maxDistance = 10000
+                    }
+                    let filterAge = (HomeViewModel.filterAgeMin..<maxAge + 1).contains(user.age)
+                    let distance = viewModel.calculateDistance(user: user)
+                    let filterDistance = (0..<maxDistance + 1).contains(Int(distance / 1000))
+                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance
                 }
             }
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] filteredUsers in
                 guard let self = self else { return }
-                for user in filteredUsers {
-                    let tabImageViewController = HomeUserCardViewController(user: user)
-                    tabImageViewController.homeViewController = self
-                    self.addChild(tabImageViewController)
-                    self.view.insertSubview(tabImageViewController.view, at: 1)
+                userCards = filteredUsers
+                view.subviews.forEach { subView in
+                  subView.removeFromSuperview()
+               }
+                addLoadingView()
+                addUserCards()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.addEmptyView()
+                    self.loadingView.removeFromSuperview()
                 }
+            }, onError: { error in
+                print(error)
             })
             .disposed(by: disposeBag)
-        view.addSubview(likeLabel)
-        view.addSubview(passLabel)
-        view.addSubview(activityIndicatorView)
     }
     
-    private func makeConstraints() {
+    private func addLoadingView() {
+        loadingView.frame = view.frame
+        loadingView.backgroundColor = .systemBackground
+        loadingView.animate()
+        view.addSubview(loadingView)
+    }
+    
+    private func addEmptyView() {
+        view.insertSubview(emptyView, at: 0)
         emptyView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+    }
+    
+    func addUserCards() {
+        for user in userCards.prefix(self.numberOfCards) {
+            let tabImageViewController = HomeUserCardViewController(user: user)
+            tabImageViewController.homeViewController = self
+            self.addChild(tabImageViewController)
+            self.view.insertSubview(tabImageViewController.view, at: 1)
+            userCards.removeFirst()
+        }
+    }
+    
+    private func makeConstraints() {
         
         likeLabel.snp.makeConstraints { make in
             make.centerX.equalTo(view.snp.centerX)
@@ -92,10 +126,6 @@ final class HomeViewController: BaseViewController {
             make.centerX.equalTo(view.snp.centerX)
             make.centerY.equalTo(view.safeAreaLayoutGuide.snp.top).offset(70)
             make.width.equalTo(150)
-        }
-        activityIndicatorView.snp.makeConstraints { make in
-            make.centerX.equalTo(view)
-            make.centerY.equalTo(view)
         }
     }
     
@@ -131,8 +161,10 @@ final class HomeViewController: BaseViewController {
     @objc func reloadView() {
         let newViewController = HomeViewController()
         self.navigationController?.setViewControllers([newViewController], animated: false)
+        HomeUserCardViewModel.passedMyData.removeAll()
+        HomeUserCardViewModel.passedUserData.removeAll()
     }
-
+    
     @objc func tappedFilterButton() {
         let viewController = HomeFilterViewController()
         viewController.homeViewController = self

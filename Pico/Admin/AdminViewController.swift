@@ -2,90 +2,86 @@
 //  AdminViewController.swift
 //  Pico
 //
-//  Created by 최하늘 on 10/4/23.
+//  Created by 최하늘 on 10/11/23.
 //
 
 import UIKit
 import SnapKit
-import RxCocoa
-import RxSwift
 
-final class AdminViewController: BaseViewController {
+final class AdminViewController: AdminBaseViewController {
     
-    private lazy var sortedMenu: UIMenu = {
-        return UIMenu(title: "정렬", options: [.singleSelection], children: sortedMenuItems)
+    private let viewControllers = [
+        UINavigationController(rootViewController: AdminUserViewController(viewModel: AdminUserViewModel())),
+        UINavigationController(rootViewController: AdminReportViewController())
+    ]
+    
+    private let tabSegmentedControl: UISegmentedControl = {
+        let segment = UISegmentedControl()
+        segment.selectedSegmentTintColor = .clear
+        segment.setBackgroundImage(UIImage(), for: .normal, barMetrics: .default)
+        segment.setDividerImage(UIImage(), forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
+        segment.insertSegment(withTitle: "회원 목록", at: 0, animated: true)
+        segment.insertSegment(withTitle: "신고 목록", at: 1, animated: true)
+        segment.selectedSegmentIndex = 0
+        let font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.picoFontGray], for: .normal)
+        segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.picoFontBlack], for: .selected)
+        return segment
     }()
     
-    private lazy var sortedMenuItems: [UIAction] = {
-        return SortType.allCases.map { sortType in
-            let title = sortType.name
-            
-            return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
-                guard let self = self else { return }
-                viewModel.updateSelectedSortType(to: sortType)
-            })
-        }
+    private let underLineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .picoFontBlack
+        return view
     }()
     
-    private lazy var filteredButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("이름", for: .normal)
-        button.menu = UIMenu(title: "정렬", options: [.singleSelection], children: filteredMenuItems)
-        button.showsMenuAsPrimaryAction = true
-        return button
+    private let underLineBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .picoFontGray
+        return view
     }()
     
-    private lazy var filteredMenuItems: [UIAction] = {
-        return FilterType.allCases.map { filterType in
-            let title = filterType.name
-            
-            return UIAction(title: title, image: UIImage(), handler: { [weak self] _ in
-                guard let self = self else { return }
-                viewModel.updateSelectedFilterType(to: filterType)
-            })
-        }
+    private let segmentView: UIView = {
+        let view = UIView()
+        view.configBackgroundColor()
+        return view
     }()
     
-    private let textField = CommonTextField()
-    private let userListTableView = UITableView()
+    private let contentsView: UIView = UIView()
     
-    private let disposeBag: DisposeBag = DisposeBag()
-    private let viewModel: AdminViewModel = AdminViewModel()
-
-    // MARK: - LifeCycle
+    private lazy var pageViewController: UIPageViewController = {
+        let pageController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        pageController.view.frame = contentsView.frame
+        return pageController
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.tappedDismissKeyboard()
         addViews()
         makeConstraints()
-        configNavigationBarItem()
-        configTableView()
-        configTableViewDatasource()
+        configTabBar()
     }
     
-    // MARK: - config
-    private func configNavigationBarItem() {
-        let filterButton = UIBarButtonItem(image: UIImage(systemName: "slider.horizontal.3"), menu: sortedMenu)
-        filterButton.tintColor = .darkGray
-        self.navigationItem.rightBarButtonItem = filterButton
+    private func configTabBar() {
+        tabSegmentedControl.addTarget(self, action: #selector(changeUnderLinePosition), for: .valueChanged)
+        pageViewController.setViewControllers([viewControllers[tabSegmentedControl.selectedSegmentIndex]], direction: .reverse, animated: true)
+        self.addChild(pageViewController)
     }
     
-    private func configTableView() {
-        userListTableView.register(cell: NotificationTableViewCell.self)
-        userListTableView.rowHeight = 80
-    }
-}
-
-// MARK: - 테이블뷰관련
-extension AdminViewController {
-    
-    private func configTableViewDatasource() {
-        viewModel.sortedUsers
-            .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
-                guard let imageURL = item.imageURLs[safe: 0] else { return }
-                cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate.toString())
-            }
-            .disposed(by: disposeBag)
+    @objc private func changeUnderLinePosition() {
+        let segmentIndex = CGFloat(tabSegmentedControl.selectedSegmentIndex)
+        let segmentWidth = tabSegmentedControl.frame.width / CGFloat(tabSegmentedControl.numberOfSegments)
+        let leadingDistance = segmentWidth * segmentIndex
+        
+        underLineView.snp.updateConstraints({ make in
+            make.leading.equalTo(tabSegmentedControl).offset(leadingDistance)
+        })
+        
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            self?.view.layoutIfNeeded()
+        })
+        
+        pageViewController.setViewControllers([viewControllers[tabSegmentedControl.selectedSegmentIndex]], direction: segmentIndex == 1.0 ? .forward : .reverse, animated: true)
     }
 }
 
@@ -93,31 +89,40 @@ extension AdminViewController {
 extension AdminViewController {
     
     private func addViews() {
-        view.addSubview(filteredButton)
-        view.addSubview(textField)
-        view.addSubview(userListTableView)
+        segmentView.addSubview([tabSegmentedControl, underLineBackgroundView, underLineView])
+        contentsView.addSubview(pageViewController.view)
+        
+        view.addSubview([segmentView, contentsView])
     }
     
     private func makeConstraints() {
-        let padding: CGFloat = 10
+        let safeArea = view.safeAreaLayoutGuide
         
-        filteredButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(padding)
-            make.leading.equalTo(padding)
-            make.width.equalTo(80)
-            make.height.equalTo(40)
+        segmentView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(safeArea)
+            make.height.equalTo(50)
         }
         
-        textField.snp.makeConstraints { make in
-            make.top.equalTo(filteredButton)
-            make.leading.equalTo(filteredButton.snp.trailing).offset(padding)
-            make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-padding)
-            make.height.equalTo(filteredButton.snp.height)
+        tabSegmentedControl.snp.makeConstraints { make in
+            make.top.leading.centerX.centerY.equalTo(segmentView)
         }
         
-        userListTableView.snp.makeConstraints { make in
-            make.top.equalTo(textField.snp.bottom).offset(padding)
-            make.leading.trailing.bottom.equalToSuperview()
+        contentsView.snp.makeConstraints { make in
+            make.top.equalTo(segmentView.snp.bottom)
+            make.leading.trailing.equalTo(segmentView)
+            make.bottom.equalToSuperview()
+        }
+        
+        underLineBackgroundView.snp.makeConstraints { make in
+            make.leading.bottom.equalTo(tabSegmentedControl)
+            make.width.equalTo(tabSegmentedControl.snp.width)
+            make.height.equalTo(0.5)
+        }
+        
+        underLineView.snp.makeConstraints { make in
+            make.leading.bottom.equalTo(tabSegmentedControl)
+            make.width.equalTo(tabSegmentedControl.snp.width).multipliedBy(1 / CGFloat(tabSegmentedControl.numberOfSegments))
+            make.height.equalTo(2)
         }
     }
 }

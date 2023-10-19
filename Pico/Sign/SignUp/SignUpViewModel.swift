@@ -13,28 +13,42 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 final class SignUpViewModel {
-    static let shared: SignUpViewModel = SignUpViewModel()
+    private let dbRef = Firestore.firestore()
+    var imagesSubject: PublishSubject<[UIImage]> = PublishSubject()
+    var urlStringsSubject: PublishSubject<[String]> = PublishSubject()
+    var locationSubject: PublishSubject<Location> = PublishSubject()
+    var isSaveSuccess: PublishSubject<Void> = PublishSubject()
     private let disposeBag = DisposeBag()
+    
+    var isRightPhoneNumber: Bool = false
+    var isRightName: Bool = false
     let id = UUID().uuidString
     var userMbti = ""
+    lazy var mbti: MBTIType = {
+        guard let mbtiType = MBTIType(rawValue: userMbti.lowercased()) else {
+            return .enfj
+        }
+        return mbtiType
+    }()
     var phoneNumber: String = ""
     var gender: GenderType = .etc
     var birth: String = ""
     var nickName: String = ""
     var location: Location = Location(address: "", latitude: 0, longitude: 0)
     var imageArray: [UIImage] = []
-    var createdDate: Double = 0
+    var createdDate: Double = Date().timeIntervalSince1970
     var chuCount: Int = 0
     var isSubscribe: Bool = false
-    var imagesSubject: PublishSubject<[UIImage]> = PublishSubject()
-    var urlStringsSubject: PublishSubject<[String]> = PublishSubject()
-    var locationSubject: PublishSubject<Location> = PublishSubject()
-    var isSaveSuccess: PublishSubject<Void> = PublishSubject()
-    lazy var newUser: User =
-    User(id: id, mbti: .entp, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
     
-    private init() {
-        locationSubject.subscribe { location in
+    lazy var newUser: User =
+    User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
+    
+    var progressStatus: Float = 0.0
+    
+    init() {
+        locationSubject.subscribe { [weak self] location in
+            guard let self = self else { return }
+            SignLoadingManager.showLoading(text: "")
             self.newUser.location = location
             self.saveImage()
         }
@@ -42,19 +56,30 @@ final class SignUpViewModel {
         
         imagesSubject
             .flatMap { images -> Observable<[String]> in
+               
                 return StorageService.shared.getUrlStrings(images: images, userId: self.id)
             }
             .subscribe(onNext: urlStringsSubject.onNext(_:))
             .disposed(by: disposeBag)
         
         urlStringsSubject
-            .subscribe { strings in
+            .subscribe { [weak self] strings in
+                guard let self = self else { return }
                 print("스트링 저장완료")
                 self.newUser.imageURLs = strings
                 self.saveNewUser()
+                SignLoadingManager.hideLoading()
             }.disposed(by: disposeBag)
     }
     
+    func animateProgressBar(progressView: UIProgressView, endPoint: Float) {
+        let endStatus = endPoint * 0.143
+        UIView.animate(withDuration: 3) {
+            progressView.setProgress(endStatus, animated: true)
+        }
+        progressStatus = endStatus
+    }
+
     func saveImage() {
         imagesSubject.onNext(imageArray)
     }

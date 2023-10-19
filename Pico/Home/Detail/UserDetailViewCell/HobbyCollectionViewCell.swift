@@ -25,22 +25,21 @@ final class HobbyCollectionViewCell: UICollectionViewCell {
         makeConstraints()
     }
     
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     func config(labelText: String) {
         label.text = labelText
     }
     
     private func addViews() {
-        self.addSubview(label)
+        contentView.addSubview(label)
     }
     
     private func makeConstraints() {
         label.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

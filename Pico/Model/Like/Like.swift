@@ -27,6 +27,7 @@ struct Like: Codable {
             let ageComponents = calendar.dateComponents([.year], from: birthdate, to: currentDate)
             return ageComponents.year ?? 0
         }
+        let createdDate: Double?
     }
 
     enum LikeType: String, Codable {

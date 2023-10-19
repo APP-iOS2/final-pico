@@ -12,12 +12,10 @@ import RxSwift
 import RxCocoa
 
 final class SignViewController: UIViewController {
-    var viewModel: SignUpViewModel = .shared
     private let disposeBag = DisposeBag()
     
     private lazy var backgroundView: UIView = {
         let view = UIView()
-//        view.backgroundColor = .picoBlue
         let gradient: CAGradientLayer = CAGradientLayer()
         gradient.colors = [UIColor.picoGradientMedium2.cgColor, UIColor.picoGradientMedium.cgColor, UIColor.picoBlue.cgColor]
         gradient.locations = [0.0, 0.3, 1.0]
@@ -111,7 +109,7 @@ extension SignViewController {
             make.top.equalTo(safeArea).offset(110)
             make.leading.equalTo(50)
             make.trailing.equalTo(-50)
-            make.height.equalTo(60)
+            make.height.equalTo(50)
         }
         
         signInButton.snp.makeConstraints { make in

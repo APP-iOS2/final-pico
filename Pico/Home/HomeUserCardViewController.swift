@@ -8,15 +8,19 @@
 import UIKit
 import SnapKit
 import RxSwift
+import CoreLocation
 
 final class HomeUserCardViewController: UIViewController {
     
     weak var homeViewController: HomeViewController?
     private let user: User
+    private var distance = CLLocationDistance()
     private let disposeBag = DisposeBag()
     private var panGesture = UIPanGestureRecognizer()
     private var initialCenter = CGPoint()
     private let viewModel = HomeUserCardViewModel()
+    private let currentUser = UserDefaultsManager.shared.getUserData()
+    private var distanceLabel = UILabel()
     
     init(user: User) {
         self.user = user
@@ -100,9 +104,8 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func addSubView() {
-        for viewItem in [scrollView, pageControl, pageRightButton, pageLeftButton, pickBackButton, disLikeButton, likeButton, infoHStack, infoMBTILabel] {
-            view.addSubview(viewItem)
-        }
+        view.addSubview([scrollView, pageControl, pageRightButton, pageLeftButton, pickBackButton, disLikeButton, likeButton, infoHStack, infoMBTILabel, distanceLabel])
+        
         infoHStack.addArrangedSubview(infoVStack)
         infoHStack.addArrangedSubview(infoButton)
         
@@ -177,6 +180,14 @@ final class HomeUserCardViewController: UIViewController {
             make.bottom.equalTo(infoLocationLabel.snp.bottom).offset(40)
             make.width.equalTo(infoMBTILabel.frame.size.width)
         }
+        
+        distanceLabel.snp.makeConstraints { make in
+            make.top.equalTo(infoNameAgeLabel.snp.top)
+            make.trailing.equalTo(infoNameAgeLabel.snp.trailing).offset(-15)
+            make.bottom.equalTo(infoNameAgeLabel.snp.bottom)
+            make.width.equalTo(100)
+        }
+        
     }
     
     private func configButtons() {
@@ -186,8 +197,14 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func configLabels() {
-        infoNameAgeLabel.text = "\(user.nickName) \(user.birth)"
+        infoNameAgeLabel.text = "\(user.nickName) \(user.age)"
         infoLocationLabel.text = user.location.address
+        
+        distance = calculateDistance(user: user)
+        distanceLabel.text = "\(String(format: "%.2f", distance / 1000))km"
+        distanceLabel.textColor = .white
+        distanceLabel.textAlignment = .right
+        distanceLabel.font = .picoSubTitleFont
     }
     
     private func configGesture() {
@@ -226,14 +243,14 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func loadUserImages() {
-        homeViewController?.startLoading()
         for (index, url) in user.imageURLs.enumerated() {
-            
             let imageView = UIImageView()
+            imageView.configBackgroundColor()
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
             imageView.layer.cornerRadius = 10
-            imageView.configBackgroundColor()
+            imageView.layer.borderWidth = 1
+            imageView.layer.borderColor = UIColor.picoGray.cgColor
             scrollView.addSubview(imageView)
             
             imageView.snp.makeConstraints { make in
@@ -242,23 +259,18 @@ final class HomeUserCardViewController: UIViewController {
                 make.width.equalTo(view).offset(-20)
                 make.height.equalTo(scrollView).offset(-20)
             }
-            Observable.just(url)
-                .map { URL(string: $0)}
-                .compactMap { $0 }
-                .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .default))
-                .map { try Data(contentsOf: $0)}
-                .map { UIImage(data: $0)}
-                .observe(on: MainScheduler.instance)
-                .subscribe { image in
-                    imageView.image = image
-                    self.homeViewController?.stopLoading()
-                }
-                .disposed(by: disposeBag)
-            
+            guard let url = URL(string: url) else { return }
+            imageView.kf.setImage(with: url)
             if index == user.imageURLs.count - 1 {
                 scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(user.imageURLs.count), height: scrollView.frame.height)
             }
         }
+    }
+    
+    private func calculateDistance(user: User) -> CLLocationDistance {
+        let currentUserLoc = CLLocation(latitude: currentUser.latitude, longitude: currentUser.longitude)
+        let otherUserLoc = CLLocation(latitude: user.location.latitude, longitude: user.location.longitude)
+        return  currentUserLoc.distance(from: otherUserLoc)
     }
     
     @objc func touchGesture(_ gesture: UIPanGestureRecognizer) {
@@ -281,20 +293,28 @@ final class HomeUserCardViewController: UIViewController {
             }
         case .ended:
             if translation.x > 100 {
+                HomeUserCardViewModel.cardCounting += 1
+                if HomeUserCardViewModel.cardCounting == 3 {
+                    HomeUserCardViewModel.cardCounting = -1
+                    homeViewController?.addUserCards()
+                }
                 UIView.animate(withDuration: 0.5) { [self] in
-                    viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .like)
+                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                     homeViewController?.removedView.append(view)
                     view.center.x += 1000
                     homeViewController?.likeLabel.alpha = 0
-                } completion: { _ in
                 }
             } else if translation.x < -100 {
-                self.viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .dislike)
+                HomeUserCardViewModel.cardCounting += 1
+                if HomeUserCardViewModel.cardCounting == 3 {
+                    HomeUserCardViewModel.cardCounting = -1
+                    homeViewController?.addUserCards()
+                }
+                self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
                 UIView.animate(withDuration: 0.5) { [self] in
                     homeViewController?.removedView.append(view)
                     view.center.x -= 1000
                     homeViewController?.passLabel.alpha = 0
-                } completion: { _ in
                 }
             } else {
                 UIView.animate(withDuration: 0.3) {
@@ -308,12 +328,17 @@ final class HomeUserCardViewController: UIViewController {
             break
         }
     }
-    
     @objc func tappedLikeButton() {
-        homeViewController?.removedView.append(self.view)
+        self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.likeLabel.alpha = 1
-        self.viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .like)
-        UIView.animate(withDuration: 0.3) {
+        self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
+        
+        HomeUserCardViewModel.cardCounting += 1
+        if HomeUserCardViewModel.cardCounting == 3 {
+            HomeUserCardViewModel.cardCounting = -1
+            homeViewController?.addUserCards()
+        }
+        UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
         } completion: { _ in
             self.homeViewController?.likeLabel.alpha = 0
@@ -321,10 +346,15 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     @objc func tappedDisLikeButton() {
-        homeViewController?.removedView.append(self.view)
+        self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.passLabel.alpha = 1
-        self.viewModel.saveLikeData(sendUserInfo: viewModel.tempMy, receiveUserInfo: user, likeType: .dislike)
-        UIView.animate(withDuration: 0.3) {
+        self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
+        HomeUserCardViewModel.cardCounting += 1
+        if HomeUserCardViewModel.cardCounting == 3 {
+            HomeUserCardViewModel.cardCounting = -1
+            homeViewController?.addUserCards()
+        }
+        UIView.animate(withDuration: 0.5) {
             self.view.center.x -= 1000
         } completion: { _ in
             self.homeViewController?.passLabel.alpha = 0
@@ -332,7 +362,9 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     @objc func tappedPickBackButton() {
+        HomeUserCardViewModel.cardCounting -= 1
         if let lastView = homeViewController?.removedView.last {
+            self.viewModel.deleteLikeData()
             UIView.animate(withDuration: 0.3) {
                 lastView.center = self.view.center
                 lastView.transform = CGAffineTransform(rotationAngle: 0)
@@ -361,6 +393,7 @@ final class HomeUserCardViewController: UIViewController {
     
     @objc func tappedInfoButton() {
         let viewController = UserDetailViewController()
+        viewController.viewModel = UserDetailViewModel(user: user)
         navigationController?.pushViewController(viewController, animated: true)
     }
     

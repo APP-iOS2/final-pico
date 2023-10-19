@@ -12,22 +12,29 @@ import RxSwift
 import RxRelay
 
 final class SignUpTermsOfServiceViewController: UIViewController {
-    var viewModel: SignUpViewModel = .shared
-
+    let viewModel: SignUpViewModel
+    
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    private let locationVM = LocationManager()
     private let disposeBag = DisposeBag()
-    private var locationManager: CLLocationManager = CLLocationManager()
-    private var currentLocation: CLLocationCoordinate2D?
     private var isLoading: Bool = false
     private var isCheckedBottom: Bool = false
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts
     
-    private let progressView: UIProgressView = {
+    private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .picoBetaBlue
+        view.trackTintColor = .lightGray
         view.progressTintColor = .picoBlue
-        view.progress = 0.142 * 7
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
+        view.progress = viewModel.progressStatus
         return view
     }()
     
@@ -63,48 +70,17 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configTableView()
-        configLocation()
+        locationVM.configLocation()
         viewModel.isSaveSuccess
             .observe(on: MainScheduler.instance)
-            .bind { _ in
+            .bind { [weak self] _ in
                 print("저장완료")
-                self.navigationController?.popToRootViewController(animated: true)
+                self?.navigationController?.popToRootViewController(animated: true)
             }
             .disposed(by: disposeBag)
     }
-}
-// MARK: - 위치관련
-extension SignUpTermsOfServiceViewController: CLLocationManagerDelegate {
-    private func configLocation() {
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        DispatchQueue.global().async {
-            if CLLocationManager.locationServicesEnabled() {
-                self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
-                self.locationManager.startUpdatingLocation()
-            } else {
-                print("이미 했잖아")
-            }
-        }
-    }
-    private func getAddress(latitude: CLLocationDegrees?, longitude: CLLocationDegrees?) {
-        
-        let location = CLLocation(latitude: latitude ?? 0, longitude: longitude ?? 0)
-        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
-            if let error = error {
-                print("Geocoding Error: \(error)")
-                return
-            }
-            if let placemark = placemarks?.first {
-                let addressString = "\(placemark.thoroughfare ?? "") \(placemark.subThoroughfare ?? ""), \(placemark.locality ?? "") \(placemark.postalCode ?? ""), \(placemark.country ?? "")"
-                self.viewModel.locationSubject.onNext(Location(address: addressString, latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
-            }
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error)
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.animateProgressBar(progressView: progressView, endPoint: 7)
     }
 }
 // MARK: - Config
@@ -128,12 +104,23 @@ extension SignUpTermsOfServiceViewController {
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         // 위도 경도
-        let space = locationManager.location?.coordinate
+        let space = locationVM.locationManager.location?.coordinate
         let lat = space?.latitude
         let long = space?.longitude
-        getAddress(latitude: lat, longitude: long)
         
+        locationVM.getAddress(latitude: lat, longitude: long) { [weak self] location in
+            guard let self = self else {
+                return
+            }
+            
+            if let location = location {
+                self.viewModel.locationSubject.onNext(location)
+            } else {
+                self.locationVM.accessLocation()
+            }
+        }
     }
+
 }
 // MARK: - tableView관련
 extension SignUpTermsOfServiceViewController: UITableViewDelegate, UITableViewDataSource {

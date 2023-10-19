@@ -24,7 +24,7 @@ extension UIView {
     }
     
     /// [UIView] 배열을 view 에 추가하기
-    func addViews(_ views: [UIView]) {
+    func addSubview(_ views: [UIView]) {
         views.forEach {
             self.addSubview($0)
         }

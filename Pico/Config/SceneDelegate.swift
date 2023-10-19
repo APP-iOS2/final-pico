@@ -14,10 +14,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-
-                let tabBarController = UINavigationController(rootViewController: SignViewController())
-//        let tabBarController = TabBarController()
-        window?.rootViewController = tabBarController
+        
+        if UserDefaultsManager.shared.isLogin() {
+            let rootViewController = TabBarController()
+            window?.rootViewController = rootViewController
+        } else {
+            let rootViewController = UINavigationController(rootViewController: SignViewController())
+            window?.rootViewController = rootViewController
+        }
+        
+//        let rootViewController = UINavigationController(rootViewController: AdminViewController())
+//        window?.rootViewController = rootViewController
+        
         window?.makeKeyAndVisible()
     }
     
@@ -33,7 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             transition.type = CATransitionType.push
             transition.subtype = CATransitionSubtype.fromRight
             window.layer.add(transition, forKey: kCATransition)
-        }        
+        }
         window.rootViewController = viewController
     }
     
@@ -47,6 +55,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        NotificationService.shared.displayResetBadge()
     }
     
     func sceneWillResignActive(_ scene: UIScene) {

@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 /*
  사용법
@@ -17,14 +18,13 @@ import SnapKit
  
  commonTextField.snp.makeConstraints { make in
     // top, leading, trailing 제약조건 추가
-    // height 40으로 고정해주세요
      make.height.equalTo(40)
  }
  */
 
 final class CommonTextField: UIView {
     
-    private let textField: UITextField = {
+    let textField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "입력해주세여"
         return textField
@@ -35,14 +35,15 @@ final class CommonTextField: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
-        button.tintColor = .picoBlue
+        button.tintColor = .picoGray
         button.isHidden = true
         return button
     }()
     
     /// 최대 글자 수 제한
     private var maxLength: Int
-    
+    let textInputPublisher = PublishSubject<String>()
+
     init(frame: CGRect = .zero, maxLength: Int = 0) {
         self.maxLength = maxLength
         super.init(frame: frame)
@@ -51,7 +52,6 @@ final class CommonTextField: UIView {
         makeConstraints()
         configTextField()
         configButtons()
-        configBorder(color: .picoGray)
     }
     
     @available(*, unavailable)
@@ -75,28 +75,25 @@ final class CommonTextField: UIView {
 
 extension CommonTextField: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        configBorder(color: .picoBlue)
         removeAllButton.isHidden = false
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        configBorder(color: .picoGray)
         removeAllButton.isHidden = true
     }
     
-    private func configBorder(color: UIColor) {
-        self.layer.borderColor = color.cgColor
-        self.layer.borderWidth = 1
-        self.layer.cornerRadius = 5
-        self.clipsToBounds = true
-    }
-    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard maxLength > 0 else { return true }
+        guard maxLength > 0 else {
+            if let text = textField.text {
+                textInputPublisher.onNext(text + string)
+            }
+            return true
+        }
         
         let currentText = textField.text ?? ""
         var newText = (currentText as NSString).replacingCharacters(in: range, with: string)
         newText = newText.replacingOccurrences(of: " ", with: "")
+        textInputPublisher.onNext(newText)
         
         return newText.count <= maxLength
     }
