@@ -43,15 +43,20 @@ final class WorldCupViewModel {
         cell.mbtiLabel.setMbti(mbti: user.mbti)
         cell.userNickname.text = String(user.nickName)
         cell.userAge.text = "\(user.age)세"
-        
-        let dataLabelTexts = addDataLabels(user)
-        cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
+
+        Loading.showLoading()
         
         if let imageURL = URL(string: user.imageURLs.first ?? "") {
-            cell.userImage.load(url: imageURL)
+            cell.userImage.loadAsync(url: imageURL) { success in
+                if success {
+                    let dataLabelTexts = self.addDataLabels(user)
+                    cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
+                }
+                Loading.hideLoading()
+            }
         }
     }
-    
+
     private func addDataLabels(_ currentUser: User) -> [String] {
         var dataLabelTexts: [String] = []
         
@@ -101,5 +106,21 @@ final class WorldCupViewModel {
     
     func stopBackgroundMusic() {
         audioPlayer?.stop()
+    }
+}
+
+extension UIImageView {
+    func loadAsync(url: URL, completion: @escaping (Bool) -> Void) {
+        DispatchQueue.global().async { [weak self] in
+            if let data = try? Data(contentsOf: url),
+               let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self?.image = image
+                    completion(true)
+                }
+            } else {
+                completion(false)
+            }
+        }
     }
 }
