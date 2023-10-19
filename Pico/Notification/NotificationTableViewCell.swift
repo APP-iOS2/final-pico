@@ -130,6 +130,7 @@ extension NotificationTableViewCell {
     
     func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
         guard let url = URL(string: imageUrl) else { return }
+        profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         profileImageView.kf.setImage(with: url)
         iconImageView.image = UIImage()
         nameLabel.text = "\(nickName), \(age)"
