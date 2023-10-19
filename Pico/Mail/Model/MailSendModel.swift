@@ -180,11 +180,11 @@ final class MailSendModel {
             "isReading": false
         ]
         
-        // 보내는 사람
-        dbRef.collection(Collections.mail.name).document(senderUser.userId).setData(
+        // 받는 사람
+        dbRef.collection(Collections.mail.name).document(receiveUser.id).setData(
             [
-                "userId": senderUser.userId,
-                "sendMailInfo": FieldValue.arrayUnion([sendMessages])
+                "userId": receiveUser.id,
+                "receiveMailInfo": FieldValue.arrayUnion([receiveMessages])
             ], merge: true) { error in
                 if let error = error {
                     print("평가 업데이트 에러: \(error)")
@@ -194,11 +194,11 @@ final class MailSendModel {
             }
         
         if type == .message { // 메시지를 보내는 경우
-            // 받는 사람
-            dbRef.collection(Collections.mail.name).document(receiveUser.id).setData(
+            // 보내는 사람
+            dbRef.collection(Collections.mail.name).document(senderUser.userId).setData(
                 [
-                    "userId": receiveUser.id,
-                    "receiveMailInfo": FieldValue.arrayUnion([receiveMessages])
+                    "userId": senderUser.userId,
+                    "sendMailInfo": FieldValue.arrayUnion([sendMessages])
                 ], merge: true) { error in
                     if let error = error {
                         print("평가 업데이트 에러: \(error)")
@@ -210,10 +210,10 @@ final class MailSendModel {
             NotificationService.shared.sendNotification(userId: receiveUser.id, sendUserName: senderUser.nickName, notiType: .message)
             
         } else { // 매칭의 경우
-            dbRef.collection(Collections.mail.name).document(receiveUser.id).setData(
+            dbRef.collection(Collections.mail.name).document(senderUser.userId).setData(
                 [
-                    "userId": receiveUser.id,
-                    "sendMailInfo": FieldValue.arrayUnion([sendMessages])
+                    "userId": senderUser.userId,
+                    "receiveMailInfo": FieldValue.arrayUnion([receiveMessages])
                 ], merge: true) { error in
                     if let error = error {
                         print("평가 업데이트 에러: \(error)")
