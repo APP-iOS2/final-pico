@@ -1,5 +1,5 @@
 //
-//  ProfileEditTextModalViewController.swift
+//  ProfileEditNicknameModalViewController.swift
 //  Pico
 //
 //  Created by 김민기 on 2023/10/13.
@@ -8,8 +8,8 @@
 import UIKit
 import SnapKit
 import RxSwift
-/*직장 내소개  뷰*/
-final class ProfileEditTextModalViewController: UIViewController {
+/* 이름 뷰*/
+final class ProfileEditNicknameModalViewController: UIViewController {
     
     private let backButton: UIButton = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
@@ -33,6 +33,7 @@ final class ProfileEditTextModalViewController: UIViewController {
     private let textField: UITextField = {
         let textField = UITextField()
         textField.font = .picoTitleFont
+        textField.placeholder = "3자리 부터 8자리 까지"
         textField.textColor = .black
         return textField
     }()
@@ -44,6 +45,18 @@ final class ProfileEditTextModalViewController: UIViewController {
         button.imageView?.contentMode = .scaleAspectFit
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        return button
+    }()
+    
+    private let nickNameCheckButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("중복확인", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 13
+        button.isEnabled = false
+        button.backgroundColor = .picoGray
+        //        button.isHidden = true
         return button
     }()
     
@@ -82,10 +95,6 @@ final class ProfileEditTextModalViewController: UIViewController {
     private func binds() {
         
         profileEditViewModel.modalName
-            .bind(to: textField.rx.placeholder)
-            .disposed(by: disposeBag)
-        
-        profileEditViewModel.modalName
             .bind(to: titleLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -108,13 +117,34 @@ final class ProfileEditTextModalViewController: UIViewController {
         let text = profileEditViewModel.textData ?? ""
         textField.text = text
         
+        nickNameCheckButton.rx.tap
+            .bind { [weak self] _ in
+                guard let self else { return }
+                self.checkService.checkNickName(name: self.textField.text?.trimmed() ?? "") { [weak self] message, isRight in
+                    guard let self = self else { return }
+                    guard isRight else {
+                        SignLoadingManager.hideLoading()
+                        self.showAlert(message: message) {
+                            self.textField.text = ""
+                        }
+                        return
+                    }
+                    SignLoadingManager.hideLoading()
+                    self.showAlert(message: message) {
+                        self.completeButton.isEnabled = true
+                        self.completeButton.backgroundColor = .picoBlue
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
+        
         completeButton.rx.tap
             .bind { [weak self] _ in
                 guard let self else { return }
                 self.profileEditViewModel.updateData(data: self.textField.text?.trimmed())
                 self.dismiss(animated: true)
-            }
-            .disposed(by: disposeBag)
+                //TODO: chucount 연결하기
+            }.disposed(by: disposeBag)
     }
     
     private func textFieldConfigure() {
@@ -122,7 +152,7 @@ final class ProfileEditTextModalViewController: UIViewController {
     }
     
     private func addViews() {
-        view.addSubview([backButton, titleLabel, textField, cancelButton, completeButton])
+        view.addSubview([backButton, titleLabel, textField, cancelButton, nickNameCheckButton, completeButton])
     }
     
     private func makeConstraints() {
@@ -146,8 +176,15 @@ final class ProfileEditTextModalViewController: UIViewController {
         
         cancelButton.snp.makeConstraints { make in
             make.top.equalTo(textField.snp.top)
-            make.trailing.equalToSuperview().offset(-15)
+            make.trailing.equalTo(nickNameCheckButton.snp.leading).offset(-8)
             make.height.equalTo(30)
+        }
+        
+        nickNameCheckButton.snp.makeConstraints { make in
+            make.centerY.equalTo(textField.snp.centerY)
+            make.trailing.equalToSuperview().offset(-15)
+            make.height.equalTo(35)
+            make.width.equalTo(65)
         }
         
         completeButton.snp.makeConstraints { make in
@@ -158,17 +195,18 @@ final class ProfileEditTextModalViewController: UIViewController {
     }
 }
 
-extension ProfileEditTextModalViewController: UITextFieldDelegate {
+extension ProfileEditNicknameModalViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let text = profileEditViewModel.textData ?? ""
         let updatedText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
-        
-        if updatedText != text {
-            completeButton.isEnabled = true
-            completeButton.backgroundColor = .picoBlue
-        } else {
+        if updatedText == text {
             completeButton.isEnabled = false
             completeButton.backgroundColor = .picoGray
+            nickNameCheckButton.isEnabled = false
+            nickNameCheckButton.backgroundColor = .picoGray
+        } else {
+            nickNameCheckButton.isEnabled = true
+            nickNameCheckButton.backgroundColor = .picoBlue
         }
         return true
     }
