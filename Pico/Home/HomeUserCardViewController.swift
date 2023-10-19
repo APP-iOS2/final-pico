@@ -311,7 +311,12 @@ final class HomeUserCardViewController: UIViewController {
                     HomeUserCardViewModel.cardCounting = -1
                     homeViewController?.addUserCards()
                 }
-                NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: user.id, notiType: .like)
+                
+                NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
+                guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+                let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+                FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+                
                 UIView.animate(withDuration: 0.5) { [self] in
                     viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                     homeViewController?.removedView.append(view)
@@ -352,7 +357,12 @@ final class HomeUserCardViewController: UIViewController {
             HomeUserCardViewModel.cardCounting = -1
             homeViewController?.addUserCards()
         }
-        NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: user.id, notiType: .like)
+        
+        NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
+        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+        let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+        
         UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
         } completion: { _ in
