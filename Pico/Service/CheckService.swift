@@ -24,7 +24,7 @@ final class CheckService {
             return
         }
         
-        SignLoadingManager.showLoading(text: "중복된 번호를 찾고 있어요!")
+        SignLoadingManager.showLoading(text: "")
         
         self.dbRef.collection("users")
             .whereField("phoneNumber", isEqualTo: userNumber)
