@@ -11,7 +11,7 @@ import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
-    private let smsAuthManager = SmsAuthManager()
+    private let smsAuthManager = SMSAuthManager()
     private let checkService = CheckService()
     let viewModel: SignUpViewModel
     
@@ -212,28 +212,30 @@ extension SignUpPhoneNumberViewController {
         sender.tappedAnimation()
         isTappedCheckButton = true
         showAlert(message: "\(phoneNumberTextField.text ?? "") 번호로 인증번호를 전송합니다.") { [weak self] in
-            guard let self = self else { return }
-            guard let text = self.phoneNumberTextField.text else { return }
-            self.checkService.checkBlockUser(userNumber: text) { isRight in
-                if isRight {
+            guard let self else { return }
+            guard let text = phoneNumberTextField.text else { return }
+            checkService.checkBlockUser(userNumber: text) { reuslt in
+                switch reuslt {
+                case true:
                     self.showAlert(message: "차단된 번호로는 가입이 불가능합니다..") {
                         self.configReset()
                     }
-                } else {
-                    self.checkService.checkPhoneNumber(userNumber: text) { [weak self] message, isRight in
-                        guard let self = self else { return }
-                        guard isRight else {
-                            SignLoadingManager.hideLoading()
-                            self.showAlert(message: message) {
-                                self.viewModel.isRightPhoneNumber = isRight
-                                self.configReset()
-                            }
-                            return
-                        }
+                case false:
+                    self.checkService.checkPhoneNumber(userNumber: text) { [weak self] message, reuslt in
+                        guard let self else { return }
                         SignLoadingManager.hideLoading()
-                        self.updateViewState(num: text)
-                        self.viewModel.isRightPhoneNumber = isRight
-                        self.smsAuthManager.sendVerificationCode()
+                        switch reuslt {
+                        case true:
+                            updateViewState(num: text)
+                            viewModel.isRightPhoneNumber = reuslt
+                            smsAuthManager.sendVerificationCode()
+                        case false:
+                            showAlert(message: message) { [weak self] in
+                                guard let self else { return }
+                                viewModel.isRightPhoneNumber = reuslt
+                                configReset()
+                            }
+                        }
                     }
                 }
             }
@@ -263,7 +265,7 @@ extension SignUpPhoneNumberViewController {
 extension SignUpPhoneNumberViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard isTappedCheckButton else { 
+        guard isTappedCheckButton else {
             let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isEnable in
                 let isHidden = !isEnable
                 updateAuthButton(isEnable: isEnable, isHidden: isHidden)

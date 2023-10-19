@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class SignInViewController: UIViewController {
-    private let authManager = SmsAuthManager()
+    private let authManager = SMSAuthManager()
     private let keyboardManager = KeyboardManager()
     private let checkService = CheckService()
     private let viewModel = SignInViewModel()
