@@ -12,7 +12,7 @@ import RxCocoa
 
 final class MailSendViewController: UIViewController {
     
-    private let viewModel = MailViewModel()
+    private let viewModel = MailSendModel()
     private let disposeBag = DisposeBag()
     
     private var receiver: User?
@@ -105,7 +105,6 @@ final class MailSendViewController: UIViewController {
         button.backgroundColor = .picoGray
         return button
     }()
-    
     // MARK: - MailSend +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,7 +120,6 @@ final class MailSendViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         receiverImageView.setCircleImageView()
     }
-    
     // MARK: - MailSend +UI
     private func addViews() {
         receiverStack.addArrangedSubview( [receiverNameLabel, mbtiLabelView])
@@ -175,7 +173,6 @@ final class MailSendViewController: UIViewController {
             make.height.equalTo(50)
         }
     }
-    
     // MARK: - MailSend +Config
     func configData(userId: String) {
         viewModel.getUser(userId: userId) {
@@ -200,18 +197,18 @@ final class MailSendViewController: UIViewController {
     private func configSendButton() {
         sendButton.rx.tap
             .bind { [weak self] _ in
-                self?.sendButton.tappedAnimation()
-                if let text = self?.messageView.text {
+                guard let self = self  else { return }
+                self.sendButton.tappedAnimation()
+                if let text = self.messageView.text {
                     // sender: 로그인한 사람, recevie 받는 사람
-                    if let receiver = self?.receiver {
-                        self?.viewModel.saveMailData(receiveUser: receiver, message: text)
-                        self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                    if let receiver = self.receiver {
+                        self.viewModel.saveMailData(receiveUser: receiver, message: text)
+                        self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
                     }
                 }
             }
             .disposed(by: disposeBag)
     }
-    
     // MARK: - MailSend +objc
     @objc func tappedBackzButton() {
         dismiss(animated: true)
@@ -224,20 +221,22 @@ extension MailSendViewController {
         
         messageView.rx.didBeginEditing
             .bind { [weak self] _ in
-                if self?.messageView.text == textViewPlaceHolder {
-                    self?.messageView.text = nil
-                    self?.messageView.textColor = .black
+                guard let self = self else { return }
+                if self.messageView.text == textViewPlaceHolder {
+                    self.messageView.text = nil
+                    self.messageView.textColor = .black
                 }
             }
             .disposed(by: disposeBag)
         
         messageView.rx.didEndEditing
             .bind { [weak self] _ in
-                if let text = self?.messageView.text {
+                guard let self = self else { return }
+                if let text = self.messageView.text {
                     if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        self?.messageView.text = textViewPlaceHolder
-                        self?.messageView.textColor = .picoFontGray
-                        self?.updateCountLabel(characterCount: 0)
+                        self.messageView.text = textViewPlaceHolder
+                        self.messageView.textColor = .picoFontGray
+                        self.updateCountLabel(characterCount: 0)
                     }
                 }
             }

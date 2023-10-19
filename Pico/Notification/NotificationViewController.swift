@@ -107,7 +107,6 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
             }
         }
     }
-
 }
 
 // MARK: - Bind

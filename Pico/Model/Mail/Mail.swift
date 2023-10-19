@@ -18,7 +18,7 @@ struct Mail: Codable {
         let receivedUserId: String
         let mailType: MailType
         let message: String
-        let sendedDate: String
+        let sendedDate: Double
         let isReading: Bool
     }
 }
