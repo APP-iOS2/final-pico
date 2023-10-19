@@ -19,7 +19,7 @@ final class SettingNotiTableCell: UITableViewCell {
     private let subTitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
-        label.font = UIFont.picoSubTitleFont
+        label.font = UIFont.picoDescriptionFont
         label.text = "모든 알림을 허용합니다"
         return label
     }()
