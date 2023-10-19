@@ -40,6 +40,7 @@ final class NotificationTableViewCell: UITableViewCell {
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.adjustsFontSizeToFitWidth = true
+        label.font = .picoContentFont
         return label
     }()
     private let labelView: UIView = UIView()
@@ -63,13 +64,8 @@ final class NotificationTableViewCell: UITableViewCell {
     }
     
     private func addViews() {
-        [profileImageView, iconImageView, labelView].forEach { item in
-            contentView.addSubview(item)
-        }
-        
-        [nameLabel, mbitLabel, contentLabel, createDateLabel].forEach { item in
-            labelView.addSubview(item)
-        }
+        contentView.addSubview([profileImageView, iconImageView, labelView])
+        labelView.addSubview([nameLabel, mbitLabel, contentLabel, createDateLabel])
     }
     
     private func makeConstraints() {
@@ -85,7 +81,7 @@ final class NotificationTableViewCell: UITableViewCell {
         }
         
         labelView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-10)
             make.leading.equalTo(profileImageView.snp.trailing).offset(10)
             make.centerY.equalTo(profileImageView)
         }
