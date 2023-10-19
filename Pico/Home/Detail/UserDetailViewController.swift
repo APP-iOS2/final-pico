@@ -9,12 +9,6 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
-/* TODOs:
- like OR disLike 됐는지 판단 해 버튼 모양 다르게 -> 판단은 어떻게? [🔥]  DB로 판단?
- 자동 높이 조절
- 서브인포 있을때마다 추가,,
- 
- */
 
 final class UserDetailViewController: UIViewController {
     // 이전 뷰에서 실행이 필요 해 Defalut로 작성
@@ -79,7 +73,6 @@ final class UserDetailViewController: UIViewController {
         configActionSheet()
         buttonAction()
         bind()
-        Loading.hideLoading()
     }
     // MARK: - objc
     @objc func tappedNavigationButton() {
@@ -94,10 +87,8 @@ final class UserDetailViewController: UIViewController {
                 UIView.animate(withDuration: 0.5, animations: {
                     self.likeButton.transform = CGAffineTransform(translationX: 0, y: 100)
                     self.disLikeButton.transform = CGAffineTransform(translationX: 0, y: 100)
-                    self.showToast(message: "\(self.user.nickName) Like!")
+                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "Like", messageText: "\(self.user.nickName)님 Like", confirmButtonText: "확인", comfrimAction: nil)
                     self.viewModel.saveLikeData(receiveUserInfo: self.user, likeType: .like)
-                    //                    self.likeButton.isHidden = true
-                    //                    self.disLikeButton.isHidden = true
                 })
             })
             .disposed(by: disposeBag)
@@ -108,10 +99,8 @@ final class UserDetailViewController: UIViewController {
                 UIView.animate(withDuration: 0.5, animations: {
                     self.likeButton.transform = CGAffineTransform(translationX: 0, y: 100)
                     self.disLikeButton.transform = CGAffineTransform(translationX: 0, y: 100)
-                    self.showAlert(message: "한소희 DisLike!.", yesAction: nil)
+                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "Like", messageText: "\(self.user.nickName)님 DisLike", confirmButtonText: "확인", comfrimAction: nil)
                     self.viewModel.saveLikeData(receiveUserInfo: self.user, likeType: .dislike)
-                    //                    self.likeButton.isHidden = true
-                    //                    self.disLikeButton.isHidden = true
                 })
             })
             .disposed(by: disposeBag)
@@ -124,11 +113,42 @@ final class UserDetailViewController: UIViewController {
                 self.user = user
                 self.navigationItem.title = "\(user.nickName),  \(user.age)"
                 self.userImageViewController.config(images: user.imageURLs)
-                self.basicInformationViewContoller.config(mbti: user.mbti, nameAgeText: "\(user.nickName),  \(user.age)", locationText: "\(user.location.address)", heightText: "\(1756)")
-                guard let subInfo = user.subInfo else { return }
-                self.configSubInfoView()
-                self.aboutMeViewController.config(intro: subInfo.intro, eduText: "\(subInfo.education)", religionText: "\(subInfo.religion)", smokeText: "\(subInfo.smokeStatus)", jobText: subInfo.job ?? "", drinkText: "\(subInfo.drinkStatus)")
-                self.subInfomationViewController.config(hobbies: subInfo.hobbies, personalities: subInfo.personalities, likeMbtis: subInfo.favoriteMBTIs)
+                // SubInfo 있을 시
+                if let subInfo = user.subInfo {
+                    // Height가 없을시 nil 전달
+                    if subInfo.height == nil {
+                        self.basicInformationViewContoller.config(mbti: user.mbti,
+                                                                  nameAgeText: "\(user.nickName),  \(user.age)",
+                                                                  locationText: "\(user.location.address)",
+                                                                  heightText: nil)
+                    }
+                    self.basicInformationViewContoller.config(mbti: user.mbti,
+                                                              nameAgeText: "\(user.nickName),  \(user.age)",
+                                                              locationText: "\(user.location.address)",
+                                                              heightText: String(subInfo.height ?? 0))
+                    
+                    self.aboutMeViewController.config(intro: subInfo.intro,
+                                                      eduText: subInfo.education?.name,
+                                                      religionText: subInfo.religion?.name,
+                                                      smokeText: subInfo.smokeStatus?.name,
+                                                      jobText: subInfo.job,
+                                                      drinkText: subInfo.drinkStatus?.name
+                    )
+                    
+                    self.subInfomationViewController.config(hobbies: subInfo.hobbies,
+                                                            personalities: subInfo.personalities,
+                                                            likeMbtis: subInfo.favoriteMBTIs)
+                    // SubInfo가 없을시 뷰에 안보이도록 설정
+                } else {
+                    self.basicInformationViewContoller.config(mbti: user.mbti,
+                                                              nameAgeText: "\(user.nickName),  \(user.age)",
+                                                              locationText: "\(user.location.address)",
+                                                              heightText: nil)
+                    [self.aboutMeViewController.view, self.subInfomationViewController.view].forEach {
+//                        self.verticalStackView.removeArrangedSubview($0)
+                        $0.isHidden = true
+                    }
+                }
             }, onCompleted: {
                 Loading.hideLoading()
             })
@@ -141,6 +161,7 @@ final class UserDetailViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = rightBarButton
         self.navigationController?.navigationBar.tintColor = .black
     }
+    
     // MARK: - RightBarButtonItem Cofing
     // 바 버튼 아이템 클릭시 액션시트
     private func configActionSheet() {
@@ -153,16 +174,12 @@ final class UserDetailViewController: UIViewController {
         let actionBlock = UIAlertAction(title: "차단", style: .default) { _ in
             self.showAlert(message: "차단 하시겠습니까?", title: "차단하기", isCancelButton: true) {
                 self.viewModel.blockUser(blockedUser: self.user) {
-                    self.showAlert(message: "차단 완료", yesAction: nil)
+                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "차단", messageText: "\(self.user.nickName)님 차단 완료", confirmButtonText: "확인", comfrimAction: nil)
                 }
             }
         }
-        
-        let actionDrink = UIAlertAction(title: "취한거같아요", style: .destructive) { _  in
-            self.showToast(message: "취했어요")
-        }
         let actionCancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        [actionReport, actionBlock, actionDrink, actionCancel].forEach { actionSheetController.addAction($0) }
+        [actionReport, actionBlock, actionCancel].forEach { actionSheetController.addAction($0) }
     }
     
     // 신고 버튼 클릭시 액션시트
@@ -194,7 +211,7 @@ final class UserDetailViewController: UIViewController {
     // DB에 신고 내용 저장
     private func reportAction(reason: String) {
         self.viewModel.reportUser(reportedUser: user, reason: reason) {
-            self.showAlert(message: "신고완료", yesAction: nil)
+            self.showCustomAlert(alertType: .onlyConfirm, titleText: "신고", messageText: "\(self.user.nickName)님 신고 완료", confirmButtonText: "확인", comfrimAction: nil)
         }
     }
 }
@@ -202,17 +219,6 @@ final class UserDetailViewController: UIViewController {
 // MARK: - UI Associated Code
 extension UserDetailViewController {
     // subInfo가 있을 시 뷰에 추가
-    private func configSubInfoView() {
-        [aboutMeViewController.view, subInfomationViewController.view].forEach { verticalStackView.addArrangedSubview($0) }
-        
-        subInfomationViewController.view.snp.makeConstraints { make in
-            make.height.equalTo(Screen.height * 0.7)
-        }
-        aboutMeViewController.view.snp.makeConstraints { make in
-            make.height.equalTo(Screen.height * 0.35)
-        }
-    }
-    
     private func addChilds() {
         [userImageViewController, basicInformationViewContoller, aboutMeViewController, subInfomationViewController].forEach {
             // 이거 왜 쓰는 거지..
@@ -223,8 +229,10 @@ extension UserDetailViewController {
     
     private func addViews() {
         [scrollView, disLikeButton, likeButton].forEach { view.addSubview($0) }
-        [verticalStackView, userImageViewController.view].forEach { scrollView.addSubview($0) }
-      verticalStackView.addArrangedSubview(basicInformationViewContoller.view)
+        [userImageViewController.view, verticalStackView].forEach { scrollView.addSubview($0) }
+        [basicInformationViewContoller.view, aboutMeViewController.view, subInfomationViewController.view].forEach {
+            verticalStackView.addArrangedSubview($0)
+        }
     }
     
     private func makeConstraints() {
@@ -244,6 +252,7 @@ extension UserDetailViewController {
         userImageViewController.view.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
         }
+        
         verticalStackView.snp.makeConstraints { make in
             make.top.equalTo(userImageViewController.view.snp.bottom).offset(20)
             make.leading.trailing.bottom.width.equalToSuperview().inset(20)
@@ -251,44 +260,16 @@ extension UserDetailViewController {
         
         basicInformationViewContoller.view.snp.makeConstraints { make in
             make.height.equalTo(Screen.height * 0.2)
-        }
-    }
-    // Made In GPT 수정할게용,,
-    private func showToast(message: String) {
-        let toastLabel = UILabel()
-        toastLabel.text = message
-        toastLabel.textAlignment = .center
-        toastLabel.textColor = .white
-        toastLabel.backgroundColor = UIColor.orange // You can choose any background color
-        toastLabel.layer.cornerRadius = toastLabel.bounds.size.height / 2
-        toastLabel.clipsToBounds = true
-        toastLabel.font = UIFont.systemFont(ofSize: 16)
-        toastLabel.numberOfLines = 0
-        
-        toastLabel.alpha = 0
-        view.addSubview(toastLabel)
-        
-        toastLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(20)
+            //            make.top.leading.trailing.equalToSuperview()
         }
         
-        UIView.animate(withDuration: 0.5, animations: {
-            toastLabel.alpha = 1
-            toastLabel.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
-            toastLabel.backgroundColor = UIColor.green // Change to a different color
-            self.view.layoutIfNeeded()
-        }) { _ in
-            UIView.animate(withDuration: 0.5, delay: 2.0, animations: {
-                toastLabel.alpha = 0
-                toastLabel.transform = .identity
-                toastLabel.backgroundColor = UIColor.orange // Revert to the original color
-                self.view.layoutIfNeeded()
-            }) { _ in
-                toastLabel.removeFromSuperview()
-            }
+        subInfomationViewController.view.snp.makeConstraints { make in
+            make.height.equalTo(Screen.height * 0.7)
         }
+        
+//        aboutMeViewController.view.snp.makeConstraints { make in
+//            make.height.equalTo(Screen.height * 0.4)
+//        }
+        
     }
 }
-    

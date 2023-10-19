@@ -100,7 +100,7 @@ extension AdminViewController {
         
         segmentView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(safeArea)
-            make.height.equalTo(60)
+            make.height.equalTo(50)
         }
         
         tabSegmentedControl.snp.makeConstraints { make in

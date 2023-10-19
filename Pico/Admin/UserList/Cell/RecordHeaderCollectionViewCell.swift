@@ -10,22 +10,36 @@ import SnapKit
 
 final class RecordHeaderCollectionViewCell: UICollectionViewCell {
     
-    private let view: UIView = {
-        let view = UIView()
-        view.backgroundColor = .picoBlue
-        view.layer.cornerRadius = 15
-        return view
-    }()
+    enum HeaderType {
+        case main
+        case sub
+        
+        var textColor: (UIColor, UIColor) {
+            switch self {
+            case .main:
+                return (.picoFontBlack, .picoGray)
+            case .sub:
+                return (.picoFontGray, .picoGray)
+            }
+        }
+        
+        var font: (UIFont, UIFont) {
+            switch self {
+            case .main:
+                return (.picoSubTitleFont, .picoContentFont)
+            case .sub:
+                return (.picoSubTitleSmallFont, .picoContentFont)
+            }
+        }
+    }
     
-    private let label: UILabel = {
-        let label = UILabel()
-        label.textColor = .white
-        return label
-    }()
+    private let view: UIView = UIView()
+    private let label: UILabel = UILabel()
     
+//    let headerType =
     var isSelectedCell: Bool = false {
         didSet {
-            view.backgroundColor = isSelectedCell ? .picoBlue : .picoGray
+            label.textColor = isSelectedCell ? .picoFontBlack : .picoGray
             label.font = isSelectedCell ? .picoSubTitleFont : .picoContentFont
         }
     }
