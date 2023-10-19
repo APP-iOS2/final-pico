@@ -127,7 +127,10 @@ final class ProfileEditViewModel {
         ])
     ])
     
-    init() {
+    private let profileViewModel: ProfileViewModel
+    
+    init(profileViewModel: ProfileViewModel) {
+        self.profileViewModel = profileViewModel
         loadUserData()
         binds()
     }
@@ -188,7 +191,9 @@ final class ProfileEditViewModel {
             }
         }
         loadUserData()
+        profileViewModel.loadUserData()
     }
+    
     func transformArrtoString<T: StringProtocol>(stringArr: [T]) -> String {
         var text = ""
         for index in 0..<stringArr.count {
