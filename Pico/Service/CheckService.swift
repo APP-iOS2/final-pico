@@ -43,8 +43,6 @@ final class CheckService {
     }
     
     func checkNickName(name: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
-        SignLoadingManager.showLoading(text: "중복된 닉네임을 찾고 있어요!")
-        
         do {
             let pattern = "([ㄱ-ㅎㅏ-ㅣ]){1,8}"
             let regex = try NSRegularExpression(pattern: pattern, options: [])
