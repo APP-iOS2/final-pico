@@ -45,10 +45,12 @@ final class SMSAuthManager {
     private let serviceId = Bundle.main.serviceId
     private let senderPhoneNumber = Bundle.main.senderPhoneNumber
     private let receiverPhoneNumber = "01095570253"
+    private var randomNumber = ""
     private let method = "POST"
     private let timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
     
-    func sendVerificationCode() {
+    func sendVerificationCode(number: String) {
+        
         let urlString = "https://sens.apigw.ntruss.com/sms/v2/services/\(serviceId)/messages"
         let signature = makeSignature()
         
@@ -56,12 +58,13 @@ final class SMSAuthManager {
         let message = """
             PICO 인증번호: \(randomCode)
             """
-        
+        let number = number.replacingOccurrences(of: "-", with: "")
+
         let smsRequest = SMSRequest(type: SMSRequestType.sms.name,
                                     from: senderPhoneNumber,
                                     subject: "PICO 인증번호 발송",
                                     content: message,
-                                    messages: [Message(to: receiverPhoneNumber)],
+                                    messages: [Message(to: number)],
                                     files: [])
         let bodyDict = smsRequest.asDictionary()
         
@@ -101,9 +104,11 @@ final class SMSAuthManager {
     }
     
     func checkRightCode(code: String) -> Bool {
-        print(code)
-        // MARK: - 이제 비교해야함
-        return true
+        if randomNumber == code {
+            return true
+        } else {
+            return false
+        }
     }
     
     private func configRandomCode() -> String {
@@ -115,6 +120,7 @@ final class SMSAuthManager {
             randomCode.append(digit)
         }
         print("인증번호 생성: \(randomCode)")
+        randomNumber = randomCode
         return randomCode
     }
     
