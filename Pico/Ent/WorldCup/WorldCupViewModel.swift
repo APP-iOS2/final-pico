@@ -72,11 +72,19 @@ final class WorldCupViewModel {
         return dataLabelTexts
     }
     
-    func animateSelectedCell(collectionView: UICollectionView, indexPath: IndexPath) {
-        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else {
-            return
-        }
-        
+    func animateToNextRound(collectionView: UICollectionView) {
+        UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: {
+            collectionView.reloadData()
+        }, completion: nil)
+    }
+
+    func changeRoundLabel(withText text: String, roundLabel: UILabel) {
+        UIView.transition(with: roundLabel, duration: 1.5, options: .transitionCrossDissolve, animations: {
+            roundLabel.text = text
+        }, completion: nil)
+    }
+
+    func animateSelectedCell(selectedCell: WorldCupCollectionViewCell) {
         UIView.animate(withDuration: 0.3, animations: {
             selectedCell.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         }, completion: { _ in
