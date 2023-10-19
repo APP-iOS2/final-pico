@@ -10,12 +10,10 @@ import SnapKit
 import Kingfisher
 
 final class CompatibilityView: UIView {
-    
-    private let currentUser: CurrentUser
-    private let cardUser: User
     private let compatibilityLabel = UILabel()
     private var starImageViews: [UIImageView] = []
     private var starSystemName = ""
+    private let compatibilityChart = MBTICompatibilityChart()
     
     private let starStackView: UIStackView = {
         let view = UIStackView()
@@ -58,6 +56,7 @@ final class CompatibilityView: UIView {
         imageView.clipsToBounds = true
         return imageView
     }()
+    
     private let myMbtiLabel: UILabel = {
         let label = UILabel()
         label.font = .picoMBTILabelFont
@@ -74,6 +73,9 @@ final class CompatibilityView: UIView {
         return label
     }()
     
+    private let currentUser: CurrentUser
+    private let cardUser: User
+    
     init(currentUser: CurrentUser, cardUser: User) {
         self.currentUser = currentUser
         self.cardUser = cardUser
@@ -86,6 +88,43 @@ final class CompatibilityView: UIView {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configView() {
+        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+        let compatibility = compatibilityChart.get(mbti1: myMbti, mbti2: cardUser.mbti)
+        let starImageView = createStarImageViews(count: compatibility.star)
+        
+        compatibilityLabel.text = compatibility.information
+        compatibilityLabel.font = .picoTitleFont
+        compatibilityLabel.textColor = .white.withAlphaComponent(0.9)
+        
+        starStackView.addArrangedSubview(starImageView)
+        
+        myImage.kf.setImage(with: URL(string: currentUser.imageURL))
+        
+        guard let imageUrl = cardUser.imageURLs[safe: 0] else { return }
+        userImage.kf.setImage(with: URL(string: imageUrl))
+        
+        myProfileView.backgroundColor = UIColor(hex: MBTIType(rawValue: currentUser.mbti)?.colorName ?? "#A0CDE5").withAlphaComponent(0.8)
+        userProfileView.backgroundColor = UIColor(hex: cardUser.mbti.colorName).withAlphaComponent(0.8)
+        
+        myMbtiLabel.text = currentUser.mbti.uppercased()
+        userMbtiLabel.text = cardUser.mbti.rawValue.uppercased()
+    }
+    
+    private func createStarImageViews(count: Int) -> [UIImageView] {
+        for index in 0..<5 {
+            let starImage = UIImage(systemName: "star.fill")
+            let starImageView = UIImageView(image: starImage)
+            if count > index {
+                starImageView.tintColor = .picoStarYellow.withAlphaComponent(0.9)
+            } else {
+                starImageView.tintColor = .gray.withAlphaComponent(0.9)
+            }
+            starImageViews.append(starImageView)
+        }
+        return starImageViews
     }
     
     private func addSubView() {
@@ -152,40 +191,5 @@ final class CompatibilityView: UIView {
             make.trailing.equalTo(userProfileView).offset(-10)
             make.bottom.equalTo(userProfileView).offset(-10)
         }
-    }
-    
-    private func configView() {
-        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
-        let compatibility = MBTICompatibilityChart.shaerd.get(mbti1: myMbti, mbti2: cardUser.mbti)
-        let starImageView = createStarImageViews(count: compatibility.star)
-        
-        compatibilityLabel.text = compatibility.information
-        compatibilityLabel.font = .picoTitleFont
-        compatibilityLabel.textColor = .white.withAlphaComponent(0.9)
-        
-        starStackView.addArrangedSubview(starImageView)
-        
-        myImage.kf.setImage(with: URL(string: currentUser.imageURL))
-        userImage.kf.setImage(with: URL(string: cardUser.imageURLs[0]))
-        
-        myProfileView.backgroundColor = UIColor(hex: MBTIType(rawValue: currentUser.mbti)?.colorName ?? "#A0CDE5").withAlphaComponent(0.8)
-        userProfileView.backgroundColor = UIColor(hex: cardUser.mbti.colorName).withAlphaComponent(0.8)
-        
-        myMbtiLabel.text = currentUser.mbti.uppercased()
-        userMbtiLabel.text = cardUser.mbti.rawValue.uppercased()
-    }
-    
-    private func createStarImageViews(count: Int) -> [UIImageView] {
-        for index in 0..<5 {
-            let starImage = UIImage(systemName: "star.fill")
-            let starImageView = UIImageView(image: starImage)
-            if count > index {
-                starImageView.tintColor = .picoStarYellow.withAlphaComponent(0.9)
-            } else {
-                starImageView.tintColor = .gray.withAlphaComponent(0.9)
-            }
-            starImageViews.append(starImageView)
-        }
-        return starImageViews
     }
 }

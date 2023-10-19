@@ -8,7 +8,6 @@
 import Foundation
 
 struct MBTICompatibilityChart {
-    static let shaerd: MBTICompatibilityChart = MBTICompatibilityChart()
     
     func get(mbti1: MBTIType, mbti2: MBTIType) -> CompatibilityType {
         return compatibilityDictionary[mbti1]?[mbti2] ?? .best
