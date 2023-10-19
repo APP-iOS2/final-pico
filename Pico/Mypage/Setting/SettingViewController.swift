@@ -230,7 +230,6 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 1:
             switch indexPath.row {
@@ -259,5 +258,6 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
         default:
             break
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
