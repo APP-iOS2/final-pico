@@ -9,11 +9,13 @@ import Foundation
 import RxSwift
 import RxCocoa
 import Firebase
+import AVFoundation
 
 final class WorldCupViewModel {
     
-    var users: BehaviorRelay<[User]> = BehaviorRelay(value: [])
     private let disposeBag = DisposeBag()
+    private var audioPlayer: AVAudioPlayer?
+    var users: BehaviorRelay<[User]> = BehaviorRelay(value: [])
     var selectedIndexPath: IndexPath?
     
     init() {
@@ -52,21 +54,21 @@ final class WorldCupViewModel {
     
     private func addDataLabels(_ currentUser: User) -> [String] {
         var dataLabelTexts: [String] = []
-
+        
         if let height = currentUser.subInfo?.height {
             dataLabelTexts.append("\(height)")
         } else {
             dataLabelTexts.append("")
         }
-
+        
         if let job = currentUser.subInfo?.job {
             dataLabelTexts.append("\(job)")
         } else {
             dataLabelTexts.append("")
         }
-
+        
         dataLabelTexts.append("\(currentUser.location.address)")
-
+        
         return dataLabelTexts
     }
     
@@ -74,7 +76,7 @@ final class WorldCupViewModel {
         guard let selectedCell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else {
             return
         }
-
+        
         UIView.animate(withDuration: 0.3, animations: {
             selectedCell.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         }, completion: { _ in
@@ -82,5 +84,22 @@ final class WorldCupViewModel {
                 selectedCell.transform = .identity
             }
         })
+    }
+    
+    func playBackgroundMusic() {
+        guard let url = Bundle.main.url(forResource: "gameMusic", withExtension: "mp3") else { return }
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.numberOfLoops = -1
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+        } catch {
+            print("Error: \(error.localizedDescription)")
+        }
+    }
+    
+    func stopBackgroundMusic() {
+        audioPlayer?.stop()
     }
 }

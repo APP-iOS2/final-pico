@@ -61,6 +61,12 @@ final class WorldCupGameViewController: UIViewController {
         makeConstraints()
         configCollectionView()
         configUserData()
+        worldCupViewModel.playBackgroundMusic()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        worldCupViewModel.stopBackgroundMusic()
     }
     
     private func configCollectionView() {
