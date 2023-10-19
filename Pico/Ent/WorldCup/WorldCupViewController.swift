@@ -16,6 +16,12 @@ final class WorldCupViewController: UIViewController {
     private var timer: Timer?
     private var remainingTime: Int = 0
     
+    private let backgroundImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "gameBackground"))
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
     private let worldCupTitleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -71,7 +77,7 @@ final class WorldCupViewController: UIViewController {
     }
     
     private func addViews() {
-        [worldCupTitleLabel, pickMeLabel, contentLabel, gameStartButton, guideLabel].forEach { item in
+        [backgroundImageView, worldCupTitleLabel, pickMeLabel, contentLabel, gameStartButton, guideLabel].forEach { item in
             view.addSubview(item)
         }
     }
@@ -79,6 +85,10 @@ final class WorldCupViewController: UIViewController {
     private func makeConstraints() {
         let padding: CGFloat = 20
         let half: CGFloat = 0.5
+        
+        backgroundImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
         worldCupTitleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(Screen.height / 6)

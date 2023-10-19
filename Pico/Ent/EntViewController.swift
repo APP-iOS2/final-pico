@@ -7,7 +7,7 @@ import RxDataSources
 final class EntViewController: BaseViewController {
     private let disposeBag = DisposeBag()
     
-    private let randomBoxHeaderView = RandomBoxView()
+    let randomBoxHeaderView = RandomBoxView()
     
     private let worldCupViewController = WorldCupViewController()
     
