@@ -125,8 +125,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
             guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer", for: indexPath) as? CollectionViewFooterLoadingCell else {
                 return CollectionViewFooterLoadingCell()
             }
-            footer.startLoading()
-            
+            footer.startLoading()  
             return footer
         }
         return UICollectionReusableView()
