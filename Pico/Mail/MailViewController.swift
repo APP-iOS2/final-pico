@@ -51,7 +51,7 @@ final class MailViewController: BaseViewController {
         return button
     }()
     
-    private let tableViewController = [MailSendTableListController(), MailReceiveTableListController()]
+    private lazy var tableViewController = [MailSendTableListController(), MailReceiveTableListController(vc: self)]
     
     private let contentsView: UIView = {
         let view = UIView()
@@ -71,7 +71,6 @@ final class MailViewController: BaseViewController {
         configMailTypeButtons()
         configPageView()
     }
-    
     // MARK: - MailView +UI
     private func addViews() {
         [receiveButton, sendButton].forEach { item in
