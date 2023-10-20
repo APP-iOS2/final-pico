@@ -13,22 +13,24 @@ import CoreLocation
 
 final class HomeViewModel {
     
-    var otherUsers = BehaviorRelay<[User]>(value: [])
+    var users = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
-    var myBlockUsersId = BehaviorRelay<[Block.BlockInfo]>(value: [])
+    var blocks = BehaviorRelay<[Block.BlockInfo]>(value: [])
     static var filterGender: [GenderType] = []
     static var filterMbti: [MBTIType] = []
     static var filterAgeMin: Int = 24
     static var filterAgeMax: Int = 34
     static var filterDistance: Int = 501
+    static var viewIsUpdate: Bool = false
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
     
     init() {
         loadFilterDefault()
-        loadUsers()
+        loadMySendBlocks()
         loadMyLikesRx()
-//        UserDefaults.standard.setValue(false, forKey: UserDefaultsManager.Key.dontWatchAgain.rawValue)
+        loadUsersCodable()
+        //        UserDefaults.standard.setValue(false, forKey: UserDefaultsManager.Key.dontWatchAgain.rawValue)
     }
     
     func calculateDistance(user: User) -> CLLocationDistance {
@@ -37,142 +39,17 @@ final class HomeViewModel {
         return  currentUserLoc.distance(from: otherUserLoc)
     }
     
-    private func loadUsers() {
-        var gender: [GenderType] = []
-        
-        if HomeViewModel.filterGender.isEmpty {
-            gender = GenderType.allCases
-        } else {
-            gender = HomeViewModel.filterGender
-        }
-        
-        DispatchQueue.global().async {
-            let dbRef = Firestore.firestore()
-            let query = dbRef.collection("users")
-                .whereField("id", isNotEqualTo: self.loginUser.userId)
-                .whereField("gender", in: gender.map { $0.rawValue })
-            
-            query.getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print(error)
-                } else {
-                    var users = [User]()
-                    for document in querySnapshot!.documents {
-                        var blocks: Block = Block(userId: "")
-                        var reports: Report = Report(userId: "")
-                        var subInfos: SubInfo = SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [], personalities: [], favoriteMBTIs: [])
-                        
-                        self.queryBlocks(for: document.documentID) { block in
-                            if let block = block?.recivedBlock {
-                                self.myBlockUsersId.accept(block)
-                            }
-                            blocks = block ?? Block(userId: "")
-                        }
-                        self.queryReports(for: document.documentID) { report in
-                            reports = report ?? Report(userId: "")
-                        }
-                        self.querySubInfo(for: document.documentID) { subInfo in
-                            subInfos = subInfo ?? SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [], personalities: [], favoriteMBTIs: [])
-                        }
-                        
-                        if let id = document["id"] as? String,
-                           let mbtiTypeRawValue = document["mbti"] as? String,
-                           let mbtiType = MBTIType(rawValue: mbtiTypeRawValue),
-                           let phoneNumber = document["phoneNumber"] as? String,
-                           let genderTypeRawValue = document["gender"] as? String,
-                           let genderType = GenderType(rawValue: genderTypeRawValue),
-                           let birth = document["birth"] as? String,
-                           let nickName = document["nickName"] as? String,
-                           let locationData = document["location"] as? [String: Any],
-                           let address = locationData["address"] as? String,
-                           let latitude = locationData["latitude"] as? Double,
-                           let longitude = locationData["longitude"] as? Double,
-                           let imageURLs = document["imageURLs"] as? [String],
-                           let createdDate = document["createdDate"] as? Double {
-                            let user = User(id: id, mbti: mbtiType, phoneNumber: phoneNumber, gender: genderType, birth: birth, nickName: nickName, location: Location(address: address, latitude: latitude, longitude: longitude), imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfos, reports: [reports], blocks: [blocks], chuCount: 0, isSubscribe: false)
-                            users.append(user)
-                        }
-                    }
-                    self.otherUsers.accept(users)
-                    print("유저 로드: \(users.count)명")
-                }
-            }
-        }
-    }
-    
-    private func querySubInfo(for userId: String, completion: @escaping (SubInfo?) -> Void) {
-        let dbRef = Firestore.firestore()
-        let userDocument = dbRef.collection("users").document(userId)
-        
-        userDocument.getDocument { (document, error) in
-            if let error = error {
-                print("Error querying subInfo: \(error)")
-                completion(nil)
-            } else {
-                if let subInfoData = document?.get("subInfo") as? [String: Any] {
-                    var subInfo: SubInfo?
-                    if let subInfoData = subInfoData["subInfo"] as? [String: Any] {
-                        let intro = subInfoData["intro"] as? String
-                        let height = subInfoData["height"] as? Int
-                        let drinkStatusRawValue = subInfoData["drinkStatus"] as? String
-                        let drinkStatus = FrequencyType(rawValue: drinkStatusRawValue ?? "")
-                        let smokeStatusRawValue = subInfoData["smokeStatus"] as? String
-                        let smokeStatus = FrequencyType(rawValue: smokeStatusRawValue ?? "")
-                        let religionRawValue = subInfoData["religion"] as? String
-                        let religion = ReligionType(rawValue: religionRawValue ?? "")
-                        let educationRawValue = subInfoData["education"] as? String
-                        let education = EducationType(rawValue: educationRawValue ?? "")
-                        let job = subInfoData["job"] as? String
-                        let hobbies = subInfoData["hobbies"] as? [String]
-                        let personalities = subInfoData["personalities"] as? [String]
-                        
-                        var favoriteMBTIs: [MBTIType] = []
-                        if let favoriteMBTIsData = subInfoData["favoriteMBTIs"] as? [String] {
-                            favoriteMBTIs = favoriteMBTIsData.compactMap { MBTIType(rawValue: $0) }
-                        }
-                        
-                        subInfo = SubInfo(intro: intro, height: height, drinkStatus: drinkStatus, smokeStatus: smokeStatus, religion: religion, education: education, job: job, hobbies: hobbies, personalities: personalities, favoriteMBTIs: favoriteMBTIs)
-                    }
-                    completion(subInfo)
-                } else {
-                    completion(nil)
-                }
-            }
-        }
-    }
-    
-    private func queryReports(for userId: String, completion: @escaping (Report?) -> Void) {
-        let dbRef = Firestore.firestore()
-        let blocksCollection = dbRef.collection("users").document(userId).collection("Report").document(userId)
-        blocksCollection.getDocument { snapshot, error in
-            if let snapshot = snapshot, snapshot.exists {
-                do {
-                    let documentData = try snapshot.data(as: Report.self)
-                    completion(documentData)
-                } catch {
-                    print("Error to decode document data: \(error)")
-                }
-            } else {
-                completion(nil)
-            }
-        }
-    }
-    
-    private func queryBlocks(for userId: String, completion: @escaping (Block?) -> Void) {
-        let dbRef = Firestore.firestore()
-        let blocksCollection = dbRef.collection("users").document(userId).collection("Block").document(userId)
-        blocksCollection.getDocument { snapshot, error in
-            if let snapshot = snapshot, snapshot.exists {
-                do {
-                    let documentData = try snapshot.data(as: Block.self)
-                    completion(documentData)
-                } catch {
-                    print("Error to decode document data: \(error)")
-                }
-            } else {
-                completion(nil)
-            }
-        }
+    private func loadUsersRx() {
+        FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] data in
+                guard let self = self else { return }
+                print("유저 로드: \(data)명")
+                self.users.accept(data)
+            }, onError: { error in
+                print("오류: \(error)")
+            })
+            .disposed(by: disposeBag)
     }
     
     private func loadUsersCodable() {
@@ -194,35 +71,38 @@ final class HomeViewModel {
                 if let error = error {
                     print(error)
                 } else {
+                    var user = User.userData
                     var users = [User]()
                     for document in querySnapshot!.documents {
-                        var user: User?
-                        var blocks: Block = Block(userId: "")
-                        var reports: Report = Report(userId: "")
-                        var subInfos: SubInfo = SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [], personalities: [], favoriteMBTIs: [])
-                        
-                        self.queryBlocks(for: document.documentID) { block in
-                            blocks = block ?? Block(userId: "")
-                        }
-                        self.queryReports(for: document.documentID) { report in
-                            reports = report ?? Report(userId: "")
-                        }
-                        self.querySubInfo(for: document.documentID) { subInfo in
-                            subInfos = subInfo ?? SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [], personalities: [], favoriteMBTIs: [])
-                        }
-                        
                         if let userdata = try? document.data(as: User.self) {
                             user = userdata
-                            user?.subInfo = subInfos
-                            user?.blocks = [blocks]
-                            user?.reports = [reports]
-                            users.append(user ?? User.userData)
+                            users.append(user)
                         }
                     }
-                    self.otherUsers.accept(users)
-                    print(users.count)
-                    
+                    self.users.accept(users)
+                    print("유저 로드: \(users.count)명")
                 }
+            }
+        }
+    }
+    
+    private func loadMySendBlocks() {
+        let blockCollectionRef = Firestore.firestore().collection("users").document(loginUser.userId).collection("Block").document(loginUser.userId)
+        blockCollectionRef.getDocument { (document, error) in
+            if let error = error {
+                print("문서를 가져오는 중 오류 발생: \(error)")
+            } else if let document = document, document.exists {
+                var blockInfos = [Block.BlockInfo]()
+                if let data = try? document.data(as: Block.self) {
+                    if let sendData = data.sendBlock {
+                        blockInfos.append(contentsOf: sendData)
+                    }
+                    self.blocks.accept(blockInfos)
+                } else {
+                    print("문서 데이터가 없음")
+                }
+            } else {
+                print("문서가 존재하지 않음")
             }
         }
     }

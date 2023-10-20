@@ -12,7 +12,6 @@ final class HomeFilterViewController: UIViewController {
     
     weak var homeViewController: HomeViewController?
     private let mbtiCollectionViewController = MBTICollectionViewController()
-    static var filterChangeState: Bool = false
     private lazy var genderLabel: UILabel = createFilterLabel(text: "상대 성별", font: .picoSubTitleFont)
     private lazy var genderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
     private lazy var distanceLabel: UILabel = createFilterLabel(text: "거리", font: .picoSubTitleFont)
@@ -38,13 +37,6 @@ final class HomeFilterViewController: UIViewController {
         addSubView()
         makeConstraints()
         configUI()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        if HomeFilterViewController.filterChangeState == true {
-            self.homeViewController?.reloadView()
-            HomeFilterViewController.filterChangeState = false
-        }
     }
     
     private func configUI() {
@@ -202,7 +194,7 @@ final class HomeFilterViewController: UIViewController {
                 }
             }
             updateButtonAppearance(sender)
-            HomeFilterViewController.filterChangeState = true
+            HomeViewModel.viewIsUpdate = true
         }
     }
     
