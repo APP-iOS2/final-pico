@@ -40,7 +40,7 @@ class WorldCupResultViewModel: ViewModelType {
             .withUnretained(self)
             .map { viewModel, _ in
                 UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
-                return DispatchQueue.global().asyncAfter(deadline: .now() + 2.0) {
+                return DispatchQueue.global().async {
                     Loading.hideLoading()
                 }
             }
