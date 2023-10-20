@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class SettingNotiTableCell: UITableViewCell {
     
@@ -27,11 +28,13 @@ final class SettingNotiTableCell: UITableViewCell {
         let button = SwitchButton(frame: CGRect(x: 0, y: 0, width: 25, height: 0))
         return button
     }()
+    weak var switchButtonDelegate: SwitchButtonDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubView()
         makeConstraints()
+        cofigButton()
     }
     
     @available(*, unavailable)
@@ -45,9 +48,15 @@ final class SettingNotiTableCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(titleLabel: String, subTitleLabel: String) {
+    private func cofigButton() {
+        switchButtonDelegate = self
+        switchButton.switchButtonDelegate = switchButtonDelegate
+    }
+    
+    func configure(titleLabel: String, subTitleLabel: String, state: Bool) {
         self.titleLabel.text = titleLabel
         self.subTitleLabel.text = subTitleLabel
+        switchButton.congifState(bool: state)
     }
     
     private func addSubView() {
@@ -71,6 +80,15 @@ final class SettingNotiTableCell: UITableViewCell {
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview().offset(-15)
             make.width.equalTo(40)
+        }
+    }
+}
+
+extension SettingNotiTableCell: SwitchButtonDelegate {
+    func isOnValueChange(isOnSwitch: Bool) {
+        if isOnSwitch {
+            NotificationService.shared.registerRemoteNotification()
+        } else {
         }
     }
 }
