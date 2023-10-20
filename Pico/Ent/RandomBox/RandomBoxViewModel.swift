@@ -16,46 +16,38 @@ struct RandomBox {
 }
 
 var randomBoxDummy: [RandomBox] = [
-    RandomBox(first: 0, second: 2, third: 2, fourth: 3, fifth: 100)
+    RandomBox(first: 1, second: 5, third: 10, fourth: 25, fifth: 50),
+    RandomBox(first: 10, second: 15, third: 25, fourth: 80, fifth: 200)
 ]
 
 struct RandomPercent {
     let totalProbability = 100
-    let firstRange = 1...35
-    let secondRange = 36...55
-    let thirdRange = 56...80
-    let fourthRange = 81...99
+    let firstRange = 1...15
+    let secondRange = 16...66
+    let thirdRange = 67...95
+    let fourthRange = 96...98
+    let fifthRange = 99...100
 }
 
 final class RandomBoxManager {
     let randomPercent = RandomPercent()
     private var obtainedChu: Int = 0
     
-    func getRandomValue() -> Int {
+    func getRandomValue(index: Int) -> Int {
         let randomValue = Int.random(in: 1...100)
-
+        
         switch randomValue {
         case randomPercent.firstRange:
-            return randomBoxDummy[0].first
+            return randomBoxDummy[index].first
         case randomPercent.secondRange:
-            return randomBoxDummy[0].second
+            return randomBoxDummy[index].second
         case randomPercent.thirdRange:
-            return randomBoxDummy[0].third
+            return randomBoxDummy[index].third
         case randomPercent.fourthRange:
-            return randomBoxDummy[0].fourth
+            return randomBoxDummy[index].fourth
         default:
-            return randomBoxDummy[0].fifth
+            return randomBoxDummy[index].fifth
         }
-    }
-
-    func getProbabilityInfo() -> [Int] {
-        return [
-            randomPercent.firstRange.count * 100 / randomPercent.totalProbability,
-            randomPercent.secondRange.count * 100 / randomPercent.totalProbability,
-            randomPercent.thirdRange.count * 100 / randomPercent.totalProbability,
-            randomPercent.fourthRange.count * 100 / randomPercent.totalProbability,
-            (randomPercent.totalProbability - randomPercent.fourthRange.upperBound + 1) * 100 / randomPercent.totalProbability
-        ]
     }
     
     func shake(view: UIView, duration: CFTimeInterval = 0.5, repeatCount: Float = 3, completion: (() -> Void)? = nil) {
@@ -83,21 +75,19 @@ final class RandomBoxManager {
         return obtainedChu
     }
     
-    func getChuAndPercent() -> String {
-        let probabilities = getProbabilityInfo()
+    func boxInfo(index: Int) -> String {
         let values = [
-            randomBoxDummy[0].first,
-            randomBoxDummy[0].second,
-            randomBoxDummy[0].third,
-            randomBoxDummy[0].fourth,
-            randomBoxDummy[0].fifth
+            randomBoxDummy[index].first,
+            randomBoxDummy[index].second,
+            randomBoxDummy[index].third,
+            randomBoxDummy[index].fourth,
+            randomBoxDummy[index].fifth
         ]
 
-        let infoTextArray = zip(values, probabilities).map { (value, percent) in
-            "\(value)츄 : \(percent)%"
+        let infoTextArray = values.map { value in
+            "\(value)츄 획득 가능"
         }
 
         return infoTextArray.joined(separator: "\n")
     }
-
 }
