@@ -47,11 +47,11 @@ final class SettingViewController: UIViewController {
         var urlString: String {
             switch self {
             case .termsOfService:
-                return "https://github.com/APPSCHOOL3-iOS"
+                return "https://blue-coal-c5c.notion.site/b39af82a049345dda5b86da5f3f0081d?pvs=4"
             case .privacyPolicy:
-                return "https://github.com/APPSCHOOL3-iOS"
+                return "https://blue-coal-c5c.notion.site/b51dfe467cc148c08b35b45987965a9d?pvs=4"
             case .termsOfLocation:
-                return "https://github.com/APPSCHOOL3-iOS"
+                return "https://blue-coal-c5c.notion.site/b427e62683124e94855663c1b5756866?pvs=4"
             case .businessInformation:
                 return "https://github.com/APPSCHOOL3-iOS"
             default:
