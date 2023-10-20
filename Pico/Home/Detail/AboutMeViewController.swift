@@ -83,6 +83,10 @@ final class AboutMeViewController: UIViewController {
         }
         
         if cellInfomation.isEmpty {
+            view.snp.makeConstraints { make in
+                make.height.equalTo(10)
+            }
+            
             aboutMeCollectionView.isHidden = true
             basicLabel.isHidden = true
         }
