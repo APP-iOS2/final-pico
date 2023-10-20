@@ -121,11 +121,14 @@ final class LikeMeViewModel: ViewModelType {
                 
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType == .like }) {
-                        if startIndex > datas.count - 1 {
+                        let likes = datas.sorted { like1, like2 in
+                            return like1.createdDate > like2.createdDate
+                        }
+                        if startIndex > likes.count - 1 {
                             return
                         }
-                        let currentPageDatas: [Like.LikeInfo] = Array(datas[startIndex..<min(endIndex, datas.count)])
-                        likeMeList.append(contentsOf: currentPageDatas)
+                        let currentPageDatas: [Like.LikeInfo] = Array(likes[0..<min(endIndex, datas.count)])
+                        likeMeList = currentPageDatas
                         startIndex += currentPageDatas.count
                         reloadTableViewPublisher.onNext(())
                     }
