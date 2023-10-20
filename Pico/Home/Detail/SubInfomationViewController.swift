@@ -109,9 +109,6 @@ final class SubInfomationViewController: UIViewController {
             verticalStackView.removeArrangedSubview(mbtiCollectionView)
         }
         
-        
-        
-        
         hobbyCollectionView.reloadData()
         personalCollectionView.reloadData()
         mbtiCollectionView.reloadData()
@@ -148,10 +145,6 @@ extension SubInfomationViewController {
         }
         
         personalLabel.snp.makeConstraints { make in
-<<<<<<< HEAD
-=======
-//            make.top.leading.trailing.equalToSuperview()
->>>>>>> 7bf9a5f (design: UserDetailView 레이아웃 수정)
             make.height.equalTo(40)
         }
         hobbyLabel.snp.makeConstraints { make in

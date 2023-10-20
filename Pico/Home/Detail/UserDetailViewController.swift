@@ -246,7 +246,6 @@ extension UserDetailViewController {
     }
     
     private func makeConstraints() {
-        aboutMeViewController.view.setContentHuggingPriority(.defaultLow, for: .vertical)
         likeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-20)
             make.bottom.equalToSuperview().offset(-60)
