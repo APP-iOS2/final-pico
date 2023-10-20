@@ -21,7 +21,6 @@ final class HomeViewModel {
     static var filterAgeMin: Int = 24
     static var filterAgeMax: Int = 34
     static var filterDistance: Int = 501
-    static var viewIsUpdate: Bool = false
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
     

@@ -11,6 +11,7 @@ import SnapKit
 final class HomeFilterViewController: UIViewController {
     
     weak var homeViewController: HomeViewController?
+    static var filterChangeState: Bool = false
     private let mbtiCollectionViewController = MBTICollectionViewController()
     private lazy var genderLabel: UILabel = createFilterLabel(text: "상대 성별", font: .picoSubTitleFont)
     private lazy var genderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
@@ -37,6 +38,13 @@ final class HomeFilterViewController: UIViewController {
         addSubView()
         makeConstraints()
         configUI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        if HomeFilterViewController.filterChangeState == true {
+            self.homeViewController?.reloadView()
+            HomeFilterViewController.filterChangeState = false
+        }
     }
     
     private func configUI() {
@@ -194,7 +202,7 @@ final class HomeFilterViewController: UIViewController {
                 }
             }
             updateButtonAppearance(sender)
-            HomeViewModel.viewIsUpdate = true
+            HomeFilterViewController.filterChangeState = true
         }
     }
     

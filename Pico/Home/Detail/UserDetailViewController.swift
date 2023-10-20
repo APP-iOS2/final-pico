@@ -181,7 +181,7 @@ final class UserDetailViewController: UIViewController {
             self.showCustomAlert(alertType: .canCancel, titleText: "차단하기", messageText: "\(self.user.nickName)님을 차단 하시겠습니까?", confirmButtonText: "차단", comfrimAction: {
                 self.viewModel.blockUser(blockedUser: self.user) {
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "차단", messageText: "\(self.user.nickName)님 차단 완료", confirmButtonText: "확인", comfrimAction: {
-                        HomeViewModel.viewIsUpdate = true
+                        HomeFilterViewController.filterChangeState = true
                         let viewController = HomeViewController()
                         self.navigationController?.pushViewController(viewController, animated: false)
                     })

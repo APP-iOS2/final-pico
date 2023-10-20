@@ -156,12 +156,12 @@ final class RangeSlider: UIView {
                 if rightBallValue > 60 {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
                     HomeViewModel.filterAgeMin = leftBallValue
-                    HomeViewModel.viewIsUpdate = true
+                    HomeFilterViewController.filterChangeState = true
                     UserDefaults.standard.set(HomeViewModel.filterAgeMin, forKey: UserDefaultsManager.Key.filterAgeMin.rawValue)
                 } else {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
                     HomeViewModel.filterAgeMin = leftBallValue
-                    HomeViewModel.viewIsUpdate = true
+                    HomeFilterViewController.filterChangeState = true
                     UserDefaults.standard.set(HomeViewModel.filterAgeMin, forKey: UserDefaultsManager.Key.filterAgeMin.rawValue)
                 }
             }
@@ -178,12 +178,12 @@ final class RangeSlider: UIView {
                 if rightBallValue > 60 {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
                     HomeViewModel.filterAgeMax = 61
-                    HomeViewModel.viewIsUpdate = true
+                    HomeFilterViewController.filterChangeState = true
                     UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: UserDefaultsManager.Key.filterAgeMax.rawValue)
                 } else {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ \(String(rightBallValue))세")
                     HomeViewModel.filterAgeMax = rightBallValue
-                    HomeViewModel.viewIsUpdate = true
+                    HomeFilterViewController.filterChangeState = true
                     UserDefaults.standard.set(HomeViewModel.filterAgeMax, forKey: UserDefaultsManager.Key.filterAgeMax.rawValue)
                 }
             }

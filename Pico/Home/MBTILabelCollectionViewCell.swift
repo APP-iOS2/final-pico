@@ -9,7 +9,6 @@ import UIKit
 
 final class MBTILabelCollectionViewCell: UICollectionViewCell {
     
-    private var filterChangeState: Bool = false
     private let mbtiButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(.white, for: .normal)
@@ -72,7 +71,7 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
                     UserDefaults.standard.set(mbtiData, forKey: UserDefaultsManager.Key.filterMbti.rawValue)
                 }
             }
-            HomeViewModel.viewIsUpdate = true
+            HomeFilterViewController.filterChangeState = true
         }
     }
 }

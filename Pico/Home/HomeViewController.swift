@@ -36,12 +36,7 @@ final class HomeViewController: BaseViewController {
         bind()
         loadCards()
     }
-    override func viewWillAppear(_ animated: Bool) {
-        if HomeViewModel.viewIsUpdate == true {
-            reloadView()
-            HomeViewModel.viewIsUpdate = false
-        }
-    }
+    
     private func bind() {
         viewModel.users
             .bind(to: users)
