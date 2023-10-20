@@ -45,7 +45,7 @@ final class SignUpNickNameViewController: UIViewController {
     
     private let subNotifyLabel: UILabel = {
         let label = UILabel()
-        label.text = "신중하게 정해주세요😁(추후 변경은 유료)"
+        label.text = "신중하게 정해주세요😁"
         label.numberOfLines = 2
         label.lineBreakMode = .byWordWrapping
         label.textColor = .picoFontGray
@@ -174,7 +174,7 @@ extension SignUpNickNameViewController {
         sender.tappedAnimation()
         guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
         
-        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "\(userNickName) 이름으로 설정합니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+        showCustomAlert(alertType: .canCancel, titleText: "알림", messageText: "\(userNickName) 이름으로 설정합니다.\n변경불가능합니다(추후 변경은 유료)", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
