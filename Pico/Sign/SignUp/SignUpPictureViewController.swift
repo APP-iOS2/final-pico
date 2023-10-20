@@ -143,7 +143,7 @@ final class SignUpPictureViewController: UIViewController {
                 
                 SignLoadingManager.hideLoading()
                 if allImagesDetected {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "이미지가 등록되었습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         
                         viewModel.imageArray = self.userImages
@@ -151,7 +151,7 @@ final class SignUpPictureViewController: UIViewController {
                         navigationController?.pushViewController(viewController, animated: true)
                     })
                 } else {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "이미지 등록에 실패하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진 등록에 실패하였습니다.\n얼굴이 잘 나온 사진을 등록해 주세요.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         
                         userImages.removeAll()
