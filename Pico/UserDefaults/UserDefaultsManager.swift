@@ -13,6 +13,7 @@ final class UserDefaultsManager {
         case latitude, longitude
         case filterGender, filterMbti, filterDistance, filterAgeMin, filterAgeMax
         case chuCount
+        case dontWatchAgain
     }
     
     static let shared: UserDefaultsManager = UserDefaultsManager()

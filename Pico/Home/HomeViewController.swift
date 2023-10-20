@@ -26,23 +26,52 @@ final class HomeViewController: BaseViewController {
     private let disposeBag = DisposeBag()
     private let viewModel = HomeViewModel()
     private let loadingView = LoadingAnimationView()
-    
+    private let homeGuideView = HomeGuideView()
+    private let loginUser = UserDefaultsManager.shared.getUserData()
     // MARK: - override
     override func viewDidLoad() {
         super.viewDidLoad()
         configNavigationBarItem()
         configButtons()
+        bind()
+        loadCards()
+    }
+    
+    private func bind() {
         viewModel.otherUsers
             .bind(to: users)
             .disposed(by: disposeBag)
         viewModel.myLikes
             .bind(to: myLikes)
             .disposed(by: disposeBag)
-        loadCards()
     }
+    
     private func addSubView() {
         view.addSubview([likeLabel, passLabel])
     }
+    
+    private func addGuideView() {
+        DispatchQueue.main.async {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.last {
+                let homeGuideView: HomeGuideView
+                if let existedView = window.subviews.first(where: {
+                    $0 is HomeGuideView
+                }) as? HomeGuideView {
+                    homeGuideView = existedView
+                } else {
+                    homeGuideView = HomeGuideView()
+                    homeGuideView.frame = window.frame
+                    if !UserDefaults.standard.bool(forKey: UserDefaultsManager.Key.dontWatchAgain.rawValue) {
+                        window.addSubview(homeGuideView)
+                    } else {
+                        return
+                    }
+                }
+            }
+        }
+    }
+    
     private func loadCards() {
         var mbti: [MBTIType] = []
         if HomeViewModel.filterMbti.isEmpty {
@@ -50,13 +79,16 @@ final class HomeViewController: BaseViewController {
         } else {
             mbti = HomeViewModel.filterMbti
         }
-        Observable.combineLatest(users, myLikes)
-            .map { [self] users, myLikes in
+        Observable.combineLatest(users, myLikes, viewModel.myBlockUsersId)
+            .map { [self] users, myLikes, myBlockUsersId in
+                print("내가 평가한 유저: \(myLikes.count)명")
                 let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
                 let myMbti = Set(mbti.map { $0.rawValue })
+                let blocksId = Set(myBlockUsersId.map { $0.userId })
                 return users.filter { user in
-                    var maxAge = HomeViewModel.filterAgeMax
-                    var maxDistance = HomeViewModel.filterDistance
+                    var maxAge: Int = HomeViewModel.filterAgeMax
+                    var maxDistance: Int = HomeViewModel.filterDistance
+//                    print(blocksId.count)
                     if HomeViewModel.filterAgeMax == 61 {
                         maxAge = 100
                     }
@@ -66,11 +98,11 @@ final class HomeViewController: BaseViewController {
                     let filterAge = (HomeViewModel.filterAgeMin..<maxAge + 1).contains(user.age)
                     let distance = viewModel.calculateDistance(user: user)
                     let filterDistance = (0..<maxDistance + 1).contains(Int(distance / 1000))
-                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance
+                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance && !blocksId.contains(loginUser.userId)
                 }
             }
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] filteredUsers in
+            .subscribe(onNext: { [weak self] (filteredUsers: [User]) in
                 guard let self = self else { return }
                 print("필터후 유저: \(filteredUsers.count)명")
                 userCards = filteredUsers
@@ -84,6 +116,7 @@ final class HomeViewController: BaseViewController {
                     self.loadingView.removeFromSuperview()
                 }
                 addSubView()
+                addGuideView()
                 makeConstraints()
             }, onError: { error in
                 print(error)

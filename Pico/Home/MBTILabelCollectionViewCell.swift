@@ -32,7 +32,7 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
         
         addSubview(mbtiButton)
         mbtiButton.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
+            make.edges.equalToSuperview()
         }
         
     }

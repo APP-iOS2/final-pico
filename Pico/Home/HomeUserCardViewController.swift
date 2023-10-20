@@ -16,6 +16,7 @@ final class HomeUserCardViewController: UIViewController {
     private let user: User
     private let disposeBag = DisposeBag()
     private let viewModel = HomeUserCardViewModel()
+    private let storeViewModel = StoreViewModel()
     private let currentUser = UserDefaultsManager.shared.getUserData()
     private var compatibilityView: CompatibilityView
     private var panGesture = UIPanGestureRecognizer()
@@ -311,7 +312,7 @@ final class HomeUserCardViewController: UIViewController {
                     HomeUserCardViewModel.cardCounting = -1
                     homeViewController?.addUserCards()
                 }
-                NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: user.id, notiType: .like)
+                NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
                 UIView.animate(withDuration: 0.5) { [self] in
                     viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                     homeViewController?.removedView.append(view)
@@ -352,7 +353,7 @@ final class HomeUserCardViewController: UIViewController {
             HomeUserCardViewModel.cardCounting = -1
             homeViewController?.addUserCards()
         }
-        NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: user.id, notiType: .like)
+        NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
         UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
         } completion: { _ in
@@ -384,14 +385,20 @@ final class HomeUserCardViewController: UIViewController {
                 messageText: "10 츄를 소모합니다",
                 cancelButtonText: "취소",
                 confirmButtonText: "확인",
-                comfrimAction: {
-                    HomeUserCardViewModel.cardCounting -= 1
-                    self.viewModel.deleteLikeData()
-                    UIView.animate(withDuration: 0.3) {
-                        lastView.center = self.view.center
-                        lastView.transform = CGAffineTransform(rotationAngle: 0)
+                comfrimAction: { [weak self] in
+                    guard let self = self else { return }
+                    let remainingChu = UserDefaultsManager.shared.getChuCount()
+                    if remainingChu >= 10 {
+                        viewModel.purchaseChu(chu: 10)
+                        self.viewModel.deleteLikeData()
+                        UIView.animate(withDuration: 0.3) {
+                            lastView.center = self.view.center
+                            lastView.transform = CGAffineTransform(rotationAngle: 0)
+                        }
+                        self.homeViewController?.removedView.removeLast()
+                    } else {
+                        showCustomAlert(alertType: .onlyConfirm, titleText: "츄가 부족합니다", messageText: "", confirmButtonText: "확인")
                     }
-                    self.homeViewController?.removedView.removeLast()
                 }
             )
         } else {

@@ -17,7 +17,7 @@ final class HomeEmptyView: UIView {
     
     private let finishLabel: UILabel = {
         let label = UILabel()
-        label.text = "이번 추천이 완료되었습니다."
+        label.text = "더 이상 추천이 없어요, 선호설정을 조절해 보세요."
         label.textAlignment = .center
         return label
     }()

@@ -15,6 +15,7 @@ final class HomeViewModel {
     
     var otherUsers = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
+    var myBlockUsersId = BehaviorRelay<[Block.BlockInfo]>(value: [])
     static var filterGender: [GenderType] = []
     static var filterMbti: [MBTIType] = []
     static var filterAgeMin: Int = 24
@@ -27,6 +28,7 @@ final class HomeViewModel {
         loadFilterDefault()
         loadUsers()
         loadMyLikesRx()
+//        UserDefaults.standard.setValue(false, forKey: UserDefaultsManager.Key.dontWatchAgain.rawValue)
     }
     
     func calculateDistance(user: User) -> CLLocationDistance {
@@ -61,10 +63,13 @@ final class HomeViewModel {
                         var subInfos: SubInfo = SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [], personalities: [], favoriteMBTIs: [])
                         
                         self.queryBlocks(for: document.documentID) { block in
-                            blocks = block ?? Block(userId: nil)
+                            if let block = block?.recivedBlock {
+                                self.myBlockUsersId.accept(block)
+                            }
+                            blocks = block ?? Block(userId: "")
                         }
                         self.queryReports(for: document.documentID) { report in
-                            reports = report ?? Report(userId: nil)
+                            reports = report ?? Report(userId: "")
                         }
                         self.querySubInfo(for: document.documentID) { subInfo in
                             subInfos = subInfo ?? SubInfo(intro: "", height: 0, drinkStatus: .never, smokeStatus: .never, religion: .buddhism, education: .college, job: "", hobbies: [], personalities: [], favoriteMBTIs: [])
