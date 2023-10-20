@@ -44,6 +44,7 @@ final class ProfileEditCollectionCell: UICollectionViewCell {
     
     func configure(imageName: String) {
         guard let url = URL(string: imageName) else { return }
+        imageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         imageView.kf.setImage(with: url)
         imageView.contentMode = .scaleAspectFill
     }

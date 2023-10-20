@@ -33,6 +33,7 @@ final class MailReceiveModel {
     
     struct Input {
         let listLoad: Observable<Void>
+        let deleteUser: Observable<String>
         let refresh: Observable<Void>
         let isReceiveEmptyChecked: Observable<Void>
     }
@@ -54,6 +55,13 @@ final class MailReceiveModel {
             .withUnretained(self)
             .subscribe { viewModel, _ in
                 viewModel.loadNextMailPage()
+            }
+            .disposed(by: disposeBag)
+        
+        input.deleteUser
+            .withUnretained(self)
+            .subscribe { viewModel, mailId in
+                viewModel.deleteMail(mailId: mailId)
             }
             .disposed(by: disposeBag)
         
@@ -106,7 +114,7 @@ final class MailReceiveModel {
                         print("받은 문서를 찾을 수 없습니다.")
                     }
                 }
-                receiveList.reverse()
+                receiveList.sort(by: {$0.sendedDate > $1.sendedDate})
                 
                 reloadMailTableViewPublisher.onNext(())
             }
@@ -114,9 +122,33 @@ final class MailReceiveModel {
     }
     
     private func refresh() {
+        let didSet = isReceiveEmptyPublisher
+        isReceiveEmptyPublisher = PublishSubject<Bool>()
         receiveList = []
         startIndex = 0
+        isReceiveEmptyPublisher = didSet
         loadNextMailPage()
+    }
+    
+    private func deleteMail(mailId: String) {
+        let currentUser = UserDefaultsManager.shared.getUserData()
+        
+        guard let index = receiveList.firstIndex(where: {
+            $0.id == mailId
+            
+        }) else {
+            return
+        }
+        guard let removeData: Mail.MailInfo = receiveList[safe: index] else {
+            print("삭제 실패: 해당 유저 정보 얻기 실패")
+            return
+        }
+        receiveList.remove(at: index)
+        reloadMailTableViewPublisher.onNext(())
+        
+        dbRef.collection(Collections.mail.name).document(currentUser.userId).updateData([
+            "receiveMailInfo": FieldValue.arrayRemove([removeData.asDictionary()])
+        ])
     }
     
     func getUser(userId: String, completion: @escaping () -> ()) {
@@ -140,16 +172,15 @@ final class MailReceiveModel {
     }
     
     func updateNewData(data: Mail.MailInfo) {
-        
         let updateData: Mail.MailInfo = Mail.MailInfo(id: data.id, sendedUserId: data.sendedUserId, receivedUserId: data.receivedUserId, mailType: data.mailType, message: data.message, sendedDate: data.sendedDate, isReading: true)
         
         DispatchQueue.global().async {
-            self.dbRef.collection(Collections.mail.name).document(UserDefaultsManager.shared.getUserData().userId).setData([
-                "receiveMailInfo": FieldValue.arrayUnion([updateData.asDictionary()])], merge: true) { error in
-                    if let error = error {
-                        print("Error updateNewData \(error)")
-                    }
-                }
+            self.dbRef.collection(Collections.mail.name).document(UserDefaultsManager.shared.getUserData().userId).updateData([
+                "receiveMailInfo": FieldValue.arrayRemove([data.asDictionary()])
+            ])
+            self.dbRef.collection(Collections.mail.name).document(UserDefaultsManager.shared.getUserData().userId).updateData([
+                "receiveMailInfo": FieldValue.arrayUnion([updateData.asDictionary()])
+            ])
         }
     }
     

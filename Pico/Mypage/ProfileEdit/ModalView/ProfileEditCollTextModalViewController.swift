@@ -29,6 +29,14 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         return label
     }()
     
+    private let countLabel: UILabel = {
+        let label = UILabel()
+        label.font = .picoDescriptionFont
+        label.textColor = .picoFontGray
+        label.text = "0/7"
+        return label
+    }()
+    
     private let textField: UITextField = {
         let textField = UITextField()
         textField.font = .picoTitleFont
@@ -51,10 +59,11 @@ final class ProfileEditCollTextModalViewController: UIViewController {
     private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
+        button.tintColor = .picoGray
         button.imageView?.contentMode = .scaleAspectFit
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+        button.isHidden = true
         return button
     }()
     
@@ -148,8 +157,9 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         profileEditViewModel.modalName
             .bind(to: titleLabel.rx.text)
             .disposed(by: disposeBag)
-        let loadData = profileEditViewModel.collectionData ?? []
-        collectionData = loadData
+        
+        collectionData = profileEditViewModel.collectionData ?? []
+        countLabel.text = "\(collectionData.count)/7"
     }
     
     private func textFieldConfigure() {
@@ -157,7 +167,7 @@ final class ProfileEditCollTextModalViewController: UIViewController {
     }
     
     private func addViews() {
-        view.addSubview([backButton, titleLabel, collectionView, textField, cancelButton, registerButton, completeButton])
+        view.addSubview([backButton, titleLabel, collectionView, countLabel, textField, cancelButton, registerButton, completeButton])
     }
     
     private func makeConstraints() {
@@ -174,20 +184,28 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.trailing.equalTo(countLabel.snp.leading).offset(-15)
+            make.height.equalTo(40)
+        }
+        
+        countLabel.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.top)
+            make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(40)
         }
         
         textField.snp.makeConstraints { make in
             make.top.equalTo(collectionView.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(15)
-            make.trailing.equalTo(cancelButton.snp.leading).offset(-15)
             make.height.equalTo(40)
         }
         
         cancelButton.snp.makeConstraints { make in
             make.centerY.equalTo(textField.snp.centerY)
+            make.leading.equalTo(textField.snp.trailing)
             make.trailing.equalTo(registerButton.snp.leading).offset(-8)
+            make.width.equalTo(40)
         }
         
         registerButton.snp.makeConstraints { make in
@@ -214,11 +232,22 @@ final class ProfileEditCollTextModalViewController: UIViewController {
             completeButton.backgroundColor = .picoBlue
         }
     }
-    
+    private func cheeckCollectionCount() -> Bool {
+        if collectionData.count >= 7 {
+            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "최대 7개까지만 선택할 수 있습니다.", confirmButtonText: "확인")
+            return false
+        } else {
+            return true
+        }
+    }
     private func tappedRegister(text: String?) {
         textField.text = ""
         guard let text, !text.isEmpty else { return }
-        collectionData.append(text)
+        let trimmedText = text.trimmed()
+        guard !trimmedText.isEmpty else { return }
+        guard cheeckCollectionCount() else { return }
+        collectionData.append(trimmedText)
+        countLabel.text = "\(collectionData.count)/7"
         collectionView.reloadData()
         checkSameData()
     }
@@ -257,6 +286,25 @@ extension ProfileEditCollTextModalViewController: UICollectionViewDataSource, UI
 }
 
 extension ProfileEditCollTextModalViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        cancelButton.isHidden = false
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        cancelButton.isHidden = true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            if let text = textField.text {
+                if text.count > 10 {
+                    return false
+                } else {
+                    return true
+                }
+            }
+        return true
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.tappedRegister(text: self.textField.text)
         return true

@@ -64,6 +64,7 @@ final class StoreViewController: UIViewController {
         output.resultPurchase
             .withUnretained(self)
             .subscribe { viewController, _ in
+                sleep(2)
                 DispatchQueue.main.async {
                     viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "결제 확인", messageText: "결제되셨습니다.", confirmButtonText: "확인", comfrimAction: {
                         viewController.navigationController?.popViewController(animated: true)

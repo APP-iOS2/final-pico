@@ -42,6 +42,7 @@ final class NotificationViewController: UIViewController {
         view.configBackgroundColor()
         configNavigationBackButton()
         navigationItem.title = "알림"
+        tabBarController?.tabBar.isHidden = true
     }
     
     private func configTableView() {
@@ -129,8 +130,7 @@ extension NotificationViewController {
                 } else {
                     viewController.view.addSubview(viewController.tableView)
                     viewController.tableView.snp.makeConstraints { make in
-                        make.top.leading.equalToSuperview().offset(10)
-                        make.trailing.bottom.equalToSuperview().offset(-10)
+                        make.edges.equalToSuperview()
                     }
                 }
             })

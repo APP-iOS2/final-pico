@@ -155,6 +155,12 @@ final class ProfileEditViewModel {
         imagesSubject.onNext(userImages ?? [])
     }
     
+    func compareChuCount() -> Bool {
+        let chuCount = UserDefaultsManager.shared.getChuCount()
+        guard chuCount >= 50 else { return false }
+        return true
+    }
+    
     func findIndex(for targetString: String, in array: [String]) -> Int? {
         if let index = array.firstIndex(of: targetString) {
             return index
@@ -232,12 +238,12 @@ final class ProfileEditViewModel {
                     SectionModel(items: [.profileEditNicknameTabelCell, .profileEditLoactionTabelCell(location: data.location.address)]),
                     SectionModel(items: [
                         .profileEditTextTabelCell(title: SubInfoCase.intro.name, content: data.subInfo?.intro),
-                        .profileEditTextTabelCell(title: SubInfoCase.height.name, content: data.subInfo?.height != nil ? "\(data.subInfo?.height ?? 0)cm" : "추가"),
+                        .profileEditTextTabelCell(title: SubInfoCase.height.name, content: data.subInfo?.height != nil ? "\(data.subInfo?.height ?? 0)cm" : nil),
                             .profileEditTextTabelCell(title: SubInfoCase.job.name, content: data.subInfo?.job),
-                        .profileEditTextTabelCell(title: SubInfoCase.religion.name, content: data.subInfo?.religion?.rawValue),
-                        .profileEditTextTabelCell(title: SubInfoCase.drink.name, content: data.subInfo?.drinkStatus?.rawValue),
-                        .profileEditTextTabelCell(title: SubInfoCase.smoke.name, content: data.subInfo?.smokeStatus?.rawValue),
-                        .profileEditTextTabelCell(title: SubInfoCase.education.name, content: data.subInfo?.education?.rawValue),
+                        .profileEditTextTabelCell(title: SubInfoCase.religion.name, content: data.subInfo?.religion?.name),
+                        .profileEditTextTabelCell(title: SubInfoCase.drink.name, content: data.subInfo?.drinkStatus?.name),
+                        .profileEditTextTabelCell(title: SubInfoCase.smoke.name, content: data.subInfo?.smokeStatus?.name),
+                        .profileEditTextTabelCell(title: SubInfoCase.education.name, content: data.subInfo?.education?.name),
                         .profileEditTextTabelCell(title: SubInfoCase.personalities.name, content: transformArrtoString(stringArr: data.subInfo?.personalities ?? [])),
                         .profileEditTextTabelCell(title: SubInfoCase.hobbies.name, content: transformArrtoString(stringArr: data.subInfo?.hobbies ?? [])),
                         .profileEditTextTabelCell(title: SubInfoCase.favoriteMBTIs.name, content: transformEnumtoString(stringArr: data.subInfo?.favoriteMBTIs ?? []))

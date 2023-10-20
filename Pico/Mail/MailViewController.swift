@@ -71,6 +71,7 @@ final class MailViewController: BaseViewController {
         configMailTypeButtons()
         configPageView()
     }
+    
     // MARK: - MailView +UI
     private func addViews() {
         [receiveButton, sendButton].forEach { item in

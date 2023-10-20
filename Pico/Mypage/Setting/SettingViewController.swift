@@ -102,8 +102,9 @@ final class SettingViewController: UIViewController {
     
     private func presentSafariView(urlString: String) {
         guard let url = URL(string: urlString) else {return}
-        let safari = SFSafariViewController(url: url)
-        present(safari, animated: true)
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.modalPresentationStyle = .automatic
+        present(safariViewController, animated: true)
     }
     
     private func pushNextViewController(viewController: UIViewController) {
@@ -230,7 +231,6 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.section {
         case 1:
             switch indexPath.row {
@@ -259,5 +259,6 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
         default:
             break
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

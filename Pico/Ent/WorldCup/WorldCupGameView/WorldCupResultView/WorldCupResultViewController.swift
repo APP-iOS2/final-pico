@@ -14,13 +14,9 @@ final class WorldCupResultViewController: UIViewController {
     
     var selectedItem: User?
     private let disposeBag = DisposeBag()
-    
-    private let backgroundImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "gameBackground"))
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-    
+    private let viewModel = WorldCupResultViewModel()
+    private let requestMessagePublisher = PublishSubject<User>()
+
     private let worldCupTitleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -42,19 +38,54 @@ final class WorldCupResultViewController: UIViewController {
         label.textAlignment = .center
         label.font = UIFont.picoButtonFont
         label.textColor = .picoFontGray
-        label.text = "농치기 아쉽다면?\n채팅을 신청해보세요!"
+        label.text = "농치기 아쉽다면?\n 메일을 신청해보세요!"
         label.numberOfLines = 0
         return label
     }()
     
-    private let resultUserView: ResultUserView = {
-        let view = ResultUserView()
+    private let cardView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 10
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.3
+        view.layer.shadowRadius = 10
+        view.layer.shadowOffset = CGSize(width: 10, height: 10)
+        view.layer.shadowPath = nil
         return view
     }()
     
-    private lazy var chatButton: CommonButton = {
+    private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: .esfj, scale: .small)
+
+    private let userImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 5
+        return imageView
+    }()
+    
+    private let userTitle: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.picoSubTitleFont
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
+    
+    private let userLocation: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.picoDescriptionFont
+        label.textColor = .darkGray
+        label.adjustsFontSizeToFitWidth = true
+        return label
+    }()
+    
+    private let chatButton: CommonButton = {
         let button = CommonButton()
-        button.setTitle("채팅 신청하기", for: .normal)
+        button.setTitle("메일 신청하기", for: .normal)
+        button.layer.cornerRadius = 5
         return button
     }()
     
@@ -62,14 +93,14 @@ final class WorldCupResultViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoEntSubLabelFont
-        label.text = "채팅 신청 비용 50츄 (50%)"
+        label.text = "메일 신청 비용 25츄 (50%)"
         label.textColor = .picoFontGray
         return label
     }()
     
-    private lazy var cancelButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("채팅 신청하지 않고 나가기", for: .normal)
+        button.setTitle("신청하지 않고 나가기", for: .normal)
         button.setTitleColor(.picoAlphaBlue, for: .normal)
         button.titleLabel?.font = UIFont.picoButtonFont
         return button
@@ -82,26 +113,20 @@ final class WorldCupResultViewController: UIViewController {
         addViews()
         makeConstraints()
         configResultUserCell()
-        addShadow()
-        configRxBinding()
+        bind()
     }
     
     private func addViews() {
-        [backgroundImageView, worldCupTitleLabel, pickMeLabel, contentLabel, resultUserView, chatButton, guideLabel, cancelButton].forEach { item in
-            view.addSubview(item)
-        }
+        cardView.addSubview([mbtiLabel, userImage, userTitle, userLocation, chatButton, guideLabel])
+        view.addSubview([worldCupTitleLabel, pickMeLabel, contentLabel, cardView, cancelButton])
     }
     
     private func makeConstraints() {
         let padding: CGFloat = 20
         let half: CGFloat = 0.5
         
-        backgroundImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
         worldCupTitleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Screen.height / 8)
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.centerX.equalToSuperview().offset(half)
         }
         
@@ -115,113 +140,112 @@ final class WorldCupResultViewController: UIViewController {
             make.centerX.equalToSuperview().offset(half)
         }
         
-        resultUserView.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(padding * 2)
+        cardView.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(padding)
             make.centerX.equalToSuperview()
-            make.width.equalTo(Screen.width * 0.5)
-            make.height.equalTo(Screen.height * 0.5)
+            make.width.equalTo(Screen.width * 0.6)
+        }
+        
+        mbtiLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(padding * half)
+            make.leading.equalToSuperview().offset(padding)
+            make.trailing.equalToSuperview().offset(-padding)
+            make.height.equalTo(mbtiLabel.frame.size.height + 10)
+        }
+
+        userImage.snp.makeConstraints { make in
+            make.top.equalTo(mbtiLabel.snp.bottom).offset(padding * half)
+            make.leading.trailing.equalTo(mbtiLabel)
+            make.height.equalTo(userImage.snp.width)
+        }
+
+        userTitle.snp.makeConstraints { make in
+            make.top.equalTo(userImage.snp.bottom).offset(padding * half)
+            make.leading.trailing.equalTo(userImage)
+        }
+        
+        userLocation.snp.makeConstraints { make in
+            make.top.equalTo(userTitle.snp.bottom)
+            make.leading.trailing.equalTo(userImage)
         }
         
         chatButton.snp.makeConstraints { make in
-            make.top.equalTo(resultUserView.userAge.snp.bottom).offset(padding)
-            make.centerX.equalToSuperview().offset(half)
-            make.leading.equalToSuperview().offset(Screen.width / 3.5)
-            make.trailing.equalToSuperview().offset(-Screen.width / 3.5)
-            make.height.equalTo(Screen.width / 10)
+            make.top.equalTo(userLocation.snp.bottom).offset(padding)
+            make.leading.equalToSuperview().offset(padding)
+            make.trailing.equalToSuperview().offset(-padding)
         }
         
         guideLabel.snp.makeConstraints { make in
             make.top.equalTo(chatButton.snp.bottom).offset(padding * half)
             make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-padding)
         }
         
         cancelButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview().offset(0.5)
-            make.bottom.equalToSuperview().offset(-padding * 1.5)
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-padding )
         }
     }
     
     private func configResultUserCell() {
         if let selectedItem = selectedItem {
-            resultUserView.mbtiLabel.setMbti(mbti: selectedItem.mbti)
-            resultUserView.userNickname.text = String(selectedItem.nickName)
-            resultUserView.userAge.text = "\(selectedItem.age)세"
-            
+            mbtiLabel.setMbti(mbti: selectedItem.mbti)
+            userTitle.text = "\(String(selectedItem.nickName)), \(selectedItem.age)세"
+            userLocation.text = "\(selectedItem.location.address)"
             if let imageURL = selectedItem.imageURLs.first, let url = URL(string: imageURL) {
-                resultUserView.userImage.load(url: url)
+                userImage.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+                userImage.kf.setImage(with: url)
             }
         }
     }
+}
 
-    private func addShadow(opacity: Float = 0.07, radius: CGFloat = 5.0) {
-        resultUserView.layer.masksToBounds = false
-        resultUserView.layer.shadowColor = UIColor.black.cgColor
-        resultUserView.layer.shadowOffset = CGSize(width: 10, height: 10)
-        resultUserView.layer.shadowOpacity = opacity
-        resultUserView.layer.shadowRadius = radius
-    }
-    
-    private func configRxBinding() {
+extension WorldCupResultViewController {
+    private func bind() {
         chatButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                self.tappedChatButton()
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, _ in
+                if UserDefaultsManager.shared.getChuCount() <= 25 {
+                    viewController.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                        let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                        viewController.navigationController?.pushViewController(storeViewController, animated: true)
+                    })
+                } else {
+                    guard let resultUser = viewController.selectedItem else { return }
+                    viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 신청", messageText: "월드컵 우승자에게 메일을 보낼 시 50% 할인된 가격으로 보낼 수 있습니다!", confirmButtonText: "신청", comfrimAction: {
+                        viewController.requestMessagePublisher.onNext(resultUser)
+                    })
+                }
             })
             .disposed(by: disposeBag)
         
         cancelButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.tappedCancelButton()
+                showCustomAlert(alertType: .canCancel, titleText: "신청하지 않고 나가기", messageText: "이 페이지에서만 50% 할인된 가격으로 신청할 수 있습니다.", confirmButtonText: "나가기", comfrimAction: {
+                    if let navigationController = self.navigationController {
+                        navigationController.popToRootViewController(animated: true)
+                    } else {
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                })
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func tappedChatButton() {
-        let customPopup = CustomPopupViewController()
-        customPopup.alertType = .canCancel
-        customPopup.titleText = "채팅 신청"
-        customPopup.messageText = "이상형 월드컵 우승자와 매칭 시 매칭 성공률이 높아집니다!"
-        customPopup.confirmButtonText = "신청"
-        customPopup.cancelButtonText = "취소"
         
-        customPopup.confirmAction = { [weak self] in
-            if let navigationController = self?.navigationController {
-                navigationController.popToRootViewController(animated: true)
-            } else {
-                self?.dismiss(animated: true, completion: nil)
+        let input = WorldCupResultViewModel.Input(requestMessage: requestMessagePublisher.asObservable())
+        let output = viewModel.transform(input: input)
+        
+        output.resultRequestMessage
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "쪽지 요청 성공", messageText: "받은 메일함을 확인해 주세요.", confirmButtonText: "확인", comfrimAction: {
+                    if let navigationController = self.navigationController {
+                        navigationController.popToRootViewController(animated: true)
+                    } else {
+                        self.dismiss(animated: true)
+                    }
+                })
             }
-        }
-        
-        customPopup.cancelAction = {
-            customPopup.dismiss(animated: true, completion: nil)
-        }
-        
-        customPopup.modalPresentationStyle = .overFullScreen
-        present(customPopup, animated: true, completion: nil)
-    }
-
-    private func tappedCancelButton() {
-        let customPopup = CustomPopupViewController()
-        customPopup.alertType = .canCancel
-        customPopup.titleText = "신청하지 않고 나가기"
-        customPopup.messageText = "매칭 성공률이 높은 상대가 채팅 신청을 기다리고 있습니다"
-        customPopup.confirmButtonText = "나가기"
-        customPopup.cancelButtonText = "취소"
-        
-        customPopup.confirmAction = { [weak self] in
-            if let navigationController = self?.navigationController {
-                navigationController.popToRootViewController(animated: true)
-            } else {
-                self?.dismiss(animated: true, completion: nil)
-            }
-        }
-        
-        customPopup.cancelAction = {
-            customPopup.dismiss(animated: true, completion: nil)
-        }
-        
-        customPopup.modalPresentationStyle = .overFullScreen
-        present(customPopup, animated: true, completion: nil)
+            .disposed(by: disposeBag)
     }
 }

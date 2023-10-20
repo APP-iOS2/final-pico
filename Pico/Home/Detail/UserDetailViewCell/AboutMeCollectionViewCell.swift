@@ -11,7 +11,7 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = .gray
+        imageView.tintColor = .darkGray
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -29,7 +29,11 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
     }
     
     func config(image: String, title: String) {
-        self.imageView.image = UIImage(systemName: image)
+        if image == "smoke" || image == "religion" {
+            self.imageView.image = UIImage(named: image)
+        } else {
+            self.imageView.image = UIImage(systemName: image)
+        }
         self.titleLabel.text = title
     }
     
@@ -40,6 +44,7 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
     private func makeConstraints() {
         imageView.snp.makeConstraints { make in
             make.top.leading.bottom.equalToSuperview()
+            make.width.height.equalTo(20)
         }
         
         titleLabel.snp.makeConstraints { make in

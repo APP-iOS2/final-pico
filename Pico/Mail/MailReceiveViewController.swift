@@ -14,8 +14,7 @@ final class MailReceiveViewController: UIViewController {
     
     private let viewModel = MailReceiveModel()
     private let disposeBag = DisposeBag()
-    
-    private var sendMailInfo: Mail.MailInfo?
+    private var mailUser: Mail.MailInfo = Mail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -61,7 +60,6 @@ final class MailReceiveViewController: UIViewController {
     private let userInfoStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.distribution = .fillEqually
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
         return stackView
     }()
@@ -97,8 +95,7 @@ final class MailReceiveViewController: UIViewController {
         stackView.alignment = .fill
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 20
-        stackView.layer.borderColor = UIColor.picoBlue.cgColor
-        stackView.layer.borderWidth = 2
+        stackView.backgroundColor = .picoLightGray
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
         return stackView
@@ -148,9 +145,8 @@ final class MailReceiveViewController: UIViewController {
         }
         
         mbtiLabelView.snp.makeConstraints { make in
-            make.centerY.equalTo(userNameLabel)
-            make.height.equalTo(mbtiLabelView.frame.size.height)
             make.width.equalTo(mbtiLabelView.frame.size.width)
+            make.height.equalTo(mbtiLabelView.frame.size.height)
         }
         
         userStack.snp.makeConstraints { make in
@@ -176,9 +172,7 @@ final class MailReceiveViewController: UIViewController {
             .bind { [weak self] in
                 guard let self = self else { return }
                 let mailSendView = MailSendViewController()
-                if let mailUser = self.sendMailInfo {
-                    mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId)
-                }
+                mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId, atMessageView: true)
                 mailSendView.modalPresentationStyle = .formSheet
                 mailSendView.modalTransitionStyle = .flipHorizontal
                 self.present(mailSendView, animated: true, completion: nil)
@@ -188,7 +182,7 @@ final class MailReceiveViewController: UIViewController {
     
     // MARK: - MailReceive + config
     func configData(mailSender: Mail.MailInfo) {
-        sendMailInfo = mailSender
+        mailUser = mailSender
         navItem.title = mailSender.mailType.typeString
         
         if mailSender.mailType == .receive {
@@ -225,8 +219,8 @@ final class MailReceiveViewController: UIViewController {
     }
     
     private func configSenderStack() {
-        let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
-        userStack.addGestureRecognizer(stackTap)
+        // let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
+        // userStack.addGestureRecognizer(stackTap)
     }
     
     // MARK: - MailReceive +objc
@@ -234,25 +228,24 @@ final class MailReceiveViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    @objc func tappedSenderStack() {
-        dismiss(animated: true)
-        let viewController = UserDetailViewController()
-        if let user = sendMailInfo {
-            if user.mailType == .receive {
-                viewModel.getUser(userId: user.sendedUserId) {
-                    if let user = self.viewModel.user {
-                        viewController.viewModel = UserDetailViewModel(user: user)
-                    }
-                }
-            } else {
-                viewModel.getUser(userId: user.receivedUserId) {
-                    if let user = self.viewModel.user {
-                        viewController.viewModel = UserDetailViewModel(user: user)
-                    }
-                }
-            }
-        }
-        self.navigationController?.pushViewController(viewController, animated: true)
-        print("tap senderStack")
-    }
+    /*
+     @objc func tappedSenderStack() {
+     if let user = sendMailInfo {
+     if user.mailType == .receive {
+     viewModel.getUser(userId: user.sendedUserId) {
+     if let user = self.viewModel.user {
+     self.detailDelegate?.checkGoDetail(user: user)
+     }
+     }
+     } else {
+     viewModel.getUser(userId: user.receivedUserId) {
+     if let user = self.viewModel.user {
+     self.detailDelegate?.checkGoDetail(user: user)
+     }
+     }
+     }
+     }
+     dismiss(animated: true)
+     }
+     */
 }

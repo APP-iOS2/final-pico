@@ -55,28 +55,33 @@ final class LikeMeViewModel: ViewModelType {
                 viewModel.refresh()
             }
             .disposed(by: disposeBag)
+        
         input.listLoad
             .withUnretained(self)
             .subscribe { viewModel, _ in
                 viewModel.loadNextPage()
             }
             .disposed(by: disposeBag)
+        
         input.deleteUser
             .withUnretained(self)
             .subscribe { viewModel, userId in
                 viewModel.deleteUser(userId: userId)
             }
             .disposed(by: disposeBag)
+        
         input.likeUser
             .withUnretained(self)
             .subscribe { viewModel, userId in
                 viewModel.likeUser(userId: userId)
             }
             .disposed(by: disposeBag)
+        
         let didset = isEmptyPublisher.asObservable()
             .map { result in
                 return result
             }
+        
         let check = input.checkEmpty
             .withUnretained(self)
             .map { viewModel, _ -> Bool in
@@ -86,6 +91,7 @@ final class LikeMeViewModel: ViewModelType {
                     return false
                 }
             }
+        
         let isEmpty = Observable.of(didset, check).merge()
             .flatMapLatest { bool -> Observable<Bool> in
                 return Observable.create { emitter in
@@ -94,7 +100,10 @@ final class LikeMeViewModel: ViewModelType {
                 }
             }
         
-        return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadTableViewPublisher.asObservable())
+        return Output(
+            likeUIsEmpty: isEmpty,
+            reloadCollectionView: reloadTableViewPublisher.asObservable()
+        )
     }
     
     private func loadNextPage() {
@@ -229,7 +238,7 @@ final class LikeMeViewModel: ViewModelType {
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)               
                 let mailModel = MailSendModel()
                 let receiverUser = User(id: likeData.likedUserId, mbti: likeData.mbti, phoneNumber: "", gender: .etc, birth: likeData.birth, nickName: likeData.nickName, location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [likeData.imageURL], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
-                mailModel.saveMailData(receiveUser: receiverUser, message: "서로 매칭되었습니다.")
+                mailModel.saveMailData(receiveUser: receiverUser, message: "서로 매칭되었습니다.", type: .matching)
                 
                 NotificationService.shared.sendNotification(userId: likeData.likedUserId, sendUserName: currentUser.nickName, notiType: .matching)
                 NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: likeData.nickName, notiType: .matching)

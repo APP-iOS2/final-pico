@@ -15,7 +15,8 @@ final class MailSendViewController: UIViewController {
     private let viewModel = MailSendModel()
     private let disposeBag = DisposeBag()
     
-    private var receiver: User?
+    private var receiver: User = User(mbti: .infj, phoneNumber: "", gender: .etc, birth: "", nickName: "", location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [], createdDate: 0, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
+    private var isMessageView = true
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -149,14 +150,13 @@ final class MailSendViewController: UIViewController {
         }
         
         receiverStack.snp.makeConstraints { make in
-            make.top.equalTo(receiverImageView).offset(10)
+            make.top.equalTo(receiverImageView).offset(12)
             make.leading.equalTo(receiverImageView.snp.trailing).offset(10)
         }
         
         mbtiLabelView.snp.makeConstraints { make in
-            make.centerY.equalTo(receiverNameLabel)
-            make.height.equalTo(mbtiLabelView.frame.size.height)
             make.width.equalTo(mbtiLabelView.frame.size.width)
+            make.height.equalTo(mbtiLabelView.frame.size.height)
         }
         
         contentView.snp.makeConstraints { make in
@@ -174,7 +174,9 @@ final class MailSendViewController: UIViewController {
         }
     }
     // MARK: - MailSend +Config
-    func configData(userId: String) {
+    func configData(userId: String, atMessageView: Bool ) {
+        isMessageView = atMessageView
+        
         viewModel.getUser(userId: userId) {
             if let user = self.viewModel.user {
                 self.receiver = user
@@ -201,9 +203,12 @@ final class MailSendViewController: UIViewController {
                 self.sendButton.tappedAnimation()
                 if let text = self.messageView.text {
                     // sender: 로그인한 사람, recevie 받는 사람
-                    if let receiver = self.receiver {
-                        self.viewModel.saveMailData(receiveUser: receiver, message: text)
+                    self.viewModel.saveMailData(receiveUser: receiver, message: text, type: .message)
+                    if isMessageView {
                         self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                    } else {
+                        dismiss(animated: true)
+                        
                     }
                 }
             }

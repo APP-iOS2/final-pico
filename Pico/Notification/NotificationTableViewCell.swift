@@ -70,7 +70,8 @@ final class NotificationTableViewCell: UITableViewCell {
     
     private func makeConstraints() {
         profileImageView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(10)
+            make.leading.equalTo(10)
             make.bottom.equalToSuperview().offset(-10)
             make.width.equalTo(profileImageView.snp.height)
         }
@@ -129,6 +130,7 @@ extension NotificationTableViewCell {
     
     func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
         guard let url = URL(string: imageUrl) else { return }
+        profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         profileImageView.kf.setImage(with: url)
         iconImageView.image = UIImage()
         nameLabel.text = "\(nickName), \(age)"

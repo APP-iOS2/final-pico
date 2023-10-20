@@ -14,7 +14,7 @@ struct UserImage {
 }
 
 final class AdminUserDetailViewController: UIViewController {
-  
+    
     private let topView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -45,8 +45,12 @@ final class AdminUserDetailViewController: UIViewController {
     private let disposeBag: DisposeBag = DisposeBag()
     
     private let recordTypePublish = PublishSubject<RecordType>()
+    private let refreshablePublish = PublishSubject<RecordType>()
     private let unsubscribePublish = PublishSubject<Void>()
+    
     private var currentRecordType: RecordType = .report
+    private let footerView = FooterView()
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
     
     init(viewModel: AdminUserDetailViewModel) {
         self.viewModel = viewModel
@@ -66,6 +70,10 @@ final class AdminUserDetailViewController: UIViewController {
         configTableView()
         configButtons()
         bind()
+        activityIndicator.tintColor = .picoBlue
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.isHidden = true
+        tableView.tableFooterView = activityIndicator
     }
     
     private func configTableView() {
@@ -76,6 +84,11 @@ final class AdminUserDetailViewController: UIViewController {
         tableView.register(cell: RecordHeaderTableViewCell.self)
         tableView.register(cell: NotificationTableViewCell.self)
         tableView.separatorStyle = .none
+        
+        footerView.frame = CGRect(x: 0,
+                                  y: 0,
+                                  width: tableView.bounds.size.width,
+                                  height: 80)
     }
     
     private func configButtons() {
@@ -86,9 +99,38 @@ final class AdminUserDetailViewController: UIViewController {
     private func bind() {
         let input = AdminUserDetailViewModel.Input(
             selectedRecordType: recordTypePublish.asObservable(),
+            refreshable: refreshablePublish.asObservable(),
             isUnsubscribe: unsubscribePublish.asObservable()
         )
         let output = viewModel.transform(input: input)
+        
+        let merged = Observable.merge(output.needToFirstLoad, output.needToRefresh)
+        
+        merged
+            .withUnretained(self)
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { viewController, recordType in
+                viewController.currentRecordType = recordType
+                viewController.reloadRecord()
+            })
+            .disposed(by: disposeBag)
+        
+        //        output.needToFirstLoad
+        //            .withUnretained(self)
+        //            .observe(on: MainScheduler.instance)
+        //            .subscribe { viewController, recordType in
+        //                viewController.currentRecordType = recordType
+        //                viewController.reloadRecord()
+        //            }
+        //            .disposed(by: disposeBag)
+        //
+        //        output.needToRefresh
+        //            .withUnretained(self)
+        //            .observe(on: MainScheduler.instance)
+        //            .subscribe { viewController, _ in
+        //                viewController.reloadRecord()
+        //            }
+        //            .disposed(by: disposeBag)
         
         output.resultIsUnsubscribe
             .withUnretained(self)
@@ -106,6 +148,11 @@ final class AdminUserDetailViewController: UIViewController {
                 viewController.tableView.reloadData()
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func reloadRecord() {
+        tableView.reloadSections(IndexSet(3...3), with: .automatic)
+        activityIndicator.stopAnimating()
     }
     
     @objc private func tappedBackButton(_ sender: UIButton) {
@@ -135,7 +182,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case recordHeader
         case record
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let tableViewCase = TableViewCase.allCases[safe: section] else { return 0 }
         
@@ -143,24 +190,33 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case .image, .info, .recordHeader:
             return 1
         case .record:
-            return viewModel.likeList.count
+            switch currentRecordType {
+            case .report:
+                return 0
+            case .block:
+                return 0
+            case .like:
+                return viewModel.likeList.count
+            case .payment:
+                return 0
+            }
         }
     }
-
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return TableViewCase.allCases.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let tableViewCase = TableViewCase.allCases[safe: indexPath.section] else { return UITableViewCell()}
-
+        
         switch tableViewCase {
         case .image:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: DetailUserImageTableViewCell.self)
             cell.config(images: viewModel.selectedUser.imageURLs)
             cell.selectionStyle = .none
             return cell
-
+            
         case .info:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: DetailUserInfoTableViewCell.self)
             cell.config(user: viewModel.selectedUser)
@@ -173,7 +229,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
             cell.selectedRecordTypePublisher.asObservable()
                 .withUnretained(self)
                 .subscribe(onNext: { viewController, recordType in
-                    viewController.currentRecordType = recordType
+                    print(recordType)
                     viewController.recordTypePublish.onNext(recordType)
                 })
                 .disposed(by: disposeBag)
@@ -182,8 +238,21 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case .record:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: NotificationTableViewCell.self)
             
-            guard let user = viewModel.likeList[safe: indexPath.row] else { return UITableViewCell() }
-            cell.configData(notitype: .like, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, date: Date().timeIntervalSince1970)
+            switch currentRecordType {
+            case .report:
+                break
+                
+            case .block:
+                break
+                
+            case .like:
+                guard let user = viewModel.likeList[safe: indexPath.row] else { return UITableViewCell() }
+                cell.configData(notitype: .like, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, date: Date().timeIntervalSince1970)
+                
+            case .payment:
+                break
+            }
+            
             cell.selectionStyle = .none
             return cell
         }
@@ -217,6 +286,21 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
             topView.backgroundColor = .systemBackground.withAlphaComponent(alpha)
         default:
             topView.backgroundColor = .systemBackground.withAlphaComponent(maxAlpha)
+        }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let offset = scrollView.contentOffset.y
+        let contentHeight = tableView.contentSize.height
+        let scrollViewHeight = scrollView.frame.size.height
+        let size = contentHeight - scrollViewHeight
+        if offset > size && !activityIndicator.isAnimating {
+            activityIndicator.startAnimating()
+            refreshablePublish.onNext(currentRecordType)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                guard let self else { return }
+                activityIndicator.stopAnimating()
+            }
         }
     }
 }
