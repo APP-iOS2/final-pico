@@ -170,11 +170,11 @@ final class RandomBoxViewController: UIViewController {
         
         randomBoxManager.shake(view: self.randomBoxImage) {
             let randomValue = self.randomBoxManager.getRandomValue()
-            self.randomBoxManager.obtainChu(with: randomValue, number: 1) // Update the obtained chu
+            self.randomBoxManager.obtainChu(with: randomValue, number: 1)
             self.showAlert(with: randomValue)
             
             let updatedChuCount = UserDefaultsManager.shared.getChuCount() - 1
-            UserDefaultsManager.shared.updateChuCount(updatedChuCount) // Update the chu count in UserDefaults
+            UserDefaultsManager.shared.updateChuCount(updatedChuCount)
             
             self.openOneBoxButton.isEnabled = true
             self.openTenBoxButton.isEnabled = true
@@ -199,10 +199,10 @@ final class RandomBoxViewController: UIViewController {
             }
             
             let sumBoxHistory = boxHistory.reduce(0, +)
-            self.randomBoxManager.obtainChu(with: sumBoxHistory, number: 10) // Update the obtained chu
+            self.randomBoxManager.obtainChu(with: sumBoxHistory, number: 10)
             
             let updatedChuCount = UserDefaultsManager.shared.getChuCount() - 10
-            UserDefaultsManager.shared.updateChuCount(updatedChuCount) // Update the chu count in UserDefaults
+            UserDefaultsManager.shared.updateChuCount(updatedChuCount)
             
             self.showAlert(with: sumBoxHistory)
             
