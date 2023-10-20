@@ -89,17 +89,17 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
                         })
                     } else {
                         viewController.sendMessagePublisher.onNext(50)
+                        viewController.pushSendConrollerPublisher
+                            .subscribe(onNext: { _ in
+                                let mailSendView = MailSendViewController()
+                                mailSendView.configData(userId: item.likedUserId, atMessageView: false)
+                                mailSendView.modalPresentationStyle = .formSheet
+                                self.present(mailSendView, animated: true, completion: nil)
+                            })
+                            .disposed(by: cell.disposeBag)
                     }
                 })
             }
-            .disposed(by: cell.disposeBag)
-        pushSendConrollerPublisher
-            .subscribe(onNext: { _ in
-                let mailSendView = MailSendViewController()
-                mailSendView.configData(userId: item.likedUserId, atMessageView: false)
-                mailSendView.modalPresentationStyle = .formSheet
-                self.present(mailSendView, animated: true, completion: nil)
-            })
             .disposed(by: cell.disposeBag)
         return cell
     }
