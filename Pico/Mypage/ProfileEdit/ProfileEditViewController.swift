@@ -323,7 +323,6 @@ extension ProfileEditViewController {
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인")
                 } else {
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진 등록에 실패하였습니다.\n얼굴이 잘 나온 사진을 등록해 주세요.", confirmButtonText: "확인", comfrimAction: {
-                        print("여기맞지??")
                         self.userImages.removeAll()
                     })
                 }
