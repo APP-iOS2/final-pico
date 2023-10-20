@@ -135,7 +135,6 @@ final class MailReceiveModel {
         
         guard let index = receiveList.firstIndex(where: {
             $0.id == mailId
-            
         }) else {
             return
         }

@@ -16,6 +16,9 @@ final class MailReceiveViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var mailUser: Mail.MailInfo = Mail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
     
+    //var rootView: MailReceiveTableListController?
+    weak var mailReceiveDelegate: MailReceiveDelegate?
+    
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
         navigationBar.barTintColor = .systemBackground
@@ -219,8 +222,8 @@ final class MailReceiveViewController: UIViewController {
     }
     
     private func configSenderStack() {
-        // let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
-        // userStack.addGestureRecognizer(stackTap)
+        let stackTap = UITapGestureRecognizer(target: self, action: #selector(tappedSenderStack))
+        userStack.addGestureRecognizer(stackTap)
     }
     
     // MARK: - MailReceive +objc
@@ -228,24 +231,24 @@ final class MailReceiveViewController: UIViewController {
         dismiss(animated: true)
     }
     
-    /*
-     @objc func tappedSenderStack() {
-     if let user = sendMailInfo {
-     if user.mailType == .receive {
-     viewModel.getUser(userId: user.sendedUserId) {
-     if let user = self.viewModel.user {
-     self.detailDelegate?.checkGoDetail(user: user)
-     }
-     }
-     } else {
-     viewModel.getUser(userId: user.receivedUserId) {
-     if let user = self.viewModel.user {
-     self.detailDelegate?.checkGoDetail(user: user)
-     }
-     }
-     }
-     }
-     dismiss(animated: true)
-     }
-     */
+    @objc func tappedSenderStack() {
+        dismiss(animated: true)
+        
+        if self.mailUser.mailType == .receive {
+            self.viewModel.getUser(userId: self.mailUser.sendedUserId) {
+                if let user = self.viewModel.user {
+                    self.mailReceiveDelegate?.pushUserDetailViewController(user: user)
+                }
+            }
+        } else {
+            self.viewModel.getUser(userId: self.mailUser.receivedUserId) {
+                if let user = self.viewModel.user {
+                    self.mailReceiveDelegate?.pushUserDetailViewController(user: user)
+                }
+            }
+            
+        }
+        
+    }
+    
 }

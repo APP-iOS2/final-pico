@@ -10,7 +10,8 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 final class HomeUserCardViewModel {
-    private let loginUser = UserDefaultsManager.shared.getUserData()
+    private let currentUser = UserDefaultsManager.shared.getUserData()
+    private let currentChuCount = UserDefaultsManager.shared.getChuCount()
     private let sendedlikesUpdateFiled = "sendedlikes"
     private let recivedlikesUpdateFiled = "recivedlikes"
     private let docRef = Firestore.firestore().collection(Collections.likes.name)
@@ -28,20 +29,20 @@ final class HomeUserCardViewModel {
                                                       createdDate: Date().timeIntervalSince1970)
             
         let myLikeUserDic = myLikeUser.asDictionary()
-        let myInfo: Like.LikeInfo = Like.LikeInfo(likedUserId: loginUser.userId,
+        let myInfo: Like.LikeInfo = Like.LikeInfo(likedUserId: currentUser.userId,
                                                   likeType: likeType,
-                                                  birth: loginUser.birth,
-                                                  nickName: loginUser.nickName,
-                                                  mbti: MBTIType(rawValue: loginUser.mbti) ?? .entp,
-                                                  imageURL: loginUser.imageURL,
+                                                  birth: currentUser.birth,
+                                                  nickName: currentUser.nickName,
+                                                  mbti: MBTIType(rawValue: currentUser.mbti) ?? .entp,
+                                                  imageURL: currentUser.imageURL,
                                                   createdDate: Date().timeIntervalSince1970)
         let myInfoDic = myInfo.asDictionary()
         HomeUserCardViewModel.passedMyData.append(myLikeUserDic)
         HomeUserCardViewModel.passedUserData.append(myInfoDic)
         
-        docRef.document(loginUser.userId).setData(
+        docRef.document(currentUser.userId).setData(
             [
-                "userId": loginUser.userId,
+                "userId": currentUser.userId,
                 sendedlikesUpdateFiled: FieldValue.arrayUnion([myLikeUserDic])
             ], merge: true) { error in
                 if let error = error {
@@ -63,7 +64,7 @@ final class HomeUserCardViewModel {
         if let myData = HomeUserCardViewModel.passedMyData.last,
            let userData = HomeUserCardViewModel.passedUserData.last,
            let userId = myData["likedUserId"] as? String {
-            docRef.document(loginUser.userId).updateData(
+            docRef.document(currentUser.userId).updateData(
                 [
                     sendedlikesUpdateFiled: FieldValue.arrayRemove([myData])
                 ]) { error in
@@ -89,4 +90,13 @@ final class HomeUserCardViewModel {
         }
     }
     
+    func purchaseChu(chu: Int) {
+        FirestoreService.shared.updateDocument(collectionId: .users, documentId: currentUser.userId, field: "chuCount", data: self.currentChuCount - chu, completion: { _ in
+            UserDefaultsManager.shared.updateChuCount(self.currentChuCount - chu)
+            let payment: Payment = Payment(price: chu * 110, purchaseChuCount: -chu)
+            FirestoreService.shared.saveDocument(collectionId: .payment, documentId: self.currentUser.userId, fieldId: "purchases", data: payment) { _ in
+                print("남은 츄 \(UserDefaultsManager.shared.getChuCount())")
+            }
+        })
+    }
 }

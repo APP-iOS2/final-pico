@@ -92,7 +92,6 @@ final class SignUpPictureViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configCollectionView()
-        pictureManager.requestPhotoLibraryAccess(in: self)
     }
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 6)

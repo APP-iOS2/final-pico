@@ -110,11 +110,11 @@ final class MailListTableViewCell: UITableViewCell {
         }
         self.message.text = senderUser.message
         
-        let date = senderUser.sendedDate.toStringTime()
+        let date = senderUser.sendedDate.toStringTime(dateSeparator: .dot)
         let startIndex = date.index(date.startIndex, offsetBy: 5)
         let lastIndex = date.index(date.startIndex, offsetBy: 9)
         let range = startIndex...lastIndex
-        self.dateLabel.text = "\(date[range].prefix(2)).\(date[range].suffix(2))"
+        self.dateLabel.text = "\(date[range])"
 
         if type == .receive {
             if !senderUser.isReading {

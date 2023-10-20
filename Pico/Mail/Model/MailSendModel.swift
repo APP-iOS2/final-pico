@@ -170,10 +170,20 @@ final class MailSendModel {
             "isReading": true
         ]
         
-        let receiveMessages: [String: Any] = [
+        let messageReceiveMessages: [String: Any] = [
             "id": UUID().uuidString,
             "sendedUserId": senderUser.userId,
             "receivedUserId": receiveUser.id,
+            "message": message,
+            "sendedDate": Date().timeIntervalSince1970,
+            "mailType": "receive",
+            "isReading": false
+        ]
+        
+        let matchingReceiveMessages: [String: Any] = [
+            "id": UUID().uuidString,
+            "sendedUserId": receiveUser.id,
+            "receivedUserId": senderUser.userId,
             "message": message,
             "sendedDate": Date().timeIntervalSince1970,
             "mailType": "receive",
@@ -184,7 +194,7 @@ final class MailSendModel {
         dbRef.collection(Collections.mail.name).document(receiveUser.id).setData(
             [
                 "userId": receiveUser.id,
-                "receiveMailInfo": FieldValue.arrayUnion([receiveMessages])
+                "receiveMailInfo": FieldValue.arrayUnion([messageReceiveMessages])
             ], merge: true) { error in
                 if let error = error {
                     print("평가 업데이트 에러: \(error)")
@@ -213,7 +223,7 @@ final class MailSendModel {
             dbRef.collection(Collections.mail.name).document(senderUser.userId).setData(
                 [
                     "userId": senderUser.userId,
-                    "receiveMailInfo": FieldValue.arrayUnion([receiveMessages])
+                    "receiveMailInfo": FieldValue.arrayUnion([matchingReceiveMessages])
                 ], merge: true) { error in
                     if let error = error {
                         print("평가 업데이트 에러: \(error)")
