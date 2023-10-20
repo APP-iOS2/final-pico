@@ -35,9 +35,6 @@
 		4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */; };
 		4B2665452ACD4A390074D4E2 /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */; };
 		4B2665492ACD76F00074D4E2 /* ResultUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665482ACD76F00074D4E2 /* ResultUserView.swift */; };
-		4B576BC62AE17E7B00C49D43 /* APIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B576BC52AE17E7B00C49D43 /* APIKeys.plist */; };
-		4B576BC82AE17F0600C49D43 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B576BC72AE17F0600C49D43 /* GoogleService-Info.plist */; };
-		4B576BCA2AE17F6300C49D43 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B576BC92AE17F6300C49D43 /* YOLOv3.mlmodel */; };
 		4B89E12D2AD528E500BFBAA3 /* WorldCupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */; };
 		5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */; };
 		531C4ED82AC26BA300ADC614 /* CustomTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */; };
