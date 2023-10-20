@@ -9,13 +9,15 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 final class UserDetailViewController: UIViewController {
     // 이전 뷰에서 실행이 필요 해 Defalut로 작성
     var viewModel: UserDetailViewModel!
     private var user: User!
     private let disposeBag = DisposeBag()
-    /// SubViews
+    private var distance = CLLocationDistance()
+    // SubViews
     private let userImageViewController = UserImageViewControll()
     private let basicInformationViewContoller = BasicInformationViewContoller()
     private let aboutMeViewController = AboutMeViewController()
@@ -30,8 +32,9 @@ final class UserDetailViewController: UIViewController {
     private let verticalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fill
         stackView.alignment = .fill
+        stackView.spacing = 10
         return stackView
     }()
     
@@ -61,11 +64,11 @@ final class UserDetailViewController: UIViewController {
     
     private let actionSheetController = UIAlertController()
     // MARK: - LifeCycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        Loading.showLoading()
         view.backgroundColor = .systemBackground
-        tabBarController?.tabBar.isHidden = true
+        Loading.showLoading()
         addChilds()
         addViews()
         makeConstraints()
@@ -73,7 +76,9 @@ final class UserDetailViewController: UIViewController {
         configActionSheet()
         buttonAction()
         bind()
+        tabBarController?.tabBar.isHidden = true
     }
+    
     // MARK: - objc
     @objc func tappedNavigationButton() {
         self.present(actionSheetController, animated: true)
@@ -85,10 +90,10 @@ final class UserDetailViewController: UIViewController {
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 UIView.animate(withDuration: 0.5, animations: {
-                    self.likeButton.transform = CGAffineTransform(translationX: 0, y: 100)
-                    self.disLikeButton.transform = CGAffineTransform(translationX: 0, y: 100)
+                    self.likeButton.transform = CGAffineTransform(translationX: 0, y: 200)
+                    self.disLikeButton.transform = CGAffineTransform(translationX: 0, y: 200)
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "Like", messageText: "\(self.user.nickName)님 Like", confirmButtonText: "확인", comfrimAction: nil)
-                    self.viewModel.saveLikeData(receiveUserInfo: self.user, likeType: .like)
+                    // self.viewModel.saveLikeData(receiveUserInfo: self.user, likeType: .like)
                 })
             })
             .disposed(by: disposeBag)
@@ -97,10 +102,10 @@ final class UserDetailViewController: UIViewController {
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 UIView.animate(withDuration: 0.5, animations: {
-                    self.likeButton.transform = CGAffineTransform(translationX: 0, y: 100)
-                    self.disLikeButton.transform = CGAffineTransform(translationX: 0, y: 100)
+                    self.likeButton.transform = CGAffineTransform(translationX: 0, y: 200)
+                    self.disLikeButton.transform = CGAffineTransform(translationX: 0, y: 200)
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "Like", messageText: "\(self.user.nickName)님 DisLike", confirmButtonText: "확인", comfrimAction: nil)
-                    self.viewModel.saveLikeData(receiveUserInfo: self.user, likeType: .dislike)
+                  // self.viewModel.saveLikeData(receiveUserInfo: self.user, likeType: .dislike)
                 })
             })
             .disposed(by: disposeBag)
@@ -109,7 +114,8 @@ final class UserDetailViewController: UIViewController {
     // Bind Code
     private func bind() {
         viewModel.userObservable
-            .subscribe(onNext: { user in
+            .subscribe(onNext: {[weak self] user in
+                guard let self = self else { return }
                 self.user = user
                 self.navigationItem.title = "\(user.nickName),  \(user.age)"
                 self.userImageViewController.config(images: user.imageURLs)
@@ -124,7 +130,7 @@ final class UserDetailViewController: UIViewController {
                     }
                     self.basicInformationViewContoller.config(mbti: user.mbti,
                                                               nameAgeText: "\(user.nickName),  \(user.age)",
-                                                              locationText: "\(user.location.address)",
+                                                              locationText: "\(user.location.address), \(String(format: "%.2f", distance / 1000))km",
                                                               heightText: String(subInfo.height ?? 0))
                     
                     self.aboutMeViewController.config(intro: subInfo.intro,
@@ -145,7 +151,7 @@ final class UserDetailViewController: UIViewController {
                                                               locationText: "\(user.location.address)",
                                                               heightText: nil)
                     [self.aboutMeViewController.view, self.subInfomationViewController.view].forEach {
-//                        self.verticalStackView.removeArrangedSubview($0)
+                        //                        self.verticalStackView.removeArrangedSubview($0)
                         $0.isHidden = true
                     }
                 }
@@ -172,11 +178,11 @@ final class UserDetailViewController: UIViewController {
         
         // 차단 버튼 클릭 시 ShowAlert
         let actionBlock = UIAlertAction(title: "차단", style: .default) { _ in
-            self.showAlert(message: "차단 하시겠습니까?", title: "차단하기", isCancelButton: true) {
+            self.showCustomAlert(alertType: .canCancel, titleText: "차단하기", messageText: "\(self.user.nickName)님을 차단 하시겠습니까?", confirmButtonText: "차단", comfrimAction: {
                 self.viewModel.blockUser(blockedUser: self.user) {
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "차단", messageText: "\(self.user.nickName)님 차단 완료", confirmButtonText: "확인", comfrimAction: nil)
                 }
-            }
+            })
         }
         let actionCancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         [actionReport, actionBlock, actionCancel].forEach { actionSheetController.addAction($0) }
@@ -186,21 +192,21 @@ final class UserDetailViewController: UIViewController {
     private func showingReportSheet() {
         let nextActionSheet = UIAlertController(title: "신고 사유", message: "신고 사유를 클릭 해 주세요", preferredStyle: .actionSheet)
         let actionImage = UIAlertAction(title: "이상한 사진", style: .default) { _ in
-            self.showAlert(message: "이런 이유로 신고 하시겠습니까", title: "이상한 사진", isCancelButton: true) {
+            self.showCustomAlert(alertType: .canCancel, titleText: "이상한 사진", messageText: "\(self.user.nickName)님을 신고 하시겠습니까?", confirmButtonText: "신고", comfrimAction: {
                 self.reportAction(reason: "이상한 사진")
-            }
+            })
         }
         
         let actionFact = UIAlertAction(title: "허위 사실", style: .default) { _ in
-            self.showAlert(message: "이런 이유로 신고 하시겠습니까", title: "허위 사실", isCancelButton: true) {
+            self.showCustomAlert(alertType: .canCancel, titleText: "허위 사실", messageText: "\(self.user.nickName)님을 신고 하시겠습니까?", confirmButtonText: "신고", comfrimAction: {
                 self.reportAction(reason: "허위 사실")
-            }
+            })
         }
         
         let actionSexual = UIAlertAction(title: "성적인 내용", style: .default) { _ in
-            self.showAlert(message: "이런 이유로 신고 하시겠습니까", title: "성적인 내용", isCancelButton: true) {
+            self.showCustomAlert(alertType: .canCancel, titleText: "성적인 내용", messageText: "\(self.user.nickName)님을 신고 하시겠습니까?", confirmButtonText: "신고", comfrimAction: {
                 self.reportAction(reason: "성적인 내용")
-            }
+            })
         }
         
         let actionCancel = UIAlertAction(title: "취소", style: .cancel)
@@ -238,17 +244,20 @@ extension UserDetailViewController {
     private func makeConstraints() {
         likeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-20)
-            make.bottom.equalToSuperview().offset(-80)
+            make.bottom.equalToSuperview().offset(-60)
+            make.width.height.equalTo(65)
         }
         
         disLikeButton.snp.makeConstraints { make in
             make.trailing.equalTo(likeButton.snp.leading).offset(-15)
             make.bottom.equalTo(likeButton)
+            make.width.height.equalTo(65)
         }
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+        
         userImageViewController.view.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
         }
@@ -259,17 +268,15 @@ extension UserDetailViewController {
         }
         
         basicInformationViewContoller.view.snp.makeConstraints { make in
-            make.height.equalTo(Screen.height * 0.2)
-            //            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(Screen.height * 0.18)
+        }
+        
+        aboutMeViewController.view.snp.makeConstraints { make in
+            make.height.equalTo(Screen.height * 0.25)
         }
         
         subInfomationViewController.view.snp.makeConstraints { make in
-            make.height.equalTo(Screen.height * 0.7)
+            make.height.equalTo(Screen.height * 0.8)
         }
-        
-//        aboutMeViewController.view.snp.makeConstraints { make in
-//            make.height.equalTo(Screen.height * 0.4)
-//        }
-        
     }
 }
