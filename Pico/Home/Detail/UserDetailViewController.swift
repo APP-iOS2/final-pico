@@ -18,7 +18,7 @@ final class UserDetailViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var distance = CLLocationDistance()
     // SubViews
-    private let userImageViewController = UserImageViewControll()
+    private let userImageViewController = UserImageViewController()
     private let basicInformationViewContoller = BasicInformationViewContoller()
     private let aboutMeViewController = AboutMeViewController()
     private let subInfomationViewController = SubInfomationViewController()
@@ -34,7 +34,7 @@ final class UserDetailViewController: UIViewController {
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.alignment = .fill
-        stackView.spacing = 10
+        stackView.spacing = 5
         return stackView
     }()
     
@@ -151,7 +151,7 @@ final class UserDetailViewController: UIViewController {
                                                               locationText: "\(user.location.address)",
                                                               heightText: nil)
                     [self.aboutMeViewController.view, self.subInfomationViewController.view].forEach {
-                        //                        self.verticalStackView.removeArrangedSubview($0)
+                                                self.verticalStackView.removeArrangedSubview($0)
                         $0.isHidden = true
                     }
                 }
@@ -242,6 +242,7 @@ extension UserDetailViewController {
     }
     
     private func makeConstraints() {
+        aboutMeViewController.view.setContentHuggingPriority(.defaultLow, for: .vertical)
         likeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-20)
             make.bottom.equalToSuperview().offset(-60)
@@ -268,15 +269,15 @@ extension UserDetailViewController {
         }
         
         basicInformationViewContoller.view.snp.makeConstraints { make in
-            make.height.equalTo(Screen.height * 0.18)
+            make.height.equalTo(Screen.height * 0.2)
         }
         
         aboutMeViewController.view.snp.makeConstraints { make in
-            make.height.equalTo(Screen.height * 0.25)
+            make.height.equalTo(Screen.height * 0.28)
         }
         
-        subInfomationViewController.view.snp.makeConstraints { make in
-            make.height.equalTo(Screen.height * 0.8)
-        }
+//        subInfomationViewController.view.snp.makeConstraints { make in
+//            make.height.equalTo(Screen.height * 0.65)
+//        }
     }
 }

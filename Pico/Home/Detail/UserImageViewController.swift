@@ -1,5 +1,5 @@
 //
-//  UserImageViewControll.swift
+//  UserImageViewController.swift
 //  Pico
 //
 //  Created by 신희권 on 2023/10/04.
@@ -13,7 +13,7 @@ struct UserImageViewControllConstraint {
     static let height: CGFloat = Screen.height * 0.6
 }
 
-final class UserImageViewControll: UIViewController {
+final class UserImageViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
@@ -66,7 +66,7 @@ final class UserImageViewControll: UIViewController {
 }
 
 // MARK: - UI관련
-extension UserImageViewControll {
+extension UserImageViewController {
     
     private func addViews() {
         view.addSubview([scrollView, pageControl])
@@ -86,7 +86,7 @@ extension UserImageViewControll {
     }
 }
 
-extension UserImageViewControll: UIScrollViewDelegate {
+extension UserImageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.pageControl.currentPage = Int(floor(scrollView.contentOffset.x / UIScreen.main.bounds.width))
     }
