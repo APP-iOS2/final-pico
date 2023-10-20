@@ -127,6 +127,7 @@ final class SubInfomationViewController: UIViewController {
 extension SubInfomationViewController {
     
     private func addViews() {
+        view.addSubview(verticalStackView)
         [personalLabel, personalCollectionView, hobbyLabel, hobbyCollectionView, likeMbtiLabel, mbtiCollectionView].forEach {
             verticalStackView.addArrangedSubview($0)
         }
