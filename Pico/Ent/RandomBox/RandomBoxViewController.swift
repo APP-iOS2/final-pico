@@ -27,7 +27,14 @@ final class RandomBoxViewController: UIViewController {
         return button
     }()
     
-    private let infoButton: UIButton = {
+    private let normalInfoButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        button.contentMode = .scaleAspectFill
+        return button
+    }()
+    
+    private let advancedInfoButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "info.circle"), for: .normal)
         button.contentMode = .scaleAspectFill
@@ -63,13 +70,13 @@ final class RandomBoxViewController: UIViewController {
     
     private let openOneBoxButton: CommonButton = {
         let button = CommonButton()
-        button.setTitle("1개 열기", for: .normal)
+        button.setTitle("일반 뽑기", for: .normal)
         return button
     }()
     
     private let openTenBoxButton: CommonButton = {
         let button = CommonButton()
-        button.setTitle("10개 열기", for: .normal)
+        button.setTitle("고급 뽑기", for: .normal)
         return button
     }()
     
@@ -84,7 +91,7 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func addViews() {
-        [backgroundImageView, purchaseChuButton, infoButton, randomBoxTitleLabel, contentLabel, randomBoxImage, openOneBoxButton, openTenBoxButton].forEach { item in
+        [backgroundImageView, purchaseChuButton, normalInfoButton, advancedInfoButton, randomBoxTitleLabel, contentLabel, randomBoxImage, openOneBoxButton, openTenBoxButton].forEach { item in
             view.addSubview(item)
         }
     }
@@ -100,18 +107,12 @@ final class RandomBoxViewController: UIViewController {
         
         purchaseChuButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.trailing.equalTo(infoButton.snp.leading).offset(-padding * half)
-            make.width.height.equalTo(padding * 2)
-        }
-        
-        infoButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.trailing.equalToSuperview().offset(-padding * half)
             make.width.height.equalTo(padding * 2)
         }
         
         randomBoxTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(infoButton.snp.bottom).offset(Screen.height / 12)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(Screen.height / 12)
             make.centerX.equalToSuperview()
         }
         
@@ -125,6 +126,18 @@ final class RandomBoxViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.width.equalTo(randomBoxImage.snp.height)
             make.height.equalTo(Screen.height / 3)
+        }
+        
+        normalInfoButton.snp.makeConstraints { make in
+            make.trailing.equalTo(openOneBoxButton.snp.trailing)
+            make.bottom.equalTo(openOneBoxButton.snp.top)
+            make.width.height.equalTo(padding * 2)
+        }
+        
+        advancedInfoButton.snp.makeConstraints { make in
+            make.trailing.equalTo(openTenBoxButton.snp.trailing)
+            make.bottom.equalTo(openOneBoxButton.snp.top)
+            make.width.height.equalTo(padding * 2)
         }
         
         openOneBoxButton.snp.makeConstraints { make in
@@ -239,11 +252,21 @@ final class RandomBoxViewController: UIViewController {
 
 extension RandomBoxViewController {
     private func bind() {
-        infoButton.rx.tap
+        normalInfoButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 let messageText = self.randomBoxManager.getChuAndPercent()
-                showCustomAlert(alertType: .onlyConfirm, titleText: "확률 정보", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
+                showCustomAlert(alertType: .onlyConfirm, titleText: "일반 상자 목록", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
+                    self.dismiss(animated: true, completion: nil)
+                })
+            })
+            .disposed(by: disposeBag)
+        
+        advancedInfoButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                let messageText = self.randomBoxManager.getChuAndPercent()
+                showCustomAlert(alertType: .onlyConfirm, titleText: "고급 상자 목록", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
                     self.dismiss(animated: true, completion: nil)
                 })
             })
