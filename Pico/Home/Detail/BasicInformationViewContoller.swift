@@ -12,7 +12,7 @@ final class BasicInformationViewContoller: UIViewController {
     private let nameAgeLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = UIFont.picoTitleFont
+        label.font = .picoTitleFont
         return label
     }()
     
@@ -26,6 +26,7 @@ final class BasicInformationViewContoller: UIViewController {
     private let locationLabel: UILabel = {
         let label = UILabel()
         label.text = ""
+        label.font = .picoContentFont
         return label
     }()
     
@@ -38,7 +39,8 @@ final class BasicInformationViewContoller: UIViewController {
     
     private let heightLabel: UILabel = {
         let label = UILabel()
-        label.text = "168cm"
+        label.text = ""
+        label.font = .picoContentFont
         return label
     }()
     
@@ -76,8 +78,8 @@ extension BasicInformationViewContoller {
         let safeArea = view.safeAreaLayoutGuide
         mbtiLabelView.snp.makeConstraints { make in
             make.top.leading.equalToSuperview()
-            make.width.equalTo(70)
-            make.height.equalTo(50)
+            make.width.equalTo(65)
+            make.height.equalTo(35)
         }
         
         nameAgeLabel.snp.makeConstraints { make in
@@ -88,23 +90,25 @@ extension BasicInformationViewContoller {
         locationImageView.snp.makeConstraints { make in
             make.top.equalTo(nameAgeLabel.snp.bottom).offset(15)
             make.leading.equalTo(safeArea)
+            make.width.height.equalTo(20)
         }
         
         locationLabel.snp.makeConstraints { make in
             make.top.equalTo(locationImageView.snp.top)
             make.leading.equalTo(locationImageView.snp.trailing).offset(5)
-            make.trailing.equalToSuperview().priority(.low)
+            make.trailing.equalToSuperview()
         }
         
         heightImageView.snp.makeConstraints { make in
             make.top.equalTo(locationLabel.snp.bottom).offset(10)
             make.leading.equalTo(view.safeAreaLayoutGuide)
+            make.width.height.equalTo(20)
         }
         
         heightLabel.snp.makeConstraints { make in
             make.top.equalTo(heightImageView.snp.top)
             make.leading.equalTo(heightImageView.snp.trailing).offset(5)
-            make.trailing.equalToSuperview().priority(.low)
+            make.trailing.equalToSuperview()
         }
     }
 }
