@@ -109,9 +109,6 @@ final class SubInfomationViewController: UIViewController {
             verticalStackView.removeArrangedSubview(mbtiCollectionView)
         }
         
-        
-        
-        
         hobbyCollectionView.reloadData()
         personalCollectionView.reloadData()
         mbtiCollectionView.reloadData()
@@ -148,7 +145,6 @@ extension SubInfomationViewController {
         }
         
         personalLabel.snp.makeConstraints { make in
-//            make.top.leading.trailing.equalToSuperview()
             make.height.equalTo(40)
         }
         hobbyLabel.snp.makeConstraints { make in
@@ -194,7 +190,6 @@ extension SubInfomationViewController: UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         switch collectionView {
         case hobbyCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hobbyCollectionCell", for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }

@@ -14,7 +14,6 @@ struct UserImageViewControllConstraint {
 }
 
 final class UserImageViewController: UIViewController {
-    
     private let disposeBag = DisposeBag()
     
     private let scrollView: UIScrollView = {

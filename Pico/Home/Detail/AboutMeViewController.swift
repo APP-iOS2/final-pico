@@ -83,17 +83,12 @@ final class AboutMeViewController: UIViewController {
         }
         
         if cellInfomation.isEmpty {
-            view.snp.makeConstraints { make in
-                make.height.equalTo(10)
-            }
-            
             aboutMeCollectionView.isHidden = true
             basicLabel.isHidden = true
         }
         
         // 모든 변수가 nil인 경우 뷰를 숨김
         if allNil {
-            updateViewConstraints()
             view.removeFromSuperview()
         }
         view.isHidden = allNil
@@ -119,12 +114,10 @@ final class AboutMeViewController: UIViewController {
 // MARK: - UI 관련
 extension AboutMeViewController {
     private func addViews() {
-        
         [introLabel, aboutMeCollectionView, basicLabel].forEach { view.addSubview($0) }
     }
     
     private func makeConstraints() {
-        
         introLabel.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
         }
