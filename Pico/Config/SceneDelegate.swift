@@ -10,34 +10,33 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    private let checkService = CheckService()
-    private let userDefaultsManager = UserDefaultsManager()
-    
-    private var userId: String {
-        let curentUser = userDefaultsManager.getUserData()
-        return curentUser.userId
-    }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
+        let checkService = CheckService()
+        let userDefaultsManager = UserDefaultsManager()
+        var userId: String {
+            let curentUser = userDefaultsManager.getUserData()
+            return curentUser.userId
+        }
+        
         if UserDefaultsManager.shared.isLogin() {
-            checkService.checkUserId(userId: userId) { isRight in
-                if isRight {
+            checkService.checkUserId(userId: userId) { isUser in
+                if isUser {
                     let rootViewController = TabBarController()
                     self.window?.rootViewController = rootViewController
                 } else {
-                    let rootViewController = UINavigationController(rootViewController: SignViewController())
+                    let rootViewController = UINavigationController(rootViewController: SignUpTermsOfServiceViewController(viewModel: SignUpViewModel()))
                     self.window?.rootViewController = rootViewController
                 }
             }
         } else {
-            let rootViewController = UINavigationController(rootViewController: SignViewController())
+            let rootViewController = UINavigationController(rootViewController: SignUpTermsOfServiceViewController(viewModel: SignUpViewModel()))
             window?.rootViewController = rootViewController
         }
-
-                
+       
 //        let rootViewController = UINavigationController(rootViewController: AdminViewController())
 //        window?.rootViewController = rootViewController
  
