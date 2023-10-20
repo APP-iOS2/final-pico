@@ -110,12 +110,14 @@ final class MailListTableViewCell: UITableViewCell {
         }
         self.message.text = senderUser.message
         
-        let date = senderUser.sendedDate.toStringTime(dateSeparator: .dot)
+        let date = senderUser.sendedDate.timeAgoSinceDate()
+        /*
         let startIndex = date.index(date.startIndex, offsetBy: 5)
         let lastIndex = date.index(date.startIndex, offsetBy: 9)
         let range = startIndex...lastIndex
-        self.dateLabel.text = "\(date[range])"
-
+         */
+        self.dateLabel.text = date
+         
         if type == .receive {
             if !senderUser.isReading {
                 self.newLabel.text = "new"
@@ -161,7 +163,7 @@ final class MailListTableViewCell: UITableViewCell {
         dateStackView.snp.makeConstraints { make in
             make.top.bottom.equalTo(userStackView)
             make.trailing.equalTo(contentView.snp.trailing).offset(-10)
-            make.width.equalTo(50)
+            make.width.equalTo(60)
         }
     }
     
