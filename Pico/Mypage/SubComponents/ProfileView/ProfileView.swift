@@ -113,6 +113,7 @@ final class ProfileView: UIView {
                    .observe(on: MainScheduler.instance)
                    .subscribe(onNext: { [weak self] urlString in
                        if let url = URL(string: urlString) {
+                           self?.userImage.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
                            self?.userImage.kf.setImage(with: url)
                        }
                    })
