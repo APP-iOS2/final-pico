@@ -160,13 +160,21 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func tappedBoxButton() {
+        guard UserDefaultsManager.shared.getChuCount() >= 1 else {
+            showNotEnoughChuAlert()
+            return
+        }
+        
         self.openOneBoxButton.isEnabled = false
         self.openTenBoxButton.isEnabled = false
         
         randomBoxManager.shake(view: self.randomBoxImage) {
             let randomValue = self.randomBoxManager.getRandomValue()
-            self.randomBoxManager.updateChu(with: Double(randomValue), number: 1)
+            self.randomBoxManager.obtainChu(with: randomValue, number: 1) // Update the obtained chu
             self.showAlert(with: randomValue)
+            
+            let updatedChuCount = UserDefaultsManager.shared.getChuCount() - 1
+            UserDefaultsManager.shared.updateChuCount(updatedChuCount) // Update the chu count in UserDefaults
             
             self.openOneBoxButton.isEnabled = true
             self.openTenBoxButton.isEnabled = true
@@ -174,6 +182,11 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func tappedTenBoxButton() {
+        guard UserDefaultsManager.shared.getChuCount() >= 10 else {
+            showNotEnoughChuAlert()
+            return
+        }
+        
         var boxHistory: [Int] = []
         
         self.openOneBoxButton.isEnabled = false
@@ -182,11 +195,14 @@ final class RandomBoxViewController: UIViewController {
         randomBoxManager.shake(view: self.randomBoxImage) {
             for _ in 0 ..< 10 {
                 let randomValue = self.randomBoxManager.getRandomValue()
-                self.randomBoxManager.updateChu(with: Double(randomValue), number: 10)
                 boxHistory.append(randomValue)
             }
             
             let sumBoxHistory = boxHistory.reduce(0, +)
+            self.randomBoxManager.obtainChu(with: sumBoxHistory, number: 10) // Update the obtained chu
+            
+            let updatedChuCount = UserDefaultsManager.shared.getChuCount() - 10
+            UserDefaultsManager.shared.updateChuCount(updatedChuCount) // Update the chu count in UserDefaults
             
             self.showAlert(with: sumBoxHistory)
             
@@ -208,6 +224,17 @@ final class RandomBoxViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
+    
+    private func showNotEnoughChuAlert() {
+        let alert = UIAlertController(title: "츄 부족", message: "츄가 부족합니다. 더 구매하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "구매하기", style: .default) { _ in
+            let storeViewController = StoreViewController(viewModel: StoreViewModel())
+            self.navigationController?.pushViewController(storeViewController, animated: true)
+        })
+        
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 extension RandomBoxViewController {
@@ -227,6 +254,38 @@ extension RandomBoxViewController {
                 guard let self = self else { return }
                 let storeViewController = StoreViewController(viewModel: StoreViewModel())
                 self.navigationController?.pushViewController(storeViewController, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+        openOneBoxButton.rx.tap
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, _ in
+                if UserDefaultsManager.shared.getChuCount() < 10 {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                        let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                        self.navigationController?.pushViewController(storeViewController, animated: true)
+                    })
+                } else {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "중급 박스", messageText: "중급 박스를 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
+                        self.tappedBoxButton()
+                    })
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        openTenBoxButton.rx.tap
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, _ in
+                if UserDefaultsManager.shared.getChuCount() < 10 {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                        let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                        self.navigationController?.pushViewController(storeViewController, animated: true)
+                    })
+                } else {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "고급 박스", messageText: "중급 박스를 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
+                        self.tappedBoxButton()
+                    })
+                }
             })
             .disposed(by: disposeBag)
     }

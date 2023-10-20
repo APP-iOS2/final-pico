@@ -29,7 +29,8 @@ struct RandomPercent {
 
 final class RandomBoxManager {
     let randomPercent = RandomPercent()
-
+    private var obtainedChu: Int = 0
+    
     func getRandomValue() -> Int {
         let randomValue = Int.random(in: 1...100)
 
@@ -74,8 +75,12 @@ final class RandomBoxManager {
         CATransaction.commit()
     }
     
-    func updateChu(with randomValue: Double, number: Int) {
-        _ = Int(randomValue)
+    func obtainChu(with randomValue: Int, number: Int) {
+        obtainedChu += randomValue * number
+    }
+    
+    func getObtainedChu() -> Int {
+        return obtainedChu
     }
     
     func getChuAndPercent() -> String {

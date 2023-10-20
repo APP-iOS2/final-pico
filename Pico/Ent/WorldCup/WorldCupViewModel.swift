@@ -23,13 +23,15 @@ final class WorldCupViewModel {
     }
     
     func loadUsersRx() {
+        let currentUserID = UserDefaultsManager.shared.getUserData().userId
+        
         FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] data in
                 guard let self = self else { return }
                 
-                let shuffledData = data.shuffled()
-                
+                let filteredData = data.filter { $0.id != currentUserID }
+                let shuffledData = filteredData.shuffled()
                 let randomUsers = Array(shuffledData.prefix(8))
                 
                 self.users.accept(randomUsers)
