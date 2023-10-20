@@ -109,9 +109,6 @@ final class AdminUserViewModel: ViewModelType {
     }
     
     func transform(input: Input) -> Output {
-        // 질문:
-        // 밑으로 당겨서 새로고침 refreshTable 에서 input.sortedTpye 변경으로 호출되는데
-        // refreshablePublisher.onNext(()) 가 호출되었을 때 할 수 있는 방법이 있을 까여?
         let responseViewDidLoad = Observable.combineLatest(input.userListType, input.sortedTpye, input.viewDidLoad)
             .withUnretained(self)
             .flatMapLatest { (viewModel, value) -> Observable<([User], DocumentSnapshot?)> in
