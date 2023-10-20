@@ -205,7 +205,7 @@ extension WorldCupResultViewController {
         chatButton.rx.tap
             .withUnretained(self)
             .subscribe(onNext: { viewController, _ in
-                if UserDefaultsManager.shared.getChuCount() <= 25 {
+                if UserDefaultsManager.shared.getChuCount() < 25 {
                     viewController.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
                         let storeViewController = StoreViewController(viewModel: StoreViewModel())
                         viewController.navigationController?.pushViewController(storeViewController, animated: true)
