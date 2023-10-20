@@ -13,6 +13,8 @@ import RxCocoa
 
 final class SignViewController: UIViewController {
     private let disposeBag = DisposeBag()
+    private let pictureManager = PictureManager()
+    private let locationManager = LocationManager()
     
     private lazy var backgroundView: UIView = {
         let view = UIView()
@@ -62,6 +64,8 @@ final class SignViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configRx()
+        pictureManager.requestPhotoLibraryAccess(in: self)
+        locationManager.configLocation()
     }
 }
 
