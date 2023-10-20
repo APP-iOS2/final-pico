@@ -33,6 +33,7 @@ final class HomeFilterViewController: UIViewController {
     // MARK: - viewDidLoad
     override func viewDidLoad() {
         navigationItem.title = "선호 설정"
+        tabBarController?.tabBar.isHidden = true
         view.configBackgroundColor()
         addSubView()
         makeConstraints()

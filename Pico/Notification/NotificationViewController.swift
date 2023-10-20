@@ -30,6 +30,7 @@ final class NotificationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tabBarController?.tabBar.isHidden = true
         configViewController()
         configTableView()
         configRefresh()
