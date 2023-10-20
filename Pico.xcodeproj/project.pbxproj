@@ -64,8 +64,6 @@
 		53DD41BE2ADF672B00C5FE39 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 53DD41BD2ADF672B00C5FE39 /* FirebaseMessaging */; };
 		53DD41C02ADF675F00C5FE39 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD41BF2ADF675F00C5FE39 /* Token.swift */; };
 		54627BD92ADFBA3C0055069C /* AboutMeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54627BD82ADFBA3C0055069C /* AboutMeCollectionViewCell.swift */; };
-		54627BDC2AE075BF0055069C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54627BDA2AE075BF0055069C /* GoogleService-Info.plist */; };
-		54627BDD2AE075BF0055069C /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 54627BDB2AE075BF0055069C /* YOLOv3.mlmodel */; };
 		547C4C212AD8381F00028AFB /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */; };
 		547C4C292AD8393700028AFB /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C242AD8393700028AFB /* UserDetailViewController.swift */; };
 		547C4C2A2AD8393700028AFB /* SubInfomationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C252AD8393700028AFB /* SubInfomationViewController.swift */; };
@@ -283,8 +281,6 @@
 		53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		53DD41BF2ADF675F00C5FE39 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		54627BD82ADFBA3C0055069C /* AboutMeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMeCollectionViewCell.swift; sourceTree = "<group>"; };
-		54627BDA2AE075BF0055069C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../GoogleService-Info.plist"; sourceTree = "<group>"; };
-		54627BDB2AE075BF0055069C /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = YOLOv3.mlmodel; path = ../../../../YOLOv3.mlmodel; sourceTree = "<group>"; };
 		547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
 		547C4C242AD8393700028AFB /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		547C4C252AD8393700028AFB /* SubInfomationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubInfomationViewController.swift; sourceTree = "<group>"; };
@@ -867,8 +863,6 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				54627BDA2AE075BF0055069C /* GoogleService-Info.plist */,
-				54627BDB2AE075BF0055069C /* YOLOv3.mlmodel */,
 				B15F16022ADCFA5C002952B4 /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -1394,7 +1388,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				54627BDC2AE075BF0055069C /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1459,7 +1452,6 @@
 				6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */,
 				BCEACEF52AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift in Sources */,
 				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
-				54627BDD2AE075BF0055069C /* YOLOv3.mlmodel in Sources */,
 				362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */,
 				362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */,
 				6A9F73572AD8E5A7002F13AC /* CenterAlignedCollectionViewFlowLayout.swift in Sources */,
@@ -1528,7 +1520,7 @@
 				B104FCF72ADB2A470093739B /* AdminUserDetailViewModel.swift in Sources */,
 				69B99BE62ACE815600695567 /* MailSendModel.swift in Sources */,
 				548AD17B2AE1E2C100B1513C /* PaddingLabel.swift in Sources */,
-				69B99BE62ACE815600695567 /* MailViewModel.swift in Sources */,
+				69B99BE62ACE815600695567 /* MailSendModel.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIView+Extensions.swift in Sources */,
 				B15F16172ADE847C002952B4 /* StoreModel.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
