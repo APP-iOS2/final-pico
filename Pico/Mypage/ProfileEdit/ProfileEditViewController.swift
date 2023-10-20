@@ -286,6 +286,10 @@ extension ProfileEditViewController: ProfileEditImageDelegate {
 
 extension ProfileEditViewController: ProfileEditNicknameDelegate {
     func presentEditView() {
+        guard profileEditViewModel.compareChuCount() else {
+            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "현재 보유 중인 츄의 개수가 부족합니다.", confirmButtonText: "확인")
+            return
+        }
         profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.nickName.name)
         profileEditViewModel.modalType = .nickName
         profileEditViewModel.textData = profileEditViewModel.userData?.nickName

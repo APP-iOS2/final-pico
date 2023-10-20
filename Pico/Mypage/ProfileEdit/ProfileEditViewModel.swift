@@ -155,6 +155,12 @@ final class ProfileEditViewModel {
         imagesSubject.onNext(userImages ?? [])
     }
     
+    func compareChuCount() -> Bool {
+        let chuCount = UserDefaultsManager.shared.getChuCount()
+        guard chuCount >= 50 else { return false }
+        return true
+    }
+    
     func findIndex(for targetString: String, in array: [String]) -> Int? {
         if let index = array.firstIndex(of: targetString) {
             return index
