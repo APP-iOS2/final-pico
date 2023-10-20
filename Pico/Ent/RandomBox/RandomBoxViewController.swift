@@ -221,6 +221,13 @@ extension RandomBoxViewController {
                 })
             })
             .disposed(by: disposeBag)
-
+        
+        purchaseChuButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                self.navigationController?.pushViewController(storeViewController, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 }
