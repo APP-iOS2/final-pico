@@ -10,17 +10,17 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-/*
-protocol DetailDelegate {
-    func checkGoDetail(user: User)
+protocol MailReceiveDelegate: AnyObject {
+    func pushUserDetailViewController(user: User)
 }
-*/
+
 final class MailReceiveTableListController: BaseViewController {
     
     private let viewModel = MailReceiveModel()
     private let disposeBag = DisposeBag()
     
     private let emptyView: EmptyViewController = EmptyViewController(type: .message)
+    
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
@@ -32,6 +32,18 @@ final class MailReceiveTableListController: BaseViewController {
         tableView.register(cell: MailListTableViewCell.self)
         return tableView
     }()
+    
+    var mailVC: MailViewController
+    
+    init(vc: MailViewController) {
+        self.mailVC = vc
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     // MARK: - MailView +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,13 +71,7 @@ final class MailReceiveTableListController: BaseViewController {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
         mailListTableView.refreshControl = refreshControl
-    }
-    
-    func checkGoDetail(user: User) {
-        print("user :\(user)")
-        let viewController = UserDetailViewController()
-        viewController.viewModel = UserDetailViewModel(user: user)
-        self.navigationController?.pushViewController(viewController, animated: true)
+        
     }
     // MARK: - objc
     @objc private func refreshTable(refresh: UIRefreshControl) {
@@ -95,7 +101,7 @@ extension MailReceiveTableListController: UITableViewDataSource, UITableViewDele
         viewModel.updateNewData(data: item)
         let mailReceiveView = MailReceiveViewController()
         mailReceiveView.modalPresentationStyle = .formSheet
-        // mailReceiveView.detailDelegate = self
+        mailReceiveView.mailReceiveDelegate = self
         mailReceiveView.configData(mailSender: item)
         self.present(mailReceiveView, animated: true, completion: nil)
     }
@@ -162,5 +168,13 @@ extension MailReceiveTableListController: UIScrollViewDelegate {
             mailListTableView.reloadData()
             loadDataPublsher.onNext(())
         }
+    }
+}
+// MARK: - GoDetailView
+extension MailReceiveTableListController: MailReceiveDelegate {
+    func pushUserDetailViewController(user: User) {
+        let viewController = UserDetailViewController()
+        viewController.viewModel = UserDetailViewModel(user: user)
+        self.mailVC.navigationController?.pushViewController(viewController, animated: true)
     }
 }
