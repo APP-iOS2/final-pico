@@ -23,6 +23,7 @@ final class SignInViewController: UIViewController {
     private var isTappedAuthButton: Bool = false
     private var authTextFields: [UITextField] = []
     private var authText: String = ""
+    private var isAdmin: Bool = false
     
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -168,6 +169,10 @@ extension SignInViewController {
                 guard isFullPhoneNumber else { return }
                 guard let text = phoneNumberTextField.text else { return }
                 
+                guard !isAdmin else {
+                    goAdmin()
+                    return
+                }
                 guard cooldownTimer == nil else {
                     return
                 }
@@ -225,14 +230,14 @@ extension SignInViewController {
                 
                 configAuthText()
                 if authManager.checkRightCode(code: authText) {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         
                         let viewController = LoginSuccessViewController()
                         self.navigationController?.pushViewController(viewController, animated: true)
                     })
                 } else {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "비상비상 인증실패", confirmButtonText: "확인")
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 틀렸습니다.", confirmButtonText: "확인")
                     return
                 }
             })
@@ -277,6 +282,10 @@ extension SignInViewController {
             authButton.setTitle("\(cooldownSeconds)초", for: .normal)
         }
     }
+    private func goAdmin() {
+        let viewController = AdminViewController()
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 extension SignInViewController: UIGestureRecognizerDelegate {
     func tappedDismissKeyboard(without buttons: [UIButton]) {
@@ -303,10 +312,12 @@ extension SignInViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard isTappedAuthButton else {
             let text = textField.text
-            if text == "486" {
-                let viewController = AdminViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
+            if text?.replacingOccurrences(of: "-", with: "") == "486" {
+                isAdmin = true
+                updateAuthButton(isEnable: true, isHidden: false)
+                return false
             }
+            
             let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isEnable in
                 let isHidden = !isEnable
                 updateAuthButton(isEnable: isEnable, isHidden: isHidden)

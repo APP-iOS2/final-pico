@@ -237,7 +237,7 @@ extension SignUpPhoneNumberViewController {
             guard let self = self else { return }
             
             if isBlocked {
-                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴한 번호로는 가입이 불가능합니다..", confirmButtonText: "확인", comfrimAction: configReset)
+                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴된 번호로는 가입이 불가능합니다..", confirmButtonText: "확인", comfrimAction: configReset)
             } else {
                 checkService.checkPhoneNumber(userNumber: phoneNumber) { [weak self] message, isRight in
                     guard let self = self else { return }

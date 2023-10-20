@@ -15,6 +15,17 @@ final class CheckService {
     private let dbRef = Firestore.firestore()
     private let fireService = FirestoreService()
     
+    func checkUserId(userId: String, completion: @escaping (_ isRight: Bool) -> ()) {
+        self.dbRef.collection("users")
+            .whereField("id", isEqualTo: userId)
+            .getDocuments { snapShot, err in
+                guard err == nil, let documents = snapShot?.documents else {
+                    return
+                }
+                completion(documents.first != nil)
+            }
+    }
+    
     func checkPhoneNumber(userNumber: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
         let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
         let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
