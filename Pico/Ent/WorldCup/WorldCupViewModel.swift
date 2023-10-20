@@ -40,20 +40,23 @@ final class WorldCupViewModel {
     }
     
     func configure(cell: WorldCupCollectionViewCell, with user: User) {
-        cell.mbtiLabel.setMbti(mbti: user.mbti)
-        cell.userNickname.text = String(user.nickName)
-        cell.userAge.text = "\(user.age)세"
-
         Loading.showLoading()
-        
+
         if let imageURL = URL(string: user.imageURLs.first ?? "") {
-            cell.userImage.loadAsync(url: imageURL) { success in
+            cell.userImage.loadAsync(url: imageURL) { [weak self] success in
                 if success {
-                    let dataLabelTexts = self.addDataLabels(user)
-                    cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
+                    cell.mbtiLabel.setMbti(mbti: user.mbti)
+                    cell.userNickname.text = String(user.nickName)
+                    cell.userAge.text = "\(user.age)세"
+                    cell.userInfoStackView.setDataLabelTexts(self?.addDataLabels(user) ?? [])
+                    
+                    Loading.hideLoading()
+                } else {
+                    Loading.hideLoading()
                 }
-                Loading.hideLoading()
             }
+        } else {
+            Loading.hideLoading()
         }
     }
 
