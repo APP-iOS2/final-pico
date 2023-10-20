@@ -43,4 +43,36 @@ extension Double {
         let formattedDate = dateFormatter.string(from: date)
         return formattedDate
     }
+    
+    func timeAgoSinceDate() -> String {
+        let date = Date(timeIntervalSince1970: self)
+        let currentDate = Date()
+
+        let seconds: Int = Int(currentDate.timeIntervalSince(date))
+        if seconds < 60 {
+            return "\(seconds)초 전"
+        }
+        
+        let minutes = seconds / 60
+        if minutes < 60 {
+            return "\(minutes)분 전"
+        }
+        
+        let hour = minutes / 60
+        if hour < 24 {
+            return "\(hour)시간 전"
+        }
+        
+        let day = hour / 24
+        if day < 30 {
+            return "\(day)일 전"
+        }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM월 dd일"
+        let result = formatter.string(from: date)
+        
+        return result
+    }
+
 }
