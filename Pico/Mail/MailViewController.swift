@@ -51,7 +51,7 @@ final class MailViewController: BaseViewController {
         return button
     }()
     
-    private lazy var tableViewController = [MailSendTableListController(), MailReceiveTableListController(vc: self)]
+    private lazy var tableViewController = [MailSendTableListController(), MailReceiveTableListController(viewController: self)]
     
     private let contentsView: UIView = {
         let view = UIView()
