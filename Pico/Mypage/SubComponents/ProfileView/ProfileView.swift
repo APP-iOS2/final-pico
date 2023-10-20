@@ -25,10 +25,21 @@ final class ProfileView: UIView {
     
     private let editImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "pencil")
+        imageView.contentMode = .scaleAspectFit
         imageView.backgroundColor = .white
         imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 27
+        imageView.layer.cornerRadius = 25
+        return imageView
+    }()
+    
+    private let pencilImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "pencilImage")
+        imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = .white
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 15
+
         return imageView
     }()
     
@@ -133,6 +144,8 @@ final class ProfileView: UIView {
         [circularProgressBarView, userImage, editImageView, profilPercentLabel, stackView].forEach {
             addSubview($0)
         }
+        
+        editImageView.addSubview(pencilImageView)
     }
     
     private func makeConstraints() {
@@ -166,6 +179,11 @@ final class ProfileView: UIView {
             make.top.equalTo(profilPercentLabel.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-20)
+        }
+        
+        pencilImageView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.height.equalTo(30)
         }
     }
 }
