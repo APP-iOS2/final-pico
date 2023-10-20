@@ -142,9 +142,9 @@ final class AdminUserViewController: UIViewController {
             .bind(to: textFieldView.textField.rx.placeholder)
             .disposed(by: disposeBag)
 
-        let combinedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList, output.resultPagingList)
+        let mergedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList, output.resultPagingList)
         
-        combinedData
+        mergedData
             .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
                 guard let imageURL = item.imageURLs[safe: 0] else { return }
                 cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)

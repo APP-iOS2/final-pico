@@ -13,7 +13,7 @@ final class HobbyCollectionViewCell: UICollectionViewCell {
         label.text = "test"
         label.layer.masksToBounds = true
         label.layer.cornerRadius = 6
-        label.font = UIFont.picoDescriptionFont
+        label.font = .picoContentFont
         label.textAlignment = .center
         label.backgroundColor = .picoGray
         return label

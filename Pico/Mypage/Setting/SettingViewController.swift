@@ -102,8 +102,9 @@ final class SettingViewController: UIViewController {
     
     private func presentSafariView(urlString: String) {
         guard let url = URL(string: urlString) else {return}
-        let safari = SFSafariViewController(url: url)
-        present(safari, animated: true)
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.modalPresentationStyle = .automatic
+        present(safariViewController, animated: true)
     }
     
     private func pushNextViewController(viewController: UIViewController) {

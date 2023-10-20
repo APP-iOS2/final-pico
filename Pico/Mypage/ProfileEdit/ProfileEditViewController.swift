@@ -264,6 +264,9 @@ extension ProfileEditViewController: UITableViewDelegate {
 }
 
 extension ProfileEditViewController: ProfileEditImageDelegate {
+    func presentCustomAlert(messageText: String) {
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: messageText, confirmButtonText: "확인")
+    }
     
     func presentPickerView() {
         pictureManager.requestPhotoLibraryAccess(in: self)
@@ -283,6 +286,10 @@ extension ProfileEditViewController: ProfileEditImageDelegate {
 
 extension ProfileEditViewController: ProfileEditNicknameDelegate {
     func presentEditView() {
+        guard profileEditViewModel.compareChuCount() else {
+            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "현재 보유 중인 츄의 개수가 부족합니다.", confirmButtonText: "확인")
+            return
+        }
         profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.nickName.name)
         profileEditViewModel.modalType = .nickName
         profileEditViewModel.textData = profileEditViewModel.userData?.nickName
@@ -317,11 +324,11 @@ extension ProfileEditViewController {
                 SignLoadingManager.hideLoading()
                 // TODO: 알럿호출시점 바꾸기
                 if allImagesDetected {
-                    self.showAlert(message: "이미지가 등록되었습니다.", yesAction: nil)
+                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인")
                 } else {
-                    self.showAlert(message: "이미지 등록에 실패하셨습니다.") {
+                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진 등록에 실패하였습니다.\n얼굴이 잘 나온 사진을 등록해 주세요.", confirmButtonText: "확인", comfrimAction: {
                         self.userImages.removeAll()
-                    }
+                    })
                 }
             }
         }

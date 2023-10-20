@@ -70,6 +70,7 @@
 		547C4C2B2AD8393700028AFB /* UserImageViewControll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C262AD8393700028AFB /* UserImageViewControll.swift */; };
 		547C4C2C2AD8393700028AFB /* BasicInformationViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C272AD8393700028AFB /* BasicInformationViewContoller.swift */; };
 		547C4C2D2AD8393700028AFB /* AboutMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C282AD8393700028AFB /* AboutMeViewController.swift */; };
+		548AD17B2AE1E2C100B1513C /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD17A2AE1E2C100B1513C /* PaddingLabel.swift */; };
 		6915C84D2ADA8F7200994F55 /* UIStackView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6915C84C2ADA8F7200994F55 /* UIStackView+Extensions.swift */; };
 		6922687B2AE0121700E83F02 /* MailReceiveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6922687A2AE0121700E83F02 /* MailReceiveModel.swift */; };
 		6922687E2AE0135F00E83F02 /* MailSendTableListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6922687D2AE0135F00E83F02 /* MailSendTableListController.swift */; };
@@ -286,6 +287,7 @@
 		547C4C262AD8393700028AFB /* UserImageViewControll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageViewControll.swift; sourceTree = "<group>"; };
 		547C4C272AD8393700028AFB /* BasicInformationViewContoller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInformationViewContoller.swift; sourceTree = "<group>"; };
 		547C4C282AD8393700028AFB /* AboutMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMeViewController.swift; sourceTree = "<group>"; };
+		548AD17A2AE1E2C100B1513C /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		6915C84C2ADA8F7200994F55 /* UIStackView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Extensions.swift"; sourceTree = "<group>"; };
 		6922687A2AE0121700E83F02 /* MailReceiveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveModel.swift; sourceTree = "<group>"; };
 		6922687D2AE0135F00E83F02 /* MailSendTableListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendTableListController.swift; sourceTree = "<group>"; };
@@ -768,6 +770,7 @@
 				B161B8712AC414DD00257A9C /* PopupViewController.swift */,
 				533D5D2D2AD9169A0074F767 /* CustomIndicator.swift */,
 				53B529582ADCBD0D00A9C9D8 /* FooterView.swift */,
+				548AD17A2AE1E2C100B1513C /* PaddingLabel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1042,8 +1045,8 @@
 			isa = PBXGroup;
 			children = (
 				B14D2AB72AD8E2900014DE29 /* HobbyCollectionViewCell.swift */,
-				B14D2AB82AD8E2900014DE29 /* MbtiCollectionViewCell.swift */,
 				54627BD82ADFBA3C0055069C /* AboutMeCollectionViewCell.swift */,
+				B14D2AB82AD8E2900014DE29 /* MbtiCollectionViewCell.swift */,
 			);
 			path = UserDetailViewCell;
 			sourceTree = "<group>";
@@ -1516,6 +1519,8 @@
 				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
 				B104FCF72ADB2A470093739B /* AdminUserDetailViewModel.swift in Sources */,
 				69B99BE62ACE815600695567 /* MailSendModel.swift in Sources */,
+				548AD17B2AE1E2C100B1513C /* PaddingLabel.swift in Sources */,
+				69B99BE62ACE815600695567 /* MailSendModel.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIView+Extensions.swift in Sources */,
 				B15F16172ADE847C002952B4 /* StoreModel.swift in Sources */,
 				B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */,
@@ -1577,6 +1582,7 @@
 				B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */,
 				54627BD92ADFBA3C0055069C /* AboutMeCollectionViewCell.swift in Sources */,
 				BC49271B2ADFD70D0073E882 /* UserService.swift in Sources */,
+				54627BD92ADFBA3C0055069C /* AboutMeCollectionViewCell.swift in Sources */,
 				4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */,
 				B15F16192ADE8587002952B4 /* Int+Extensions.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,

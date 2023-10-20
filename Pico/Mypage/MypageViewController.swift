@@ -113,8 +113,9 @@ extension MypageViewController: MyPageCollectionDelegate {
             pushNextViewController(StoreViewController(viewModel: StoreViewModel()))
         case 1:
             guard let url = URL(string: "https://www.16personalities.com/ko/%EB%AC%B4%EB%A3%8C-%EC%84%B1%EA%B2%A9-%EC%9C%A0%ED%98%95-%EA%B2%80%EC%82%AC") else {return}
-            let safari = SFSafariViewController(url: url)
-            present(safari, animated: true)
+            let safariViewController = SFSafariViewController(url: url)
+            safariViewController.modalPresentationStyle = .automatic
+            present(safariViewController, animated: true)
         default:
             break
         }
