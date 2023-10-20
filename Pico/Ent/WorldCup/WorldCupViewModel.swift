@@ -5,7 +5,7 @@
 //  Created by 오영석 on 2023/10/10.
 //
 
-import UIKit
+import Foundation
 import RxSwift
 import RxCocoa
 import Firebase
@@ -23,13 +23,15 @@ final class WorldCupViewModel {
     }
     
     func loadUsersRx() {
+        let currentUserID = UserDefaultsManager.shared.getUserData().userId
+        
         FirestoreService.shared.loadDocumentRx(collectionId: .users, dataType: User.self)
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] data in
                 guard let self = self else { return }
                 
-                let shuffledData = data.shuffled()
-                
+                let filteredData = data.filter { $0.id != currentUserID }
+                let shuffledData = filteredData.shuffled()
                 let randomUsers = Array(shuffledData.prefix(8))
                 
                 self.users.accept(randomUsers)
@@ -40,18 +42,26 @@ final class WorldCupViewModel {
     }
     
     func configure(cell: WorldCupCollectionViewCell, with user: User) {
-        cell.mbtiLabel.setMbti(mbti: user.mbti)
-        cell.userNickname.text = String(user.nickName)
-        cell.userAge.text = "\(user.age)세"
-        
-        let dataLabelTexts = addDataLabels(user)
-        cell.userInfoStackView.setDataLabelTexts(dataLabelTexts)
-        
+        Loading.showLoading()
+
         if let imageURL = URL(string: user.imageURLs.first ?? "") {
-            cell.userImage.load(url: imageURL)
+            cell.userImage.loadAsync(url: imageURL) { [weak self] success in
+                if success {
+                    cell.mbtiLabel.setMbti(mbti: user.mbti)
+                    cell.userNickname.text = String(user.nickName)
+                    cell.userAge.text = "\(user.age)세"
+                    cell.userInfoStackView.setDataLabelTexts(self?.addDataLabels(user) ?? [])
+                    
+                    Loading.hideLoading()
+                } else {
+                    Loading.hideLoading()
+                }
+            }
+        } else {
+            Loading.hideLoading()
         }
     }
-    
+
     private func addDataLabels(_ currentUser: User) -> [String] {
         var dataLabelTexts: [String] = []
         
@@ -72,19 +82,11 @@ final class WorldCupViewModel {
         return dataLabelTexts
     }
     
-    func animateNextRound(collectionView: UICollectionView) {
-        UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: {
-            collectionView.reloadData()
-        })
-    }
-
-    func changeRoundLabel(withText text: String, roundLabel: UILabel) {
-        UIView.transition(with: roundLabel, duration: 1.5, options: .transitionCrossDissolve, animations: {
-            roundLabel.text = text
-        })
-    }
-
-    func animateSelectedCell(selectedCell: WorldCupCollectionViewCell) {
+    func animateSelectedCell(collectionView: UICollectionView, indexPath: IndexPath) {
+        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else {
+            return
+        }
+        
         UIView.animate(withDuration: 0.3, animations: {
             selectedCell.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         }, completion: { _ in
@@ -109,5 +111,21 @@ final class WorldCupViewModel {
     
     func stopBackgroundMusic() {
         audioPlayer?.stop()
+    }
+}
+
+extension UIImageView {
+    func loadAsync(url: URL, completion: @escaping (Bool) -> Void) {
+        DispatchQueue.global().async { [weak self] in
+            if let data = try? Data(contentsOf: url),
+               let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self?.image = image
+                    completion(true)
+                }
+            } else {
+                completion(false)
+            }
+        }
     }
 }

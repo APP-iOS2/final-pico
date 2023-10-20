@@ -113,19 +113,21 @@ final class WorldCupGameViewController: UIViewController {
     }
     
     private func cellClickAction(indexPath: IndexPath) {
-        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else {
-            return
-        }
-        worldCupViewModel.animateSelectedCell(selectedCell: selectedCell)
+        worldCupViewModel.selectedIndexPath = indexPath
+        worldCupViewModel.animateSelectedCell(collectionView: collectionView, indexPath: indexPath)
         collectionView.reloadData()
     }
-
+    
     private func animateToNextRound() {
-        worldCupViewModel.animateNextRound(collectionView: collectionView)
+        UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: {
+            self.collectionView.reloadData()
+        }, completion: nil)
     }
-
+    
     private func changeRoundLabel(withText text: String) {
-        worldCupViewModel.changeRoundLabel(withText: text, roundLabel: roundLabel)
+        UIView.transition(with: roundLabel, duration: 1.5, options: .transitionCrossDissolve, animations: {
+            self.roundLabel.text = text
+        }, completion: nil)
     }
     
     private func makeConstraints() {

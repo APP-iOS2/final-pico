@@ -12,7 +12,7 @@ import RxCocoa
 
 final class RandomBoxView: UIView {
     
-    private let boxChuImage: UIImageView = {
+    private let leftChuImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
@@ -22,8 +22,9 @@ final class RandomBoxView: UIView {
     private let boxTitleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
-        label.font = UIFont.picoTitleFont
+        label.font = UIFont.picoLargeTitleFont
         label.text = "Random Box"
+        label.textColor = .picoBlue
         return label
     }()
     
@@ -31,24 +32,16 @@ final class RandomBoxView: UIView {
         let label = UILabel()
         label.textAlignment = .left
         label.font = UIFont.picoDescriptionFont
-        label.text = "꽝은 절대 없다!\n랜덤박스를 열어 츄를 획득해보세요\n( 1일 1회 무료 )"
+        label.text = "꽝은 절대 없다!\n하루 한 번 무료!"
         label.numberOfLines = 0
         return label
     }()
     
-    private let boxChuChuImage: UIImageView = {
+    private let rightChuImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "chu")
         return imageView
-    }()
-    
-    private let boxChuLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.picoDescriptionFont
-        label.text = "10"
-        return label
     }()
     
     override init(frame: CGRect) {
@@ -66,10 +59,11 @@ final class RandomBoxView: UIView {
     private func configStyle() {
         self.layer.borderWidth = 1.0
         self.layer.cornerRadius = 10
+        self.layer.borderColor = UIColor.picoBlue.cgColor
     }
     
     private func addViews() {
-        [boxChuImage, boxTitleLabel, boxContentLabel, boxChuChuImage, boxChuLabel].forEach { item in
+        [leftChuImage, boxTitleLabel, boxContentLabel, rightChuImage].forEach { item in
             addSubview(item)
         }
     }
@@ -78,35 +72,29 @@ final class RandomBoxView: UIView {
         let padding: CGFloat = 10
         let half: CGFloat = 0.5
         
-        boxChuImage.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview().offset(-padding)
-            make.width.height.equalTo(100)
+        leftChuImage.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.centerY.equalToSuperview().offset(half)
+            make.width.equalTo(leftChuImage.snp.height).offset(-padding)
+            make.height.equalToSuperview().offset(-padding * 2)
         }
         
         boxTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(boxChuImage).offset(padding)
-            make.leading.equalTo(boxChuImage.snp.trailing).offset(-padding)
-            make.trailing.equalToSuperview().offset(-padding)
+            make.top.equalTo(leftChuImage.snp.top).offset(padding * half)
+            make.centerX.equalToSuperview()
         }
         
         boxContentLabel.snp.makeConstraints { make in
             make.top.equalTo(boxTitleLabel.snp.bottom).offset(padding * half)
-            make.leading.equalTo(boxTitleLabel)
-            make.trailing.equalToSuperview().offset(-padding)
+            make.centerX.equalTo(boxTitleLabel)
+            make.bottom.equalTo(leftChuImage.snp.bottom).offset(-padding * half)
         }
         
-        boxChuChuImage.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-padding * 3)
-            make.centerY.equalTo(boxTitleLabel)
-            make.width.height.equalTo(padding * 3)
+        rightChuImage.snp.makeConstraints { make in
+            make.trailing.equalToSuperview()
+            make.centerY.equalToSuperview().offset(half)
+            make.width.equalTo(leftChuImage)
+            make.height.equalTo(leftChuImage)
         }
-
-        boxChuLabel.snp.makeConstraints { make in
-            make.leading.equalTo(boxChuChuImage.snp.trailing).offset(-padding * half)
-            make.trailing.equalToSuperview().offset(-padding)
-            make.centerY.equalTo(boxChuChuImage)
-        }
-
     }
 }
