@@ -27,7 +27,6 @@ final class ProfileEditViewController: UIViewController {
     private let disposeBag = DisposeBag()
     weak var profileEditImageDelegate: ProfileEditImageDelegate?
     weak var profileEditNicknameDelegate: ProfileEditNicknameDelegate?
-    private let yoloManager: YoloManager = YoloManager()
     private let pictureManager = PictureManager()
     private var userImages: [UIImage] = []
     private let profileViewModel: ProfileViewModel
@@ -46,7 +45,6 @@ final class ProfileEditViewController: UIViewController {
         makeConstraints()
         binds()
         delegateConfig()
-        yoloManager.loadYOLOv3Model()
     }
     
     @available(*, unavailable)
@@ -299,6 +297,9 @@ extension ProfileEditViewController: ProfileEditNicknameDelegate {
 
 extension ProfileEditViewController {
     func detectionYolo() {
+        let yoloManager: YoloManager = YoloManager()
+        yoloManager.loadYOLOv3Model()
+        
         let detectionGroup = DispatchGroup()
         
         SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
@@ -308,11 +309,11 @@ extension ProfileEditViewController {
             for image in self.userImages {
                 detectionGroup.enter()
                 
-                self.yoloManager.detectPeople(image: image) {
+                yoloManager.detectPeople(image: image) {
                     detectionGroup.leave()
                 }
                 
-                if !(self.yoloManager.isDetectedImage ?? true) {
+                if !(yoloManager.isDetectedImage ?? true) {
                     allImagesDetected = false
                 }
             }
