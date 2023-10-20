@@ -15,12 +15,23 @@ final class CheckService {
     private let dbRef = Firestore.firestore()
     private let fireService = FirestoreService()
     
+    func checkUserId(userId: String, completion: @escaping (_ isRight: Bool) -> ()) {
+        self.dbRef.collection("users")
+            .whereField("id", isEqualTo: userId)
+            .getDocuments { snapShot, err in
+                guard err == nil, let documents = snapShot?.documents else {
+                    return
+                }
+                completion(documents.first != nil)
+            }
+    }
+    
     func checkPhoneNumber(userNumber: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
         let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
         let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
         
         if !phoneNumberPredicate.evaluate(with: userNumber) {
-            completion("유효하지 않은 전화번호입니다..", false)
+            completion("유효하지 않은 전화번호입니다.", false)
             return
         }
         
@@ -30,7 +41,7 @@ final class CheckService {
             .whereField("phoneNumber", isEqualTo: userNumber)
             .getDocuments { snapShot, err in
                 guard err == nil, let documents = snapShot?.documents else {
-                    completion("서버오류 비상비상", false)
+                    completion("서버에 문제가 있습니다.", false)
                     return
                 }
 
@@ -43,12 +54,12 @@ final class CheckService {
     }
     
     func checkNickName(name: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
-        SignLoadingManager.showLoading(text: "중복된 닉네임을 찾고 있어요!")
-        
         do {
             let pattern = "([ㄱ-ㅎㅏ-ㅣ]){1,8}"
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let matches = regex.matches(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))
+            
+            SignLoadingManager.showLoading(text: "")
             
             if matches.isEmpty {
                 self.dbRef

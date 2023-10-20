@@ -119,6 +119,8 @@ final class MailListTableViewCell: UITableViewCell {
         if type == .receive {
             if !senderUser.isReading {
                 self.newLabel.text = "new"
+            } else {
+                self.newLabel.text = ""
             }
         }
     }
@@ -141,7 +143,6 @@ final class MailListTableViewCell: UITableViewCell {
         nameStackView.snp.makeConstraints { make in
             make.top.equalTo(userStackView)
             make.leading.equalTo(userImage.snp.trailing).offset(15)
-            
         }
         
         mbtiLabelView.snp.makeConstraints { make in

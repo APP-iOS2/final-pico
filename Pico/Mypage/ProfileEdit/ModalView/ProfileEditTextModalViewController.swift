@@ -40,10 +40,11 @@ final class ProfileEditTextModalViewController: UIViewController {
     private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
+        button.tintColor = .picoGray
         button.imageView?.contentMode = .scaleAspectFit
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+        button.isHidden = true
         return button
     }()
     
@@ -138,16 +139,16 @@ final class ProfileEditTextModalViewController: UIViewController {
         }
         
         textField.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(30)
+            make.top.equalTo(titleLabel.snp.bottom).offset(20)
             make.leading.equalToSuperview().offset(15)
-            make.trailing.equalTo(cancelButton.snp.leading).offset(-10)
-            make.height.equalTo(30)
+            make.height.equalTo(40)
         }
         
         cancelButton.snp.makeConstraints { make in
-            make.top.equalTo(textField.snp.top)
+            make.centerY.equalTo(textField.snp.centerY)
+            make.leading.equalTo(textField.snp.trailing)
             make.trailing.equalToSuperview().offset(-15)
-            make.height.equalTo(30)
+            make.width.equalTo(40)
         }
         
         completeButton.snp.makeConstraints { make in
@@ -159,6 +160,14 @@ final class ProfileEditTextModalViewController: UIViewController {
 }
 
 extension ProfileEditTextModalViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        cancelButton.isHidden = false
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        cancelButton.isHidden = true
+    }
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let text = profileEditViewModel.textData ?? ""
         let updatedText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
@@ -170,6 +179,16 @@ extension ProfileEditTextModalViewController: UITextFieldDelegate {
             completeButton.isEnabled = false
             completeButton.backgroundColor = .picoGray
         }
+        
+        switch profileEditViewModel.modalType {
+        case .intro:
+            guard updatedText.count <= 30 else { return false }
+        case .job:
+            guard updatedText.count <= 15 else { return false }
+        default:
+            break
+        }
         return true
     }
+    
 }

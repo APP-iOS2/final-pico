@@ -10,22 +10,37 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
+    private let checkService = CheckService()
+    private let userDefaultsManager = UserDefaultsManager()
+    
+    private var userId: String {
+        let curentUser = userDefaultsManager.getUserData()
+        return curentUser.userId
+    }
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
         if UserDefaultsManager.shared.isLogin() {
-            let rootViewController = TabBarController()
-            window?.rootViewController = rootViewController
+            checkService.checkUserId(userId: userId) { isRight in
+                if isRight {
+                    let rootViewController = TabBarController()
+                    self.window?.rootViewController = rootViewController
+                } else {
+                    let rootViewController = UINavigationController(rootViewController: SignViewController())
+                    self.window?.rootViewController = rootViewController
+                }
+            }
         } else {
             let rootViewController = UINavigationController(rootViewController: SignViewController())
             window?.rootViewController = rootViewController
         }
-        
+
+                
 //        let rootViewController = UINavigationController(rootViewController: AdminViewController())
 //        window?.rootViewController = rootViewController
-        
+ 
         window?.makeKeyAndVisible()
     }
     

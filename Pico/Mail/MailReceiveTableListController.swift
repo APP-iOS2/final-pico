@@ -10,6 +10,11 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+/*
+protocol DetailDelegate {
+    func checkGoDetail(user: User)
+}
+*/
 final class MailReceiveTableListController: BaseViewController {
     
     private let viewModel = MailReceiveModel()
@@ -20,6 +25,7 @@ final class MailReceiveTableListController: BaseViewController {
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkReceiveEmptyPublisher = PublishSubject<Void>()
+    private let deleteReceivePublisher = PublishSubject<String>()
     
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -37,12 +43,14 @@ final class MailReceiveTableListController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        mailListTableView.reloadData()
+        if viewModel.receiveList.isEmpty {
+            refreshPublisher.onNext(())
+        }
         checkReceiveEmptyPublisher.onNext(())
+        mailListTableView.reloadData()
     }
     // MARK: - config
     private func configTableView() {
-        mailListTableView.rowHeight = 80
         mailListTableView.dataSource = self
         mailListTableView.delegate = self
     }
@@ -53,6 +61,12 @@ final class MailReceiveTableListController: BaseViewController {
         mailListTableView.refreshControl = refreshControl
     }
     
+    func checkGoDetail(user: User) {
+        print("user :\(user)")
+        let viewController = UserDetailViewController()
+        viewController.viewModel = UserDetailViewModel(user: user)
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
     // MARK: - objc
     @objc private func refreshTable(refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
@@ -79,21 +93,31 @@ extension MailReceiveTableListController: UITableViewDataSource, UITableViewDele
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = viewModel.receiveList[indexPath.row]
         viewModel.updateNewData(data: item)
-        configTableviewSelect(item: item)
-        
-    }
-    
-    private func configTableviewSelect(item: Mail.MailInfo) {
         let mailReceiveView = MailReceiveViewController()
         mailReceiveView.modalPresentationStyle = .formSheet
+        // mailReceiveView.detailDelegate = self
         mailReceiveView.configData(mailSender: item)
         self.present(mailReceiveView, animated: true, completion: nil)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard let item = viewModel.receiveList[safe: indexPath.row] else { return }
+        self.deleteReceivePublisher.onNext(item.id)
     }
 }
 // MARK: - bind
 extension MailReceiveTableListController {
     private func bind() {
         let input = MailReceiveModel.Input(listLoad: loadDataPublsher,
+                                           deleteUser: deleteReceivePublisher,
                                            refresh: refreshPublisher,
                                            isReceiveEmptyChecked: checkReceiveEmptyPublisher)
         let output = viewModel.transform(input: input)
@@ -111,8 +135,9 @@ extension MailReceiveTableListController {
                 } else {
                     viewController.view.addSubview(viewController.mailListTableView)
                     viewController.mailListTableView.snp.makeConstraints { make in
-                        make.top.leading.equalToSuperview().offset(10)
-                        make.trailing.bottom.equalToSuperview().offset(-10)
+                        make.top.equalToSuperview().offset(10)
+                        make.leading.trailing.equalToSuperview()
+                        make.bottom.equalToSuperview().offset(-10)
                     }
                 }
             })

@@ -8,12 +8,8 @@
 import Foundation
 
 struct Payment: Codable {
-    let purchases: [Purchase]
-    
-    struct Purchase: Codable {
-        var id: String = UUID().uuidString
-        let price: Int
-        let purchaseChuCount: Int
-        var purchasedDate: Double = Date().timeIntervalSince1970
-    }
+    var id: String = UUID().uuidString
+    let price: Int
+    let purchaseChuCount: Int
+    var purchasedDate: Double = Date().timeIntervalSince1970
 }

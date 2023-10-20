@@ -11,6 +11,7 @@ import PhotosUI
 
 protocol ProfileEditImageDelegate: AnyObject {
     func presentPickerView()
+    func presentCustomAlert(messageText: String)
 }
 
 final class ProfileEditImageTableCell: UITableViewCell {
@@ -81,6 +82,10 @@ final class ProfileEditImageTableCell: UITableViewCell {
         }
     }
     @objc private func tappedDeleteButton(_ sender: UIButton) {
+        guard images.count > 1 else {
+            profileEditImageDelegate?.presentCustomAlert(messageText: "사진을 최소 한개 이상 등록해 주세요.")
+            return
+        }
         let index = sender.tag
         images.remove(at: index)
         profileEditViewModel?.modalType = .imageURLs
@@ -119,6 +124,10 @@ extension ProfileEditImageTableCell: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard images.count < 3 else {
+            profileEditImageDelegate?.presentCustomAlert(messageText: "사진은 최대 3개까지 등록가능합니다.")
+            return
+        }
         if images.count == indexPath.row {
             profileEditViewModel?.modalType = .imageURLs
             profileEditViewModel?.collectionData = images

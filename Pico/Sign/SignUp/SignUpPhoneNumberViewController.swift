@@ -196,7 +196,7 @@ extension SignUpPhoneNumberViewController {
     
     private func updateViewState(num: String) {
         self.viewModel.phoneNumber = num
-        self.authTextFields[0].becomeFirstResponder()
+        self.authTextFields[safe: 0]?.becomeFirstResponder()
         self.updatePhoneNumberTextField(isFull: true)
         self.updateCancelButton(isHidden: true)
         self.updateAuthButton(isEnable: false, isHidden: false)
@@ -214,6 +214,7 @@ extension SignUpPhoneNumberViewController {
             updateAuthButton(isEnable: true, isHidden: false)
             authButton.setTitle("  재전송  ", for: .normal)
         } else {
+            authButton.setTitleColor(.picoBlue, for: .normal)
             authButton.setTitle("\(cooldownSeconds)초", for: .normal)
         }
     }
@@ -232,31 +233,27 @@ extension SignUpPhoneNumberViewController {
         isTappedCheckButton = true
         
         guard let phoneNumber = self.phoneNumberTextField.text else { return }
-        checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isRight in
+        checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlocked in
             guard let self = self else { return }
             
-            if isRight {
-                showAlert(message: "차단된 번호로는 가입이 불가능합니다..") { [weak self] in
-                    guard let self = self else { return }
-                    
-                    configReset()
-                }
+            if isBlocked {
+                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴된 번호로는 가입이 불가능합니다..", confirmButtonText: "확인", comfrimAction: configReset)
             } else {
                 checkService.checkPhoneNumber(userNumber: phoneNumber) { [weak self] message, isRight in
                     guard let self = self else { return }
                     
                     guard isRight else {
                         SignLoadingManager.hideLoading()
-                        showAlert(message: message) { [weak self] in
+                        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
                             guard let self = self else { return }
-                            
                             viewModel.isRightPhoneNumber = isRight
                             configReset()
-                        }
+                        })
                         return
                     }
                     SignLoadingManager.hideLoading()
-                    showAlert(message: "\(phoneNumber)로 인증번호를 전송합니다.") { [weak self] in
+                    
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         
                         cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
@@ -265,28 +262,25 @@ extension SignUpPhoneNumberViewController {
                         updateViewState(num: phoneNumber)
                         viewModel.isRightPhoneNumber = isRight
                         smsAuthManager.sendVerificationCode(number: phoneNumber)
-                    }
+                    })
                 }
             }
         }
-        
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         sender.tappedAnimation()
         configAuthText()
         guard smsAuthManager.checkRightCode(code: authText) else {
-            self.showAlert(message: "비상비상 인증실패") { [weak self] in
-                guard let self = self else { return }
-            }
+            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 확인해주세요.", confirmButtonText: "확인")
             return
         }
-        self.showAlert(message: "인증에 성공하셨습니다.") { [weak self] in
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             
             let viewController = SignUpGenderViewController(viewModel: self.viewModel)
             self.navigationController?.pushViewController(viewController, animated: true)
-        }
+        })
     }
 }
 extension SignUpPhoneNumberViewController: UIGestureRecognizerDelegate {
@@ -296,13 +290,13 @@ extension SignUpPhoneNumberViewController: UIGestureRecognizerDelegate {
         tapGesture.delegate = self
         self.view.addGestureRecognizer(tapGesture)
     }
-
+    
     @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         self.view.endEditing(true)
     }
-
+    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        if let view = touch.view as? UIButton {
+        if touch.view is UIButton {
             return false
         }
         return true

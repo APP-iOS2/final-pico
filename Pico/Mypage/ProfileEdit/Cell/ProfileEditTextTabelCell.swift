@@ -12,14 +12,14 @@ final class ProfileEditTextTabelCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
-        label.font = UIFont.picoSubTitleFont
+        label.font = .picoSubTitleFont
         return label
     }()
     
     private let contentLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .picoFontBlack
-        label.font = UIFont.picoDescriptionFont
+        label.font = .picoDescriptionFont
+        label.textColor = .picoBlue
         label.text = "추가"
         return label
     }()
@@ -56,6 +56,7 @@ final class ProfileEditTextTabelCell: UITableViewCell {
         guard let contentLabel else { return }
         if !contentLabel.isEmpty {
             self.contentLabel.text = contentLabel
+            self.contentLabel.textColor = .picoFontBlack
         }
     }
     

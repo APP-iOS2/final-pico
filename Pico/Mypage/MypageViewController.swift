@@ -49,17 +49,7 @@ final class MypageViewController: BaseViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedProfileView))
         profileView.configBaseView(gesture: tapGesture)
     }
-    
-    @objc private func tappedProfileView(_ sender: UIBarButtonItem) {
-        let viewController = ProfileEditViewController(profileViewModel: profileViewModel)
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    @objc private func tappedBarButton(_ sender: UIBarButtonItem) {
-        let viewController = SettingViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
+
     private func addViews() {
         [profileView, myPageTableView].forEach {
             view.addSubview($0)
@@ -81,6 +71,19 @@ final class MypageViewController: BaseViewController {
             make.bottom.equalToSuperview()
         }
     }
+    private func pushNextViewController(_ viewController: UIViewController) {
+        let viewController = viewController
+        viewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    @objc private func tappedProfileView(_ sender: UIBarButtonItem) {
+        pushNextViewController(ProfileEditViewController(profileViewModel: profileViewModel))
+    }
+    
+    @objc private func tappedBarButton(_ sender: UIBarButtonItem) {
+        pushNextViewController(SettingViewController())
+    }
 }
 
 extension MypageViewController: MyPageViewDelegate {
@@ -89,17 +92,30 @@ extension MypageViewController: MyPageViewDelegate {
             make.height.equalTo(newHeight)
         }
     }
+    func tabelDidSelectItem(item: Int) {
+        print(item)
+        switch item {
+        case 1:
+            pushNextViewController(PremiumViewController())
+        case 2:
+           break
+        case 3:
+            pushNextViewController(AdvertisementViewController())
+        default:
+            break
+        }
+    }
 }
 extension MypageViewController: MyPageCollectionDelegate {
     func didSelectItem(item: Int) {
         switch item {
         case 0:
-            let viewController = StoreViewController(viewModel: StoreViewModel())
-            self.navigationController?.pushViewController(viewController, animated: true)
+            pushNextViewController(StoreViewController(viewModel: StoreViewModel()))
         case 1:
             guard let url = URL(string: "https://www.16personalities.com/ko/%EB%AC%B4%EB%A3%8C-%EC%84%B1%EA%B2%A9-%EC%9C%A0%ED%98%95-%EA%B2%80%EC%82%AC") else {return}
-            let safari = SFSafariViewController(url: url)
-            present(safari, animated: true)
+            let safariViewController = SFSafariViewController(url: url)
+            safariViewController.modalPresentationStyle = .automatic
+            present(safariViewController, animated: true)
         default:
             break
         }
