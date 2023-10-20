@@ -74,5 +74,4 @@ extension Double {
         
         return result
     }
-
 }
