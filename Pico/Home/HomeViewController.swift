@@ -38,7 +38,7 @@ final class HomeViewController: BaseViewController {
     }
     
     private func bind() {
-        viewModel.otherUsers
+        viewModel.users
             .bind(to: users)
             .disposed(by: disposeBag)
         viewModel.myLikes
@@ -79,16 +79,15 @@ final class HomeViewController: BaseViewController {
         } else {
             mbti = HomeViewModel.filterMbti
         }
-        Observable.combineLatest(users, myLikes, viewModel.myBlockUsersId)
-            .map { [self] users, myLikes, myBlockUsersId in
+        Observable.combineLatest(users, myLikes, viewModel.blocks)
+            .map { [self] users, myLikes, blocks in
                 print("내가 평가한 유저: \(myLikes.count)명")
                 let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
                 let myMbti = Set(mbti.map { $0.rawValue })
-                let blocksId = Set(myBlockUsersId.map { $0.userId })
+                let myBlocks = Set(blocks.map { $0.userId })
                 return users.filter { user in
                     var maxAge: Int = HomeViewModel.filterAgeMax
                     var maxDistance: Int = HomeViewModel.filterDistance
-//                    print(blocksId.count)
                     if HomeViewModel.filterAgeMax == 61 {
                         maxAge = 100
                     }
@@ -98,7 +97,7 @@ final class HomeViewController: BaseViewController {
                     let filterAge = (HomeViewModel.filterAgeMin..<maxAge + 1).contains(user.age)
                     let distance = viewModel.calculateDistance(user: user)
                     let filterDistance = (0..<maxDistance + 1).contains(Int(distance / 1000))
-                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance && !blocksId.contains(loginUser.userId)
+                    return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance && !myBlocks.contains(user.id)
                 }
             }
             .observe(on: MainScheduler.instance)

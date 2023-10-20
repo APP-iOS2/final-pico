@@ -392,7 +392,7 @@ final class HomeUserCardViewController: UIViewController {
             showCustomAlert(
                 alertType: .canCancel,
                 titleText: "이전 평가로 돌아가시겠습니까?",
-                messageText: "10 츄를 소모합니다. 보유 츄: \(UserDefaultsManager.shared.getChuCount())",
+                messageText: "10 츄를 소모합니다. (현재 츄: \(UserDefaultsManager.shared.getChuCount()))",
                 cancelButtonText: "취소",
                 confirmButtonText: "확인",
                 comfrimAction: { [weak self] in
@@ -407,7 +407,10 @@ final class HomeUserCardViewController: UIViewController {
                         }
                         self.homeViewController?.removedView.removeLast()
                     } else {
-                        showCustomAlert(alertType: .onlyConfirm, titleText: "츄가 부족합니다", messageText: "", confirmButtonText: "확인")
+                        showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                            let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                            self.navigationController?.pushViewController(storeViewController, animated: true)
+                        })
                     }
                 }
             )
