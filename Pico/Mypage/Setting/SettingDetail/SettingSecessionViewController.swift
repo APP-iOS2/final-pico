@@ -21,12 +21,17 @@ final class SettingSecessionViewController: UIViewController {
         return view
     }()
 
+    private let settingSecessionViewModel = SettingSecessionViewModel()
+    private let disposeBag: DisposeBag = DisposeBag()
+    private let unsubscribePublish = PublishSubject<Void>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewConfig()
         addSubView()
         makeConstraints()
         configTableView()
+        binds()
     }
     private func configTableView() {
         tableView.delegate = self
@@ -48,12 +53,25 @@ final class SettingSecessionViewController: UIViewController {
         }
     }
     
-    private func withdrawUser() {
-
-        NotificationService.shared.fcmTokenDelete()
-        UserDefaultsManager.shared.removeAll()
-        let signViewController = UINavigationController(rootViewController: SignViewController())
-        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(signViewController, animated: true)
+    private func binds() {
+        
+        let input = SettingSecessionViewModel.Input(
+            isUnsubscribe: unsubscribePublish.asObservable()
+        )
+        
+        let output = settingSecessionViewModel.transform(input: input)
+        
+        output.resultIsUnsubscribe
+            .withUnretained(self)
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: {  viewController, _ in
+                viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "회원탈퇴", messageText: "회원 탈퇴가 완료되었습니다.", confirmButtonText: "확인", comfrimAction: {
+                    NotificationService.shared.fcmTokenDelete()
+                    UserDefaultsManager.shared.removeAll()
+                    let signViewController = UINavigationController(rootViewController: SignViewController())
+                    (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(signViewController, animated: true)
+                })
+            }).disposed(by: disposeBag)
     }
 }
 
@@ -69,13 +87,8 @@ extension SettingSecessionViewController: UITableViewDelegate, UITableViewDataSo
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        /*삭제
-         1. 알럿 띄어줘서 한번 물어보고 (0)
-         2.유저데이터 받아와서 언스크라이브에 넣고
-         3.유저 데이터 삭제
-         */
-        showCustomAlert(alertType: .canCancel, titleText: "회원탈퇴", messageText: "회원 탈퇴시에 구매대역등 데이터가 삭제되며 환불 되지 않습니다.\n정말 회원 탈퇴 하시겠습니다?", confirmButtonText: "탈퇴하기", comfrimAction: {
-            self.withdrawUser()
+        showCustomAlert(alertType: .canCancel, titleText: "회원탈퇴", messageText: "회원 탈퇴시에는 구매한 츄 및 기타 개인 정보가 삭제되며 환불되지 않습니다.\n회원 탈퇴 후에는 복구가 불가능하오니 신중하게 결정해 주시기를 부탁드립니다.", confirmButtonText: "탈퇴하기", comfrimAction: { [weak self] in
+            self?.unsubscribePublish.onNext(())
         })
         tableView.deselectRow(at: indexPath, animated: true)
     }

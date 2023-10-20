@@ -20,6 +20,7 @@ final class ProfileViewModel {
     let userAge = BehaviorRelay(value: "")
     let profilePerfection = BehaviorRelay(value: 0)
     let imageUrl = BehaviorRelay(value: "")
+    let chuCount = BehaviorRelay<Int>(value: UserDefaultsManager.shared.getChuCount())
     private var percent = 20
     
     init() {
@@ -38,6 +39,10 @@ final class ProfileViewModel {
         
         userAge.accept("\(ageComponents.year ?? 0)")
         loadUserData()
+    }
+    
+    func loadChuCount() {
+        chuCount.accept(UserDefaultsManager.shared.getChuCount())
     }
     
     func loadUserData() {
