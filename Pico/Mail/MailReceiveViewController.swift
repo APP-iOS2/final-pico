@@ -16,7 +16,7 @@ final class MailReceiveViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var mailUser: Mail.MailInfo = Mail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
     
-    //var rootView: MailReceiveTableListController?
+    // var rootView: MailReceiveTableListController?
     weak var mailReceiveDelegate: MailReceiveDelegate?
     
     private let navigationBar: UINavigationBar = {
