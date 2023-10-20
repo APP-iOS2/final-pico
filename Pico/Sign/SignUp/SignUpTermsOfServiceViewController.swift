@@ -22,7 +22,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    private let locationVM = LocationManager()
+    private let locationManager = LocationManager()
     private let disposeBag = DisposeBag()
     private var isLoading: Bool = false
     private var isCheckedBottom: Bool = false
@@ -71,7 +71,6 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configTableView()
-        locationVM.configLocation()
         viewModel.isSaveSuccess
             .observe(on: MainScheduler.instance)
             .bind { [weak self] _ in
@@ -109,17 +108,17 @@ extension SignUpTermsOfServiceViewController {
     // MARK: - @objc
     @objc private func tappedNextButton(_ sender: UIButton) {
         // 위도 경도
-        let space = locationVM.locationManager.location?.coordinate
+        let space = locationManager.locationManager.location?.coordinate
         let lat = space?.latitude
         let long = space?.longitude
         
-        locationVM.getAddress(latitude: lat, longitude: long) { [weak self] location in
+        locationManager.getAddress(latitude: lat, longitude: long) { [weak self] location in
             guard let self = self else { return }
             
             if let location = location {
                 viewModel.locationSubject.onNext(location)
             } else {
-                locationVM.accessLocation()
+                locationManager.accessLocation()
             }
         }
     }

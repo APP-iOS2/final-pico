@@ -28,12 +28,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     let rootViewController = TabBarController()
                     self.window?.rootViewController = rootViewController
                 } else {
-                    let rootViewController = UINavigationController(rootViewController: SignUpTermsOfServiceViewController(viewModel: SignUpViewModel()))
+                    let rootViewController = UINavigationController(rootViewController: SignViewController())
                     self.window?.rootViewController = rootViewController
                 }
             }
         } else {
-            let rootViewController = UINavigationController(rootViewController: SignUpTermsOfServiceViewController(viewModel: SignUpViewModel()))
+            let rootViewController = UINavigationController(rootViewController: SignViewController())
             window?.rootViewController = rootViewController
         }
        
