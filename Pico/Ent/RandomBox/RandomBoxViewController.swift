@@ -60,6 +60,15 @@ final class RandomBoxViewController: UIViewController {
         return label
     }()
     
+    private let guidLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.picoDescriptionFont
+        label.textColor = .picoFontGray
+        label.text = "일반 뽑기는 10츄 고급 뽑기는 30츄가 소모됩니다"
+        return label
+    }()
+    
     private let randomBoxImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "chu")
@@ -116,7 +125,7 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func addViews() {
-        [backgroundImageView, goToStoreButton, normalInfoButton, advancedInfoButton, randomBoxTitleLabel, contentLabel, randomBoxImage, normalBoxButton, advancedBoxButton, countLabel, plusButton, minusButton].forEach { item in
+        [backgroundImageView, goToStoreButton, normalInfoButton, advancedInfoButton, randomBoxTitleLabel, contentLabel, randomBoxImage, normalBoxButton, advancedBoxButton, countLabel, plusButton, minusButton, guidLabel].forEach { item in
             view.addSubview(item)
         }
     }
@@ -143,6 +152,11 @@ final class RandomBoxViewController: UIViewController {
         
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(randomBoxTitleLabel.snp.bottom).offset(padding)
+            make.centerX.equalToSuperview()
+        }
+        
+        guidLabel.snp.makeConstraints { make in
+            make.top.equalTo(contentLabel.snp.bottom).offset(padding * half)
             make.centerX.equalToSuperview()
         }
         
@@ -272,7 +286,7 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func showAlert(with message: Int) {
-        var messageSting: String = "\(message)"
+        let messageSting: String = "\(message)"
 
         showCustomAlert(alertType: .onlyConfirm, titleText: "결과", messageText: "\(messageSting) 츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
             self.dismiss(animated: true, completion: nil)
@@ -330,7 +344,7 @@ extension RandomBoxViewController {
                         self.navigationController?.pushViewController(storeViewController, animated: true)
                     })
                 } else {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "중급 박스", messageText: "중급 박스 \(self.countLabel.text ?? "0")개 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "일반 박스", messageText: "ㅎ일반 박스 \(self.countLabel.text ?? "0")개 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
                         self.tappedNormalBox(count: Int(self.countLabel.text ?? "0") ?? 0)
                     })
                 }

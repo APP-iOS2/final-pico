@@ -28,6 +28,9 @@
 		36CD4D062ADBB95400FC317B /* SignLoadingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36CD4D052ADBB95400FC317B /* SignLoadingManager.swift */; };
 		36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA002AC1682E00EF877A /* SignViewController.swift */; };
 		36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */; };
+		4B1E6ED42AE290AF00F93621 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B1E6ED32AE290AF00F93621 /* YOLOv3.mlmodel */; };
+		4B1E6ED62AE290AF00F93621 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B1E6ED52AE290AF00F93621 /* GoogleService-Info.plist */; };
+		4B1E6ED82AE290B400F93621 /* APIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B1E6ED72AE290B400F93621 /* APIKeys.plist */; };
 		4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */; };
 		4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */; };
 		4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */; };
@@ -248,6 +251,9 @@
 		36CD4D052ADBB95400FC317B /* SignLoadingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignLoadingManager.swift; sourceTree = "<group>"; };
 		36F2BA002AC1682E00EF877A /* SignViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignViewController.swift; sourceTree = "<group>"; };
 		36F2BA022AC1777F00EF877A /* LoginSuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSuccessViewController.swift; sourceTree = "<group>"; };
+		4B1E6ED32AE290AF00F93621 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
+		4B1E6ED52AE290AF00F93621 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4B1E6ED72AE290B400F93621 /* APIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = APIKeys.plist; sourceTree = "<group>"; };
 		4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupGameViewController.swift; sourceTree = "<group>"; };
 		4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupCollectionViewCell.swift; sourceTree = "<group>"; };
 		4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupUserInfoStackView.swift; sourceTree = "<group>"; };
@@ -851,10 +857,10 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				4B576BC92AE17F6300C49D43 /* YOLOv3.mlmodel */,
-				4B576BC72AE17F0600C49D43 /* GoogleService-Info.plist */,
-				4B576BC52AE17E7B00C49D43 /* APIKeys.plist */,
+				4B1E6ED32AE290AF00F93621 /* YOLOv3.mlmodel */,
+				4B1E6ED72AE290B400F93621 /* APIKeys.plist */,
 				B15F16022ADCFA5C002952B4 /* Info.plist */,
+				4B1E6ED52AE290AF00F93621 /* GoogleService-Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
@@ -1380,8 +1386,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				4B576BC62AE17E7B00C49D43 /* APIKeys.plist in Resources */,
-				4B576BC82AE17F0600C49D43 /* GoogleService-Info.plist in Resources */,
+				4B1E6ED82AE290B400F93621 /* APIKeys.plist in Resources */,
+				4B1E6ED62AE290AF00F93621 /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1550,6 +1556,7 @@
 				6A9F734A2AD8E528002F13AC /* ProfileEditCollectionModalViewController.swift in Sources */,
 				3677DBC92AD4EC530026E089 /* SignInViewModel.swift in Sources */,
 				6AC31B2B2AD67BEC00F111B2 /* ProfileEditViewModel.swift in Sources */,
+				4B1E6ED42AE290AF00F93621 /* YOLOv3.mlmodel in Sources */,
 				B1E30BF02AD5F1AC00F95C66 /* CurrentUser.swift in Sources */,
 				5375E74E2ACD4755001A571D /* LikeMeViewModel.swift in Sources */,
 				B1E30BED2AD5EE8400F95C66 /* HomeUserCardViewController.swift in Sources */,
@@ -1603,7 +1610,6 @@
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
 				B1DFF1352AD7957200610519 /* DetailUserInfoTableViewCell.swift in Sources */,
 				367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */,
-				4B576BCA2AE17F6300C49D43 /* YOLOv3.mlmodel in Sources */,
 				B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */,
 				6AC31B2F2AD67CA600F111B2 /* SectionModel.swift in Sources */,
 				B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */,
