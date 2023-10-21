@@ -199,7 +199,7 @@ final class RandomBoxViewController: UIViewController {
         }
         
         infoButton.snp.makeConstraints { make in
-            make.top.equalTo(normalBoxButton.snp.bottom).offset(padding)
+            make.top.equalTo(normalBoxButton.snp.bottom)
             make.centerX.equalTo(countLabel.snp.centerX)
         }
     }
