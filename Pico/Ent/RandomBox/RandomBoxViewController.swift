@@ -272,8 +272,7 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func showAlert(with message: Int) {
-        var messageSting: String = "\(message)"
-
+        let messageSting: String = "\(message)"
         showCustomAlert(alertType: .onlyConfirm, titleText: "결과", messageText: "\(messageSting) 츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
             self.dismiss(animated: true, completion: nil)
         })

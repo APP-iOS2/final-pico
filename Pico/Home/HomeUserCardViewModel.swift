@@ -93,8 +93,8 @@ final class HomeUserCardViewModel {
     func purchaseChu(currentChu: Int, purchaseChu: Int) {
         FirestoreService.shared.updateDocument(collectionId: .users, documentId: currentUser.userId, field: "chuCount", data: currentChu - purchaseChu, completion: { _ in
             UserDefaultsManager.shared.updateChuCount(currentChu - purchaseChu)
-            let payment: Payment = Payment(price: purchaseChu * 110, purchaseChuCount: -purchaseChu)
-            FirestoreService.shared.saveDocument(collectionId: .payment, documentId: self.currentUser.userId, fieldId: "purchases", data: payment) { _ in
+            let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: purchaseChu * 110, purchaseChuCount: -purchaseChu, paymentType: .backCard)
+            FirestoreService.shared.saveDocument(collectionId: .payment, documentId: self.currentUser.userId, fieldId: "paymentInfos", data: payment) { _ in
                 print("남은 츄 \(UserDefaultsManager.shared.getChuCount())")
             }
         })

@@ -33,8 +33,8 @@ class WorldCupResultViewModel: ViewModelType {
             .flatMap { viewModel, _ -> Observable<Void> in  viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() - 25
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
                     .flatMap { _ -> Observable<Void> in
-                        let payment: Payment = Payment(price: 0, purchaseChuCount: -25)
-                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "purchases", data: payment)
+                        let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: -25, paymentType: .worldCup)
+                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
                     }
             }
             .withUnretained(self)

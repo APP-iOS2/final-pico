@@ -10,7 +10,6 @@ import RxSwift
 import RxCocoa
 import FirebaseFirestore
 
-// 질문: enum 을 여기에서만 쓰는데 어디에다 관리하는 게 좋을까용~?
 enum UserListType: CaseIterable {
     case using
     case unsubscribe
@@ -93,7 +92,7 @@ final class AdminUserViewModel: ViewModelType {
     struct Input {
         let viewDidLoad: Observable<Void>
         let viewWillAppear: Observable<Void>
-        let sortedTpye: Observable<SortType>
+        let sortedType: Observable<SortType>
         let userListType: Observable<UserListType>
         let searchButton: Observable<String>
         let tableViewOffset: Observable<Void>
@@ -109,11 +108,11 @@ final class AdminUserViewModel: ViewModelType {
     }
     
     func transform(input: Input) -> Output {
-        let responseViewDidLoad = Observable.combineLatest(input.userListType, input.sortedTpye, input.viewDidLoad)
+        let responseViewDidLoad = Observable.combineLatest(input.userListType, input.sortedType, input.viewDidLoad)
             .withUnretained(self)
             .flatMapLatest { (viewModel, value) -> Observable<([User], DocumentSnapshot?)> in
-                let (userListType, sortedTpye, _) = value
-                return FirestoreService.shared.loadDocumentRx(collectionId: userListType.collectionId, dataType: User.self, orderBy: sortedTpye.orderBy, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
+                let (userListType, sortedType, _) = value
+                return FirestoreService.shared.loadDocumentRx(collectionId: userListType.collectionId, dataType: User.self, orderBy: sortedType.orderBy, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
             }
             .withUnretained(self)
             .map { viewModel, usersAndSnapshot in
@@ -131,7 +130,7 @@ final class AdminUserViewModel: ViewModelType {
                 viewModel.reloadPublisher.onNext(())
             })
         
-        let sortedType = input.sortedTpye.asObservable()
+        let sortedType = input.sortedType.asObservable()
         let userListType = input.userListType.asObservable()
         
         let responseTitleLabel = input.userListType

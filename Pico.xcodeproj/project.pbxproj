@@ -197,6 +197,8 @@
 		B1E30BEB2AD5EE3300F95C66 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */; };
 		B1E30BED2AD5EE8400F95C66 /* HomeUserCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BEC2AD5EE8400F95C66 /* HomeUserCardViewController.swift */; };
 		B1E30BF02AD5F1AC00F95C66 /* CurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BEF2AD5F1AC00F95C66 /* CurrentUser.swift */; };
+		B1E8AF3E2AE34A24001BC023 /* AdminUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E8AF3D2AE34A23001BC023 /* AdminUserTableViewCell.swift */; };
+		B1E8AF402AE3518E001BC023 /* RecordEmptyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E8AF3F2AE3518E001BC023 /* RecordEmptyTableViewCell.swift */; };
 		BC0D29312ACF1F8C0043554B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */; };
 		BC0D29332ACF1FD70043554B /* HomeUserCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */; };
 		BC49271B2ADFD70D0073E882 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC49271A2ADFD70D0073E882 /* UserService.swift */; };
@@ -411,6 +413,8 @@
 		B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		B1E30BEC2AD5EE8400F95C66 /* HomeUserCardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewController.swift; sourceTree = "<group>"; };
 		B1E30BEF2AD5F1AC00F95C66 /* CurrentUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUser.swift; sourceTree = "<group>"; };
+		B1E8AF3D2AE34A23001BC023 /* AdminUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUserTableViewCell.swift; sourceTree = "<group>"; };
+		B1E8AF3F2AE3518E001BC023 /* RecordEmptyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordEmptyTableViewCell.swift; sourceTree = "<group>"; };
 		BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewModel.swift; sourceTree = "<group>"; };
 		BC49271A2ADFD70D0073E882 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
@@ -1237,10 +1241,12 @@
 		B1DFF1332AD7954800610519 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				B1E8AF3D2AE34A23001BC023 /* AdminUserTableViewCell.swift */,
 				B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */,
 				B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */,
 				B14D2AC12AD912120014DE29 /* RecordHeaderTableViewCell.swift */,
 				B14D2AC32AD913FF0014DE29 /* RecordHeaderCollectionViewCell.swift */,
+				B1E8AF3F2AE3518E001BC023 /* RecordEmptyTableViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1452,6 +1458,7 @@
 				B1BFE18D2AD6BA1B0094253A /* AdminViewController.swift in Sources */,
 				53B529592ADCBD0D00A9C9D8 /* FooterView.swift in Sources */,
 				4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */,
+				B1E8AF3E2AE34A24001BC023 /* AdminUserTableViewCell.swift in Sources */,
 				6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */,
 				B146A3C72AD456A8003143DD /* CommonConstraints.swift in Sources */,
 				6A65EDCC2AE1700C0048778D /* AdvertisementViewController.swift in Sources */,
@@ -1560,6 +1567,7 @@
 				5375E74A2ACD2C09001A571D /* NotificationViewModel.swift in Sources */,
 				698521F42AD841510051A29A /* MailListTableViewCell.swift in Sources */,
 				368D4DA52ADCD9B000322D91 /* PictureManager.swift in Sources */,
+				B1E8AF402AE3518E001BC023 /* RecordEmptyTableViewCell.swift in Sources */,
 				6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */,
 				B148052C2ACD2A900009FF71 /* AdminUserViewController.swift in Sources */,
 				360854F12AD04C7900F28168 /* StorageService.swift in Sources */,
