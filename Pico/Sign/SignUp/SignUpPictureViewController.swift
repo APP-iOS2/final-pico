@@ -29,7 +29,7 @@ final class SignUpPictureViewController: UIViewController {
     private var userImages: [UIImage] = []
     private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .lightGray
+        view.trackTintColor = .picoGray
         view.progressTintColor = .picoBlue
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
@@ -104,13 +104,8 @@ final class SignUpPictureViewController: UIViewController {
     }
     
     private func configNextButton(isEnabled: Bool) {
-        if isEnabled {
-            nextButton.isEnabled = isEnabled
-            nextButton.backgroundColor = .picoBlue
-        } else {
-            nextButton.isEnabled = isEnabled
-            nextButton.backgroundColor = .picoGray
-        }
+        nextButton.isEnabled = isEnabled
+        nextButton.backgroundColor = isEnabled ? .picoBlue : .picoGray
     }
     
     // MARK: - Tapped

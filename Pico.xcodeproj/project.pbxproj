@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		360710982AE3570C00CD38B1 /* TermsOfServiceModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360710972AE3570C00CD38B1 /* TermsOfServiceModalViewController.swift */; };
 		360854F12AD04C7900F28168 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360854F02AD04C7900F28168 /* StorageService.swift */; };
 		362418B92AC3B85D00DAE818 /* SignUpAgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */; };
 		362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */; };
@@ -230,6 +231,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		360710972AE3570C00CD38B1 /* TermsOfServiceModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceModalViewController.swift; sourceTree = "<group>"; };
 		360854F02AD04C7900F28168 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		362418B82AC3B85D00DAE818 /* SignUpAgeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpAgeViewController.swift; sourceTree = "<group>"; };
 		362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpNickNameViewController.swift; sourceTree = "<group>"; };
@@ -469,6 +471,7 @@
 			isa = PBXGroup;
 			children = (
 				369F1BB12ACE3F8000A98C7B /* TermsOfServiceText.swift */,
+				360710972AE3570C00CD38B1 /* TermsOfServiceModalViewController.swift */,
 			);
 			path = TermsOfServiceText;
 			sourceTree = "<group>";
@@ -1484,6 +1487,7 @@
 				533D5D2E2AD9169A0074F767 /* CustomIndicator.swift in Sources */,
 				531C4EDA2AC275DA00ADC614 /* LikeCollectionViewCell.swift in Sources */,
 				6A9F73532AD8E575002F13AC /* ProfileEditTextModalCollectionCell.swift in Sources */,
+				360710982AE3570C00CD38B1 /* TermsOfServiceModalViewController.swift in Sources */,
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
 				B14D2AAC2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift in Sources */,
 				4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */,
