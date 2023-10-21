@@ -235,11 +235,10 @@ final class RandomBoxViewController: UIViewController {
             UserDefaultsManager.shared.updateChuCount(updatedChuCount)
             
             self.showAlert(with: sumBoxHistory)
+            self.showParticleEffect()
             
             self.normalBoxButton.isEnabled = true
             self.advancedBoxButton.isEnabled = true
-            
-            self.showParticleEffect()
         }
     }
 
@@ -262,18 +261,17 @@ final class RandomBoxViewController: UIViewController {
             UserDefaultsManager.shared.updateChuCount(updatedChuCount)
             
             self.showAlert(with: sumBoxHistory)
+            self.showParticleEffect()
             
             self.normalBoxButton.isEnabled = true
             self.advancedBoxButton.isEnabled = true
-            
-            self.showParticleEffect()
         }
     }
 
     private func showAlert(with message: Int) {
         let messageSting: String = "\(message)"
 
-        showCustomAlert(alertType: .onlyConfirm, titleText: "결과", messageText: "\(messageSting) 츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
+        showCustomAlert(alertType: .onlyConfirm, titleText: "뽑기 결과", messageText: "\(messageSting)츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
             self.dismiss(animated: true, completion: nil)
             DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
                 self?.emitterLayer.removeFromSuperlayer()
