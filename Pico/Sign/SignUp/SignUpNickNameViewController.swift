@@ -12,6 +12,7 @@ final class SignUpNickNameViewController: UIViewController {
     private let keyboardManager = KeyboardManager()
     private let viewModel: SignUpViewModel
     private let checkNickNameService = CheckService()
+    private let slangWordArray: [String] = ["시발", "병신", "개새끼", "꺼져", "지랄", "애미", "애비", "등신", "따까리", "미친", "씨발", "씨팔", "시팔", "쌍놈", "쌍년", "아가리", "장애인", "호구"] // 비속어 필터 API가 있는데 돈주고 하는거라고 하더라구요.
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -165,20 +166,34 @@ extension SignUpNickNameViewController {
         nickNameTextField.text = ""
         nickNameCancleButton.isEnabled = true
         nickNameTextField.isEnabled = true
-        nickNameTextField.becomeFirstResponder()
         updateCheckButton(isFull: false)
         updateNextButton(isCheck: false)
+    }
+    
+    private func searchSlangWord(name: String) -> Bool {
+        var isSlang = false
+        for slangWord in slangWordArray {
+            if name.contains(slangWord) {
+                isSlang = true
+                showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "비속어 및 성적인 단어가 포함되어있습니다.", confirmButtonText: "확인")
+                reset()
+                return true
+            } else {
+                isSlang = false
+            }
+        }
+        return isSlang
     }
     // MARK: - @objc
     @objc private func tappedCheckButton(_ sender: UIButton) {
         sender.tappedAnimation()
         guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
         
+        guard !searchSlangWord(name: userNickName) else { return }
         showCustomAlert(alertType: .canCancel, titleText: "알림", messageText: "\(userNickName) 이름으로 설정합니다.\n변경불가능합니다(추후 변경은 유료)", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
-                
                 SignLoadingManager.hideLoading()
                 guard isRight else {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
