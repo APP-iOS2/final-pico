@@ -135,31 +135,14 @@ extension SignUpNickNameViewController {
     }
     
     private func updateCheckButton(isFull: Bool, ischeck: Bool = false) {
-        switch isFull {
-        case true:
-            nickNameCheckButton.isHidden = false
-        case false:
-            nickNameCheckButton.isHidden = true
-        }
-        switch ischeck {
-        case true:
-            nickNameCheckButton.backgroundColor = .picoGray
-        case false:
-            nickNameCheckButton.backgroundColor = .picoBlue
-        }
+        nickNameCheckButton.isHidden = !isFull
+        nickNameCheckButton.backgroundColor = ischeck ? .picoGray : .picoBlue
     }
     
     private func updateNextButton(isCheck: Bool) {
-        switch isCheck {
-        case true:
-            nextButton.backgroundColor = .picoBlue
-            nextButton.isEnabled = true
-            isCheckNickName = true
-        case false:
-            nextButton.backgroundColor = .picoGray
-            nextButton.isEnabled = false
-            isCheckNickName = false
-        }
+        nextButton.backgroundColor = isCheck ? .picoBlue : .picoGray
+        nextButton.isEnabled = isCheck ? true : false
+        isCheckNickName = isCheck ? true : false
     }
     
     private func reset() {
@@ -188,12 +171,14 @@ extension SignUpNickNameViewController {
     @objc private func tappedCheckButton(_ sender: UIButton) {
         sender.tappedAnimation()
         guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
-        
         guard !searchSlangWord(name: userNickName) else { return }
+        
         showCustomAlert(alertType: .canCancel, titleText: "알림", messageText: "\(userNickName) 이름으로 설정합니다.\n변경불가능합니다(추후 변경은 유료)", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
+            
             checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
+                
                 SignLoadingManager.hideLoading()
                 guard isRight else {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
@@ -214,7 +199,6 @@ extension SignUpNickNameViewController {
             updateCheckButton(isFull: true, ischeck: true)
             updateNextButton(isCheck: true)
             nickNameTextField.textColor = .picoBlue
-            
         })
     }
     

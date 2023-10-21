@@ -221,24 +221,14 @@ final class SignUpTermsOfServiceViewController: UIViewController {
 extension SignUpTermsOfServiceViewController {
     // MARK: - update
     private func updateNextButton(isCheck: Bool) {
-        switch isCheck {
-        case true:
-            nextButton.isEnabled = true
-            nextButton.backgroundColor = .picoBlue
-        case false:
-            nextButton.isEnabled = false
-            nextButton.backgroundColor = .picoGray
-        }
+        nextButton.isEnabled = isCheck
+        nextButton.backgroundColor = isCheck ? .picoBlue : .picoGray
     }
     
     // MARK: - @objc
     @objc private func tappedCheckBoxButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        if sender.isSelected {
-            sender.tintColor = .picoAlphaBlue
-        } else {
-            sender.tintColor = .picoFontGray
-        }
+        sender.tintColor = sender.isSelected ? .picoAlphaBlue : .picoFontGray
         updateNextButton(isCheck: isCheckBoxSelected)
     }
     
