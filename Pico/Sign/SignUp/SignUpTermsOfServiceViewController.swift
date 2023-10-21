@@ -113,6 +113,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         label.font = UIFont.picoSubTitleFont
         return label
     }()
+    
     private lazy var secondTermsOfServiceButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("개인정보 수집 및 이용약관 보기", for: .normal)
@@ -121,6 +122,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         button.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
         return button
     }()
+    
     private let secondTermsAgreementLabel: UILabel = {
         let label = UILabel()
         label.text = "개인정보 수집에 동의합니다."

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TermsOfServiceModalViewController: UIViewController {
+final class TermsOfServiceModalViewController: UIViewController {
     private let tag: Int
     private let termsOfServiceTexts: [String] = TermsOfServiceText.termsOfServiceTexts
     private let termTitle = TermsOfServiceText.termsTitle
@@ -30,6 +30,7 @@ class TermsOfServiceModalViewController: UIViewController {
         textView.font = UIFont.systemFont(ofSize: 16)
         textView.textColor = .picoFontBlack
         textView.backgroundColor = .white
+        textView.showsVerticalScrollIndicator = false
         return textView
     }()
     
@@ -39,7 +40,7 @@ class TermsOfServiceModalViewController: UIViewController {
             button.setImage(symbolImage, for: .normal)
         }
         button.tintColor = .picoFontGray
-        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 20, weight: .regular)
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
         button.setPreferredSymbolConfiguration(symbolConfiguration, forImageIn: .normal)
         button.addTarget(self, action: #selector(tappedCloseButton), for: .touchUpInside)
         return button
@@ -48,7 +49,7 @@ class TermsOfServiceModalViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "서비스 이용약관"
-        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.font = UIFont.boldSystemFont(ofSize: 25)
         label.textColor = .picoFontBlack
         return label
     }()
