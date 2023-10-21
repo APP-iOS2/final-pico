@@ -11,10 +11,6 @@ struct SettingLicenseView: View {
     var body: some View {
         ScrollView {
             Text("""
-**Alamofire**
-Copyright (c) 2014-2022 Alamofire Software Foundation
-http://alamofire.org/
-
 **Kingfisher**
 The MIT License (MIT) Copyright (c) 2019 Wei Wang
 https://github.com/onevcat/Kingfisher
