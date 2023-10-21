@@ -112,6 +112,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         makeConstraints()
         configButtons()
         configTextField()
+        updateNextButton(isEnabled: false)
     }
     
     override func viewDidAppear(_ animated: Bool) {
