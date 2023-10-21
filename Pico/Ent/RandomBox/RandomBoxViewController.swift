@@ -124,6 +124,8 @@ final class RandomBoxViewController: UIViewController {
         return button
     }()
     
+    private let emitterLayer = CAEmitterLayer()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.configBackgroundColor()
@@ -131,6 +133,7 @@ final class RandomBoxViewController: UIViewController {
         addViews()
         makeConstraints()
         bind()
+        configureEmitter()
     }
     
     private func addViews() {
@@ -266,9 +269,11 @@ final class RandomBoxViewController: UIViewController {
             
             self.normalBoxButton.isEnabled = true
             self.advancedBoxButton.isEnabled = true
+            
+            self.showParticleEffect()
         }
     }
-    
+
     private func tappedAdvancedBox(count: Int) {
         guard UserDefaultsManager.shared.getChuCount() >= 30 else {
             enoughChuAlert()
@@ -296,14 +301,19 @@ final class RandomBoxViewController: UIViewController {
             
             self.normalBoxButton.isEnabled = true
             self.advancedBoxButton.isEnabled = true
+            
+            self.showParticleEffect()
         }
     }
-    
+
     private func showAlert(with message: Int) {
         let messageSting: String = "\(message)"
 
         showCustomAlert(alertType: .onlyConfirm, titleText: "결과", messageText: "\(messageSting) 츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
             self.dismiss(animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
+                self?.emitterLayer.removeFromSuperlayer()
+            }
         })
     }
     
@@ -316,6 +326,30 @@ final class RandomBoxViewController: UIViewController {
         })
         
         present(alert, animated: true, completion: nil)
+    }
+    
+    private func configureEmitter() {
+        let cell = CAEmitterCell()
+        cell.contents = UIImage(named: "chu")?.cgImage
+        cell.lifetime = 3
+        cell.birthRate = 20
+        cell.scale = 0.15
+        cell.scaleRange = 0.05
+        cell.spin = 5
+        cell.spinRange = 10
+        cell.emissionRange = CGFloat.pi * 2
+        cell.velocity = 300
+        cell.velocityRange = 50
+        cell.yAcceleration = 600
+
+        emitterLayer.emitterPosition = CGPoint(x: view.bounds.midX, y: view.bounds.midY)
+        emitterLayer.emitterShape = .point
+        emitterLayer.renderMode = .additive
+        emitterLayer.emitterCells = [cell]
+    }
+
+    private func showParticleEffect() {
+        view.layer.addSublayer(emitterLayer)
     }
 }
 
