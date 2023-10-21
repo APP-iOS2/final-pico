@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import Firebase
 import AVFoundation
+import Kingfisher
 
 final class WorldCupViewModel {
     
@@ -45,13 +46,13 @@ final class WorldCupViewModel {
         Loading.showLoading()
 
         if let imageURL = URL(string: user.imageURLs.first ?? "") {
-            cell.userImage.loadAsync(url: imageURL) { [weak self] success in
-                if success {
+            cell.userImage.kf.setImage(with: imageURL) { [weak self] result in
+                if case .success(_) = result {
                     cell.mbtiLabel.setMbti(mbti: user.mbti)
                     cell.userNickname.text = String(user.nickName)
                     cell.userAge.text = "\(user.age)세"
                     cell.userInfoStackView.setDataLabelTexts(self?.addDataLabels(user) ?? [])
-                    
+
                     Loading.hideLoading()
                 } else {
                     Loading.hideLoading()
@@ -111,21 +112,5 @@ final class WorldCupViewModel {
     
     func stopBackgroundMusic() {
         audioPlayer?.stop()
-    }
-}
-
-extension UIImageView {
-    func loadAsync(url: URL, completion: @escaping (Bool) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url),
-               let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self?.image = image
-                    completion(true)
-                }
-            } else {
-                completion(false)
-            }
-        }
     }
 }

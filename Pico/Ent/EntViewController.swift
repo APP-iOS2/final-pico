@@ -44,7 +44,7 @@ final class EntViewController: BaseViewController {
         return label
     }()
     
-    private lazy var gameStartButton: CommonButton = {
+    private let gameStartButton: CommonButton = {
         let button = CommonButton()
         button.setTitle("시작", for: .normal)
         return button
