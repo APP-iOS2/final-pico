@@ -371,7 +371,7 @@ extension RandomBoxViewController {
                         self.navigationController?.pushViewController(storeViewController, animated: true)
                     })
                 } else {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "일반 박스", messageText: "보유 츄 : \(UserDefaultsManager.shared.getChuCount())\n츄 10개를 소모하여\n일반 박스 \(self.countLabel.text ?? "0")개 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "일반 박스", messageText: "보유 츄 : \(UserDefaultsManager.shared.getChuCount())\n\(10 * (Int(self.countLabel.text ?? "") ?? 1))츄를 사용하여\n일반 박스 \(self.countLabel.text ?? "1")개를 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
                         self.tappedNormalBox(count: Int(self.countLabel.text ?? "0") ?? 0)
                     })
                 }
@@ -387,7 +387,7 @@ extension RandomBoxViewController {
                         self.navigationController?.pushViewController(storeViewController, animated: true)
                     })
                 } else {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "고급 박스", messageText: "보유 츄 : \(UserDefaultsManager.shared.getChuCount())\n츄 30개를 소모하여\n고급 박스 \(self.countLabel.text ?? "0")개 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "고급 박스", messageText: "보유 츄 : \(UserDefaultsManager.shared.getChuCount())\n\(30 * (Int(self.countLabel.text ?? "") ?? 1))츄를 사용하여\n고급 박스 \(self.countLabel.text ?? "1")개를 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
                         self.tappedAdvancedBox(count: Int(self.countLabel.text ?? "0") ?? 0)
                     })
                 }
