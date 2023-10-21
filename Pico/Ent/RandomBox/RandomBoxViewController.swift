@@ -21,13 +21,6 @@ final class RandomBoxViewController: UIViewController {
         return imageView
     }()
     
-    private let goToStoreButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "plus.square"), for: .normal)
-        button.contentMode = .scaleAspectFill
-        return button
-    }()
-    
     private let normalInfoButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "info.circle"), for: .normal)
@@ -137,7 +130,7 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func addViews() {
-        [backgroundImageView, goToStoreButton, normalInfoButton, advancedInfoButton, randomBoxTitleLabel, contentLabel, guidLabel, randomBoxImage, normalBoxButton, advancedBoxButton, numberLabel, countLabel, plusButton, minusButton].forEach { item in
+        [backgroundImageView, normalInfoButton, advancedInfoButton, randomBoxTitleLabel, contentLabel, guidLabel, randomBoxImage, normalBoxButton, advancedBoxButton, numberLabel, countLabel, plusButton, minusButton].forEach { item in
             view.addSubview(item)
         }
     }
@@ -149,12 +142,6 @@ final class RandomBoxViewController: UIViewController {
         
         backgroundImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-        }
-        
-        goToStoreButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.trailing.equalToSuperview().offset(-padding * half)
-            make.width.height.equalTo(padding * 2)
         }
         
         randomBoxTitleLabel.snp.makeConstraints { make in
@@ -372,14 +359,6 @@ extension RandomBoxViewController {
                 showCustomAlert(alertType: .onlyConfirm, titleText: "고급 상자 목록", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
                     self.dismiss(animated: true, completion: nil)
                 })
-            })
-            .disposed(by: disposeBag)
-        
-        goToStoreButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                let storeViewController = StoreViewController(viewModel: StoreViewModel())
-                self.navigationController?.pushViewController(storeViewController, animated: true)
             })
             .disposed(by: disposeBag)
         
