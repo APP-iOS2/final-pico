@@ -29,7 +29,7 @@ final class SignUpPictureViewController: UIViewController {
     private var userImages: [UIImage] = []
     private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .lightGray
+        view.trackTintColor = .picoGray
         view.progressTintColor = .picoBlue
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
