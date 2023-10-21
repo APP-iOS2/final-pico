@@ -19,6 +19,8 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = ""
+        label.textColor = .darkGray
+        label.font = .picoContentBoldFont
         return label
     }()
     

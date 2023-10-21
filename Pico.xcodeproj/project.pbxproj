@@ -62,12 +62,14 @@
 		53DD41BE2ADF672B00C5FE39 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 53DD41BD2ADF672B00C5FE39 /* FirebaseMessaging */; };
 		53DD41C02ADF675F00C5FE39 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD41BF2ADF675F00C5FE39 /* Token.swift */; };
 		547C4C212AD8381F00028AFB /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */; };
-		547C4C292AD8393700028AFB /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C242AD8393700028AFB /* UserDetailViewController.swift */; };
-		547C4C2A2AD8393700028AFB /* SubInfomationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C252AD8393700028AFB /* SubInfomationViewController.swift */; };
-		547C4C2B2AD8393700028AFB /* UserImageViewControll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C262AD8393700028AFB /* UserImageViewControll.swift */; };
-		547C4C2C2AD8393700028AFB /* BasicInformationViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C272AD8393700028AFB /* BasicInformationViewContoller.swift */; };
-		547C4C2D2AD8393700028AFB /* AboutMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C282AD8393700028AFB /* AboutMeViewController.swift */; };
 		548AD17B2AE1E2C100B1513C /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD17A2AE1E2C100B1513C /* PaddingLabel.swift */; };
+		548AD1822AE20E2C00B1513C /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1802AE20E2C00B1513C /* YOLOv3.mlmodel */; };
+		548AD1832AE20E2C00B1513C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 548AD1812AE20E2C00B1513C /* GoogleService-Info.plist */; };
+		548AD18A2AE32C8900B1513C /* BasicInformationViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1852AE32C8800B1513C /* BasicInformationViewContoller.swift */; };
+		548AD18B2AE32C8900B1513C /* SubInfomationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1862AE32C8800B1513C /* SubInfomationViewController.swift */; };
+		548AD18C2AE32C8900B1513C /* AboutMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1872AE32C8800B1513C /* AboutMeViewController.swift */; };
+		548AD18D2AE32C8900B1513C /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1882AE32C8800B1513C /* UserDetailViewController.swift */; };
+		548AD18E2AE32C8900B1513C /* UserImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1892AE32C8800B1513C /* UserImageViewController.swift */; };
 		6915C84D2ADA8F7200994F55 /* UIStackView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6915C84C2ADA8F7200994F55 /* UIStackView+Extensions.swift */; };
 		6922687B2AE0121700E83F02 /* MailReceiveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6922687A2AE0121700E83F02 /* MailReceiveModel.swift */; };
 		6922687E2AE0135F00E83F02 /* MailSendTableListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6922687D2AE0135F00E83F02 /* MailSendTableListController.swift */; };
@@ -281,12 +283,14 @@
 		53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		53DD41BF2ADF675F00C5FE39 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
-		547C4C242AD8393700028AFB /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
-		547C4C252AD8393700028AFB /* SubInfomationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubInfomationViewController.swift; sourceTree = "<group>"; };
-		547C4C262AD8393700028AFB /* UserImageViewControll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageViewControll.swift; sourceTree = "<group>"; };
-		547C4C272AD8393700028AFB /* BasicInformationViewContoller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInformationViewContoller.swift; sourceTree = "<group>"; };
-		547C4C282AD8393700028AFB /* AboutMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMeViewController.swift; sourceTree = "<group>"; };
 		548AD17A2AE1E2C100B1513C /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
+		548AD1802AE20E2C00B1513C /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = YOLOv3.mlmodel; path = ../../../../YOLOv3.mlmodel; sourceTree = "<group>"; };
+		548AD1812AE20E2C00B1513C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		548AD1852AE32C8800B1513C /* BasicInformationViewContoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicInformationViewContoller.swift; sourceTree = "<group>"; };
+		548AD1862AE32C8800B1513C /* SubInfomationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubInfomationViewController.swift; sourceTree = "<group>"; };
+		548AD1872AE32C8800B1513C /* AboutMeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutMeViewController.swift; sourceTree = "<group>"; };
+		548AD1882AE32C8800B1513C /* UserDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
+		548AD1892AE32C8800B1513C /* UserImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserImageViewController.swift; sourceTree = "<group>"; };
 		6915C84C2ADA8F7200994F55 /* UIStackView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Extensions.swift"; sourceTree = "<group>"; };
 		6922687A2AE0121700E83F02 /* MailReceiveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveModel.swift; sourceTree = "<group>"; };
 		6922687D2AE0135F00E83F02 /* MailSendTableListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendTableListController.swift; sourceTree = "<group>"; };
@@ -570,11 +574,11 @@
 		54B4411A2AC1616500EC8846 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				547C4C242AD8393700028AFB /* UserDetailViewController.swift */,
-				547C4C262AD8393700028AFB /* UserImageViewControll.swift */,
-				547C4C272AD8393700028AFB /* BasicInformationViewContoller.swift */,
-				547C4C282AD8393700028AFB /* AboutMeViewController.swift */,
-				547C4C252AD8393700028AFB /* SubInfomationViewController.swift */,
+				548AD1882AE32C8800B1513C /* UserDetailViewController.swift */,
+				548AD1892AE32C8800B1513C /* UserImageViewController.swift */,
+				548AD1852AE32C8800B1513C /* BasicInformationViewContoller.swift */,
+				548AD1872AE32C8800B1513C /* AboutMeViewController.swift */,
+				548AD1862AE32C8800B1513C /* SubInfomationViewController.swift */,
 				B14D2AB62AD8E2810014DE29 /* UserDetailViewCell */,
 				547C4C1C2AD8369D00028AFB /* ViewModel */,
 			);
@@ -858,6 +862,8 @@
 		B14B58F92AC0A243009889DA /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				548AD1812AE20E2C00B1513C /* GoogleService-Info.plist */,
+				548AD1802AE20E2C00B1513C /* YOLOv3.mlmodel */,
 				B15F16022ADCFA5C002952B4 /* Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
@@ -1386,6 +1392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
+				548AD1832AE20E2C00B1513C /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
@@ -1435,11 +1442,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				36536FE92AE00E0E00ADD420 /* CheckService.swift in Sources */,
-				547C4C292AD8393700028AFB /* UserDetailViewController.swift in Sources */,
-				547C4C2A2AD8393700028AFB /* SubInfomationViewController.swift in Sources */,
-				547C4C2B2AD8393700028AFB /* UserImageViewControll.swift in Sources */,
-				547C4C2C2AD8393700028AFB /* BasicInformationViewContoller.swift in Sources */,
-				547C4C2D2AD8393700028AFB /* AboutMeViewController.swift in Sources */,
 				547C4C212AD8381F00028AFB /* UserDetailViewModel.swift in Sources */,
 				531C4EDB2AC2D08900ADC614 /* MyPageMatchingTableCell.swift in Sources */,
 				6ADDE2E22AC30EFE00CE4482 /* SettingViewController.swift in Sources */,
@@ -1471,9 +1473,11 @@
 				36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */,
 				53B5295B2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift in Sources */,
 				B1701F962AD436F80014850D /* RandomBoxView.swift in Sources */,
+				548AD18D2AE32C8900B1513C /* UserDetailViewController.swift in Sources */,
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
 				B130BB4C2ACF207A0039A1FA /* AdminUserViewModel.swift in Sources */,
 				BC6F61922AD834160067F500 /* RangeSlider.swift in Sources */,
+				548AD18C2AE32C8900B1513C /* AboutMeViewController.swift in Sources */,
 				6ABA9E542ACE8F4100DC6570 /* CircularProgressBarViewModel.swift in Sources */,
 				B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */,
 				6ADDE2F72AC3BA7E00CE4482 /* ProfileEditLoactionTabelCell.swift in Sources */,
@@ -1508,6 +1512,7 @@
 				6ADDE2DE2AC2D3B500CE4482 /* StoreViewController.swift in Sources */,
 				B1E30BDD2AD5E21A00F95C66 /* ViewModelType.swift in Sources */,
 				6ADDE2EE2AC3B98000CE4482 /* ProfileEditViewController.swift in Sources */,
+				548AD18B2AE32C8900B1513C /* SubInfomationViewController.swift in Sources */,
 				6ADDE2E82AC31C6000CE4482 /* SettingPrivateTableCell.swift in Sources */,
 				6ADDE2F32AC3BA4700CE4482 /* ProfileEditNicknameTabelCell.swift in Sources */,
 				B1BFE18F2AD6BAED0094253A /* AdminReportViewController.swift in Sources */,
@@ -1526,6 +1531,7 @@
 				6ADDE2E42AC30F2F00CE4482 /* SettingTableCell.swift in Sources */,
 				B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */,
 				B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */,
+				548AD18A2AE32C8900B1513C /* BasicInformationViewContoller.swift in Sources */,
 				6A7378532AC26D2E0047DE35 /* MyPageCollectionCell.swift in Sources */,
 				B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */,
 				367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */,
@@ -1533,6 +1539,7 @@
 				6922687B2AE0121700E83F02 /* MailReceiveModel.swift in Sources */,
 				B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */,
 				692268802AE018EC00E83F02 /* MailReceiveTableListController.swift in Sources */,
+				548AD18E2AE32C8900B1513C /* UserImageViewController.swift in Sources */,
 				6ADDE2E62AC3109E00CE4482 /* SettingTableHeaderView.swift in Sources */,
 				6ADDE2FF2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift in Sources */,
 				B1BFE1932AD6F6960094253A /* AdminBaseViewController.swift in Sources */,
@@ -1540,6 +1547,7 @@
 				B17D678C2AC0AB80006F91DC /* Location.swift in Sources */,
 				B146A3CA2AD456D2003143DD /* MypageViewConstraints.swift in Sources */,
 				368D4DA12ADCC9DF00322D91 /* YoloManager.swift in Sources */,
+				548AD1822AE20E2C00B1513C /* YOLOv3.mlmodel in Sources */,
 				693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */,
 				B11D2B8C2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift in Sources */,
 				53DD41B82ADF65EF00C5FE39 /* NotificationService.swift in Sources */,
