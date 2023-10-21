@@ -21,20 +21,6 @@ final class RandomBoxViewController: UIViewController {
         return imageView
     }()
     
-    private let normalInfoButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "info.circle"), for: .normal)
-        button.contentMode = .scaleAspectFill
-        return button
-    }()
-    
-    private let advancedInfoButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "info.circle"), for: .normal)
-        button.contentMode = .scaleAspectFill
-        return button
-    }()
-    
     private let randomBoxTitleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -71,18 +57,6 @@ final class RandomBoxViewController: UIViewController {
         return imageView
     }()
     
-    private let normalBoxButton: CommonButton = {
-        let button = CommonButton()
-        button.setTitle("일반 상자 뽑기", for: .normal)
-        return button
-    }()
-    
-    private let advancedBoxButton: CommonButton = {
-        let button = CommonButton()
-        button.setTitle("고급 상자 뽑기", for: .normal)
-        return button
-    }()
-    
     private let numberLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -117,6 +91,26 @@ final class RandomBoxViewController: UIViewController {
         return button
     }()
     
+    private let normalBoxButton: CommonButton = {
+        let button = CommonButton()
+        button.setTitle("일반 상자 뽑기", for: .normal)
+        return button
+    }()
+    
+    private let advancedBoxButton: CommonButton = {
+        let button = CommonButton()
+        button.setTitle("고급 상자 뽑기", for: .normal)
+        return button
+    }()
+    
+    private let infoButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("상품 정보 보기", for: .normal)
+        button.setTitleColor(.picoBlue, for: .normal)
+        button.titleLabel?.font = UIFont.picoDescriptionFont
+        return button
+    }()
+    
     private let emitterLayer = CAEmitterLayer()
     
     override func viewDidLoad() {
@@ -130,7 +124,7 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func addViews() {
-        [backgroundImageView, normalInfoButton, advancedInfoButton, randomBoxTitleLabel, contentLabel, guidLabel, randomBoxImage, normalBoxButton, advancedBoxButton, numberLabel, countLabel, plusButton, minusButton].forEach { item in
+        [backgroundImageView, randomBoxTitleLabel, contentLabel, guidLabel, randomBoxImage, numberLabel, countLabel, plusButton, minusButton, normalBoxButton, advancedBoxButton, infoButton].forEach { item in
             view.addSubview(item)
         }
     }
@@ -166,35 +160,8 @@ final class RandomBoxViewController: UIViewController {
             make.height.equalTo(Screen.height / 3)
         }
         
-        normalInfoButton.snp.makeConstraints { make in
-            make.trailing.equalTo(normalBoxButton.snp.trailing)
-            make.bottom.equalTo(normalBoxButton.snp.top)
-            make.width.height.equalTo(padding * 2)
-        }
-        
-        advancedInfoButton.snp.makeConstraints { make in
-            make.trailing.equalTo(advancedBoxButton.snp.trailing)
-            make.bottom.equalTo(normalBoxButton.snp.top)
-            make.width.height.equalTo(padding * 2)
-        }
-        
-        normalBoxButton.snp.makeConstraints { make in
-            make.top.equalTo(randomBoxImage.snp.bottom).offset(padding)
-            make.leading.equalTo(view.safeAreaLayoutGuide).offset(padding)
-            make.trailing.equalTo(advancedBoxButton.snp.leading).offset(-padding)
-            make.width.equalTo(buttonWidth)
-            make.height.equalTo(padding * 2)
-        }
-        
-        advancedBoxButton.snp.makeConstraints { make in
-            make.top.equalTo(randomBoxImage.snp.bottom).offset(padding)
-            make.leading.equalTo(normalBoxButton.snp.trailing).offset(padding)
-            make.width.equalTo(buttonWidth)
-            make.height.equalTo(padding * 2)
-        }
-        
         numberLabel.snp.makeConstraints { make in
-            make.top.equalTo(advancedBoxButton.snp.bottom).offset(padding)
+            make.top.equalTo(randomBoxImage.snp.bottom)
             make.centerX.equalToSuperview()
         }
         
@@ -214,6 +181,26 @@ final class RandomBoxViewController: UIViewController {
             make.top.equalTo(numberLabel.snp.bottom)
             make.trailing.equalTo(countLabel.snp.leading)
             make.width.height.equalTo(30)
+        }
+        
+        normalBoxButton.snp.makeConstraints { make in
+            make.top.equalTo(countLabel.snp.bottom).offset(padding)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(padding)
+            make.trailing.equalTo(advancedBoxButton.snp.leading).offset(-padding)
+            make.width.equalTo(buttonWidth)
+            make.height.equalTo(padding * 2)
+        }
+        
+        advancedBoxButton.snp.makeConstraints { make in
+            make.top.equalTo(countLabel.snp.bottom).offset(padding)
+            make.leading.equalTo(normalBoxButton.snp.trailing).offset(padding)
+            make.width.equalTo(buttonWidth)
+            make.height.equalTo(padding * 2)
+        }
+        
+        infoButton.snp.makeConstraints { make in
+            make.top.equalTo(normalBoxButton.snp.bottom).offset(padding)
+            make.centerX.equalTo(countLabel.snp.centerX)
         }
     }
     
@@ -321,21 +308,11 @@ final class RandomBoxViewController: UIViewController {
 
 extension RandomBoxViewController {
     private func bind() {
-        normalInfoButton.rx.tap
+        infoButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 let messageText = self.randomBoxManager.boxInfo(index: 0)
                 showCustomAlert(alertType: .onlyConfirm, titleText: "일반 상자 목록", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
-                    self.dismiss(animated: true, completion: nil)
-                })
-            })
-            .disposed(by: disposeBag)
-        
-        advancedInfoButton.rx.tap
-            .subscribe(onNext: { [weak self] in
-                guard let self = self else { return }
-                let messageText = self.randomBoxManager.boxInfo(index: 1)
-                showCustomAlert(alertType: .onlyConfirm, titleText: "고급 상자 목록", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
                     self.dismiss(animated: true, completion: nil)
                 })
             })
