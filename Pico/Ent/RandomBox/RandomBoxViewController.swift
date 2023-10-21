@@ -346,7 +346,7 @@ extension RandomBoxViewController {
             .subscribe(onNext: { [weak self] _, _ in
                 guard let self = self else { return }
                 if let countText = self.countLabel.text, let count = Int(countText), UserDefaultsManager.shared.getChuCount() < (10 * count) {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "취소", confirmButtonText: "스토어로 이동", comfrimAction: {
                         let storeViewController = StoreViewController(viewModel: StoreViewModel())
                         self.navigationController?.pushViewController(storeViewController, animated: true)
                     })
@@ -362,7 +362,7 @@ extension RandomBoxViewController {
             .withUnretained(self)
             .subscribe(onNext: { _, _ in
                 if let countText = self.countLabel.text, let count = Int(countText), UserDefaultsManager.shared.getChuCount() < (30 * count) {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "취소", confirmButtonText: "스토어로 이동", comfrimAction: {
                         let storeViewController = StoreViewController(viewModel: StoreViewModel())
                         self.navigationController?.pushViewController(storeViewController, animated: true)
                     })
