@@ -24,6 +24,7 @@ final class ProfileEditViewController: UIViewController {
         return view
     }()
     
+    private let refreshControl = UIRefreshControl()
     private let disposeBag = DisposeBag()
     weak var profileEditImageDelegate: ProfileEditImageDelegate?
     weak var profileEditNicknameDelegate: ProfileEditNicknameDelegate?
@@ -39,12 +40,13 @@ final class ProfileEditViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configView()
-        configTableView()
         addViews()
         makeConstraints()
         binds()
+        configView()
+        configTableView()
         delegateConfig()
+        configRefresh()
     }
     
     @available(*, unavailable)
@@ -99,6 +101,12 @@ final class ProfileEditViewController: UIViewController {
         tableView.delegate = self
     }
     
+    private func configRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        tableView.refreshControl = refreshControl
+    }
+    
     private func addViews() {
         view.addSubview([tableView])
     }
@@ -121,6 +129,15 @@ final class ProfileEditViewController: UIViewController {
         modalViewController.modalPresentationStyle = .formSheet
         present(modalViewController, animated: true)
     }
+    
+    @objc private func refreshTable(refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            profileViewModel.loadUserData()
+            refresh.endRefreshing()
+        }
+    }
+    
 }
 
 extension ProfileEditViewController: UITableViewDelegate {
