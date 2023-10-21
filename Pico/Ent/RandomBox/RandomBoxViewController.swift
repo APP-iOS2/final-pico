@@ -311,8 +311,8 @@ extension RandomBoxViewController {
         infoButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                let messageText = self.randomBoxManager.boxInfo(index: 0)
-                showCustomAlert(alertType: .onlyConfirm, titleText: "일반 상자 목록", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
+                let messageText = self.randomBoxManager.boxInfo()
+                showCustomAlert(alertType: .onlyConfirm, titleText: "상자 구성품", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
                     self.dismiss(animated: true, completion: nil)
                 })
             })
