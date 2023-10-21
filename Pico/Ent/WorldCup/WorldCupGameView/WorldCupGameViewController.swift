@@ -123,7 +123,9 @@ final class WorldCupGameViewController: UIViewController {
     
     private func animateToNextRound() {
         UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: {
-            self.collectionView.reloadData()
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
         }, completion: nil)
     }
     
