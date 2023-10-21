@@ -33,10 +33,10 @@ final class MailReceiveTableListController: BaseViewController {
         return tableView
     }()
     
-    var mailVC: MailViewController
+    var mailViewController: MailViewController
     
-    init(vc: MailViewController) {
-        self.mailVC = vc
+    init(viewController: MailViewController) {
+        self.mailViewController = viewController
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -175,6 +175,6 @@ extension MailReceiveTableListController: MailReceiveDelegate {
     func pushUserDetailViewController(user: User) {
         let viewController = UserDetailViewController()
         viewController.viewModel = UserDetailViewModel(user: user)
-        self.mailVC.navigationController?.pushViewController(viewController, animated: true)
+        self.mailViewController.navigationController?.pushViewController(viewController, animated: true)
     }
 }

@@ -9,7 +9,6 @@ import UIKit
 
 final class MBTILabelCollectionViewCell: UICollectionViewCell {
     
-    private var filterChangeState: Bool = false
     private let mbtiButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(.white, for: .normal)

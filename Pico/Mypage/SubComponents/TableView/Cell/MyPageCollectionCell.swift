@@ -12,7 +12,7 @@ final class MyPageCollectionCell: UICollectionViewCell {
     
     private let image: UIImageView = {
         let image = UIImageView()
-        image.contentMode = .scaleAspectFit
+        image.contentMode = .scaleAspectFill
         return image
     }()
     private let titleLabel: UILabel = {
@@ -55,7 +55,8 @@ final class MyPageCollectionCell: UICollectionViewCell {
         image.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(3)
             make.centerX.equalToSuperview()
-            make.height.width.equalTo(45)
+            make.height.equalTo(45)
+            make.width.equalTo(40)
         }
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(image.snp.bottom).offset(-6)

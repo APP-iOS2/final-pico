@@ -20,13 +20,14 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
     
     private lazy var locationChangeButton: UIButton = {
         let button = UIButton()
-        let image = UIImage(named: "chu")?.resized(toSize: CGSize(width: 30, height: 30))
+        let image = UIImage(named: "locationPointImage")?.resized(toSize: CGSize(width: 20, height: 20))
         var configuration = UIButton.Configuration.plain()
-        configuration.subtitle = "경기도 용인시"
+        configuration.subtitle = ""
         configuration.subtitleLineBreakMode = .byTruncatingTail
         configuration.image = image
         configuration.imagePlacement = .trailing
-        configuration.imagePadding = 3
+        configuration.imagePadding = 7
+        configuration.titleAlignment = .trailing
         button.configuration = configuration
         button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
         return button
@@ -86,7 +87,7 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         }
         
         locationChangeButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-15)
+            make.trailing.equalToSuperview().offset(-10)
             make.centerY.equalToSuperview()
         }
     }

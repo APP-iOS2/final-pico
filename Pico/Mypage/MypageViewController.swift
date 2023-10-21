@@ -25,12 +25,14 @@ final class MypageViewController: BaseViewController {
         myPageTableView.myPageViewDelegate = self
         profileView.configViewModel(viewModel: profileViewModel)
         profileViewModel.loadUserData()
+        myPageTableView.configViewModel(viewModel: profileViewModel)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         resetTableViewScroll()
         profileView.configProgressBarView()
+        profileViewModel.loadChuCount()
     }
     
     private func resetTableViewScroll() {
@@ -77,6 +79,12 @@ final class MypageViewController: BaseViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
+    private func presentViewController(_ viewController: UIViewController) {
+        let viewController = viewController
+        viewController.modalPresentationStyle = .automatic
+        present(viewController, animated: true)
+    }
+    
     @objc private func tappedProfileView(_ sender: UIBarButtonItem) {
         pushNextViewController(ProfileEditViewController(profileViewModel: profileViewModel))
     }
@@ -93,14 +101,13 @@ extension MypageViewController: MyPageViewDelegate {
         }
     }
     func tabelDidSelectItem(item: Int) {
-        print(item)
         switch item {
         case 1:
-            pushNextViewController(PremiumViewController())
+            presentViewController(PremiumViewController())
         case 2:
            break
         case 3:
-            pushNextViewController(AdvertisementViewController())
+            presentViewController(AdvertisementViewController())
         default:
             break
         }
@@ -113,9 +120,7 @@ extension MypageViewController: MyPageCollectionDelegate {
             pushNextViewController(StoreViewController(viewModel: StoreViewModel()))
         case 1:
             guard let url = URL(string: "https://www.16personalities.com/ko/%EB%AC%B4%EB%A3%8C-%EC%84%B1%EA%B2%A9-%EC%9C%A0%ED%98%95-%EA%B2%80%EC%82%AC") else {return}
-            let safariViewController = SFSafariViewController(url: url)
-            safariViewController.modalPresentationStyle = .automatic
-            present(safariViewController, animated: true)
+            presentViewController(SFSafariViewController(url: url))
         default:
             break
         }

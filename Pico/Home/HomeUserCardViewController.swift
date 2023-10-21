@@ -363,7 +363,6 @@ final class HomeUserCardViewController: UIViewController {
         guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
         let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
         FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
-        
 
         UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
@@ -393,14 +392,14 @@ final class HomeUserCardViewController: UIViewController {
             showCustomAlert(
                 alertType: .canCancel,
                 titleText: "이전 평가로 돌아가시겠습니까?",
-                messageText: "10 츄를 소모합니다",
+                messageText: "10 츄를 소모합니다. (현재 츄: \(UserDefaultsManager.shared.getChuCount()))",
                 cancelButtonText: "취소",
                 confirmButtonText: "확인",
                 comfrimAction: { [weak self] in
                     guard let self = self else { return }
                     let remainingChu = UserDefaultsManager.shared.getChuCount()
                     if remainingChu >= 10 {
-                        viewModel.purchaseChu(chu: 10)
+                        viewModel.purchaseChu(currentChu: remainingChu, purchaseChu: 10)
                         self.viewModel.deleteLikeData()
                         UIView.animate(withDuration: 0.3) {
                             lastView.center = self.view.center
@@ -408,7 +407,10 @@ final class HomeUserCardViewController: UIViewController {
                         }
                         self.homeViewController?.removedView.removeLast()
                     } else {
-                        showCustomAlert(alertType: .onlyConfirm, titleText: "츄가 부족합니다", messageText: "", confirmButtonText: "확인")
+                        showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                            let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                            self.navigationController?.pushViewController(storeViewController, animated: true)
+                        })
                     }
                 }
             )
