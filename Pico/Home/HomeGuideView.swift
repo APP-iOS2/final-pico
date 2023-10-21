@@ -72,7 +72,7 @@ final class HomeGuideView: UIView {
     
     private let guideGestureLabel: UILabel = {
         let label = UILabel()
-        label.text = "유저를 평가합니다."
+        label.text = "회원을 평가합니다."
         label.textColor = .white.withAlphaComponent(0.9)
         label.font = .picoSubTitleFont
         label.textAlignment = .center

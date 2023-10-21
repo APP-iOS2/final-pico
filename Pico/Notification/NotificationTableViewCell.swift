@@ -35,7 +35,7 @@ final class NotificationTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
+    private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: nil, scale: .small)
     
     private let contentLabel: UILabel = {
         let label = UILabel()
@@ -65,6 +65,7 @@ final class NotificationTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         profileImageView.image = UIImage(named: "AppIcon")
+        mbtiLabel.setMbti(mbti: nil)
         iconImageView.image = UIImage()
         nameLabel.text = ""
         contentLabel.text = ""
@@ -78,22 +79,21 @@ final class NotificationTableViewCell: UITableViewCell {
         iconImageView.tintColor = notitype.iconColor
         contentLabel.text = notitype.content
         nameLabel.text = "\(nickName), \(age)"
-        mbitLabel.setMbti(mbti: mbti)
+        mbtiLabel.setMbti(mbti: mbti)
         createDateLabel.isHidden = false
         createDateLabel.text = date.timeAgoSinceDate()
     }
     
     private func addViews() {
         contentView.addSubview([profileImageView, iconImageView, labelView])
-        labelView.addSubview([nameLabel, mbitLabel, contentLabel, createDateLabel])
+        labelView.addSubview([nameLabel, mbtiLabel, contentLabel, createDateLabel])
     }
     
     private func makeConstraints() {
         profileImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
+            make.centerY.equalToSuperview()
             make.leading.equalTo(10)
-            make.bottom.equalToSuperview().offset(-10)
-            make.width.equalTo(profileImageView.snp.height)
+            make.width.height.equalTo(60)
         }
         
         iconImageView.snp.makeConstraints { make in
@@ -112,11 +112,11 @@ final class NotificationTableViewCell: UITableViewCell {
             make.leading.equalToSuperview()
         }
         
-        mbitLabel.snp.makeConstraints { make in
+        mbtiLabel.snp.makeConstraints { make in
             make.leading.equalTo(nameLabel.snp.trailing).offset(10)
             make.centerY.equalTo(nameLabel)
-            make.height.equalTo(mbitLabel.frame.size.height)
-            make.width.equalTo(mbitLabel.frame.size.width)
+            make.height.equalTo(mbtiLabel.frame.size.height)
+            make.width.equalTo(mbtiLabel.frame.size.width)
         }
         
         contentLabel.snp.makeConstraints { make in

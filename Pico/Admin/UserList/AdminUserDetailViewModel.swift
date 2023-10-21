@@ -161,13 +161,13 @@ final class AdminUserDetailViewModel: ViewModelType {
                     
                     if let document {
                         if let datas = try? document.data(as: Report.self).recivedReport {
-                            let reports = datas.sorted { report1, report2 in
-                                return report1.createdDate > report2.createdDate
+                            let sorted = datas.sorted {
+                                return $0.createdDate > $1.createdDate
                             }
-                            if startReportIndex > reports.count - 1 {
+                            if startReportIndex > sorted.count - 1 {
                                 observer.onNext(())
                             } else {
-                                let currentPageDatas: [Report.ReportInfo] = Array(reports[startReportIndex..<min(endIndex, reports.count)])
+                                let currentPageDatas: [Report.ReportInfo] = Array(sorted[startReportIndex..<min(endIndex, sorted.count)])
                                 reportList.append(contentsOf: currentPageDatas)
                                 startReportIndex += currentPageDatas.count
                                 observer.onNext(())
@@ -205,13 +205,13 @@ final class AdminUserDetailViewModel: ViewModelType {
                     
                     if let document {
                         if let datas = try? document.data(as: Block.self).recivedBlock {
-                            let blocks = datas.sorted { block1, block2 in
-                                return block1.createdDate > block2.createdDate
+                            let sorted = datas.sorted {
+                                return $0.createdDate > $1.createdDate
                             }
-                            if startBlockIndex > blocks.count - 1 {
+                            if startBlockIndex > sorted.count - 1 {
                                 observer.onNext(())
                             } else {
-                                let currentPageDatas: [Block.BlockInfo] = Array(blocks[startBlockIndex..<min(endIndex, blocks.count)])
+                                let currentPageDatas: [Block.BlockInfo] = Array(sorted[startBlockIndex..<min(endIndex, sorted.count)])
                                 blockList.append(contentsOf: currentPageDatas)
                                 startBlockIndex += currentPageDatas.count
                                 observer.onNext(())
@@ -247,13 +247,13 @@ final class AdminUserDetailViewModel: ViewModelType {
                     
                     if let document {
                         if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType == .like }) {
-                            let likes = datas.sorted { like1, like2 in
-                                return like1.createdDate > like2.createdDate
+                            let sorted = datas.sorted {
+                                return $0.createdDate > $1.createdDate
                             }
-                            if startLikeIndex > likes.count - 1 {
+                            if startLikeIndex > sorted.count - 1 {
                                 emitter.onNext(())
                             } else {
-                                let currentPageDatas: [Like.LikeInfo] = Array(likes[startLikeIndex..<min(endIndex, likes.count)])
+                                let currentPageDatas: [Like.LikeInfo] = Array(sorted[startLikeIndex..<min(endIndex, sorted.count)])
                                 likeList.append(contentsOf: currentPageDatas)
                                 startLikeIndex += currentPageDatas.count
                                 emitter.onNext(())
@@ -289,13 +289,13 @@ final class AdminUserDetailViewModel: ViewModelType {
                     
                     if let document {
                         if let datas = try? document.data(as: Payment.self).paymentInfos {
-                            let payments = datas.sorted { payment1, payment2 in
-                                return payment1.purchasedDate > payment2.purchasedDate
+                            let sorted = datas.sorted {
+                                return $0.purchasedDate > $1.purchasedDate
                             }
-                            if startPaymentIndex > payments.count - 1 {
+                            if startPaymentIndex > sorted.count - 1 {
                                 emitter.onNext(())
                             } else {
-                                let currentPageDatas: [Payment.PaymentInfo] = Array(payments[startPaymentIndex..<min(endIndex, payments.count)])
+                                let currentPageDatas: [Payment.PaymentInfo] = Array(sorted[startPaymentIndex..<min(endIndex, sorted.count)])
                                 paymentList.append(contentsOf: currentPageDatas)
                                 startPaymentIndex += currentPageDatas.count
                                 emitter.onNext(())

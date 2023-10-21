@@ -164,19 +164,10 @@ final class AdminUserDetailViewController: UIViewController {
     }
     
     @objc private func tappedUnsubscribeButton(_ sender: UIButton) {
-        let actionSheetController = UIAlertController()
-        let actionUnsubscribe = UIAlertAction(title: "탈퇴", style: .destructive) { [weak self] _ in
+        showCustomAlert(alertType: .canCancel, titleText: "탈퇴 알림", messageText: "탈퇴시키시겠습니까 ?", confirmButtonText: "탈퇴", comfrimAction: { [weak self] in
             guard let self else { return }
-            showCustomAlert(alertType: .canCancel, titleText: "탈퇴", messageText: "탈퇴하시겠습니까 ?", confirmButtonText: "탈퇴", comfrimAction: { [weak self] in
-                guard let self else { return }
-                unsubscribePublish.onNext(())
-            })
-        }
-        let actionCancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        [actionUnsubscribe, actionCancel].forEach {
-            actionSheetController.addAction($0)
-        }
-        self.present(actionSheetController, animated: true)
+            unsubscribePublish.onNext(())
+        })
     }
 }
 

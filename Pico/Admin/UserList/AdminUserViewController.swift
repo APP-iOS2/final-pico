@@ -22,7 +22,7 @@ final class AdminUserViewController: UIViewController {
     }()
 
     private func createMenu() -> UIMenu {
-        let usingMenu = UIAction(title: "사용중인 유저", image: UIImage(), handler: { [weak self] _ in
+        let usingMenu = UIAction(title: "사용중인 회원", image: UIImage(), handler: { [weak self] _ in
             guard let self = self else { return }
             userListTypeBehavior.onNext(.using)
         })

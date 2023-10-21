@@ -82,7 +82,7 @@ final class MailReceiveViewController: UIViewController {
         return label
     }()
     
-    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj, scale: .small)
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: nil, scale: .small)
     
     private let sendDateLabel: UILabel = {
         let label = UILabel()
@@ -188,30 +188,47 @@ final class MailReceiveViewController: UIViewController {
         mailUser = mailSender
         navItem.title = mailSender.mailType.typeString
         
+        var userId: String
         if mailSender.mailType == .receive {
-            viewModel.getUser(userId: mailSender.sendedUserId) {
-                if let user = self.viewModel.user {
-                    self.configViews(user: user)
-                }
-            }
+            userId = mailSender.sendedUserId
         } else {
-            viewModel.getUser(userId: mailSender.receivedUserId) {
-                if let user = self.viewModel.user {
-                    self.configViews(user: user)
+            userId = mailSender.receivedUserId
+        }
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
+                    guard let url = URL(string: imageURL) else { return }
+                    userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+                    userImageView.kf.setImage(with: url)
+                    
+                    userNameLabel.text = userData.nickName
+                    mbtiLabelView.isHidden = false
+                    mbtiLabelView.setMbti(mbti: userData.mbti)
+                    if #available(iOS 16.0, *) {
+                        rightBarButton.isHidden = false
+                    }
+                } else {
+                    userImageView.image = UIImage(named: "AppIcon_gray")
+                    
+                    userNameLabel.text = "탈퇴된 회원"
+                    mbtiLabelView.isHidden = true
+                    mbtiLabelView.setMbti(mbti: nil)
+                    
+                    if #available(iOS 16.0, *) {
+                        rightBarButton.isHidden = true
+                    }
                 }
+            case .failure(let err):
+                print(err)
             }
         }
+        userNameLabel.sizeToFit()
         self.sendDateLabel.text = mailSender.sendedDate.toStringTime()
         self.messageView.text = mailSender.message
-    }
-    
-    private func configViews(user: User) {
-        guard let url = URL(string: user.imageURLs[0]) else { return }
-        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-        userImageView.kf.setImage(with: url)
-        userNameLabel.text = user.nickName
-        userNameLabel.sizeToFit()
-        mbtiLabelView.setMbti(mbti: user.mbti)
     }
     
     private func configNavigationBarItem() {
@@ -246,9 +263,6 @@ final class MailReceiveViewController: UIViewController {
                     self.mailReceiveDelegate?.pushUserDetailViewController(user: user)
                 }
             }
-            
         }
-        
     }
-    
 }

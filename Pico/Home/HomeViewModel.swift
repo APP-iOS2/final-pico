@@ -70,7 +70,7 @@ final class HomeViewModel {
                 if let error = error {
                     print(error)
                 } else {
-                    var user = User.userData
+                    var user: User
                     var users = [User]()
                     for document in querySnapshot!.documents {
                         if let userdata = try? document.data(as: User.self) {

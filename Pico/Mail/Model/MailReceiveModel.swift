@@ -104,10 +104,13 @@ final class MailReceiveModel {
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Mail.self)
                         .receiveMailInfo?.filter({ $0.mailType == .receive }) {
-                        if startIndex > datas.count - 1 {
+                        let sorted = datas.sorted {
+                            return $0.sendedDate > $1.sendedDate
+                        }
+                        if startIndex > sorted.count - 1 {
                             return
                         }
-                        let currentPageDatas: [Mail.MailInfo] = Array(datas[startIndex..<min(itemsPerPage, datas.count)])
+                        let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(itemsPerPage, sorted.count)])
                         receiveList.append(contentsOf: currentPageDatas)
                         startIndex += currentPageDatas.count
                     } else {

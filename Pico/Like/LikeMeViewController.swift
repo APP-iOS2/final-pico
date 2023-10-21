@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 import RxSwift
 import RxCocoa
 
@@ -45,6 +46,8 @@ final class LikeMeViewController: UIViewController {
         collectionView.register(CollectionViewFooterLoadingCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 20, right: 0)
     }
     
     private func configRefresh() {
@@ -182,8 +185,9 @@ extension LikeMeViewController {
                 } else {
                     viewController.view.addSubview(viewController.collectionView)
                     viewController.collectionView.snp.makeConstraints { make in
-                        make.top.leading.equalToSuperview().offset(10)
-                        make.trailing.bottom.equalToSuperview().offset(-10)
+                        make.top.bottom.equalToSuperview()
+                        make.leading.equalToSuperview().offset(10)
+                        make.trailing.equalToSuperview().offset(-10)
                     }
                 }
             })
