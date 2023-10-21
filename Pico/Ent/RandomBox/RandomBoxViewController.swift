@@ -230,11 +230,6 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func tappedNormalBox(count: Int) {
-//        guard UserDefaultsManager.shared.getChuCount() >= 10 else {
-//            enoughChuAlert()
-//            return
-//        }
-        
         var boxHistory: [Int] = []
         
         self.normalBoxButton.isEnabled = false
@@ -262,11 +257,6 @@ final class RandomBoxViewController: UIViewController {
     }
 
     private func tappedAdvancedBox(count: Int) {
-//        guard UserDefaultsManager.shared.getChuCount() >= 30 else {
-//            enoughChuAlert()
-//            return
-//        }
-        
         var boxHistory: [Int] = []
         
         self.normalBoxButton.isEnabled = false
@@ -303,17 +293,6 @@ final class RandomBoxViewController: UIViewController {
             }
         })
     }
-    
-//    private func enoughChuAlert() {
-//        let alert = UIAlertController(title: "츄 부족", message: "츄가 부족합니다. 더 구매하시겠습니까?", preferredStyle: .alert)
-//        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
-//        alert.addAction(UIAlertAction(title: "구매하기", style: .default) { _ in
-//            let storeViewController = StoreViewController(viewModel: StoreViewModel())
-//            self.navigationController?.pushViewController(storeViewController, animated: true)
-//        })
-//        
-//        present(alert, animated: true, completion: nil)
-//    }
     
     private func configureEmitter() {
         let cell = CAEmitterCell()
