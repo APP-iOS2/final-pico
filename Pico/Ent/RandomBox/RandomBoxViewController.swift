@@ -80,14 +80,23 @@ final class RandomBoxViewController: UIViewController {
     
     private let normalBoxButton: CommonButton = {
         let button = CommonButton()
-        button.setTitle("일반 뽑기", for: .normal)
+        button.setTitle("일반 상자 뽑기", for: .normal)
         return button
     }()
     
     private let advancedBoxButton: CommonButton = {
         let button = CommonButton()
-        button.setTitle("고급 뽑기", for: .normal)
+        button.setTitle("고급 상자 뽑기", for: .normal)
         return button
+    }()
+    
+    private let numberLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.picoLargeTitleFont
+        label.textColor = .picoBlue
+        label.text = "구매 수량"
+        return label
     }()
     
     private let countLabel: UILabel = {
@@ -125,7 +134,7 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func addViews() {
-        [backgroundImageView, goToStoreButton, normalInfoButton, advancedInfoButton, randomBoxTitleLabel, contentLabel, randomBoxImage, normalBoxButton, advancedBoxButton, countLabel, plusButton, minusButton, guidLabel].forEach { item in
+        [backgroundImageView, goToStoreButton, normalInfoButton, advancedInfoButton, randomBoxTitleLabel, contentLabel, guidLabel, randomBoxImage, normalBoxButton, advancedBoxButton, numberLabel, countLabel, plusButton, minusButton].forEach { item in
             view.addSubview(item)
         }
     }
@@ -194,20 +203,25 @@ final class RandomBoxViewController: UIViewController {
             make.height.equalTo(padding * 2)
         }
         
-        countLabel.snp.makeConstraints { make in
+        numberLabel.snp.makeConstraints { make in
             make.top.equalTo(advancedBoxButton.snp.bottom).offset(padding)
+            make.centerX.equalToSuperview()
+        }
+        
+        countLabel.snp.makeConstraints { make in
+            make.top.equalTo(numberLabel.snp.bottom)
             make.centerX.equalToSuperview()
             make.width.equalTo(40)
         }
         
         plusButton.snp.makeConstraints { make in
-            make.top.equalTo(advancedBoxButton.snp.bottom).offset(padding)
+            make.top.equalTo(numberLabel.snp.bottom)
             make.leading.equalTo(countLabel.snp.trailing)
             make.width.height.equalTo(30)
         }
         
         minusButton.snp.makeConstraints { make in
-            make.top.equalTo(advancedBoxButton.snp.bottom).offset(padding)
+            make.top.equalTo(numberLabel.snp.bottom)
             make.trailing.equalTo(countLabel.snp.leading)
             make.width.height.equalTo(30)
         }
@@ -344,7 +358,7 @@ extension RandomBoxViewController {
                         self.navigationController?.pushViewController(storeViewController, animated: true)
                     })
                 } else {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "일반 박스", messageText: "ㅎ일반 박스 \(self.countLabel.text ?? "0")개 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
+                    self.showCustomAlert(alertType: .canCancel, titleText: "일반 박스", messageText: "일반 박스 \(self.countLabel.text ?? "0")개 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
                         self.tappedNormalBox(count: Int(self.countLabel.text ?? "0") ?? 0)
                     })
                 }

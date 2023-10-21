@@ -31,6 +31,7 @@
 		4B1E6ED42AE290AF00F93621 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B1E6ED32AE290AF00F93621 /* YOLOv3.mlmodel */; };
 		4B1E6ED62AE290AF00F93621 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B1E6ED52AE290AF00F93621 /* GoogleService-Info.plist */; };
 		4B1E6ED82AE290B400F93621 /* APIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B1E6ED72AE290B400F93621 /* APIKeys.plist */; };
+		4B1E6EDA2AE3C6A700F93621 /* YOLOv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B1E6ED92AE3C6A700F93621 /* YOLOv3.mlmodel */; };
 		4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */; };
 		4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */; };
 		4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */; };
@@ -255,6 +256,7 @@
 		4B1E6ED32AE290AF00F93621 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
 		4B1E6ED52AE290AF00F93621 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4B1E6ED72AE290B400F93621 /* APIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = APIKeys.plist; sourceTree = "<group>"; };
+		4B1E6ED92AE3C6A700F93621 /* YOLOv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3.mlmodel; sourceTree = "<group>"; };
 		4B2665342AC3E2FB0074D4E2 /* WorldCupGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupGameViewController.swift; sourceTree = "<group>"; };
 		4B2665362AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupCollectionViewCell.swift; sourceTree = "<group>"; };
 		4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupUserInfoStackView.swift; sourceTree = "<group>"; };
@@ -861,6 +863,7 @@
 			isa = PBXGroup;
 			children = (
 				4B1E6ED32AE290AF00F93621 /* YOLOv3.mlmodel */,
+				4B1E6ED92AE3C6A700F93621 /* YOLOv3.mlmodel */,
 				4B1E6ED72AE290B400F93621 /* APIKeys.plist */,
 				B15F16022ADCFA5C002952B4 /* Info.plist */,
 				4B1E6ED52AE290AF00F93621 /* GoogleService-Info.plist */,
@@ -1559,6 +1562,7 @@
 				6AC31B2B2AD67BEC00F111B2 /* ProfileEditViewModel.swift in Sources */,
 				4B1E6ED42AE290AF00F93621 /* YOLOv3.mlmodel in Sources */,
 				B1E30BF02AD5F1AC00F95C66 /* CurrentUser.swift in Sources */,
+				4B1E6EDA2AE3C6A700F93621 /* YOLOv3.mlmodel in Sources */,
 				5375E74E2ACD4755001A571D /* LikeMeViewModel.swift in Sources */,
 				B1E30BED2AD5EE8400F95C66 /* HomeUserCardViewController.swift in Sources */,
 				36A39B502AC27A4F004A279C /* MbtiModalViewController.swift in Sources */,
