@@ -21,7 +21,7 @@ final class SettingViewController: UIViewController {
         case businessInformation
         case louout
         case accountManagement
-            
+        
         var name: String {
             switch self {
             case .allowNotifications:
@@ -120,6 +120,13 @@ final class SettingViewController: UIViewController {
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .automatic
         present(safariViewController, animated: true)
+        
+    }
+    
+    private func presentView(viewController: UIViewController) {
+        let viewController = viewController
+        viewController.modalPresentationStyle = .automatic
+        present(viewController, animated: true)
     }
     
     private func pushNextViewController(viewController: UIViewController) {
@@ -249,14 +256,10 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
         switch indexPath.section {
         case 1:
             switch indexPath.row {
-            case 0:
-                presentSafariView(urlString: Settings.termsOfService.urlString)
-            case 1:
-                presentSafariView(urlString: Settings.privacyPolicy.urlString)
-            case 2:
-                presentSafariView(urlString: Settings.termsOfLocation.urlString)
+            case 0...2:
+                presentView(viewController: TermsOfServiceModalViewController(tag: indexPath.row))
             case 3:
-                pushNextViewController(viewController: SettingLicenseViewController())
+                presentView(viewController: SettingLicenseViewController())
             case 4:
                 presentSafariView(urlString: Settings.businessInformation.urlString)
             default: break
@@ -267,7 +270,7 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
                 logout()
             case 1:
                 pushNextViewController(viewController: SettingSecessionViewController())
-               
+                
             default:
                 break
             }
