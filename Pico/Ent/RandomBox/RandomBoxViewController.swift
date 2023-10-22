@@ -44,32 +44,13 @@ final class RandomBoxViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontGray
-        label.text = "일반 뽑기는 10츄\n고급 뽑기는 30츄가 소모됩니다"
-        label.numberOfLines = 0
+        label.text = "일반 뽑기는 10츄, 고급 뽑기는 30츄가 소모됩니다"
         label.setLineSpacing(spacing: 5)
         label.textAlignment = .center
         return label
     }()
     
     private let randomBoxImage: LottieAnimationView = LottieAnimationView(name: "randomBox")
-    
-//    private let randomBoxImage: UIImageView = {
-//        let imageView = UIImageView()
-//        imageView.image = UIImage(named: "chu")
-//        imageView.contentMode = .scaleAspectFit
-//        imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-//        imageView.setContentHuggingPriority(.defaultLow, for: .vertical)
-//        return imageView
-//    }()
-    
-    private let numberLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.picoLargeTitleFont
-        label.textColor = .picoBlue
-        label.text = "구매 수량"
-        return label
-    }()
     
     private let countLabel: UILabel = {
         let label = UILabel()
@@ -95,6 +76,8 @@ final class RandomBoxViewController: UIViewController {
         button.titleLabel?.font = UIFont.picoLargeTitleFont
         return button
     }()
+    
+    private let buttonView = UIView()
     
     private let normalBoxButton: CommonButton = {
         let button = CommonButton()
@@ -129,7 +112,8 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func addViews() {
-        view.addSubview([backgroundImageView, titleLabel, contentLabel, guidLabel, randomBoxImage, numberLabel, countLabel, plusButton, minusButton, normalBoxButton, advancedBoxButton, infoButton])
+        view.addSubview([backgroundImageView, titleLabel, contentLabel, guidLabel, randomBoxImage, countLabel, plusButton, minusButton, buttonView, infoButton])
+        buttonView.addSubview([normalBoxButton, advancedBoxButton])
     }
     
     private func makeConstraints() {
@@ -140,65 +124,74 @@ final class RandomBoxViewController: UIViewController {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.centerX.equalToSuperview()
+            make.height.equalTo(titleLabel.font.pointSize)
         }
         
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(padding)
             make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(padding)
+            make.height.equalTo(contentLabel.font.pointSize * 5)
         }
         
         guidLabel.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(padding)
+            make.top.equalTo(contentLabel.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(padding)
+            make.height.equalTo(guidLabel.font.pointSize)
         }
         
         randomBoxImage.snp.makeConstraints { make in
-            make.center.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(guidLabel.snp.bottom)
+            make.centerX.equalTo(view.safeAreaLayoutGuide)
+            make.leading.equalToSuperview().offset(padding)
+            make.height.greaterThanOrEqualTo(Screen.height * 0.3).priority(.required)
         }
-        
-        numberLabel.snp.makeConstraints { make in
-            make.top.equalTo(randomBoxImage.snp.bottom)
-            make.centerX.equalToSuperview()
-        }
-        
+
         countLabel.snp.makeConstraints { make in
-            make.top.equalTo(numberLabel.snp.bottom)
+            make.top.equalTo(randomBoxImage.snp.bottom)
             make.centerX.equalToSuperview()
             make.width.equalTo(40)
         }
         
         plusButton.snp.makeConstraints { make in
-            make.top.equalTo(numberLabel.snp.bottom)
+            make.top.equalTo(countLabel)
             make.leading.equalTo(countLabel.snp.trailing)
+            make.bottom.equalTo(countLabel)
             make.width.height.equalTo(30)
         }
         
         minusButton.snp.makeConstraints { make in
-            make.top.equalTo(numberLabel.snp.bottom)
+            make.top.equalTo(countLabel)
             make.trailing.equalTo(countLabel.snp.leading)
+            make.bottom.equalTo(countLabel)
             make.width.height.equalTo(30)
         }
         
-        normalBoxButton.snp.makeConstraints { make in
+        buttonView.snp.makeConstraints { make in
             make.top.equalTo(countLabel.snp.bottom).offset(padding)
-            make.leading.equalTo(view.safeAreaLayoutGuide).offset(padding)
-            make.trailing.equalTo(advancedBoxButton.snp.leading).offset(-padding)
-            make.width.equalTo(120)
+            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(padding * 2)
             make.height.equalTo(padding * 2)
+        }
+        
+        normalBoxButton.snp.makeConstraints { make in
+            make.top.leading.bottom.equalToSuperview()
+            make.trailing.equalTo(advancedBoxButton.snp.leading).offset(-padding)
         }
         
         advancedBoxButton.snp.makeConstraints { make in
-            make.top.equalTo(countLabel.snp.bottom).offset(padding)
-            make.leading.equalTo(normalBoxButton.snp.trailing).offset(padding)
-            make.width.equalTo(120)
-            make.height.equalTo(padding * 2)
+            make.top.trailing.bottom.equalToSuperview()
+            make.width.equalTo(normalBoxButton.snp.width)
         }
         
         infoButton.snp.makeConstraints { make in
-            make.top.equalTo(normalBoxButton.snp.bottom)
+            make.top.equalTo(buttonView.snp.bottom).offset(10)
             make.centerX.equalTo(countLabel.snp.centerX)
+            make.bottom.equalToSuperview().offset(-padding * 2)
+            make.height.equalTo(infoButton.titleLabel?.font.pointSize ?? 20)
         }
     }
     
