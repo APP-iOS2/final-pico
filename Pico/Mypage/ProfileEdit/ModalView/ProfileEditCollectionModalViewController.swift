@@ -141,12 +141,14 @@ final class ProfileEditCollectionModalViewController: UIViewController {
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(30)
             make.height.equalTo(300)
+            //!!!: 높이바꾸기
         }
         
         completeButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(30)
+//            make.top.equalTo(collectionView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
-            make.bottom.equalToSuperview().offset(-30)
+            make.bottom.equalToSuperview().offset(-44)
         }
     }
     

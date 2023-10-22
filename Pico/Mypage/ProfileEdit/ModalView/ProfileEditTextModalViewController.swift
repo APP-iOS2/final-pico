@@ -140,20 +140,20 @@ final class ProfileEditTextModalViewController: UIViewController {
         
         textField.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(15)
+            make.leading.equalToSuperview().offset(20)
             make.height.equalTo(40)
         }
         
         cancelButton.snp.makeConstraints { make in
             make.centerY.equalTo(textField.snp.centerY)
             make.leading.equalTo(textField.snp.trailing)
-            make.trailing.equalToSuperview().offset(-15)
+            make.trailing.equalToSuperview().offset(-20)
             make.width.equalTo(40)
         }
         
         completeButton.snp.makeConstraints { make in
             make.top.equalTo(textField.snp.bottom).offset(30)
-            make.leading.trailing.equalToSuperview().inset(15)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }
     }

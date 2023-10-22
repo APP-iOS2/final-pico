@@ -198,7 +198,7 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         
         textField.snp.makeConstraints { make in
             make.top.equalTo(collectionView.snp.bottom).offset(10)
-            make.leading.equalToSuperview().offset(15)
+            make.leading.equalToSuperview().offset(20)
             make.height.equalTo(40)
         }
         
@@ -211,14 +211,14 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         
         registerButton.snp.makeConstraints { make in
             make.centerY.equalTo(textField.snp.centerY)
-            make.trailing.equalToSuperview().offset(-15)
+            make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(35)
             make.width.equalTo(55)
         }
         
         completeButton.snp.makeConstraints { make in
-            make.top.equalTo(textField.snp.bottom).offset(25)
-            make.leading.trailing.equalToSuperview().inset(30)
+            make.top.equalTo(textField.snp.bottom).offset(30)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }
     }
