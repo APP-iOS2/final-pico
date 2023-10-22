@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 struct UserImageViewControllConstraint {
-    static let height: CGFloat = Screen.height * 0.6
+    static let height: CGFloat = UIScreen.main.bounds.height * 0.6
 }
 
 final class UserImageViewController: UIViewController {

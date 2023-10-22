@@ -135,7 +135,11 @@ final class CustomPopupViewController: UIViewController {
         alertView.snp.makeConstraints { make in
             make.centerX.centerY.equalTo(safeArea)
             make.height.lessThanOrEqualTo(safeArea).multipliedBy(0.4)
-            make.width.equalTo(safeArea.snp.height).multipliedBy(0.5)
+            if UIDevice.current.model.contains("iPhone") {
+                make.width.equalTo(safeArea).multipliedBy(0.7)
+            } else if UIDevice.current.model.contains("iPad") {
+                make.width.equalTo(300)
+            }
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -157,7 +161,7 @@ final class CustomPopupViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.leading.trailing.equalTo(titleLabel)
             make.bottom.equalToSuperview().offset(-20)
-            make.height.equalTo(70)
+            make.height.equalTo(80)
         }
         switch alertType {
         case .onlyConfirm:
@@ -174,11 +178,11 @@ final class CustomPopupViewController: UIViewController {
         case .canCancel:
             confirmButton.snp.makeConstraints { make in
                 make.top.leading.trailing.equalToSuperview()
-                make.height.equalTo(30)
+                make.height.equalTo(35)
             }
             cancelButton.snp.makeConstraints { make in
                 make.leading.trailing.bottom.equalToSuperview()
-                make.height.equalTo(30)
+                make.height.equalTo(35)
             }
         }
     }
