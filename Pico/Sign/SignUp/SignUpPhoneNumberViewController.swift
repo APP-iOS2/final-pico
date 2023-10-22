@@ -227,44 +227,42 @@ extension SignUpPhoneNumberViewController {
     @objc private func tappedAuthButton(_ sender: UIButton) {
         sender.tappedAnimation()
         
-        guard cooldownTimer == nil else {
-            return
-        }
-        
+        guard cooldownTimer == nil else { return }
         isTappedCheckButton = true
         
         guard let phoneNumber = self.phoneNumberTextField.text else { return }
         checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlocked in
             guard let self = self else { return }
             
-            if isBlocked {
+            guard !isBlocked else {
                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴된 번호로는 가입이 불가능합니다..", confirmButtonText: "확인", comfrimAction: configReset)
-            } else {
-                checkService.checkPhoneNumber(userNumber: phoneNumber) { [weak self] message, isRight in
+                return
+            }
+            
+            checkService.checkPhoneNumber(userNumber: phoneNumber) { [weak self] message, isRight in
+                guard let self = self else { return }
+                
+                guard isRight else {
+                    SignLoadingManager.hideLoading()
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
+                        guard let self = self else { return }
+                        viewModel.isRightPhoneNumber = isRight
+                        configReset()
+                    })
+                    return
+                }
+                SignLoadingManager.hideLoading()
+                
+                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                     guard let self = self else { return }
                     
-                    guard isRight else {
-                        SignLoadingManager.hideLoading()
-                        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
-                            guard let self = self else { return }
-                            viewModel.isRightPhoneNumber = isRight
-                            configReset()
-                        })
-                        return
-                    }
-                    SignLoadingManager.hideLoading()
+                    cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
+                    RunLoop.main.add(cooldownTimer!, forMode: .common)
                     
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                        guard let self = self else { return }
-                        
-                        cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
-                        RunLoop.main.add(cooldownTimer!, forMode: .common)
-                        
-                        updateViewState(num: phoneNumber)
-                        viewModel.isRightPhoneNumber = isRight
-                        smsAuthManager.sendVerificationCode(number: phoneNumber)
-                    })
-                }
+                    updateViewState(num: phoneNumber)
+                    viewModel.isRightPhoneNumber = isRight
+                    smsAuthManager.sendVerificationCode(number: phoneNumber)
+                })
             }
         }
     }

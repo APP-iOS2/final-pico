@@ -64,7 +64,6 @@ final class SignViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configRx()
-        pictureManager.requestPhotoLibraryAccess(in: self)
         locationManager.configLocation()
     }
 }
