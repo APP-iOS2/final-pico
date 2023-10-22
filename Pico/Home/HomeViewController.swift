@@ -37,6 +37,10 @@ final class HomeViewController: BaseViewController {
         loadCards()
     }
     
+    override func viewIsAppearing(_ animated: Bool) {
+//        emptyView.animate()
+    }
+    
     private func bind() {
         viewModel.users
             .bind(to: users)
@@ -136,6 +140,7 @@ final class HomeViewController: BaseViewController {
         emptyView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+//        emptyView.animate()
     }
     
     func addUserCards() {

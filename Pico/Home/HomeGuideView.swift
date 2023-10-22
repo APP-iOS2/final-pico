@@ -11,102 +11,80 @@ import SnapKit
 final class HomeGuideView: UIView {
     private let backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .black.withAlphaComponent(0.9)
+        view.backgroundColor = .white
         return view
-    }()
-    
-    private let pickBackButton: UIButton = {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
-        let image = UIImage(systemName: "arrow.uturn.backward", withConfiguration: imageConfig)
-        let button = UIButton()
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = .lightGray.withAlphaComponent(0.5)
-        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
-        button.layer.opacity = 0.9
-        return button
     }()
     
     private let guideTabImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "guideTab")
-        view.contentMode = .scaleAspectFill
-        view.layer.opacity = 0.9
+        if let image = UIImage(named: "guideTab") {
+            view.image = image
+            view.contentMode = .scaleAspectFit
+            view.layer.opacity = 0.9
+            view.frame.size = image.size // 이미지 크기에 맞게 프레임 설정
+        }
         return view
     }()
     
     private let guideGestureImageView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(named: "guideGesture")
-        view.contentMode = .scaleAspectFill
+        view.contentMode = .scaleAspectFit
         view.layer.opacity = 0.9
-        return view
-    }()
-    
-    private let backInfoIcon: UIImageView = {
-        let view = UIImageView()
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
-        view.image = UIImage(systemName: "arrow.turn.left.down", withConfiguration: imageConfig)
-        view.tintColor = .picoAlphaWhite
         return view
     }()
     
     private let guideTitle: UILabel = {
         let label = UILabel()
         label.text = "PICO Home Guide"
-        label.textColor = .white.withAlphaComponent(0.9)
+        label.textColor = .picoBlue
         label.font = .picoTitleFont
         label.textAlignment = .center
         return label
     }()
     
-    private let guideTabLabel: UILabel = {
+    private let guideSubLabel: UILabel = {
         let label = UILabel()
-        label.text = "이미지를 넘깁니다."
-        label.textColor = .white.withAlphaComponent(0.9)
-        label.font = .picoSubTitleFont
+        let text = """
+                    사진을 탭하여 친구의 사진을 확인 할 수 있습니다.
+                    스크롤 제스쳐를 통해 빠르게 친구를 찾아보세요.
+                    뒤로가기 버튼으로 지나친 친구를 다시 불러옵니다.
+                    """
+        let attributedText = NSMutableAttributedString(string: text)
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 8
+        attributedText.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedText.length))
+        
+        label.attributedText = attributedText
+        label.textColor = .gray
+        label.numberOfLines = 0 // 여러 줄 허용
         label.textAlignment = .center
-        return label
-    }()
-    
-    private let guideGestureLabel: UILabel = {
-        let label = UILabel()
-        label.text = "유저를 평가합니다."
-        label.textColor = .white.withAlphaComponent(0.9)
-        label.font = .picoSubTitleFont
-        label.textAlignment = .center
-        return label
-    }()
-    
-    private let backInfoLabel: UILabel = {
-        let label = UILabel()
-        label.text = "이전 평가로 돌아갑니다."
-        label.textColor = .white.withAlphaComponent(0.9)
-        label.font = .picoSubTitleFont
-        label.textAlignment = .center
+        label.font = .picoContentFont
         return label
     }()
     
     private let closeButton: UIButton = {
         let button = UIButton()
         button.setTitle("닫기", for: .normal)
-        button.titleLabel?.font = .picoSubTitleFont
-        button.tintColor = .picoAlphaWhite
+        button.titleLabel?.font = .picoButtonFont
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .gray
         button.layer.cornerRadius = 20
         return button
     }()
     private let closeAgainButton: UIButton = {
         let button = UIButton()
         button.setTitle("다시보지 않기", for: .normal)
-        button.titleLabel?.font = .picoSubTitleFont
-        button.tintColor = .picoAlphaWhite
+        button.titleLabel?.font = .picoButtonFont
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .picoBlue
         button.layer.cornerRadius = 20
         return button
     }()
     
-    init() {
-        super.init(frame: .zero)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
         addSubview()
         makeConstraints()
@@ -120,85 +98,55 @@ final class HomeGuideView: UIView {
     
     private func addSubview() {
         addSubview(backgroundView)
-        backgroundView.addSubview([guideTitle, guideTabImageView, guideGestureImageView, guideTabLabel, guideGestureLabel, backInfoIcon, backInfoLabel, pickBackButton, closeButton, closeAgainButton])
+        backgroundView.addSubview([guideTitle, guideTabImageView, guideGestureImageView, guideSubLabel, closeButton, closeAgainButton])
     }
     
     private func makeConstraints() {
+        let horizontalSpacing = 20
+        let verticalSpacing = 80
         backgroundView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
+        guideTabImageView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(verticalSpacing)
+            make.leading.equalToSuperview().offset(horizontalSpacing)
+            make.trailing.equalTo(safeAreaLayoutGuide.snp.centerX).offset(-horizontalSpacing / 2)
+            make.bottom.equalTo(safeAreaLayoutGuide.snp.centerY).offset(verticalSpacing / 2)
+        }
+        
+        guideGestureImageView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(verticalSpacing)
+            make.leading.equalTo(safeAreaLayoutGuide.snp.centerX).offset(horizontalSpacing / 2)
+            make.trailing.equalToSuperview().offset(-horizontalSpacing)
+            make.bottom.equalTo(safeAreaLayoutGuide.snp.centerY).offset(verticalSpacing / 2)
+        }
+        
         guideTitle.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(15)
+            make.top.equalTo(guideTabImageView.snp.bottom).offset(40)
             make.centerX.equalToSuperview()
             make.width.equalTo(200)
             make.height.equalTo(50)
         }
         
-        guideTabImageView.snp.makeConstraints { make in
-            if UIDevice.current.model.contains("iPhone") {
-                make.centerY.equalTo(Screen.height * 0.35)
-            } else if UIDevice.current.model.contains("iPad") {
-                make.centerY.equalTo(Screen.height * 0.4)
-            }
-            make.centerX.equalTo(Screen.width * 0.25)
-            make.size.equalTo(Screen.width * 0.35)
-        }
-        
-        guideGestureImageView.snp.makeConstraints { make in
-            if UIDevice.current.model.contains("iPhone") {
-                make.centerY.equalTo(Screen.height * 0.35)
-            } else if UIDevice.current.model.contains("iPad") {
-                make.centerY.equalTo(Screen.height * 0.4)
-            }
-            make.centerX.equalTo(Screen.width * 0.75)
-            make.size.equalTo(Screen.width * 0.35)
-        }
-        
-        guideTabLabel.snp.makeConstraints { make in
-            make.top.equalTo(guideTabImageView.snp.bottom).offset(100)
-            make.centerX.equalTo(guideTabImageView)
-            make.width.equalTo(200)
-            make.height.equalTo(50)
-        }
-        
-        guideGestureLabel.snp.makeConstraints { make in
-            make.top.equalTo(guideTabImageView.snp.bottom).offset(100)
-            make.centerX.equalTo(guideGestureImageView)
-            make.width.equalTo(200)
-            make.height.equalTo(50)
-        }
-        
-        backInfoIcon.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(40)
-            make.centerY.equalTo(Screen.height * 0.75)
-        }
-        
-        backInfoLabel.snp.makeConstraints { make in
-            make.top.equalTo(backInfoIcon.snp.top).offset(-15)
-            make.leading.equalTo(backInfoIcon.snp.trailing).offset(-5)
-            make.width.equalTo(200)
-            make.height.equalTo(50)
-        }
-        
-        pickBackButton.snp.makeConstraints { make in
-            make.top.equalTo(backInfoIcon.snp.bottom).offset(10)
-            make.centerX.equalTo(backInfoIcon)
-            make.width.equalTo(65)
-            make.height.equalTo(65)
-        }
-        
-        closeButton.snp.makeConstraints { make in
-            make.leading.equalTo(safeAreaLayoutGuide.snp.centerX).offset(10)
-            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-10)
-            make.width.equalTo(120)
-            make.height.equalTo(40)
+        guideSubLabel.snp.makeConstraints { make in
+            make.top.equalTo(guideTitle.snp.bottom)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(100)
         }
         
         closeAgainButton.snp.makeConstraints { make in
-            make.trailing.equalTo(safeAreaLayoutGuide.snp.centerX).offset(-10)
-            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-10)
-            make.width.equalTo(120)
+            make.centerX.equalTo(Screen.width * 0.3)
+            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-30)
+            make.width.equalTo(140)
+            make.height.equalTo(40)
+        }
+        
+        closeButton.snp.makeConstraints { make in
+            make.centerX.equalTo(Screen.width * 0.7)
+            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-30)
+            make.width.equalTo(140)
             make.height.equalTo(40)
         }
     }

@@ -63,23 +63,27 @@ final class HomeViewModel {
         DispatchQueue.global().async {
             let dbRef = Firestore.firestore()
             let query = dbRef.collection("users")
-                .whereField("id", isNotEqualTo: self.loginUser.userId)
                 .whereField("gender", in: gender.map { $0.rawValue })
+                .order(by: "createdDate", descending: true)
             
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print(error)
                 } else {
-                    var user = User.userData
                     var users = [User]()
                     for document in querySnapshot!.documents {
                         if let userdata = try? document.data(as: User.self) {
-                            user = userdata
-                            users.append(user)
+                            if userdata.id != self.loginUser.userId {
+                                users.append(userdata)
+                            }
+                        } else {
+                            print("사용자 데이터 파싱 실패: \(document.documentID)")
                         }
                     }
-                    self.users.accept(users)
-                    print("유저 로드: \(users.count)명")
+                    DispatchQueue.main.async {
+                        self.users.accept(users)
+                        print("문서 유저 로드: \(users.count)명")
+                    }
                 }
             }
         }
