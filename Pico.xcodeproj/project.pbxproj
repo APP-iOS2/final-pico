@@ -422,7 +422,7 @@
 		BC4927362AE162960073E882 /* HomeGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeGuideView.swift; sourceTree = "<group>"; };
 		BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyView.swift; sourceTree = "<group>"; };
 		BC6F61912AD834160067F500 /* RangeSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeSlider.swift; sourceTree = "<group>"; };
-		BCD6253A2AE5B5940079BD28 /* HomeEmptyLottie.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = HomeEmptyLottie.json; path = ../../../../../Downloads/HomeEmptyLottie.json; sourceTree = "<group>"; };
+		BCD6253A2AE5B5940079BD28 /* HomeEmptyLottie.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HomeEmptyLottie.json; sourceTree = "<group>"; };
 		BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFilterViewController.swift; sourceTree = "<group>"; };
 		BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTILabelCollectionViewCell.swift; sourceTree = "<group>"; };
 		BCEACEF62AC3DF5F00C93699 /* MBTICollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTICollectionViewController.swift; sourceTree = "<group>"; };
