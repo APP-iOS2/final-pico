@@ -16,8 +16,8 @@ final class HomeViewModel {
     var users = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
     var blocks = BehaviorRelay<[Block.BlockInfo]>(value: [])
-    static var filterGender: [GenderType] = []
-    static var filterMbti: [MBTIType] = []
+    static var filterGender: [GenderType] = GenderType.allCases
+    static var filterMbti: [MBTIType] = MBTIType.allCases
     static var filterAgeMin: Int = 24
     static var filterAgeMax: Int = 34
     static var filterDistance: Int = 501
