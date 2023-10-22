@@ -96,6 +96,7 @@
 		6A9F73552AD8E596002F13AC /* ProfileEditModalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9F73542AD8E596002F13AC /* ProfileEditModalCollectionCell.swift */; };
 		6A9F73572AD8E5A7002F13AC /* CenterAlignedCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9F73562AD8E5A7002F13AC /* CenterAlignedCollectionViewFlowLayout.swift */; };
 		6AA931AC2AE2E53100A648E7 /* SettingSecessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA931AB2AE2E53100A648E7 /* SettingSecessionViewModel.swift */; };
+		6AA931D42AE4026500A648E7 /* SettingLicenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA931D32AE4026500A648E7 /* SettingLicenseView.swift */; };
 		6AB3CF4B2AE0F7FF005A4DF6 /* SettingSecessionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB3CF4A2AE0F7FF005A4DF6 /* SettingSecessionViewController.swift */; };
 		6AB3CF4D2AE0F828005A4DF6 /* SettingLicenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB3CF4C2AE0F828005A4DF6 /* SettingLicenseViewController.swift */; };
 		6ABA9E522ACE8EF800DC6570 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABA9E512ACE8EF800DC6570 /* ProfileViewModel.swift */; };
@@ -317,6 +318,7 @@
 		6A9F73542AD8E596002F13AC /* ProfileEditModalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditModalCollectionCell.swift; sourceTree = "<group>"; };
 		6A9F73562AD8E5A7002F13AC /* CenterAlignedCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterAlignedCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		6AA931AB2AE2E53100A648E7 /* SettingSecessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSecessionViewModel.swift; sourceTree = "<group>"; };
+		6AA931D32AE4026500A648E7 /* SettingLicenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingLicenseView.swift; sourceTree = "<group>"; };
 		6AB3CF4A2AE0F7FF005A4DF6 /* SettingSecessionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSecessionViewController.swift; sourceTree = "<group>"; };
 		6AB3CF4C2AE0F828005A4DF6 /* SettingLicenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingLicenseViewController.swift; sourceTree = "<group>"; };
 		6ABA9E512ACE8EF800DC6570 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
@@ -651,6 +653,7 @@
 				6AB3CF4A2AE0F7FF005A4DF6 /* SettingSecessionViewController.swift */,
 				6AA931AB2AE2E53100A648E7 /* SettingSecessionViewModel.swift */,
 				6AB3CF4C2AE0F828005A4DF6 /* SettingLicenseViewController.swift */,
+				6AA931D32AE4026500A648E7 /* SettingLicenseView.swift */,
 			);
 			path = SettingDetail;
 			sourceTree = "<group>";
@@ -1541,6 +1544,7 @@
 				6ADDE2FF2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift in Sources */,
 				B1BFE1932AD6F6960094253A /* AdminBaseViewController.swift in Sources */,
 				B146A3C32AD4566C003143DD /* SignViewConstraints.swift in Sources */,
+				6AA931D42AE4026500A648E7 /* SettingLicenseView.swift in Sources */,
 				B17D678C2AC0AB80006F91DC /* Location.swift in Sources */,
 				B146A3CA2AD456D2003143DD /* MypageViewConstraints.swift in Sources */,
 				368D4DA12ADCC9DF00322D91 /* YoloManager.swift in Sources */,

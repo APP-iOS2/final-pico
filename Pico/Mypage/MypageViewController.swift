@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import SafariServices
+import MessageUI
 
 final class MypageViewController: BaseViewController {
     
@@ -85,6 +86,31 @@ final class MypageViewController: BaseViewController {
         present(viewController, animated: true)
     }
     
+    private func presentEmail() {
+           if MFMailComposeViewController.canSendMail() {
+               let composeViewController = MFMailComposeViewController()
+               composeViewController.mailComposeDelegate = self
+               let bodyString = "문의 내용을 작성해주세요."
+                   composeViewController.setSubject(" PICO 문의")
+               
+               composeViewController.setToRecipients(["rlaalsrl1227@gmail.com"])
+               composeViewController.setMessageBody(bodyString, isHTML: false)
+               
+               self.present(composeViewController, animated: true, completion: nil)
+               
+           } else {
+               showCustomAlert(alertType: .canCancel, titleText: "문의하기 실패", messageText: "문의를 보내려면 'Mail' 앱이 필요합니다. App Store에서 해당 앱을 복원하거나 이메일 설정을 확인하고 다시 시도해주세요.", confirmButtonText: "App Store로 이동하기", comfrimAction: {
+                   if let url = URL(string: "https://apps.apple.com/kr/app/mail/id1108187098"), UIApplication.shared.canOpenURL(url) {
+                       if #available(iOS 10.0, *) {
+                           UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                       } else {
+                           UIApplication.shared.openURL(url)
+                       }
+                   }
+               })
+           }
+       }
+    
     @objc private func tappedProfileView(_ sender: UIBarButtonItem) {
         pushNextViewController(ProfileEditViewController(profileViewModel: profileViewModel))
     }
@@ -105,7 +131,7 @@ extension MypageViewController: MyPageViewDelegate {
         case 1:
             presentViewController(PremiumViewController())
         case 2:
-           break
+            presentEmail()
         case 3:
             presentViewController(AdvertisementViewController())
         default:
@@ -124,5 +150,11 @@ extension MypageViewController: MyPageCollectionDelegate {
         default:
             break
         }
+    }
+}
+
+extension MypageViewController : MFMailComposeViewControllerDelegate{
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        self.dismiss(animated:true,completion: nil)
     }
 }
