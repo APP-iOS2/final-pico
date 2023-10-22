@@ -20,6 +20,7 @@ final class ProfileEditViewController: UIViewController {
         view.register(cell: ProfileEditLoactionTabelCell.self)
         view.register(cell: ProfileEditTextTabelCell.self)
         view.configBackgroundColor()
+        view.showsVerticalScrollIndicator = false
         view.separatorStyle = .none
         return view
     }()
