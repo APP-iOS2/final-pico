@@ -16,8 +16,8 @@ final class HomeViewModel {
     var users = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
     var blocks = BehaviorRelay<[Block.BlockInfo]>(value: [])
-    static var filterGender: [GenderType] = []
-    static var filterMbti: [MBTIType] = []
+    static var filterGender: [GenderType] = GenderType.allCases
+    static var filterMbti: [MBTIType] = MBTIType.allCases
     static var filterAgeMin: Int = 24
     static var filterAgeMax: Int = 34
     static var filterDistance: Int = 501
@@ -63,23 +63,27 @@ final class HomeViewModel {
         DispatchQueue.global().async {
             let dbRef = Firestore.firestore()
             let query = dbRef.collection("users")
-                .whereField("id", isNotEqualTo: self.loginUser.userId)
                 .whereField("gender", in: gender.map { $0.rawValue })
+                .order(by: "createdDate", descending: true)
             
             query.getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print(error)
                 } else {
-                    var user: User
                     var users = [User]()
                     for document in querySnapshot!.documents {
                         if let userdata = try? document.data(as: User.self) {
-                            user = userdata
-                            users.append(user)
+                            if userdata.id != self.loginUser.userId {
+                                users.append(userdata)
+                            }
+                        } else {
+                            print("사용자 데이터 파싱 실패: \(document.documentID)")
                         }
                     }
-                    self.users.accept(users)
-                    print("유저 로드: \(users.count)명")
+                    DispatchQueue.main.async {
+                        self.users.accept(users)
+                        print("문서 유저 로드: \(users.count)명")
+                    }
                 }
             }
         }

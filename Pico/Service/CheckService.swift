@@ -16,6 +16,7 @@ final class CheckService {
     private let fireService = FirestoreService()
     
     func checkUserId(userId: String, completion: @escaping (_ isRight: Bool) -> ()) {
+        Loading.showWhiteLoading()
         self.dbRef.collection("users")
             .whereField("id", isEqualTo: userId)
             .getDocuments { snapShot, err in
@@ -23,6 +24,7 @@ final class CheckService {
                     return
                 }
                 completion(documents.first != nil)
+                Loading.hideLoading()
             }
     }
     

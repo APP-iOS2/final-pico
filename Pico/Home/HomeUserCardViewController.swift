@@ -306,7 +306,7 @@ final class HomeUserCardViewController: UIViewController {
                 }
             }
         case .ended:
-            if translation.x > 100 {
+            if translation.x > 150 {
                 HomeUserCardViewModel.cardCounting += 1
                 if HomeUserCardViewModel.cardCounting == 3 {
                     HomeUserCardViewModel.cardCounting = -1
@@ -324,7 +324,7 @@ final class HomeUserCardViewController: UIViewController {
                     view.center.x += 1000
                     homeViewController?.likeLabel.alpha = 0
                 }
-            } else if translation.x < -100 {
+            } else if translation.x < -150 {
                 HomeUserCardViewModel.cardCounting += 1
                 if HomeUserCardViewModel.cardCounting == 3 {
                     HomeUserCardViewModel.cardCounting = -1

@@ -26,7 +26,27 @@ final class Loading {
             }
         }
     }
-
+    
+    static func showWhiteLoading() {
+        DispatchQueue.main.async {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.last {
+                let loadingView: LoadingAnimationView
+                if let existedView = window.subviews.first(where: {
+                    $0 is LoadingAnimationView
+                }) as? LoadingAnimationView {
+                    loadingView = existedView
+                } else {
+                    loadingView = LoadingAnimationView()
+                    loadingView.frame = window.frame
+                    loadingView.backgroundColor = .systemBackground
+                    window.addSubview(loadingView)
+                }
+                loadingView.animateNow()
+            }
+        }
+    }
+    
     static func hideLoading() {
         DispatchQueue.main.async {
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
