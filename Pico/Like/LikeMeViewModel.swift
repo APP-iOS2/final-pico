@@ -130,7 +130,7 @@ final class LikeMeViewModel: ViewModelType {
                         }
                         let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
                         likeMeList = currentPageDatas
-                        startIndex += currentPageDatas.count
+                        startIndex = currentPageDatas.count
                         reloadTableViewPublisher.onNext(())
                     }
                 } else {
@@ -187,7 +187,7 @@ final class LikeMeViewModel: ViewModelType {
                 guard let self = self else { return }
                 switch result {
                 case .success(let data):
-                    guard let _ = data else {
+                    if data == nil {
                         emitter.onNext(())
                         return
                     }

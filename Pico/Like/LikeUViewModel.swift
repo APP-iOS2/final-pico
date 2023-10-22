@@ -122,7 +122,7 @@ final class LikeUViewModel: ViewModelType {
                         }
                         let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
                         likeUList = currentPageDatas
-                        startIndex += currentPageDatas.count
+                        startIndex = currentPageDatas.count
                         reloadTableViewPublisher.onNext(())
                     }
                 } else {
