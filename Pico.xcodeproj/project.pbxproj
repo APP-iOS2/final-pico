@@ -157,7 +157,6 @@
 		B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B161B8712AC414DD00257A9C /* PopupViewController.swift */; };
 		B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F8F2AD033B70014850D /* Double+Extensions.swift */; };
 		B1701F922AD4351A0014850D /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F912AD4351A0014850D /* Array+Extensions.swift */; };
-		B1701F962AD436F80014850D /* RandomBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F952AD436F80014850D /* RandomBoxView.swift */; };
 		B17CC8152AE30DA3003D1873 /* MailSendModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17CC8142AE30DA3003D1873 /* MailSendModel.swift */; };
 		B17CC8172AE30E05003D1873 /* AboutMeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17CC8162AE30E05003D1873 /* AboutMeCollectionViewCell.swift */; };
 		B17D67842AC0A835006F91DC /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67832AC0A835006F91DC /* SignInViewController.swift */; };
@@ -383,7 +382,6 @@
 		B161B8712AC414DD00257A9C /* PopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
 		B1701F8F2AD033B70014850D /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
 		B1701F912AD4351A0014850D /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
-		B1701F952AD436F80014850D /* RandomBoxView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomBoxView.swift; sourceTree = "<group>"; };
 		B17CC8142AE30DA3003D1873 /* MailSendModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailSendModel.swift; sourceTree = "<group>"; };
 		B17CC8162AE30E05003D1873 /* AboutMeCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutMeCollectionViewCell.swift; sourceTree = "<group>"; };
 		B17D67832AC0A835006F91DC /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
@@ -511,7 +509,6 @@
 			children = (
 				4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */,
 				4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */,
-				B1701F952AD436F80014850D /* RandomBoxView.swift */,
 				B1A0C0092AE4ADEF0031AC65 /* randomBox.json */,
 			);
 			path = RandomBox;
@@ -1474,7 +1471,6 @@
 				6A8BE1F12ADFE3510021B993 /* ProfileEditPickerViewController.swift in Sources */,
 				36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */,
 				53B5295B2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift in Sources */,
-				B1701F962AD436F80014850D /* RandomBoxView.swift in Sources */,
 				548AD18D2AE32C8900B1513C /* UserDetailViewController.swift in Sources */,
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
 				B130BB4C2ACF207A0039A1FA /* AdminUserViewModel.swift in Sources */,

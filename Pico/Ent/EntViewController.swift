@@ -13,17 +13,6 @@ final class EntViewController: BaseViewController {
         return imageView
     }()
     
-    private let headerView: UIView = UIView()
-    
-    private let headerImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "banner")
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-    
-    private let worldcupView: UIView = UIView()
-    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -76,7 +65,6 @@ final class EntViewController: BaseViewController {
         addViews()
         makeConstraints()
         configRxBinding()
-        configTapGesture()
     }
 
     deinit {
@@ -85,8 +73,7 @@ final class EntViewController: BaseViewController {
     }
     
     private func addViews() {
-        view.addSubview([backgroundImageView, headerView, titleLabel, pickMeLabel, contentLabel, gameStartButton, guideLabel])
-        headerView.addSubview(headerImageView)
+        view.addSubview([backgroundImageView, titleLabel, pickMeLabel, contentLabel, gameStartButton, guideLabel])
     }
     
     private func makeConstraints() {
@@ -96,19 +83,8 @@ final class EntViewController: BaseViewController {
             make.edges.equalToSuperview()
         }
         
-        headerView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.leading.equalToSuperview().offset(10)
-            make.trailing.equalToSuperview().offset(-10)
-            make.height.equalTo(120)
-        }
-        
-        headerImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(headerImageView.snp.bottom).offset(60)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(60)
             make.leading.equalToSuperview().offset(45)
             make.trailing.equalToSuperview().offset(-45)
         }
@@ -197,14 +173,14 @@ final class EntViewController: BaseViewController {
         }
     }
     
-    private func configTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedHeaderView))
-        headerView.addGestureRecognizer(tapGesture)
-    }
-    
-    @objc func tappedHeaderView(_ sender: UITapGestureRecognizer) {
-        let randomBoxViewController = RandomBoxViewController()
-        self.navigationController?.pushViewController(randomBoxViewController, animated: true)
-        self.tabBarController?.tabBar.isHidden = true
-    }
+//    private func configTapGesture() {
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedHeaderView))
+//        headerView.addGestureRecognizer(tapGesture)
+//    }
+//    
+//    @objc func tappedHeaderView(_ sender: UITapGestureRecognizer) {
+//        let randomBoxViewController = RandomBoxViewController()
+//        self.navigationController?.pushViewController(randomBoxViewController, animated: true)
+//        self.tabBarController?.tabBar.isHidden = true
+//    }
 }
