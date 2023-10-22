@@ -36,6 +36,7 @@ final class LikeMeViewModel: ViewModelType {
     struct Output {
         let likeUIsEmpty: Observable<Bool>
         let reloadCollectionView: Observable<Void>
+        let failLike: Observable<Void>
     }
     
     private(set) var likeMeList: [Like.LikeInfo] = [] {
@@ -70,13 +71,12 @@ final class LikeMeViewModel: ViewModelType {
             }
             .disposed(by: disposeBag)
         
-        input.likeUser
+        let resultLike = input.likeUser
             .withUnretained(self)
-            .subscribe { viewModel, userId in
-                viewModel.likeUser(userId: userId)
-            }
-            .disposed(by: disposeBag)
-        
+            .flatMapLatest({ viewModel, userId -> Observable<Void> in
+                return viewModel.tappedlikeButton(userId: userId)
+            })
+
         let didset = isEmptyPublisher.asObservable()
             .map { result in
                 return result
@@ -102,7 +102,8 @@ final class LikeMeViewModel: ViewModelType {
         
         return Output(
             likeUIsEmpty: isEmpty,
-            reloadCollectionView: reloadTableViewPublisher.asObservable()
+            reloadCollectionView: reloadTableViewPublisher.asObservable(),
+            failLike: resultLike
         )
     }
     
@@ -129,7 +130,7 @@ final class LikeMeViewModel: ViewModelType {
                         }
                         let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
                         likeMeList = currentPageDatas
-                        startIndex += currentPageDatas.count
+                        startIndex = currentPageDatas.count
                         reloadTableViewPublisher.onNext(())
                     }
                 } else {
@@ -180,6 +181,26 @@ final class LikeMeViewModel: ViewModelType {
         ])
     }
     
+    private func tappedlikeButton(userId: String) -> Observable<Void> {
+        return Observable.create { emitter in
+            FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    if data == nil {
+                        emitter.onNext(())
+                        return
+                    }
+                    likeUser(userId: userId)
+                case .failure(let error):
+                    print(error)
+                    emitter.onNext(())
+                }
+            }
+            return Disposables.create()
+        }
+    }
+    
     private func likeUser(userId: String) {
         guard let index = likeMeList.firstIndex(where: {
             $0.likedUserId == userId
@@ -189,7 +210,7 @@ final class LikeMeViewModel: ViewModelType {
         guard let likeData: Like.LikeInfo = likeMeList[safe: index] else { return }
         likeMeList.remove(at: index)
         reloadTableViewPublisher.onNext(())
-      
+        
         let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL, createdDate: Date().timeIntervalSince1970)
         
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
@@ -238,7 +259,7 @@ final class LikeMeViewModel: ViewModelType {
                 guard let yourMbti = MBTIType(rawValue: currentUser.mbti) else { return }
                 let yourNoti = Noti(receiveId: likeData.likedUserId, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: myNoti)
-                FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)               
+                FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)
                 let mailModel = MailSendModel()
                 let receiverUser = User(id: likeData.likedUserId, mbti: likeData.mbti, phoneNumber: "", gender: .etc, birth: likeData.birth, nickName: likeData.nickName, location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [likeData.imageURL], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
                 mailModel.saveMailData(receiveUser: receiverUser, message: "서로 매칭되었습니다.", type: .matching)

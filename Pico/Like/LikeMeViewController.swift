@@ -123,14 +123,19 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let viewController = UserDetailViewController()
         let selectedUser = viewModel.likeMeList[indexPath.row]
-        FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { result in
+        FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let data):
-                guard let data = data else { return }
+                guard let data = data else {
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                    return
+                }
                 viewController.viewModel = UserDetailViewModel(user: data)
-                self.navigationController?.pushViewController(viewController, animated: true)
+                navigationController?.pushViewController(viewController, animated: true)
             case .failure(let error):
                 print(error)
+                showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                 return
             }
         }
@@ -198,6 +203,13 @@ extension LikeMeViewController {
             .subscribe { viewController, _ in
                 viewController.collectionView.reloadData()
                 viewController.checkEmptyPublisher.onNext(())
+            }
+            .disposed(by: disposeBag)
+        
+        output.failLike
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
             }
             .disposed(by: disposeBag)
     }

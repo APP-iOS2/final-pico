@@ -16,6 +16,7 @@ final class TabBarController: UITabBarController {
         addShadowToTabBar()
         UITabBar.appearance().backgroundColor = .systemBackground
         UITabBar.appearance().tintColor = .picoBlue
+        NotificationService.shared.registerRemoteNotification()
     }
     
     private func configureTabBar() {

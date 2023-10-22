@@ -220,7 +220,7 @@ final class MailSendModel {
                     }
                 }
             
-            NotificationService.shared.sendNotification(userId: receiveUser.id, sendUserName: senderUser.nickName, notiType: .message)
+            NotificationService.shared.sendNotification(userId: receiveUser.id, sendUserName: senderUser.nickName, notiType: .message, messageContent: message)
             
         } else { // 매칭의 경우
             dbRef.collection(Collections.mail.name).document(senderUser.userId).setData(

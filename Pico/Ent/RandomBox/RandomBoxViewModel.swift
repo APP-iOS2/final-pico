@@ -4,8 +4,8 @@
 //
 //  Created by 오영석 on 2023/09/25.
 //
-import Foundation
 import UIKit
+import RxSwift
 
 struct RandomBox {
     let first: Int
@@ -29,9 +29,73 @@ struct RandomPercent {
     let fifthRange = 99...100
 }
 
-final class RandomBoxViewModel {
+final class RandomBoxViewModel: ViewModelType {
     let randomPercent = RandomPercent()
-    private var obtainedChu: Int = 0
+    private(set) var obtainedChu: Int = 0
+    private let currentUser = UserDefaultsManager.shared.getUserData()
+    private var currentChuCount = UserDefaultsManager.shared.getChuCount()
+    
+    struct Input {
+        let requestNormalPayment: Observable<Int>
+        let requestAdvancedPayment: Observable<Int>
+        let obtainChu: Observable<Int>
+    }
+    
+    struct Output {
+        let resultNormal: Observable<Void>
+        let resultAdvanced: Observable<Void>
+        let resultObtainChu: Observable<Int>
+    }
+    
+    func transform(input: Input) -> Output {
+        let resultNormal = input.requestNormalPayment
+            .withUnretained(self)
+            .flatMap { viewModel, chu -> Observable<Void> in  
+                viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() - chu
+                Loading.showLoading()
+                return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
+                    .flatMap { _ -> Observable<Void> in
+                        let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: -chu, paymentType: .randombox)
+                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
+                    }
+            }
+            .withUnretained(self)
+            .map { viewModel, _ in
+                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
+                return DispatchQueue.main.async {
+                    Loading.hideLoading()
+                }
+            }
+        
+        let resultAdvanced = input.requestAdvancedPayment
+            .withUnretained(self)
+            .flatMap { viewModel, chu -> Observable<Void> in  viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() - chu
+                Loading.showLoading()
+                return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
+                    .flatMap { _ -> Observable<Void> in
+                        let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: -chu, paymentType: .randombox)
+                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
+                    }
+            }
+            .withUnretained(self)
+            .map { viewModel, _ in
+                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
+                return DispatchQueue.main.async {
+                    Loading.hideLoading()
+                }
+            }
+        
+        let resultObtainChu = input.obtainChu
+            .withUnretained(self)
+            .flatMap { viewModel, chu -> Observable<Int> in
+                viewModel.obtainedChu = chu
+                viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() + chu
+                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
+                return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
+            }
+ 
+        return Output(resultNormal: resultNormal, resultAdvanced: resultAdvanced, resultObtainChu: resultObtainChu)
+    }
     
     func getRandomValue(index: Int) -> Int {
         let randomValue = Int.random(in: 1...100)
@@ -65,14 +129,6 @@ final class RandomBoxViewModel {
         view.layer.add(animation, forKey: "shake")
 
         CATransaction.commit()
-    }
-    
-    func obtainChu(with randomValue: Int, number: Int) {
-        obtainedChu += randomValue * number
-    }
-    
-    func getObtainedChu() -> Int {
-        return obtainedChu
     }
     
     func boxInfo() -> String {

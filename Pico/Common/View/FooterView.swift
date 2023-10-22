@@ -10,7 +10,7 @@ import SnapKit
 
 final class FooterView: UIView {
     let indicatorView: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .medium)
+        let indicator = UIActivityIndicatorView(style: .large)
         indicator.color = .picoBlue
         return indicator
     }()

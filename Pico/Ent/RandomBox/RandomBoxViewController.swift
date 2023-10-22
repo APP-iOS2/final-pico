@@ -12,8 +12,11 @@ import Lottie
 
 final class RandomBoxViewController: UIViewController {
     
-    private let randomBoxManager = RandomBoxViewModel()
-    let disposeBag = DisposeBag()
+    private let randomBoxViewModel = RandomBoxViewModel()
+    private let normalPaymentPublisher = PublishSubject<Int>()
+    private let advancedPaymentPublisher = PublishSubject<Int>()
+    private let obtainChuPublisher = PublishSubject<Int>()
+    private let disposeBag = DisposeBag()
     
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
@@ -44,32 +47,13 @@ final class RandomBoxViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontGray
-        label.text = "일반 뽑기는 10츄\n고급 뽑기는 30츄가 소모됩니다"
-        label.numberOfLines = 0
+        label.text = "일반 뽑기는 10츄, 고급 뽑기는 30츄가 소모됩니다"
         label.setLineSpacing(spacing: 5)
         label.textAlignment = .center
         return label
     }()
     
     private let randomBoxImage: LottieAnimationView = LottieAnimationView(name: "randomBox")
-    
-//    private let randomBoxImage: UIImageView = {
-//        let imageView = UIImageView()
-//        imageView.image = UIImage(named: "chu")
-//        imageView.contentMode = .scaleAspectFit
-//        imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-//        imageView.setContentHuggingPriority(.defaultLow, for: .vertical)
-//        return imageView
-//    }()
-    
-    private let numberLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.picoLargeTitleFont
-        label.textColor = .picoBlue
-        label.text = "구매 수량"
-        return label
-    }()
     
     private let countLabel: UILabel = {
         let label = UILabel()
@@ -95,6 +79,8 @@ final class RandomBoxViewController: UIViewController {
         button.titleLabel?.font = UIFont.picoLargeTitleFont
         return button
     }()
+    
+    private let buttonView = UIView()
     
     private let normalBoxButton: CommonButton = {
         let button = CommonButton()
@@ -129,7 +115,8 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func addViews() {
-        view.addSubview([backgroundImageView, titleLabel, contentLabel, guidLabel, randomBoxImage, numberLabel, countLabel, plusButton, minusButton, normalBoxButton, advancedBoxButton, infoButton])
+        view.addSubview([backgroundImageView, titleLabel, contentLabel, guidLabel, randomBoxImage, countLabel, plusButton, minusButton, buttonView, infoButton])
+        buttonView.addSubview([normalBoxButton, advancedBoxButton])
     }
     
     private func makeConstraints() {
@@ -140,65 +127,74 @@ final class RandomBoxViewController: UIViewController {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.centerX.equalToSuperview()
+            make.height.equalTo(titleLabel.font.pointSize)
         }
         
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(padding)
             make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(padding)
+            make.height.equalTo(contentLabel.font.pointSize * 5)
         }
         
         guidLabel.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(padding)
+            make.top.equalTo(contentLabel.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(padding)
+            make.height.equalTo(guidLabel.font.pointSize)
         }
         
         randomBoxImage.snp.makeConstraints { make in
-            make.center.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(guidLabel.snp.bottom)
+            make.centerX.equalTo(view.safeAreaLayoutGuide)
+            make.leading.equalToSuperview().offset(padding)
+            make.height.greaterThanOrEqualTo(Screen.height * 0.3).priority(.required)
         }
-        
-        numberLabel.snp.makeConstraints { make in
-            make.top.equalTo(randomBoxImage.snp.bottom)
-            make.centerX.equalToSuperview()
-        }
-        
+
         countLabel.snp.makeConstraints { make in
-            make.top.equalTo(numberLabel.snp.bottom)
+            make.top.equalTo(randomBoxImage.snp.bottom)
             make.centerX.equalToSuperview()
             make.width.equalTo(40)
         }
         
         plusButton.snp.makeConstraints { make in
-            make.top.equalTo(numberLabel.snp.bottom)
+            make.top.equalTo(countLabel)
             make.leading.equalTo(countLabel.snp.trailing)
+            make.bottom.equalTo(countLabel)
             make.width.height.equalTo(30)
         }
         
         minusButton.snp.makeConstraints { make in
-            make.top.equalTo(numberLabel.snp.bottom)
+            make.top.equalTo(countLabel)
             make.trailing.equalTo(countLabel.snp.leading)
+            make.bottom.equalTo(countLabel)
             make.width.height.equalTo(30)
         }
         
-        normalBoxButton.snp.makeConstraints { make in
+        buttonView.snp.makeConstraints { make in
             make.top.equalTo(countLabel.snp.bottom).offset(padding)
-            make.leading.equalTo(view.safeAreaLayoutGuide).offset(padding)
-            make.trailing.equalTo(advancedBoxButton.snp.leading).offset(-padding)
-            make.width.equalTo(120)
+            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(padding * 2)
             make.height.equalTo(padding * 2)
+        }
+        
+        normalBoxButton.snp.makeConstraints { make in
+            make.top.leading.bottom.equalToSuperview()
+            make.trailing.equalTo(advancedBoxButton.snp.leading).offset(-padding)
         }
         
         advancedBoxButton.snp.makeConstraints { make in
-            make.top.equalTo(countLabel.snp.bottom).offset(padding)
-            make.leading.equalTo(normalBoxButton.snp.trailing).offset(padding)
-            make.width.equalTo(120)
-            make.height.equalTo(padding * 2)
+            make.top.trailing.bottom.equalToSuperview()
+            make.width.equalTo(normalBoxButton.snp.width)
         }
         
         infoButton.snp.makeConstraints { make in
-            make.top.equalTo(normalBoxButton.snp.bottom)
+            make.top.equalTo(buttonView.snp.bottom).offset(10)
             make.centerX.equalTo(countLabel.snp.centerX)
+            make.bottom.equalToSuperview().offset(-padding * 2)
+            make.height.equalTo(infoButton.titleLabel?.font.pointSize ?? 20)
         }
     }
     
@@ -220,23 +216,14 @@ final class RandomBoxViewController: UIViewController {
         self.normalBoxButton.isEnabled = false
         self.advancedBoxButton.isEnabled = false
         
-        randomBoxManager.shake(view: self.randomBoxImage) {
+        randomBoxViewModel.shake(view: self.randomBoxImage) {
             for _ in 0 ..< count {
-                let randomValue = self.randomBoxManager.getRandomValue(index: 1)
+                let randomValue = self.randomBoxViewModel.getRandomValue(index: 1)
                 boxHistory.append(randomValue)
             }
             
             let sumBoxHistory = boxHistory.reduce(0, +)
-            self.randomBoxManager.obtainChu(with: sumBoxHistory, number: 10)
-            
-            let updatedChuCount = UserDefaultsManager.shared.getChuCount() - 10
-            UserDefaultsManager.shared.updateChuCount(updatedChuCount)
-            
-            self.showAlert(with: sumBoxHistory)
-            self.showParticleEffect()
-            
-            self.normalBoxButton.isEnabled = true
-            self.advancedBoxButton.isEnabled = true
+            self.obtainChuPublisher.onNext(sumBoxHistory)
         }
     }
     
@@ -246,23 +233,14 @@ final class RandomBoxViewController: UIViewController {
         self.normalBoxButton.isEnabled = false
         self.advancedBoxButton.isEnabled = false
         
-        randomBoxManager.shake(view: self.randomBoxImage) {
+        randomBoxViewModel.shake(view: self.randomBoxImage) {
             for _ in 0 ..< count {
-                let randomValue = self.randomBoxManager.getRandomValue(index: 1)
+                let randomValue = self.randomBoxViewModel.getRandomValue(index: 1)
                 boxHistory.append(randomValue)
             }
             
             let sumBoxHistory = boxHistory.reduce(0, +)
-            self.randomBoxManager.obtainChu(with: sumBoxHistory, number: 10)
-            
-            let updatedChuCount = UserDefaultsManager.shared.getChuCount() - 10
-            UserDefaultsManager.shared.updateChuCount(updatedChuCount)
-            
-            self.showAlert(with: sumBoxHistory)
-            self.showParticleEffect()
-            
-            self.normalBoxButton.isEnabled = true
-            self.advancedBoxButton.isEnabled = true
+            self.obtainChuPublisher.onNext(sumBoxHistory)
         }
     }
     
@@ -270,6 +248,7 @@ final class RandomBoxViewController: UIViewController {
         let messageSting: String = "\(message)"
         showCustomAlert(alertType: .onlyConfirm, titleText: "뽑기 결과", messageText: "\(messageSting)츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
             self.dismiss(animated: true, completion: nil)
+            self.countLabel.text = "1"
             DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
                 self?.emitterLayer.removeFromSuperlayer()
             }
@@ -303,10 +282,38 @@ final class RandomBoxViewController: UIViewController {
 
 extension RandomBoxViewController {
     private func bind() {
+        let input = RandomBoxViewModel.Input(requestNormalPayment: normalPaymentPublisher, requestAdvancedPayment: advancedPaymentPublisher, obtainChu: obtainChuPublisher)
+        let output = randomBoxViewModel.transform(input: input)
+        
+        output.resultNormal
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.tappedNormalBox(count: Int(viewController.countLabel.text ?? "0") ?? 0)
+            }
+            .disposed(by: disposeBag)
+        
+        output.resultAdvanced
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.tappedAdvancedBox(count: Int(viewController.countLabel.text ?? "0") ?? 0)
+            }
+            .disposed(by: disposeBag)
+        
+        output.resultObtainChu
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.showAlert(with: viewController.randomBoxViewModel.obtainedChu)
+                viewController.showParticleEffect()
+                
+                viewController.normalBoxButton.isEnabled = true
+                viewController.advancedBoxButton.isEnabled = true
+            }
+            .disposed(by: disposeBag)
+        
         infoButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                let messageText = randomBoxManager.boxInfo()
+                let messageText = randomBoxViewModel.boxInfo()
                 showCustomAlert(
                     alertType: .onlyConfirm,
                     titleText: "상자 구성품",
@@ -343,7 +350,7 @@ extension RandomBoxViewController {
                         confirmButtonText: "구매하기",
                         comfrimAction: { [weak self] in
                             guard let self else { return }
-                            tappedNormalBox(count: Int(self.countLabel.text ?? "0") ?? 0)
+                            normalPaymentPublisher.onNext(10 * (Int(self.countLabel.text ?? "") ?? 1))
                         })
                 }
             })
@@ -373,7 +380,7 @@ extension RandomBoxViewController {
                         confirmButtonText: "구매하기",
                         comfrimAction: { [weak self] in
                             guard let self else { return }
-                            self.tappedAdvancedBox(count: Int(countLabel.text ?? "0") ?? 0)
+                            advancedPaymentPublisher.onNext(30 * (Int(self.countLabel.text ?? "") ?? 1))
                         })
                 }
             })

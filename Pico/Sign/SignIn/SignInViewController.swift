@@ -100,7 +100,6 @@ final class SignInViewController: UIViewController {
         configTextfield()
         configButton()
         configAuthTextField()
-        NotificationService.shared.registerRemoteNotification()
     }
     
     override func viewWillAppear(_ animated: Bool) {
