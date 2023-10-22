@@ -70,6 +70,9 @@ final class ProfileEditNicknameModalViewController: UIViewController {
         return button
     }()
     
+    private let chuCount = UserDefaultsManager.shared.getChuCount()
+    private let profileEditNicknameModalViewModel = ProfileEditNicknameModalViewModel()
+    private let consumeChuCountPublish = PublishSubject<Void>()
     let profileEditViewModel: ProfileEditViewModel
     private let disposeBag = DisposeBag()
     let checkService = CheckService()
@@ -93,6 +96,24 @@ final class ProfileEditNicknameModalViewController: UIViewController {
     }
     
     private func binds() {
+        
+        let input = ProfileEditNicknameModalViewModel.Input(
+            consumeChuCount: consumeChuCountPublish.asObservable()
+        )
+        
+        let output = profileEditNicknameModalViewModel.transform(input: input)
+        
+        output.resultPurchase
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                DispatchQueue.main.async {
+                    viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "닉네임이 변경되었습니다.", confirmButtonText: "확인", comfrimAction: {
+                        
+                        viewController.dismiss(animated: true)
+                    })
+                }
+            }
+            .disposed(by: disposeBag)
         
         profileEditViewModel.modalName
             .bind(to: titleLabel.rx.text)
@@ -141,9 +162,10 @@ final class ProfileEditNicknameModalViewController: UIViewController {
         completeButton.rx.tap
             .bind { [weak self] _ in
                 guard let self else { return }
-                self.profileEditViewModel.updateData(data: self.textField.text?.trimmed())
-                self.dismiss(animated: true)
-                // TODO: chucount 연결하기
+                self.showCustomAlert(alertType: .canCancel, titleText: "닉네임 변경", messageText: "닉네임 변경을 위해서는 50츄가 필요합니다.\n현재 츄 : \(chuCount) 개", confirmButtonText: "변경 (50츄) ", comfrimAction: {
+                    self.consumeChuCountPublish.onNext(())
+                    self.profileEditViewModel.updateData(data: self.textField.text?.trimmed())
+                })
             }.disposed(by: disposeBag)
     }
     
