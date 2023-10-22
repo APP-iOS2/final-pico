@@ -54,7 +54,7 @@ final class UserImageViewController: UIViewController {
             if let image = URL(string: image) {
                 imageView.kf.setImage(with: image)
             }
-            imageView.contentMode = .scaleToFill
+            imageView.contentMode = .scaleAspectFit
             imageView.frame = CGRect(x: Screen.width * CGFloat(index),
                                      y: 0,
                                      width: Screen.width,
