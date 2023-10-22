@@ -15,6 +15,11 @@ struct SettingLicenseView: View {
 The MIT License (MIT) Copyright (c) 2019 Wei Wang
 https://github.com/onevcat/Kingfisher
 
+**lottie-ios**
+Public
+Apache License Version 2.0
+https://github.com/airbnb/lottie-ios
+
 **RxSwift**
 The MIT License Copyright © 2015 Krunoslav Zaher, Shai Mishali All rights reserved.
 https://github.com/ReactiveX/RxSwift

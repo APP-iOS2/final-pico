@@ -50,7 +50,8 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         button.tintColor = .black
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
-        button.backgroundColor = .picoBlue
+        button.isEnabled = false
+        button.backgroundColor = .picoGray
         button.layer.masksToBounds = false
         button.layer.cornerRadius = 13
         return button
@@ -120,14 +121,14 @@ final class ProfileEditCollTextModalViewController: UIViewController {
     }
     
     private func binds() {
-    
+        
         backButton.rx.tap
             .bind { [weak self] _ in
                 guard let self else { return }
                 self.dismiss(animated: true)
             }
             .disposed(by: disposeBag)
-
+        
         completeButton.rx.tap
             .bind { [weak self] _ in
                 guard let self else { return }
@@ -197,7 +198,7 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         
         textField.snp.makeConstraints { make in
             make.top.equalTo(collectionView.snp.bottom).offset(10)
-            make.leading.equalToSuperview().offset(15)
+            make.leading.equalToSuperview().offset(20)
             make.height.equalTo(40)
         }
         
@@ -210,14 +211,14 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         
         registerButton.snp.makeConstraints { make in
             make.centerY.equalTo(textField.snp.centerY)
-            make.trailing.equalToSuperview().offset(-15)
+            make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(35)
             make.width.equalTo(55)
         }
         
         completeButton.snp.makeConstraints { make in
-            make.top.equalTo(textField.snp.bottom).offset(25)
-            make.leading.trailing.equalToSuperview().inset(30)
+            make.top.equalTo(textField.snp.bottom).offset(30)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }
     }
@@ -232,6 +233,17 @@ final class ProfileEditCollTextModalViewController: UIViewController {
             completeButton.backgroundColor = .picoBlue
         }
     }
+    
+    private func checkNewData(text: String) {
+        if collectionData.contains(text) {
+            registerButton.isEnabled = false
+            registerButton.backgroundColor = .picoGray
+        } else {
+            registerButton.isEnabled = true
+            registerButton.backgroundColor = .picoBlue
+        }
+    }
+    
     private func cheeckCollectionCount() -> Bool {
         if collectionData.count >= 7 {
             showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "최대 7개까지만 선택할 수 있습니다.", confirmButtonText: "확인")
@@ -295,18 +307,24 @@ extension ProfileEditCollTextModalViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            if let text = textField.text {
-                if text.count > 10 {
-                    return false
-                } else {
-                    return true
-                }
+        let updatedText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
+        checkNewData(text: updatedText)
+        if let text = textField.text {
+            if text.count > 10 {
+                return false
+            } else {
+                return true
             }
+        }
         return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.tappedRegister(text: self.textField.text)
-        return true
+        if !collectionData.contains(self.textField.text ?? "") {
+            self.tappedRegister(text: self.textField.text)
+            return true
+        } else {
+            return false
+        }
     }
 }

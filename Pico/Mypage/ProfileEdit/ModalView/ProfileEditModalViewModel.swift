@@ -8,25 +8,40 @@
 import RxSwift
 import RxCocoa
 
-final class ProfileEditModalViewModel {
-    enum TableCase {
-        case smoke
-        case drink
-        case rel
-        case education
-    }
-    let frequencyType = FrequencyType.allCases.map { $0.name }
-    let religionType = ReligionType.allCases.map { $0.name }
-    let educationType = EducationType.allCases.map { $0.name }
+final class ProfileEditNicknameModalViewModel {
     
-    let data = BehaviorRelay<[String]>(value: [])
-    let name = BehaviorRelay<String>(value: "아맞다ㅡㅡ")
-    var type: TableCase?
-    init() {
+    private let currentUser: CurrentUser = UserDefaultsManager.shared.getUserData()
+    private var currentChuCount = 0
     
+    struct Input {
+        /// 사용한 츄
+        let consumeChuCount: Observable<Void>
     }
- 
-    func updateData() {
-        
+    
+    struct Output {
+        let resultPurchase: Observable<Void>
+    }
+    
+    func transform(input: Input) -> Output {
+        let responsePurchase = input.consumeChuCount
+            .withUnretained(self)
+            .flatMap { viewModel, _ in
+                Loading.showLoading()
+                viewModel.currentChuCount =
+                UserDefaultsManager.shared.getChuCount() - 50
+                return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
+                    .flatMap { _ -> Observable<Void> in
+                        let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: -50, paymentType: .changeNickname)
+                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
+                    }
+            }
+            .withUnretained(self)
+            .map { viewModel, _ in
+                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
+                return Loading.hideLoading()
+            }
+        return Output(
+            resultPurchase: responsePurchase
+        )
     }
 }

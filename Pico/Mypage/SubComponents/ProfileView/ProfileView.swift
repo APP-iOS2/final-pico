@@ -37,7 +37,7 @@ final class ProfileView: UIView {
         imageView.contentMode = .scaleAspectFit
         imageView.backgroundColor = .white
         imageView.layer.masksToBounds = false
-        imageView.layer.cornerRadius = 15
+        imageView.layer.cornerRadius = 10
         return imageView
     }()
     
@@ -180,7 +180,7 @@ final class ProfileView: UIView {
        
         pencilImageView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.height.equalTo(30)
+            make.width.height.equalTo(20)
         }
     }
 }

@@ -223,10 +223,12 @@ final class ProfileEditViewModel {
         return text
     }
     func loadUserData() {
+        Loading.showLoading()
         FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let data):
+                Loading.hideLoading()
                 if let user = data {
                     UserDefaultsManager.shared.setUserData(userData: user)
                 }
@@ -250,8 +252,10 @@ final class ProfileEditViewModel {
                     ])
                 ]
                 sectionsRelay.accept(result)
+               
             case .failure(let err):
                 debugPrint(err)
+                Loading.hideLoading()
             }
         }
     }

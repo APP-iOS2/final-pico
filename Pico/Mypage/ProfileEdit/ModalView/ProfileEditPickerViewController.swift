@@ -112,13 +112,13 @@ final class ProfileEditPickerViewController: UIViewController {
         
         pickerView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
-            make.leading.trailing.equalToSuperview().inset(15)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(100)
         }
         
         completeButton.snp.makeConstraints { make in
-            make.top.equalTo(pickerView.snp.bottom).offset(30)
-            make.leading.trailing.equalToSuperview().inset(15)
+            make.top.equalTo(pickerView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
         }
     }

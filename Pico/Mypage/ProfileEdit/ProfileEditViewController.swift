@@ -20,6 +20,7 @@ final class ProfileEditViewController: UIViewController {
         view.register(cell: ProfileEditLoactionTabelCell.self)
         view.register(cell: ProfileEditTextTabelCell.self)
         view.configBackgroundColor()
+        view.showsVerticalScrollIndicator = false
         view.separatorStyle = .none
         return view
     }()
@@ -133,7 +134,7 @@ final class ProfileEditViewController: UIViewController {
     @objc private func refreshTable(refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            profileViewModel.loadUserData()
+            profileEditViewModel.loadUserData()
             refresh.endRefreshing()
         }
     }
@@ -207,7 +208,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.intro.name)
                 profileEditViewModel.modalType = .intro
                 profileEditViewModel.textData = profileEditViewModel.userData?.subInfo?.intro
-                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
+                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 180)
             case 1:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.height.name)
                 profileEditViewModel.modalType = .height
@@ -218,7 +219,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.job.name)
                 profileEditViewModel.modalType = .job
                 profileEditViewModel.textData = profileEditViewModel.userData?.subInfo?.job
-                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 190)
+                presentModalView(viewController: ProfileEditTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 180)
                 
             case 3:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.religion.name)
@@ -255,14 +256,14 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.personalities.name)
                 profileEditViewModel.modalType = .personalities
                 profileEditViewModel.collectionData = profileEditViewModel.userData?.subInfo?.personalities
-                presentModalView(viewController: ProfileEditCollTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 250)
+                presentModalView(viewController: ProfileEditCollTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 230)
                 
             case 8:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.hobbies.name)
                 profileEditViewModel.modalType = .hobbies
                 profileEditViewModel.collectionData = profileEditViewModel.userData?.subInfo?.hobbies
                 
-                presentModalView(viewController: ProfileEditCollTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 250)
+                presentModalView(viewController: ProfileEditCollTextModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 230)
             case 9:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.favoriteMBTIs.name)
                 profileEditViewModel.modalType = .favoriteMBTIs

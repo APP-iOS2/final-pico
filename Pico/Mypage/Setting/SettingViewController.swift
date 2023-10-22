@@ -21,7 +21,7 @@ final class SettingViewController: UIViewController {
         case businessInformation
         case louout
         case accountManagement
-            
+        
         var name: String {
             switch self {
             case .allowNotifications:
@@ -84,7 +84,7 @@ final class SettingViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let isPushOn = UIApplication.shared.isRegisteredForRemoteNotifications
-        if !isPushOn {
+        if isPushOn {
             notiState = true
             notiMarketinState = true
         } else {
@@ -120,6 +120,13 @@ final class SettingViewController: UIViewController {
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .automatic
         present(safariViewController, animated: true)
+        
+    }
+    
+    private func presentView(viewController: UIViewController) {
+        let viewController = viewController
+        viewController.modalPresentationStyle = .automatic
+        present(viewController, animated: true)
     }
     
     private func pushNextViewController(viewController: UIViewController) {
@@ -170,8 +177,10 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
             switch indexPath.row {
             case 0:
                 cell.configure(titleLabel: Settings.allowNotifications.name, subTitleLabel: "PICO의 모든 알림을 허용합니다", state: notiState)
+                cell.selectionStyle = .none
             case 1:
                 cell.configure(titleLabel: Settings.allowMarketingNotifications.name, subTitleLabel: "마케팅 알림을 허용합니다", state: notiMarketinState)
+                cell.selectionStyle = .none
             default:
                 break
             }
@@ -249,14 +258,10 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
         switch indexPath.section {
         case 1:
             switch indexPath.row {
-            case 0:
-                presentSafariView(urlString: Settings.termsOfService.urlString)
-            case 1:
-                presentSafariView(urlString: Settings.privacyPolicy.urlString)
-            case 2:
-                presentSafariView(urlString: Settings.termsOfLocation.urlString)
+            case 0...2:
+                presentView(viewController: TermsOfServiceModalViewController(tag: indexPath.row))
             case 3:
-                pushNextViewController(viewController: SettingLicenseViewController())
+                presentView(viewController: SettingLicenseViewController())
             case 4:
                 presentSafariView(urlString: Settings.businessInformation.urlString)
             default: break
@@ -267,7 +272,7 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
                 logout()
             case 1:
                 pushNextViewController(viewController: SettingSecessionViewController())
-               
+                
             default:
                 break
             }
