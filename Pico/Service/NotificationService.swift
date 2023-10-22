@@ -43,8 +43,9 @@ final class NotificationService {
     
     /// 푸쉬알림 보내기
     /// userId: 알림을 받을 UserId, sendUserName: 보내는 사람(자신) 닉네임, notiType: like, message, matching
-    func sendNotification(userId: String, sendUserName: String, notiType: PushNotiType) {
+    func sendNotification(userId: String, sendUserName: String, notiType: PushNotiType, messageContent: String? = nil) {
         let title: String = "Pico"
+        var subTitle: String?
         var body: String = ""
         FirestoreService.shared.loadDocument(collectionId: .tokens, documentId: userId, dataType: Token.self) { [weak self] result in
             guard let self = self else { return }
@@ -54,18 +55,22 @@ final class NotificationService {
                 case .like:
                     body = "\(sendUserName)님이 좋아요를 누르셨습니다."
                 case .message:
-                    body = "\(sendUserName)님이 메시지를 보냈습니다."
+                    subTitle = "\(sendUserName)님이 메시지를 보냈습니다."
+                    body = messageContent ?? "메일함을 확인해보세요."
                 case .matching:
                     body = "\(sendUserName)님과 매칭이 되었습니다."
                 }
                 guard let token = data else { return }
                 let urlString = "https://fcm.googleapis.com/fcm/send"
                 let url = NSURL(string: urlString)!
-                let paramString: [String: Any] = ["to": token.fcmToken,
-                                                  "notification": ["title": title, "body": body, "sound": "default", "badge": token.badgeCount + 1],
-                                                  "data": ["title": title, "body": body],
-                                                  "content_available": true
-                ]
+                var paramString: [String: Any] = ["to": token.fcmToken,
+                                   "notification": ["title": title, "body": body, "sound": "default", "badge": token.badgeCount + 1],
+                                   "data": ["title": title, "body": body],
+                                   "content_available": true
+                    ]
+                if let subTitle = subTitle {
+                    paramString["notification"] = ["title": title, "body": body, "sound": "default", "badge": token.badgeCount + 1, "subtitle": subTitle]
+                }
                 let request = NSMutableURLRequest(url: url as URL)
                 request.httpMethod = "POST"
                 request.httpBody = try? JSONSerialization.data(withJSONObject: paramString, options: [.prettyPrinted])
