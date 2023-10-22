@@ -19,24 +19,14 @@ final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
     
     func accessLocation() {
         DispatchQueue.main.async {
-            let alertController = UIAlertController(title: "위치 권한 필요",
-                                                    message: "이 앱을 사용하려면 위치 권한이 필요합니다. 설정에서 권한을 변경할 수 있습니다.",
-                                                    preferredStyle: .alert)
-            
-            let settingsAction = UIAlertAction(title: "설정으로 이동", style: .default) { _ in
-                if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
-                }
-            }
-            
-            let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-            
-            alertController.addAction(settingsAction)
-            alertController.addAction(cancelAction)
             
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let viewController = windowScene.windows.first?.rootViewController {
-                viewController.present(alertController, animated: true, completion: nil)
+                viewController.showCustomAlert(alertType: .canCancel, titleText: "위치 권한 필요", messageText: "이 앱을 사용하려면 위치 권한이 필요합니다. 설정에서 권한을 변경할 수 있습니다.", confirmButtonText: "설정으로 이동", comfrimAction: {
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(settingsURL)
+                    }
+                })
             }
         }
     }
