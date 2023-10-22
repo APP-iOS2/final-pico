@@ -65,7 +65,7 @@ enum ReligionType: String, CaseIterable, Codable {
         case .christianity:
             "기독교"
         case .buddhism:
-            "블교"
+            "불교"
         case .catholic:
             "천주교"
         case .wonBuddhism:
