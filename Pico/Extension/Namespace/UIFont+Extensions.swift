@@ -28,6 +28,10 @@ extension UIFont {
     static var picoDescriptionFont: UIFont {
         return UIFont.systemFont(ofSize: 13)
     }
+    /// 제목에 대한 설명 폰트사이즈 (13, semibold)
+    static var picoDescriptionFont2: UIFont {
+        return UIFont.systemFont(ofSize: 13, weight: .semibold)
+    }
     /// 내용 폰트 사이즈 (15, regular)
     static var picoContentFont: UIFont {
         return UIFont.systemFont(ofSize: 15)
@@ -67,5 +71,9 @@ extension UIFont {
     /// 프로필 이름 폰트 사이즈 (25, medium)
     static var picoProfileNameFont: UIFont {
         return UIFont.systemFont(ofSize: 25, weight: .medium)
+    }
+    /// 게임 제목 폰트 사이즈 (40, semibold)
+    static var picoGameTitleFont: UIFont {
+        return UIFont.systemFont(ofSize: 40, weight: .semibold)
     }
 }

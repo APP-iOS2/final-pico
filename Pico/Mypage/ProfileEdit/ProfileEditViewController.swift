@@ -24,10 +24,10 @@ final class ProfileEditViewController: UIViewController {
         return view
     }()
     
+    private let refreshControl = UIRefreshControl()
     private let disposeBag = DisposeBag()
     weak var profileEditImageDelegate: ProfileEditImageDelegate?
     weak var profileEditNicknameDelegate: ProfileEditNicknameDelegate?
-    private let yoloManager: YoloManager = YoloManager()
     private let pictureManager = PictureManager()
     private var userImages: [UIImage] = []
     private let profileViewModel: ProfileViewModel
@@ -40,13 +40,13 @@ final class ProfileEditViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configView()
-        configTableView()
         addViews()
         makeConstraints()
         binds()
+        configView()
+        configTableView()
         delegateConfig()
-        yoloManager.loadYOLOv3Model()
+        configRefresh()
     }
     
     @available(*, unavailable)
@@ -101,6 +101,12 @@ final class ProfileEditViewController: UIViewController {
         tableView.delegate = self
     }
     
+    private func configRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        tableView.refreshControl = refreshControl
+    }
+    
     private func addViews() {
         view.addSubview([tableView])
     }
@@ -123,6 +129,15 @@ final class ProfileEditViewController: UIViewController {
         modalViewController.modalPresentationStyle = .formSheet
         present(modalViewController, animated: true)
     }
+    
+    @objc private func refreshTable(refresh: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            profileViewModel.loadUserData()
+            refresh.endRefreshing()
+        }
+    }
+    
 }
 
 extension ProfileEditViewController: UITableViewDelegate {
@@ -299,6 +314,9 @@ extension ProfileEditViewController: ProfileEditNicknameDelegate {
 
 extension ProfileEditViewController {
     func detectionYolo() {
+        let yoloManager: YoloManager = YoloManager()
+        yoloManager.loadYOLOv3Model()
+        
         let detectionGroup = DispatchGroup()
         
         SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
@@ -308,11 +326,11 @@ extension ProfileEditViewController {
             for image in self.userImages {
                 detectionGroup.enter()
                 
-                self.yoloManager.detectPeople(image: image) {
+                yoloManager.detectPeople(image: image) {
                     detectionGroup.leave()
                 }
                 
-                if !(self.yoloManager.isDetectedImage ?? true) {
+                if !(yoloManager.isDetectedImage ?? true) {
                     allImagesDetected = false
                 }
             }

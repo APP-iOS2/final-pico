@@ -30,13 +30,15 @@ final class MailReceiveTableListController: BaseViewController {
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(cell: MailListTableViewCell.self)
+        tableView.showsVerticalScrollIndicator = false
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         return tableView
     }()
     
-    var mailVC: MailViewController
+    var mailViewController: MailViewController
     
-    init(vc: MailViewController) {
-        self.mailVC = vc
+    init(viewController: MailViewController) {
+        self.mailViewController = viewController
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -50,14 +52,12 @@ final class MailReceiveTableListController: BaseViewController {
         bind()
         configRefresh()
         configTableView()
-        loadDataPublsher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if viewModel.receiveList.isEmpty {
-            refreshPublisher.onNext(())
-        }
+        loadDataPublsher.onNext(())
+        refreshPublisher.onNext(())
         checkReceiveEmptyPublisher.onNext(())
         mailListTableView.reloadData()
     }
@@ -90,8 +90,8 @@ extension MailReceiveTableListController: UITableViewDataSource, UITableViewDele
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MailListTableViewCell.self)
-        let item = viewModel.receiveList[indexPath.row]
-        cell.getData(senderUser: item, type: .receive)
+        guard let item = viewModel.receiveList[safe: indexPath.row] else { return UITableViewCell() }
+        cell.config(senderUser: item, type: .receive)
         cell.selectionStyle = .none
         return cell
     }
@@ -141,9 +141,7 @@ extension MailReceiveTableListController {
                 } else {
                     viewController.view.addSubview(viewController.mailListTableView)
                     viewController.mailListTableView.snp.makeConstraints { make in
-                        make.top.equalToSuperview().offset(10)
-                        make.leading.trailing.equalToSuperview()
-                        make.bottom.equalToSuperview().offset(-10)
+                        make.edges.equalToSuperview()
                     }
                 }
             })
@@ -175,6 +173,6 @@ extension MailReceiveTableListController: MailReceiveDelegate {
     func pushUserDetailViewController(user: User) {
         let viewController = UserDetailViewController()
         viewController.viewModel = UserDetailViewModel(user: user)
-        self.mailVC.navigationController?.pushViewController(viewController, animated: true)
+        self.mailViewController.navigationController?.pushViewController(viewController, animated: true)
     }
 }

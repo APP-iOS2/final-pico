@@ -55,6 +55,7 @@ final class MailSendViewController: UIViewController {
     
     private let receiverImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = UIImage(named: "AppIcon")
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
@@ -67,7 +68,7 @@ final class MailSendViewController: UIViewController {
         return label
     }()
     
-    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj, scale: .small)
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: nil, scale: .small)
     
     private let contentView: UIStackView = {
         let stackView = UIStackView()
@@ -177,15 +178,26 @@ final class MailSendViewController: UIViewController {
     func configData(userId: String, atMessageView: Bool ) {
         isMessageView = atMessageView
         
-        viewModel.getUser(userId: userId) {
-            if let user = self.viewModel.user {
-                self.receiver = user
-                guard let url = URL(string: user.imageURLs[0]) else { return }
-                self.receiverImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-                self.receiverImageView.kf.setImage(with: url)
-                self.receiverNameLabel.text = user.nickName
-                self.receiverNameLabel.sizeToFit()
-                self.mbtiLabelView.setMbti(mbti: user.mbti)
+        viewModel.getUser(userId: userId) { [weak self] in
+            guard let self else { return }
+            if let user = viewModel.user {
+                receiver = user
+                guard let imageURL = user.imageURLs[safe: 0] else { return }
+                guard let url = URL(string: imageURL) else { return }
+                receiverImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+                receiverImageView.kf.setImage(with: url)
+                receiverNameLabel.text = user.nickName
+                receiverNameLabel.sizeToFit()
+                mbtiLabelView.isHidden = false
+                mbtiLabelView.setMbti(mbti: user.mbti)
+                sendButton.isHidden = false
+            } else {
+                receiverImageView.image = UIImage(named: "AppIcon_gray")
+                receiverNameLabel.text = "탈퇴된 회원"
+                receiverNameLabel.sizeToFit()
+                mbtiLabelView.isHidden = true
+                mbtiLabelView.setMbti(mbti: nil)
+                sendButton.isHidden = true
             }
         }
     }

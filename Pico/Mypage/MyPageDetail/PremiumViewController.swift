@@ -55,7 +55,8 @@ final class PremiumViewController: UIViewController {
     
     private func makeConstraints() {
         imageView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-100)
             make.height.equalTo(180)
             make.width.equalTo(150)
         }

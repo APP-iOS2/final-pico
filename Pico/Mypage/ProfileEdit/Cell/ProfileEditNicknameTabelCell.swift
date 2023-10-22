@@ -68,7 +68,7 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
         }
         
         nicknameChangeButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-15)
+            make.trailing.equalToSuperview().offset(-20)
             make.centerY.equalToSuperview()
             make.width.equalTo(100)
             make.height.equalTo(30)

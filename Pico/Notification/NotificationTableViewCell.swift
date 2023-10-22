@@ -35,7 +35,7 @@ final class NotificationTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
+    private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: nil, scale: .small)
     
     private let contentLabel: UILabel = {
         let label = UILabel()
@@ -63,17 +63,37 @@ final class NotificationTableViewCell: UITableViewCell {
         self.setNeedsUpdateConstraints()
     }
     
+    override func prepareForReuse() {
+        profileImageView.image = UIImage(named: "AppIcon")
+        mbtiLabel.setMbti(mbti: nil)
+        iconImageView.image = UIImage()
+        nameLabel.text = ""
+        contentLabel.text = ""
+    }
+    
+    func configData(notitype: NotiType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, date: Double) {
+        guard let url = URL(string: imageUrl) else { return }
+        profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+        profileImageView.kf.setImage(with: url)
+        iconImageView.image = UIImage(systemName: notitype.iconSystemImageName)
+        iconImageView.tintColor = notitype.iconColor
+        contentLabel.text = notitype.content
+        nameLabel.text = "\(nickName), \(age)"
+        mbtiLabel.setMbti(mbti: mbti)
+        createDateLabel.isHidden = false
+        createDateLabel.text = date.timeAgoSinceDate()
+    }
+    
     private func addViews() {
         contentView.addSubview([profileImageView, iconImageView, labelView])
-        labelView.addSubview([nameLabel, mbitLabel, contentLabel, createDateLabel])
+        labelView.addSubview([nameLabel, mbtiLabel, contentLabel, createDateLabel])
     }
     
     private func makeConstraints() {
         profileImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
+            make.centerY.equalToSuperview()
             make.leading.equalTo(10)
-            make.bottom.equalToSuperview().offset(-10)
-            make.width.equalTo(profileImageView.snp.height)
+            make.width.height.equalTo(60)
         }
         
         iconImageView.snp.makeConstraints { make in
@@ -92,11 +112,11 @@ final class NotificationTableViewCell: UITableViewCell {
             make.leading.equalToSuperview()
         }
         
-        mbitLabel.snp.makeConstraints { make in
+        mbtiLabel.snp.makeConstraints { make in
             make.leading.equalTo(nameLabel.snp.trailing).offset(10)
             make.centerY.equalTo(nameLabel)
-            make.height.equalTo(mbitLabel.frame.size.height)
-            make.width.equalTo(mbitLabel.frame.size.width)
+            make.height.equalTo(mbtiLabel.frame.size.height)
+            make.width.equalTo(mbtiLabel.frame.size.width)
         }
         
         contentLabel.snp.makeConstraints { make in
@@ -111,39 +131,5 @@ final class NotificationTableViewCell: UITableViewCell {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-    }
-}
-
-extension NotificationTableViewCell {
-    func configData(notitype: NotiType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, date: Double) {
-        guard let url = URL(string: imageUrl) else { return }
-        profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-        profileImageView.kf.setImage(with: url)
-        iconImageView.image = UIImage(systemName: notitype.iconSystemImageName)
-        iconImageView.tintColor = notitype.iconColor
-        contentLabel.text = notitype.content
-        nameLabel.text = "\(nickName), \(age)"
-        mbitLabel.setMbti(mbti: mbti)
-        createDateLabel.isHidden = false
-        createDateLabel.text = date.timeAgoSinceDate()
-    }
-    
-    func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
-        guard let url = URL(string: imageUrl) else { return }
-        profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-        profileImageView.kf.setImage(with: url)
-        iconImageView.image = UIImage()
-        nameLabel.text = "\(nickName), \(age)"
-        mbitLabel.setMbti(mbti: mbti)
-        contentLabel.text = "가입일자 \(createdDate.toString(dateSeparator: .dot))"
-        contentLabel.font = .picoDescriptionFont
-        contentLabel.textColor = .picoFontGray
-    }
-    
-    override func prepareForReuse() {
-        profileImageView.image = UIImage(named: "AppIcon")
-        iconImageView.image = UIImage()
-        nameLabel.text = ""
-        contentLabel.text = ""
     }
 }

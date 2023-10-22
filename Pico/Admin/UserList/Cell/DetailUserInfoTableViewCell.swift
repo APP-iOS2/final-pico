@@ -10,7 +10,7 @@ import SnapKit
 
 final class DetailUserInfoTableViewCell: UITableViewCell {
     
-    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .enfj, scale: .large)
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: nil, scale: .large)
     
     private let nameAgeLabel: UILabel = {
         let label = UILabel()

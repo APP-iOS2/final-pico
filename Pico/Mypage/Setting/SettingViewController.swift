@@ -69,6 +69,8 @@ final class SettingViewController: UIViewController {
         view.separatorStyle = .none
         return view
     }()
+    private var notiState = false
+    private var notiMarketinState = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,6 +79,19 @@ final class SettingViewController: UIViewController {
         addViews()
         makeConstraints()
         configNavigationBackButton()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let isPushOn = UIApplication.shared.isRegisteredForRemoteNotifications
+        if !isPushOn {
+            notiState = true
+            notiMarketinState = true
+        } else {
+            notiState = false
+            notiMarketinState = false
+        }
+        tableView.reloadData()
     }
     
     private func configNavigation() {
@@ -154,9 +169,9 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
             
             switch indexPath.row {
             case 0:
-                cell.configure(titleLabel: Settings.allowNotifications.name, subTitleLabel: "PICO의 모든 알림을 허용합니다")
+                cell.configure(titleLabel: Settings.allowNotifications.name, subTitleLabel: "PICO의 모든 알림을 허용합니다", state: notiState)
             case 1:
-                cell.configure(titleLabel: Settings.allowMarketingNotifications.name, subTitleLabel: "마케팅 알림을 허용합니다")
+                cell.configure(titleLabel: Settings.allowMarketingNotifications.name, subTitleLabel: "마케팅 알림을 허용합니다", state: notiMarketinState)
             default:
                 break
             }

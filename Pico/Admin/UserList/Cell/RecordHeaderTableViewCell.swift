@@ -9,13 +9,17 @@ import UIKit
 import SnapKit
 import RxSwift
 
-enum RecordType: CaseIterable {
+enum RecordType: String, CaseIterable {
     case report
     case block
     case like
     case payment
     
     var name: String {
+        return self.rawValue
+    }
+    
+    var title: String {
         switch self {
         case .report:
             return "신고 기록"
@@ -25,6 +29,58 @@ enum RecordType: CaseIterable {
             return "좋아요 기록"
         case .payment:
             return "결제 기록"
+        }
+    }
+    
+    var content: String {
+        switch self {
+        case .report:
+            return "님이 신고하셨습니다."
+        case .block:
+            return "님이 차단하였습니다."
+        case .like:
+            return "님이 좋아요를 누르셨습니다."
+        case .payment:
+            return "원 결제"
+        }
+    }
+    
+    var iconSystemImageName: String {
+        switch self {
+        case .report:
+            return "exclamationmark.bubble.fill"
+        case .block:
+            return "exclamationmark.bubble.fill"
+        case .like:
+            return "heart.fill"
+        case .payment:
+            return "bitcoinsign.circle.fill"
+        }
+    }
+    
+    var iconColor: UIColor {
+        switch self {
+        case .like:
+            return .systemPink
+        case .report:
+            return .systemRed
+        case .block:
+            return .systemOrange
+        case .payment:
+            return .systemGreen
+        }
+    }
+    
+    var collectionId: Collections {
+        switch self {
+        case .like:
+            return .likes
+        case .report:
+            return .report
+        case .block:
+            return .block
+        case .payment:
+            return .payment
         }
     }
 }
@@ -43,7 +99,7 @@ final class RecordHeaderTableViewCell: UITableViewCell {
     
     private var selectedCellIndex: Int = 0
     
-    let selectedRecordTypePublisher = BehaviorSubject(value: RecordType.report)
+    let collectionViewBehavior = BehaviorSubject(value: RecordType.report)
     
     // MARK: - initializer
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -75,14 +131,14 @@ extension RecordHeaderTableViewCell: UICollectionViewDelegate, UICollectionViewD
         let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: RecordHeaderCollectionViewCell.self)
         guard let recordType = RecordType.allCases[safe: indexPath.row] else { return UICollectionViewCell() }
         cell.isSelectedCell = indexPath.row == selectedCellIndex
-        cell.config(text: recordType.name)
+        cell.config(text: recordType.title)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let label = UILabel()
         let recordType = RecordType.allCases[safe: indexPath.row]
-        label.text = recordType?.name
+        label.text = recordType?.title
         label.sizeToFit()
         let labelWidth = label.frame.size.width
         let labelHeight = label.frame.size.height
@@ -95,17 +151,17 @@ extension RecordHeaderTableViewCell: UICollectionViewDelegate, UICollectionViewD
         collectionView.reloadData()
         
         guard let recordType = RecordType.allCases[safe: selectedCellIndex] else { return }
-        selectedRecordTypePublisher.onNext(recordType)
+        collectionViewBehavior.onNext(recordType)
     }
 }
 
 // MARK: - UI 관련
 extension RecordHeaderTableViewCell {
-    func addViews() {
+    private func addViews() {
         contentView.addSubview(collectionView)
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

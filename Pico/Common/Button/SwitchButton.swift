@@ -8,16 +8,20 @@
 import UIKit
 import SnapKit
 
+protocol SwitchButtonDelegate: AnyObject {
+    func isOnValueChange(isOnSwitch: Bool)
+}
+
 final class SwitchButton: UIButton {
     
-    private lazy var barView: UIView = {
+    private let barView: UIView = {
         let view = UIView()
         view.backgroundColor = .picoGray
         view.layer.masksToBounds = true
         return view
     }()
     
-    private lazy var circleView: UIView = {
+    private let circleView: UIView = {
         let view = UIView()
         view.backgroundColor = .lightGray
         view.layer.masksToBounds = true
@@ -33,6 +37,7 @@ final class SwitchButton: UIButton {
     private var animationDuration: TimeInterval = 0.25
     private var isAnimated: Bool = false
     private var viewframe: CGRect = CGRect()
+    weak var switchButtonDelegate: SwitchButtonDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,6 +49,10 @@ final class SwitchButton: UIButton {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+    
+    func congifState(bool: Bool) {
+        isOnSwitch = bool
     }
     
     private func addViews() {
@@ -77,6 +86,9 @@ final class SwitchButton: UIButton {
     private func setOn(onSwitch: Bool, animated: Bool) {
         self.isAnimated = animated
         self.isOnSwitch = onSwitch
+        if let switchButtonDelegate = switchButtonDelegate {
+            switchButtonDelegate.isOnValueChange(isOnSwitch: onSwitch)
+        }
     }
     
     private func changeState() {

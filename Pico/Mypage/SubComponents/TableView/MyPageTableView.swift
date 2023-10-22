@@ -20,6 +20,7 @@ final class MyPageTableView: UITableView {
     
     weak var myPageViewDelegate: MyPageViewDelegate?
     weak var myPageCollectionDelegate: MyPageCollectionDelegate?
+    private var viewModel: ProfileViewModel?
     
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: .insetGrouped)
@@ -30,6 +31,10 @@ final class MyPageTableView: UITableView {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configViewModel(viewModel: ProfileViewModel) {
+        self.viewModel = viewModel
     }
     
     private func configTableView() {
@@ -60,6 +65,9 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
         case 0:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageCollectionTableCell.self)
             cell.delegate = myPageCollectionDelegate
+            if let viewModel = viewModel {
+                cell.configViewModel(viewModel: viewModel)
+            }
             return cell
         case 1:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageMatchingTableCell.self)

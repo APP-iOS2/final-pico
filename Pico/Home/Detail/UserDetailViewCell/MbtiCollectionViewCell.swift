@@ -8,7 +8,7 @@
 import UIKit
 
 final class MbtiCollectionViewCell: UICollectionViewCell {
-    private var mbtiView: MBTILabelView = MBTILabelView(mbti: .infp, scale: .large)
+    private var mbtiView: MBTILabelView = MBTILabelView(mbti: .infp, scale: .small)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,7 +26,7 @@ final class MbtiCollectionViewCell: UICollectionViewCell {
     
     private func makeConstraints() {
         mbtiView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().offset(5)
+            make.edges.equalToSuperview()
         }
     }
     @available(*, unavailable)

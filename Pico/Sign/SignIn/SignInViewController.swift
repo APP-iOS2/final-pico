@@ -186,7 +186,7 @@ extension SignInViewController {
                             
                             if isBlock {
                                 Loading.hideLoading()
-                                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴한 유저입니다.", confirmButtonText: "확인", comfrimAction: configReset)
+                                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴한 회원입니다.", confirmButtonText: "확인", comfrimAction: configReset)
                             } else {
                                 Loading.hideLoading()
                                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: configReset)

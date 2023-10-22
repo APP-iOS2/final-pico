@@ -15,7 +15,7 @@ final class SubInfomationViewController: UIViewController {
     private let verticalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fill
         stackView.alignment = .fill
         return stackView
     }()
@@ -85,22 +85,28 @@ final class SubInfomationViewController: UIViewController {
         if let personalities {
             self.personalities = personalities
         } else {
-            personalLabel.removeFromSuperview()
-            personalCollectionView.removeFromSuperview()
+            personalLabel.isHidden = true
+            personalCollectionView.isHidden = true
+            verticalStackView.removeArrangedSubview(personalLabel)
+            verticalStackView.removeArrangedSubview(personalCollectionView)
         }
         
         if let hobbies {
             self.hobbies = hobbies
         } else {
-            hobbyLabel.removeFromSuperview()
-            hobbyCollectionView.removeFromSuperview()
+            hobbyLabel.isHidden = true
+            hobbyCollectionView.isHidden = true
+            verticalStackView.removeArrangedSubview(hobbyLabel)
+            verticalStackView.removeArrangedSubview(hobbyCollectionView)
         }
         
         if let likeMbtis {
             self.likeMbtis = likeMbtis
         } else {
-            likeMbtiLabel.removeFromSuperview()
-            mbtiCollectionView.removeFromSuperview()
+            likeMbtiLabel.isHidden = true
+            mbtiCollectionView.isHidden = true
+            verticalStackView.removeArrangedSubview(likeMbtiLabel)
+            verticalStackView.removeArrangedSubview(mbtiCollectionView)
         }
         
         hobbyCollectionView.reloadData()
@@ -135,32 +141,30 @@ extension SubInfomationViewController {
     
     private func makeConstraints() {
         verticalStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.trailing.equalToSuperview().inset(20)
+            make.top.leading.trailing.bottom.equalToSuperview()
         }
         
         personalLabel.snp.makeConstraints { make in
-//            make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(50)
+            make.height.equalTo(40)
         }
         hobbyLabel.snp.makeConstraints { make in
-            make.height.equalTo(50)
+            make.height.equalTo(40)
         }
         
         likeMbtiLabel.snp.makeConstraints { make in
-            make.height.equalTo(50)
+            make.height.equalTo(40)
         }
         
         personalCollectionView.snp.makeConstraints { make in
-            make.height.equalTo(150)
+            make.height.equalTo(100)
         }
         
         hobbyCollectionView.snp.makeConstraints { make in
-            make.height.equalTo(150)
+            make.height.equalTo(100)
         }
         
         mbtiCollectionView.snp.makeConstraints { make in
-            make.height.equalTo(150)
+            make.height.equalTo(100)
         }
     }
 }
@@ -186,7 +190,6 @@ extension SubInfomationViewController: UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         switch collectionView {
         case hobbyCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hobbyCollectionCell", for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
@@ -219,17 +222,17 @@ extension SubInfomationViewController: UICollectionViewDelegate, UICollectionVie
             label.text = hobby
             label.sizeToFit()
             let size = label.frame.size
-            return CGSize(width: size.width + 5, height: size.height + 8)
+            return CGSize(width: size.width + 10, height: size.height + 8)
             
         case personalCollectionView:
             let personal = personalities[indexPath.row]
             label.text = personal
             label.sizeToFit()
             let size = label.frame.size
-            return CGSize(width: size.width + 8, height: size.height + 8)
+            return CGSize(width: size.width + 10, height: size.height + 8)
             
         case mbtiCollectionView:
-            return CGSize(width: 55, height: 30)
+            return CGSize(width: 50, height: 25)
             
         default:
             return CGSize(width: 65, height: 70)

@@ -24,8 +24,6 @@ enum NotiType: String, Codable {
     case like
     case message
     case matching
-    case report
-    case block
     
     var content: String {
         switch self {
@@ -35,10 +33,6 @@ enum NotiType: String, Codable {
             return "님이 쪽지를 보냈습니다."
         case .matching:
             return "님과 매칭이 되었습니다. 쪽지를 보내보세요."
-        case .report:
-            return "님이 신고하셨습니다."
-        case .block:
-            return "님을 차단하였습니다."
         }
     }
     
@@ -50,10 +44,6 @@ enum NotiType: String, Codable {
             return "message.fill"
         case .matching:
             return "bolt.heart.fill"
-        case .report:
-            return "exclamationmark.bubble.fill"
-        case .block:
-            return "exclamationmark.bubble.fill"
         }
     }
     
@@ -65,10 +55,6 @@ enum NotiType: String, Codable {
             return .picoBlue
         case .matching:
             return .systemPink
-        case .report:
-            return .systemRed
-        case .block:
-            return .systemOrange
         }
     }
 }

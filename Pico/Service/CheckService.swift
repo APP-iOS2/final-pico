@@ -74,7 +74,7 @@ final class CheckService {
                     }
                         
                     guard documents.first != nil else {
-                        completion("사용가능한 닉네임이에요!!", true)
+                        completion("사용가능한 닉네임이에요!", true)
                         return
                     }
                     completion("이미 포함된 닉네임이네요..", false)

@@ -83,7 +83,7 @@ final class ProfileEditImageTableCell: UITableViewCell {
     }
     @objc private func tappedDeleteButton(_ sender: UIButton) {
         guard images.count > 1 else {
-            profileEditImageDelegate?.presentCustomAlert(messageText: "사진을 최소 한개 이상 등록해 주세요.")
+            profileEditImageDelegate?.presentCustomAlert(messageText: "최소 한개 이상의 사진을 등록해 주세요.")
             return
         }
         let index = sender.tag

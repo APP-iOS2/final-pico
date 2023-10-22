@@ -113,21 +113,46 @@ final class WorldCupGameViewController: UIViewController {
     }
     
     private func cellClickAction(indexPath: IndexPath) {
-        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else {
-            return
+        worldCupViewModel.selectedIndexPath = indexPath
+        worldCupViewModel.animateSelectedCell(collectionView: collectionView, indexPath: indexPath)
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
         }
-        worldCupViewModel.animateSelectedCell(selectedCell: selectedCell)
-        collectionView.reloadData()
-    }
 
-    private func animateToNextRound() {
-        worldCupViewModel.animateNextRound(collectionView: collectionView)
-    }
-
-    private func changeRoundLabel(withText text: String) {
-        worldCupViewModel.changeRoundLabel(withText: text, roundLabel: roundLabel)
     }
     
+    private func animateToNextRound() {
+        UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: {
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }, completion: nil)
+    }
+    
+    private func changeRoundLabel(withText text: String) {
+        roundLabel.text = text
+        roundLabel.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+        roundLabel.alpha = 0
+        
+        let scale = UIScreen.main.bounds.width / roundLabel.bounds.width
+        
+        UIView.animate(withDuration: 1.0, delay: 1.0, options: .curveEaseOut, animations: {
+            self.roundLabel.transform = CGAffineTransform(scaleX: scale, y: scale)
+            self.roundLabel.alpha = 1
+            self.roundLabel.layer.zPosition = 1
+            self.roundLabel.transform.tx = 0
+            self.roundLabel.transform.ty = 0
+        }, completion: { _ in
+            UIView.animate(withDuration: 1.0, delay: 1.0, options: .curveEaseOut, animations: {
+                self.roundLabel.transform = .identity
+                self.roundLabel.alpha = 1
+                self.roundLabel.layer.zPosition = 0
+            }, completion: { _ in
+                self.animateToNextRound()
+            })
+        })
+    }
+
     private func makeConstraints() {
         let padding: CGFloat = 20
         let half: CGFloat = 0.5
@@ -213,7 +238,6 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             let selectedItem = users.value[index + indexPath.item]
             semifinals.append(selectedItem)
             index += 2
-            animateToNextRound()
             changeRoundLabel(withText: "4강")
         case 8..<10:
             let selectedItem = semifinals[index - 8 + indexPath.item]
@@ -224,7 +248,6 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             let selectedItem = semifinals[index - 8 + indexPath.item]
             finals.append(selectedItem)
             index += 2
-            animateToNextRound()
             changeRoundLabel(withText: "결승")
         default:
             let selectedItem = finals[index - 12 + indexPath.item]
