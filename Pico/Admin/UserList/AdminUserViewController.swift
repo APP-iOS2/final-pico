@@ -16,42 +16,35 @@ final class AdminUserViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "slider.horizontal.3"), for: .normal)
         button.tintColor = .picoFontGray
-        button.menu = createMenu()
+        button.menu = menu
         button.showsMenuAsPrimaryAction = true
         return button
-    }() {
-        didSet {
-            scrollToTop()
-        }
-    }
-
-    private func createMenu() -> UIMenu {
-        let usingMenu = UIAction(title: "사용중인 회원", image: UIImage(), handler: { [weak self] _ in
+    }()
+    
+    lazy var menu = UIMenu(title: "구분", children: [
+        usingMenu, unsubscribedMenu, sortTypeMenu
+    ])
+    
+    lazy var usingMenu = UIAction(title: "사용중인 회원", image: UIImage(), handler: { [weak self] _ in
+        guard let self = self else { return }
+        userListTypeBehavior.onNext(.using)
+        scrollToTop()
+    })
+    
+    lazy var unsubscribedMenu = UIAction(title: "탈퇴된 회원", image: UIImage(), handler: { [weak self] _ in
+        guard let self = self else { return }
+        userListTypeBehavior.onNext(.unsubscribe)
+        scrollToTop()
+    })
+    
+    lazy var sortTypeMenu = UIMenu(title: "정렬 구분", options: .displayInline, children: sortMenus)
+    
+    lazy var sortMenus = SortType.allCases.map { sortType in
+        return UIAction(title: sortType.name, image: UIImage(), handler: { [weak self] _ in
             guard let self = self else { return }
-            userListTypeBehavior.onNext(.using)
+            sortedTypeBehavior.onNext(sortType)
             scrollToTop()
         })
-        
-        let unsubscribedMenu = UIAction(title: "탈퇴된 회원", image: UIImage(), handler: { [weak self] _ in
-            guard let self = self else { return }
-            userListTypeBehavior.onNext(.unsubscribe)
-            scrollToTop()
-        })
-        
-        let sortMenus = SortType.allCases.map { sortType in
-            return UIAction(title: sortType.name, image: UIImage(), handler: { [weak self] _ in
-                guard let self = self else { return }
-                sortedTypeBehavior.onNext(sortType)
-                scrollToTop()
-            })
-        }
-
-        let menu = UIMenu(title: "구분", children: [
-            usingMenu, unsubscribedMenu,
-            UIMenu(title: "정렬 구분", children: sortMenus)
-        ])
-
-        return menu
     }
 
     private let textFieldView: CommonTextField = CommonTextField()
