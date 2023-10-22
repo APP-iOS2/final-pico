@@ -51,14 +51,13 @@ final class HomeGuideView: UIView {
                     뒤로가기 버튼으로 지나친 친구를 다시 불러옵니다.
                     """
         let attributedText = NSMutableAttributedString(string: text)
-        
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 8
         attributedText.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedText.length))
         
         label.attributedText = attributedText
         label.textColor = .gray
-        label.numberOfLines = 0 // 여러 줄 허용
+        label.numberOfLines = 0
         label.textAlignment = .center
         label.font = .picoContentFont
         return label
