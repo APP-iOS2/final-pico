@@ -100,6 +100,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         button.setImage(uncheckedImage, for: .normal)
         button.setImage(checkedImage, for: .selected)
         button.tintColor = .picoFontGray
+        button.tag = 0
         button.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
         return button
     }()
@@ -141,6 +142,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         button.setImage(uncheckedImage, for: .normal)
         button.setImage(checkedImage, for: .selected)
         button.tintColor = .picoFontGray
+        button.tag = 1
         button.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
         return button
     }()
@@ -182,6 +184,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         button.setImage(uncheckedImage, for: .normal)
         button.setImage(checkedImage, for: .selected)
         button.tintColor = .picoFontGray
+        button.tag = 2
         button.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
         return button
     }()
@@ -233,6 +236,19 @@ extension SignUpTermsOfServiceViewController {
     }
     
     @objc private func tappedTermsOfServiceButton(_ sender: UIButton) {
+        switch sender.tag {
+        case 0:
+            firstCheckBoxButton.tintColor = .picoAlphaBlue
+            firstCheckBoxButton.isSelected = true
+        case 1:
+            secondCheckBoxButton.tintColor = .picoAlphaBlue
+            secondCheckBoxButton.isSelected = true
+        case 2:
+            thirdCheckBoxButton.tintColor = .picoAlphaBlue
+            thirdCheckBoxButton.isSelected = true
+        default:
+            return
+        }
         sender.backgroundColor = .picoAlphaBlue
         present(TermsOfServiceModalViewController(tag: sender.tag), animated: true)
     }
