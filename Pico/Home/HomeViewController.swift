@@ -25,6 +25,7 @@ final class HomeViewController: BaseViewController {
     private let emptyView = HomeEmptyView()
     private let disposeBag = DisposeBag()
     private let viewModel = HomeViewModel()
+    private let subViewModel = HomeUserCardViewModel()
     private let loadingView = LoadingAnimationView()
     private let homeGuideView = HomeGuideView()
     private let loginUser = UserDefaultsManager.shared.getUserData()
@@ -172,6 +173,7 @@ final class HomeViewController: BaseViewController {
     
     private func configButtons() {
         emptyView.reLoadButton.addTarget(self, action: #selector(reloadView), for: .touchUpInside)
+        emptyView.backUser.addTarget(self, action: #selector(tappedPickBackButton), for: .touchUpInside)
     }
     
     private func configNavigationBarItem() {
@@ -197,6 +199,38 @@ final class HomeViewController: BaseViewController {
         label.layer.cornerRadius = 5
         label.alpha = 0
         return label
+    }
+    
+    @objc func tappedPickBackButton() {
+        if let lastView = removedView.last {
+            showCustomAlert(
+                alertType: .canCancel,
+                titleText: "이전 평가로 돌아가시겠습니까?",
+                messageText: "10 츄를 소모합니다. (현재 츄: \(UserDefaultsManager.shared.getChuCount()))",
+                cancelButtonText: "취소",
+                confirmButtonText: "확인",
+                comfrimAction: { [weak self] in
+                    guard let self = self else { return }
+                    let remainingChu = UserDefaultsManager.shared.getChuCount()
+                    if remainingChu >= 10 {
+                        subViewModel.purchaseChu(currentChu: remainingChu, purchaseChu: 10)
+                        subViewModel.deleteLikeData()
+                        UIView.animate(withDuration: 0.3) {
+                            lastView.center = self.view.center
+                            lastView.transform = CGAffineTransform(rotationAngle: 0)
+                        }
+                        removedView.removeLast()
+                    } else {
+                        showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                            let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                            self.navigationController?.pushViewController(storeViewController, animated: true)
+                        })
+                    }
+                }
+            )
+        } else {
+            showCustomAlert(alertType: .onlyConfirm, titleText: "이전 친구가 없습니다.", messageText: "", confirmButtonText: "확인")
+        }
     }
     
     @objc func reloadView() {

@@ -256,8 +256,6 @@ final class HomeUserCardViewController: UIViewController {
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
             imageView.layer.cornerRadius = 10
-            imageView.layer.borderWidth = 1
-            imageView.layer.borderColor = UIColor.picoGray.cgColor
             scrollView.addSubview(imageView)
             
             imageView.snp.makeConstraints { make in

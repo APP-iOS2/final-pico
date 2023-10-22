@@ -55,6 +55,16 @@ final class HomeEmptyView: UIView {
         return button
     }()
     
+    // 상위뷰에서 에드타겟
+    let backUser: UIButton = {
+        let button = UIButton()
+        button.setTitle("이전 친구보기", for: .normal)
+        button.setTitleColor(.picoBlue, for: .normal)
+        button.titleLabel?.font = .picoButtonFont
+        button.layer.cornerRadius = 15
+        return button
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
@@ -68,7 +78,7 @@ final class HomeEmptyView: UIView {
     }
     
     private func addViews() {
-        [animationView, chuImage, reLoadButton, finishLabel].forEach { item in
+        [animationView, chuImage, reLoadButton, finishLabel, backUser].forEach { item in
             addSubview(item)
         }
     }
@@ -86,13 +96,20 @@ final class HomeEmptyView: UIView {
         }
         
         finishLabel.snp.makeConstraints { make in
-            make.top.equalTo(animationView.snp.bottom).offset(-120)
+            make.top.equalTo(animationView.snp.bottom).offset(-180)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }
         
         reLoadButton.snp.makeConstraints { make in
             make.top.equalTo(finishLabel.snp.bottom).offset(20)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(140)
+            make.height.equalTo(35)
+        }
+        
+        backUser.snp.makeConstraints { make in
+            make.top.equalTo(reLoadButton.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
             make.width.equalTo(140)
             make.height.equalTo(35)
