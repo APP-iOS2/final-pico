@@ -90,7 +90,7 @@ final class AdminUserDetailViewModel: ViewModelType {
         
         let responseRecordType = input.selectedRecordType
             .withUnretained(self)
-            .flatMap { viewModel, recordType in
+            .map { viewModel, recordType in
                 switch recordType {
                 case .report:
                     viewModel.isEmpty = viewModel.reportList.isEmpty
@@ -101,7 +101,7 @@ final class AdminUserDetailViewModel: ViewModelType {
                 case .payment:
                     viewModel.isEmpty = viewModel.paymentList.isEmpty
                 }
-                return Observable<RecordType>.just(recordType)
+                return recordType
             }
         
         let responseRefresh = input.refreshable

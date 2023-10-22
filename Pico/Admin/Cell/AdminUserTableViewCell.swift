@@ -24,6 +24,7 @@ final class AdminUserTableViewCell: UITableViewCell {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = .picoSubTitleFont
+        label.textAlignment = .left
         return label
     }()
     
@@ -31,16 +32,18 @@ final class AdminUserTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .picoDescriptionFont
         label.textColor = .picoFontGray
+        label.textAlignment = .left
         label.isHidden = true
         return label
     }()
     
-    private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
+    private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: nil, scale: .small)
     
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.adjustsFontSizeToFitWidth = true
         label.font = .picoContentFont
+        label.textAlignment = .left
         return label
     }()
     private let labelView: UIView = UIView()
@@ -65,6 +68,8 @@ final class AdminUserTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         profileImageView.image = UIImage(named: "AppIcon")
+        mbtiLabel.isHidden = false
+        mbtiLabel.setMbti(mbti: nil)
         iconImageView.image = UIImage()
         nameLabel.text = ""
         contentLabel.text = ""
@@ -75,7 +80,8 @@ final class AdminUserTableViewCell: UITableViewCell {
         profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         profileImageView.kf.setImage(with: url)
         nameLabel.text = "\(nickName), \(age)"
-        mbitLabel.setMbti(mbti: mbti)
+        mbtiLabel.setMbti(mbti: mbti)
+        mbtiLabel.isHidden = false
     }
     
     func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
@@ -86,39 +92,34 @@ final class AdminUserTableViewCell: UITableViewCell {
         contentLabel.textColor = .picoFontGray
     }
     
-    func configData(recordType: RecordType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
+    func configData(recordType: RecordType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double, reportReason: String = "") {
         setData(imageUrl: imageUrl, nickName: nickName, age: age, mbti: mbti)
         iconImageView.image = UIImage(systemName: recordType.iconSystemImageName)
         iconImageView.tintColor = recordType.iconColor
-        contentLabel.text = recordType.content
+        if recordType == .report {
+            contentLabel.text = "\(recordType.content) (\(reportReason))"
+        } else {
+            contentLabel.text = "\(recordType.content)"
+        }
         createDateLabel.isHidden = false
         createDateLabel.text = createdDate.timeAgoSinceDate()
     }
     
     func configData(recordType: RecordType, payment: Payment.PaymentInfo) {
-        updateConstraint()
-        profileImageView.image = UIImage(named: "AppIcon")
         iconImageView.image = UIImage(systemName: recordType.iconSystemImageName)
         iconImageView.tintColor = recordType.iconColor
-        mbitLabel.isHidden = true
-        nameLabel.text = "\(payment.purchaseChuCount)츄"
-        nameLabel.textAlignment = .right
+        mbtiLabel.isHidden = true
         if payment.price != 0 {
+            nameLabel.text = "+\(payment.purchaseChuCount.formattedSeparator())츄"
+            profileImageView.image = UIImage(named: "AppIcon")
             contentLabel.text = "\(payment.price.formattedSeparator())\(recordType.content)"
         } else {
-            contentLabel.text = ""
+            nameLabel.text = "\(payment.purchaseChuCount.formattedSeparator())츄"
+            profileImageView.image = UIImage(named: "AppIcon_gray")
+            contentLabel.text = "\(payment.paymentType.koreaName)에서 사용"
         }
-        contentLabel.textAlignment = .right
         createDateLabel.isHidden = false
         createDateLabel.text = payment.purchasedDate.timeAgoSinceDate()
-        createDateLabel.textAlignment = .right
-    }
-    
-    private func updateConstraint() {
-        nameLabel.snp.remakeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(10)
-        }
     }
 }
 
@@ -126,7 +127,7 @@ extension AdminUserTableViewCell {
     
     private func addViews() {
         contentView.addSubview([profileImageView, iconImageView, labelView])
-        labelView.addSubview([nameLabel, mbitLabel, contentLabel, createDateLabel])
+        labelView.addSubview([nameLabel, mbtiLabel, contentLabel, createDateLabel])
     }
     
     private func makeConstraints() {
@@ -153,11 +154,11 @@ extension AdminUserTableViewCell {
             make.leading.equalToSuperview()
         }
         
-        mbitLabel.snp.makeConstraints { make in
+        mbtiLabel.snp.makeConstraints { make in
             make.leading.equalTo(nameLabel.snp.trailing).offset(10)
             make.centerY.equalTo(nameLabel)
-            make.height.equalTo(mbitLabel.frame.size.height)
-            make.width.equalTo(mbitLabel.frame.size.width)
+            make.height.equalTo(mbtiLabel.frame.size.height)
+            make.width.equalTo(mbtiLabel.frame.size.width)
         }
         
         contentLabel.snp.makeConstraints { make in

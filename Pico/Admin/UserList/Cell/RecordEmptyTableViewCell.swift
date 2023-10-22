@@ -41,15 +41,16 @@ final class RecordEmptyTableViewCell: UITableViewCell {
     
     private func makeConstraints() {
         chuImageView.snp.makeConstraints { make in
-            make.top.equalTo(20)
+            make.top.equalTo(50)
             make.centerX.equalToSuperview()
-            make.width.equalTo(chuImageView.snp.height).multipliedBy(1.2)
-            make.height.equalToSuperview().multipliedBy(0.4)
+            make.width.equalTo(60)
+            make.height.equalTo(120)
         }
 
         infomationLabel.snp.makeConstraints { make in
             make.top.equalTo(chuImageView.snp.bottom)
             make.leading.trailing.equalToSuperview().inset(10)
+            make.bottom.equalToSuperview().offset(-100)
         }
     }
 }

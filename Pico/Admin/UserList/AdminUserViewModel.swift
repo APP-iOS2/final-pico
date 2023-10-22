@@ -83,11 +83,6 @@ enum SortType: CaseIterable {
 }
 
 final class AdminUserViewModel: ViewModelType {
-    private let itemsPerPage: Int = 15
-    private var lastDocumentSnapshot: DocumentSnapshot?
-    
-    private(set) var userList: [User] = []
-    private let reloadPublisher = PublishSubject<Void>()
     
     struct Input {
         let viewDidLoad: Observable<Void>
@@ -106,6 +101,12 @@ final class AdminUserViewModel: ViewModelType {
         let resultPagingList: Observable<[User]>
         let needToReload: Observable<Void>
     }
+    
+    private let itemsPerPage: Int = 15
+    private var lastDocumentSnapshot: DocumentSnapshot?
+    
+    private(set) var userList: [User] = []
+    private let reloadPublisher = PublishSubject<Void>()
     
     func transform(input: Input) -> Output {
         let responseViewDidLoad = Observable.combineLatest(input.userListType, input.sortedType, input.viewDidLoad)
@@ -141,7 +142,6 @@ final class AdminUserViewModel: ViewModelType {
         let responseTableViewPaging = input.tableViewOffset
             .withUnretained(self)
             .flatMap { (viewModel, _) -> Observable<[User]> in
-                Loading.showLoading()
                 return sortedType
                     .map { sortType in
                         return userListType
@@ -153,7 +153,6 @@ final class AdminUserViewModel: ViewModelType {
             }
             .map { users in
                 self.userList = users
-                Loading.hideLoading()
                 return self.userList
             }
         

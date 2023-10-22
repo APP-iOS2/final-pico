@@ -54,7 +54,7 @@ enum RecordType: String, CaseIterable {
         case .like:
             return "heart.fill"
         case .payment:
-            return "bitcoinsign.circle.fill"
+            return "wonsign.circle.fill"
         }
     }
     
@@ -99,7 +99,7 @@ final class RecordHeaderTableViewCell: UITableViewCell {
     
     private var selectedCellIndex: Int = 0
     
-    let collectionViewBehavior = BehaviorSubject(value: RecordType.report)
+    var collectionViewPublish: PublishSubject<RecordType>?
     
     // MARK: - initializer
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -118,6 +118,10 @@ final class RecordHeaderTableViewCell: UITableViewCell {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(cell: RecordHeaderCollectionViewCell.self)
+    }
+    
+    func config(publisher: PublishSubject<RecordType>) {
+        collectionViewPublish = publisher
     }
 }
 
@@ -151,7 +155,7 @@ extension RecordHeaderTableViewCell: UICollectionViewDelegate, UICollectionViewD
         collectionView.reloadData()
         
         guard let recordType = RecordType.allCases[safe: selectedCellIndex] else { return }
-        collectionViewBehavior.onNext(recordType)
+        collectionViewPublish?.onNext(recordType)
     }
 }
 

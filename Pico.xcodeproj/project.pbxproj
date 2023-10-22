@@ -808,6 +808,7 @@
 				B1BFE18C2AD6BA1B0094253A /* AdminViewController.swift */,
 				B1BFE1942AD707A10094253A /* UserList */,
 				B1BFE1952AD707B10094253A /* ReportList */,
+				B1CC4B5D2AE5A66D00457827 /* Cell */,
 			);
 			path = Admin;
 			sourceTree = "<group>";
@@ -1221,6 +1222,14 @@
 			path = ReportList;
 			sourceTree = "<group>";
 		};
+		B1CC4B5D2AE5A66D00457827 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				B1E8AF3D2AE34A23001BC023 /* AdminUserTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
 		B1D98FA72AC1A9F600C95F03 /* SubComponents */ = {
 			isa = PBXGroup;
 			children = (
@@ -1244,7 +1253,6 @@
 		B1DFF1332AD7954800610519 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				B1E8AF3D2AE34A23001BC023 /* AdminUserTableViewCell.swift */,
 				B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */,
 				B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */,
 				B14D2AC12AD912120014DE29 /* RecordHeaderTableViewCell.swift */,

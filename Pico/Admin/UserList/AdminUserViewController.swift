@@ -19,29 +19,36 @@ final class AdminUserViewController: UIViewController {
         button.menu = createMenu()
         button.showsMenuAsPrimaryAction = true
         return button
-    }()
+    }() {
+        didSet {
+            scrollToTop()
+        }
+    }
 
     private func createMenu() -> UIMenu {
         let usingMenu = UIAction(title: "사용중인 회원", image: UIImage(), handler: { [weak self] _ in
             guard let self = self else { return }
             userListTypeBehavior.onNext(.using)
+            scrollToTop()
         })
         
         let unsubscribedMenu = UIAction(title: "탈퇴된 회원", image: UIImage(), handler: { [weak self] _ in
             guard let self = self else { return }
             userListTypeBehavior.onNext(.unsubscribe)
+            scrollToTop()
         })
         
-        let secondSectionActions = SortType.allCases.map { sortType in
+        let sortMenus = SortType.allCases.map { sortType in
             return UIAction(title: sortType.name, image: UIImage(), handler: { [weak self] _ in
                 guard let self = self else { return }
                 sortedTypeBehavior.onNext(sortType)
+                scrollToTop()
             })
         }
 
         let menu = UIMenu(title: "구분", children: [
             usingMenu, unsubscribedMenu,
-            UIMenu(title: "정렬 구분", children: secondSectionActions)
+            UIMenu(title: "정렬 구분", children: sortMenus)
         ])
 
         return menu
@@ -59,7 +66,15 @@ final class AdminUserViewController: UIViewController {
         return button
     }()
     
-    private let userListTableView = UITableView()
+    private let tableView = UITableView()
+    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .picoBlue
+        indicator.hidesWhenStopped = true
+        indicator.isHidden = true
+        return indicator
+    }()
     
     private var viewModel: AdminUserViewModel
     private let disposeBag: DisposeBag = DisposeBag()
@@ -116,14 +131,16 @@ final class AdminUserViewController: UIViewController {
                 viewController.searchButton.tappedAnimation()
                 let text = viewController.textFieldView.textField.text
                 viewController.searchButtonPublisher.onNext(text ?? "")
+                viewController.scrollToTop()
             })
             .disposed(by: disposeBag)
     }
     
     private func configTableView() {
-        userListTableView.refreshControl = refreshControl
-        userListTableView.register(cell: AdminUserTableViewCell.self)
-        userListTableView.rowHeight = 80
+        tableView.refreshControl = refreshControl
+        tableView.register(cell: AdminUserTableViewCell.self)
+        tableView.rowHeight = 80
+        tableView.tableFooterView = activityIndicator
     }
     
     private func bind() {
@@ -145,7 +162,7 @@ final class AdminUserViewController: UIViewController {
         let mergedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList, output.resultPagingList)
         
         mergedData
-            .bind(to: userListTableView.rx.items(cellIdentifier: AdminUserTableViewCell.reuseIdentifier, cellType: AdminUserTableViewCell.self)) { _, item, cell in
+            .bind(to: tableView.rx.items(cellIdentifier: AdminUserTableViewCell.reuseIdentifier, cellType: AdminUserTableViewCell.self)) { _, item, cell in
                 guard let imageURL = item.imageURLs[safe: 0] else { return }
                 cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
             }
@@ -156,9 +173,14 @@ final class AdminUserViewController: UIViewController {
             .subscribe(onNext: { viewController, _ in
                 // 질문 :
                 // 데이터 삭제하고 viewWillAppear 가 실행되고 오면 리로드했는데 배열이 안사라짐 ㅜ
-                viewController.userListTableView.reloadData()
+                viewController.tableView.reloadData()
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func scrollToTop() {
+        let indexPath = IndexPath(row: 0, section: 0)
+        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
     @objc private func refreshTable(_ refresh: UIRefreshControl) {
@@ -178,18 +200,22 @@ extension AdminUserViewController {
     
     private func configTableViewDatasource() {
         var isOffsetPublisherCalled = false
-        
-        userListTableView.rx.contentOffset
+
+        tableView.rx.contentOffset
             .withUnretained(self)
             .subscribe(onNext: { viewController, contentOffset in
                 let contentOffsetY = contentOffset.y
-                let contentHeight = viewController.userListTableView.contentSize.height
-                let boundsHeight = viewController.userListTableView.frame.size.height
+                let contentHeight = viewController.tableView.contentSize.height
+                let boundsHeight = viewController.tableView.frame.size.height
 
-                if contentOffsetY > contentHeight - boundsHeight {
+                if contentOffsetY > contentHeight - boundsHeight && !viewController.activityIndicator.isAnimating {
                     if !isOffsetPublisherCalled {
+                        viewController.activityIndicator.startAnimating()
                         viewController.tableViewOffsetPublisher.onNext(())
                         isOffsetPublisherCalled = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            viewController.activityIndicator.stopAnimating()
+                        }
                     }
                 } else {
                     isOffsetPublisherCalled = false
@@ -197,7 +223,7 @@ extension AdminUserViewController {
             })
             .disposed(by: disposeBag)
 
-        userListTableView.rx.modelSelected(User.self)
+        tableView.rx.modelSelected(User.self)
             .subscribe { [weak self] user in
                 let viewController = AdminUserDetailViewController(viewModel: AdminUserDetailViewModel(selectedUser: user))
                 self?.navigationController?.pushViewController(viewController, animated: true)
@@ -210,8 +236,7 @@ extension AdminUserViewController {
 extension AdminUserViewController {
     
     private func addViews() {
-        let views = [textFieldView, searchButton, sortedMenu, userListTableView]
-        view.addSubview(views)
+        view.addSubview([textFieldView, searchButton, sortedMenu, tableView])
     }
     
     private func makeConstraints() {
@@ -238,7 +263,7 @@ extension AdminUserViewController {
             make.height.equalTo(textFieldView.snp.height)
         }
         
-        userListTableView.snp.makeConstraints { make in
+        tableView.snp.makeConstraints { make in
             make.top.equalTo(textFieldView.snp.bottom).offset(padding)
             make.leading.trailing.bottom.equalToSuperview()
         }

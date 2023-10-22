@@ -56,6 +56,7 @@ final class AdminUserDetailViewController: UIViewController {
     private let selectedRecordTypePublish = PublishSubject<RecordType>()
     private let refreshablePublish = PublishSubject<RecordType>()
     private let unsubscribePublish = PublishSubject<Void>()
+    private let cellRecordTypePublish = PublishSubject<RecordType>()
     
     private var currentRecordType: RecordType = .report {
         didSet {
@@ -123,6 +124,7 @@ final class AdminUserDetailViewController: UIViewController {
             .subscribe { viewController, recordType in
                 print("선택한 레코드타입 도착, \(recordType)")
                 viewController.currentRecordType = recordType
+                viewController.scrollToRow()
             }
             .disposed(by: disposeBag)
         
@@ -149,6 +151,13 @@ final class AdminUserDetailViewController: UIViewController {
                 viewController.reloadRecordSection()
             })
             .disposed(by: disposeBag)
+        
+        cellRecordTypePublish
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, recordType in
+                viewController.selectedRecordTypePublish.onNext(recordType)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func reloadRecordSection() {
@@ -157,6 +166,11 @@ final class AdminUserDetailViewController: UIViewController {
         let recordIndex: Int = TableViewCase.record.rawValue
         tableView.reloadSections(IndexSet(emptyIndex...recordIndex), with: .automatic)
         activityIndicator.stopAnimating()
+    }
+    
+    private func scrollToRow() {
+        let indexPath = IndexPath(row: 0, section: 1)
+        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
     @objc private func tappedBackButton(_ sender: UIButton) {
@@ -231,13 +245,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         // MARK: - recordHeader
         case .recordHeader:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RecordHeaderTableViewCell.self)
-            cell.collectionViewBehavior
-                .withUnretained(self)
-                .subscribe(onNext: { viewController, recordType in
-                    print("selectedRecordType \(recordType)")
-                    viewController.selectedRecordTypePublish.onNext(recordType)
-                })
-                .disposed(by: disposeBag)
+            cell.config(publisher: cellRecordTypePublish)
             cell.selectionStyle = .none
             return cell
             
@@ -255,7 +263,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
             // 신고기록
             case .report:
                 guard let user = viewModel.reportList[safe: indexPath.row] else { return UITableViewCell() }
-                cell.configData(recordType: .report, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, createdDate: user.createdDate)
+                cell.configData(recordType: .report, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, createdDate: user.createdDate, reportReason: user.reason)
             
             // 차단기록
             case .block:
@@ -289,7 +297,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         case .recordHeader:
             return 70
         case .empty:
-            return Screen.height * 0.3
+            return UITableView.automaticDimension
         case .record:
             return 80
         }
