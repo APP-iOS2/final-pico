@@ -75,19 +75,25 @@ final class RandomBoxManager {
         return obtainedChu
     }
     
-    func boxInfo(index: Int) -> String {
-        let values = [
-            randomBoxDummy[index].first,
-            randomBoxDummy[index].second,
-            randomBoxDummy[index].third,
-            randomBoxDummy[index].fourth,
-            randomBoxDummy[index].fifth
-        ]
-
-        let infoTextArray = values.map { value in
-            "\(value)츄 획득 가능"
+    func boxInfo() -> String {
+        var result = ""
+        
+        for randomBox in randomBoxDummy {
+            let values = [
+                randomBox.first,
+                randomBox.second,
+                randomBox.third,
+                randomBox.fourth,
+                randomBox.fifth
+            ]
+            let infoTextArray = values.map { "\($0)츄" }
+            
+            if result.isEmpty {
+                result += "일반 상자 : \(infoTextArray.joined(separator: ", "))"
+            } else {
+                result += "\n고급 상자 : \(infoTextArray.joined(separator: ", "))"
+            }
         }
-
-        return infoTextArray.joined(separator: "\n")
+        return result
     }
 }
