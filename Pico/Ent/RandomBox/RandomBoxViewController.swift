@@ -12,8 +12,11 @@ import Lottie
 
 final class RandomBoxViewController: UIViewController {
     
-    private let randomBoxManager = RandomBoxViewModel()
-    let disposeBag = DisposeBag()
+    private let randomBoxViewModel = RandomBoxViewModel()
+    private let normalPaymentPublisher = PublishSubject<Int>()
+    private let advancedPaymentPublisher = PublishSubject<Int>()
+    private let obtainChuPublisher = PublishSubject<Int>()
+    private let disposeBag = DisposeBag()
     
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
@@ -213,23 +216,14 @@ final class RandomBoxViewController: UIViewController {
         self.normalBoxButton.isEnabled = false
         self.advancedBoxButton.isEnabled = false
         
-        randomBoxManager.shake(view: self.randomBoxImage) {
+        randomBoxViewModel.shake(view: self.randomBoxImage) {
             for _ in 0 ..< count {
-                let randomValue = self.randomBoxManager.getRandomValue(index: 1)
+                let randomValue = self.randomBoxViewModel.getRandomValue(index: 1)
                 boxHistory.append(randomValue)
             }
             
             let sumBoxHistory = boxHistory.reduce(0, +)
-            self.randomBoxManager.obtainChu(with: sumBoxHistory, number: 10)
-            
-            let updatedChuCount = UserDefaultsManager.shared.getChuCount() - 10
-            UserDefaultsManager.shared.updateChuCount(updatedChuCount)
-            
-            self.showAlert(with: sumBoxHistory)
-            self.showParticleEffect()
-            
-            self.normalBoxButton.isEnabled = true
-            self.advancedBoxButton.isEnabled = true
+            self.obtainChuPublisher.onNext(sumBoxHistory)
         }
     }
     
@@ -239,23 +233,14 @@ final class RandomBoxViewController: UIViewController {
         self.normalBoxButton.isEnabled = false
         self.advancedBoxButton.isEnabled = false
         
-        randomBoxManager.shake(view: self.randomBoxImage) {
+        randomBoxViewModel.shake(view: self.randomBoxImage) {
             for _ in 0 ..< count {
-                let randomValue = self.randomBoxManager.getRandomValue(index: 1)
+                let randomValue = self.randomBoxViewModel.getRandomValue(index: 1)
                 boxHistory.append(randomValue)
             }
             
             let sumBoxHistory = boxHistory.reduce(0, +)
-            self.randomBoxManager.obtainChu(with: sumBoxHistory, number: 10)
-            
-            let updatedChuCount = UserDefaultsManager.shared.getChuCount() - 10
-            UserDefaultsManager.shared.updateChuCount(updatedChuCount)
-            
-            self.showAlert(with: sumBoxHistory)
-            self.showParticleEffect()
-            
-            self.normalBoxButton.isEnabled = true
-            self.advancedBoxButton.isEnabled = true
+            self.obtainChuPublisher.onNext(sumBoxHistory)
         }
     }
     
@@ -263,6 +248,7 @@ final class RandomBoxViewController: UIViewController {
         let messageSting: String = "\(message)"
         showCustomAlert(alertType: .onlyConfirm, titleText: "뽑기 결과", messageText: "\(messageSting)츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
             self.dismiss(animated: true, completion: nil)
+            self.countLabel.text = "1"
             DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
                 self?.emitterLayer.removeFromSuperlayer()
             }
@@ -296,10 +282,38 @@ final class RandomBoxViewController: UIViewController {
 
 extension RandomBoxViewController {
     private func bind() {
+        let input = RandomBoxViewModel.Input(requestNormalPayment: normalPaymentPublisher, requestAdvancedPayment: advancedPaymentPublisher, obtainChu: obtainChuPublisher)
+        let output = randomBoxViewModel.transform(input: input)
+        
+        output.resultNormal
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.tappedNormalBox(count: Int(viewController.countLabel.text ?? "0") ?? 0)
+            }
+            .disposed(by: disposeBag)
+        
+        output.resultAdvanced
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.tappedAdvancedBox(count: Int(viewController.countLabel.text ?? "0") ?? 0)
+            }
+            .disposed(by: disposeBag)
+        
+        output.resultObtainChu
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.showAlert(with: viewController.randomBoxViewModel.obtainedChu)
+                viewController.showParticleEffect()
+                
+                viewController.normalBoxButton.isEnabled = true
+                viewController.advancedBoxButton.isEnabled = true
+            }
+            .disposed(by: disposeBag)
+        
         infoButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                let messageText = randomBoxManager.boxInfo()
+                let messageText = randomBoxViewModel.boxInfo()
                 showCustomAlert(
                     alertType: .onlyConfirm,
                     titleText: "상자 구성품",
@@ -336,7 +350,7 @@ extension RandomBoxViewController {
                         confirmButtonText: "구매하기",
                         comfrimAction: { [weak self] in
                             guard let self else { return }
-                            tappedNormalBox(count: Int(self.countLabel.text ?? "0") ?? 0)
+                            normalPaymentPublisher.onNext(10 * (Int(self.countLabel.text ?? "") ?? 1))
                         })
                 }
             })
@@ -366,7 +380,7 @@ extension RandomBoxViewController {
                         confirmButtonText: "구매하기",
                         comfrimAction: { [weak self] in
                             guard let self else { return }
-                            self.tappedAdvancedBox(count: Int(countLabel.text ?? "0") ?? 0)
+                            advancedPaymentPublisher.onNext(30 * (Int(self.countLabel.text ?? "") ?? 1))
                         })
                 }
             })
