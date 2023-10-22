@@ -249,6 +249,7 @@ extension SignUpTermsOfServiceViewController {
         default:
             return
         }
+        updateNextButton(isCheck: isCheckBoxSelected)
         sender.backgroundColor = .picoAlphaBlue
         present(TermsOfServiceModalViewController(tag: sender.tag), animated: true)
     }
