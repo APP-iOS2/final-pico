@@ -24,7 +24,7 @@ final class HomeEmptyView: UIView {
     
     lazy var reLoadButton: UIButton = {
         let button = UIButton(configuration: .plain())
-        button.setTitle("새 친구 추천 받기", for: .normal)
+        button.setTitle("새 친구 찾아보기", for: .normal)
         button.setTitleColor(.darkGray, for: .normal)
         return button
     }()

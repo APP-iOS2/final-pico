@@ -81,10 +81,11 @@ final class HomeViewController: BaseViewController {
         }
         Observable.combineLatest(users, myLikes, viewModel.blocks)
             .map { [self] users, myLikes, blocks in
-                print("내가 평가한 유저: \(myLikes.count)명")
                 let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
                 let myMbti = Set(mbti.map { $0.rawValue })
                 let myBlocks = Set(blocks.map { $0.userId })
+                print("내가 평가한 유저: \(myLikes.count)명")
+                print("내가 차단한 유저: \(blocks.count)명")
                 return users.filter { user in
                     var maxAge: Int = HomeViewModel.filterAgeMax
                     var maxDistance: Int = HomeViewModel.filterDistance

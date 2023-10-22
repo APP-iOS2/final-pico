@@ -86,6 +86,27 @@ final class LoadingAnimationView: UIView {
         }
     }
     
+    func animateNow() {
+        let jumpDuration: Double = 0.30
+        let delayDuration: Double = 1.25
+        let totalDuration: Double = delayDuration + jumpDuration * 2
+        
+        let jumpRelativeDuration: Double = jumpDuration / totalDuration
+        layoutIfNeeded()
+        
+        for (index, circle) in circles.enumerated() {
+            let delay = jumpDuration * 2 * TimeInterval(index) / TimeInterval(circles.count)
+            UIView.animateKeyframes(withDuration: totalDuration, delay: delay, options: [.repeat], animations: {
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: jumpRelativeDuration) {
+                    circle.frame.origin.y -= 30
+                }
+                UIView.addKeyframe(withRelativeStartTime: 1, relativeDuration: jumpRelativeDuration) {
+                    circle.frame.origin.y += 30
+                }
+            })
+        }
+    }
+    
     private func configCircle() {
         circles.forEach {
             $0.layer.cornerRadius = CGFloat(circleSize.value / 2)
