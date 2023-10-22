@@ -11,6 +11,7 @@ import RxSwift
 final class StoreViewModel: ViewModelType {
     private let currentUser: CurrentUser = UserDefaultsManager.shared.getUserData()
     let storeModels: [StoreModel] = [
+        StoreModel(count: 10, price: 1100, discount: nil),
         StoreModel(count: 50, price: 5500, discount: nil),
         StoreModel(count: 100, price: 11000, discount: nil),
         StoreModel(count: 500, price: 50000, discount: 10),

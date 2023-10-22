@@ -14,16 +14,42 @@ final class StoreViewController: UIViewController {
     private let tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .insetGrouped)
         view.backgroundColor = .clear
+        view.showsVerticalScrollIndicator = false
         view.addShadow(offset: CGSize(width: 3, height: 5), opacity: 0.2, radius: 5)
         return view
     }()
     
+    private let naviView = UIView()
+    
+    private let chuImageView: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage(named: "chu")
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+    
+    private let chuCountLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .left
+        label.font = .picoDescriptionFont
+        return label
+    }()
+    
+    private let contentLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.picoDescriptionFont
+        label.text = "꽝은 절대 없다!\n랜덤박스를 열어 부족한 츄를 획득해보세요!"
+        label.numberOfLines = 0
+        return label
+    }()
+    
     private let viewModel: StoreViewModel
     private let disposeBag: DisposeBag = DisposeBag()
-    
+    private var currentChuCount = 0
     private let purchaseChuCountPublish = PublishSubject<StoreModel>()
     private let consumeChuCountPublish = PublishSubject<Int>()
-    
+
     init(viewModel: StoreViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -41,8 +67,13 @@ final class StoreViewController: UIViewController {
         addViews()
         makeConstraints()
         bind()
+        configNavigationItem()
     }
-    
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        chuCountLabel.text = "\(UserDefaultsManager.shared.getChuCount())"
+    }
     private func configView() {
         title = "Store"
         view.configBackgroundColor()
@@ -52,6 +83,7 @@ final class StoreViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(cell: StoreTableCell.self)
+        tableView.register(cell: StoreTableBannerCell.self)
     }
     
     private func bind() {
@@ -75,8 +107,30 @@ final class StoreViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
+    private func configNavigationItem() {
+        chuCountLabel.text = "\(currentChuCount)"
+        naviView.addSubview([chuImageView, chuCountLabel])
+        
+        chuImageView.snp.makeConstraints { make in
+            make.top.leading.bottom.equalToSuperview()
+            make.trailing.equalTo(chuCountLabel.snp.leading)
+            make.width.height.equalTo(25)
+            
+        }
+        
+        chuCountLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-6)
+        }
+        
+        let rightItem = UIBarButtonItem(customView: naviView)
+             navigationItem.rightBarButtonItem = rightItem
+    }
+    
     private func addViews() {
-        view.addSubview(tableView)
+      
+        view.addSubview([tableView])
+        
     }
     
     private func makeConstraints() {
@@ -92,15 +146,22 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return viewModel.storeModels.count + 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: StoreTableCell.self)
-        guard let storeModel = viewModel.storeModels[safe: indexPath.section] else { return UITableViewCell() }
-        
-        cell.configure(storeModel)
-        return cell
+        switch indexPath.section {
+        case 0:
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: StoreTableBannerCell.self)
+            return cell
+            
+        default:
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: StoreTableCell.self)
+            guard let storeModel = viewModel.storeModels[safe: indexPath.section - 1] else { return UITableViewCell() }
+            
+            cell.configure(storeModel)
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -115,14 +176,19 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 10.0
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            break
+        default:
+            self.showCustomAlert(alertType: .canCancel, titleText: "결제 알림", messageText: "결제하시겠습니까 ?", confirmButtonText: "결제", comfrimAction: { [weak self] in
+                guard let self = self else { return }
+                guard let storeModel = viewModel.storeModels[safe: indexPath.section - 1] else { return }
+                
+                purchaseChuCountPublish.onNext(storeModel)
+            })
+        }
         tableView.deselectRow(at: indexPath, animated: true)
-        self.showCustomAlert(alertType: .canCancel, titleText: "결제 알림", messageText: "결제하시겠습니까 ?", confirmButtonText: "결제", comfrimAction: { [weak self] in
-            guard let self = self else { return }
-            guard let storeModel = viewModel.storeModels[safe: indexPath.section] else { return }
-            
-            purchaseChuCountPublish.onNext(storeModel)
-        })
     }
 }
