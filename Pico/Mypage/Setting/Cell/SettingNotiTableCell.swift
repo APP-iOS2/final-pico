@@ -87,8 +87,15 @@ final class SettingNotiTableCell: UITableViewCell {
 extension SettingNotiTableCell: SwitchButtonDelegate {
     func isOnValueChange(isOnSwitch: Bool) {
         if isOnSwitch {
-            NotificationService.shared.registerRemoteNotification()
+//            NotificationService.shared.registerRemoteNotification()
+//            showCustomAlert(alertType: <#T##AlertType#>, titleText: <#T##String#>, messageText: <#T##String#>, cancelButtonText: <#T##String?#>, confirmButtonText: <#T##String#>, comfrimAction: <#T##(() -> Void)?#>, cancelAction: <#T##(() -> Void)?#>)
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
+            }
+            
         } else {
+           
+           
         }
     }
 }

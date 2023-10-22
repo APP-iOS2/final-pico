@@ -84,7 +84,7 @@ final class SettingViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let isPushOn = UIApplication.shared.isRegisteredForRemoteNotifications
-        if !isPushOn {
+        if isPushOn {
             notiState = true
             notiMarketinState = true
         } else {
@@ -177,8 +177,10 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate {
             switch indexPath.row {
             case 0:
                 cell.configure(titleLabel: Settings.allowNotifications.name, subTitleLabel: "PICO의 모든 알림을 허용합니다", state: notiState)
+                cell.selectionStyle = .none
             case 1:
                 cell.configure(titleLabel: Settings.allowMarketingNotifications.name, subTitleLabel: "마케팅 알림을 허용합니다", state: notiMarketinState)
+                cell.selectionStyle = .none
             default:
                 break
             }
