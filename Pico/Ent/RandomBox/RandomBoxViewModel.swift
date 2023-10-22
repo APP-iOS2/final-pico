@@ -1,5 +1,5 @@
 //
-//  RandomBoxModel.swift
+//  RandomBoxViewModel.swift
 //  Pico
 //
 //  Created by 오영석 on 2023/09/25.
@@ -29,7 +29,7 @@ struct RandomPercent {
     let fifthRange = 99...100
 }
 
-final class RandomBoxManager {
+final class RandomBoxViewModel {
     let randomPercent = RandomPercent()
     private var obtainedChu: Int = 0
     

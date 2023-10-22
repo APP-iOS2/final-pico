@@ -99,7 +99,7 @@ final class RecordHeaderTableViewCell: UITableViewCell {
     
     private var selectedCellIndex: Int = 0
     
-    let selectedRecordTypePublisher = BehaviorSubject(value: RecordType.report)
+    let collectionViewBehavior = BehaviorSubject(value: RecordType.report)
     
     // MARK: - initializer
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -151,17 +151,17 @@ extension RecordHeaderTableViewCell: UICollectionViewDelegate, UICollectionViewD
         collectionView.reloadData()
         
         guard let recordType = RecordType.allCases[safe: selectedCellIndex] else { return }
-        selectedRecordTypePublisher.onNext(recordType)
+        collectionViewBehavior.onNext(recordType)
     }
 }
 
 // MARK: - UI 관련
 extension RecordHeaderTableViewCell {
-    func addViews() {
+    private func addViews() {
         contentView.addSubview(collectionView)
     }
     
-    func makeConstraints() {
+    private func makeConstraints() {
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

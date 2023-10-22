@@ -164,10 +164,15 @@ final class AdminUserDetailViewController: UIViewController {
     }
     
     @objc private func tappedUnsubscribeButton(_ sender: UIButton) {
-        showCustomAlert(alertType: .canCancel, titleText: "탈퇴 알림", messageText: "탈퇴시키시겠습니까 ?", confirmButtonText: "탈퇴", comfrimAction: { [weak self] in
-            guard let self else { return }
-            unsubscribePublish.onNext(())
-        })
+        showCustomAlert(
+            alertType: .canCancel,
+            titleText: "탈퇴 알림",
+            messageText: "탈퇴시키시겠습니까 ?",
+            confirmButtonText: "탈퇴",
+            comfrimAction: { [weak self] in
+                guard let self else { return }
+                unsubscribePublish.onNext(())
+            })
     }
 }
 
@@ -226,7 +231,7 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         // MARK: - recordHeader
         case .recordHeader:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RecordHeaderTableViewCell.self)
-            cell.selectedRecordTypePublisher
+            cell.collectionViewBehavior
                 .withUnretained(self)
                 .subscribe(onNext: { viewController, recordType in
                     print("selectedRecordType \(recordType)")

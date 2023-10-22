@@ -9,8 +9,8 @@ import UIKit
 
 extension UIView {
     /// 기본 배경색 설정
-    func configBackgroundColor() {
-        self.backgroundColor = .systemBackground
+    func configBackgroundColor(color: UIColor = .systemBackground) {
+        self.backgroundColor = color
     }
     
     /// 배경 탭하면 키보드 내리기

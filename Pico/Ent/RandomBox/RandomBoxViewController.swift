@@ -8,10 +8,11 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import Lottie
 
 final class RandomBoxViewController: UIViewController {
     
-    private let randomBoxManager = RandomBoxManager()
+    private let randomBoxManager = RandomBoxViewModel()
     let disposeBag = DisposeBag()
     
     private let backgroundImageView: UIImageView = {
@@ -21,10 +22,10 @@ final class RandomBoxViewController: UIViewController {
         return imageView
     }()
     
-    private let randomBoxTitleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.boldSystemFont(ofSize: 36)
+        label.font = .picoGameTitleFont
         label.text = "Random Box"
         label.textColor = .picoBlue
         return label
@@ -32,30 +33,34 @@ final class RandomBoxViewController: UIViewController {
     
     private let contentLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.picoSubTitleFont
         label.text = "랜덤박스를 열어 부족한 츄를 획득해보세요!\n꽝은 절대 없다!\n최대 100츄 획득의 기회를 놓치지 마세요!"
         label.numberOfLines = 0
+        label.setLineSpacing(spacing: 10)
+        label.textAlignment = .center
         return label
     }()
     
     private let guidLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontGray
-        label.text = "일반 뽑기는 10츄 고급 뽑기는 30츄가 소모됩니다"
+        label.text = "일반 뽑기는 10츄\n고급 뽑기는 30츄가 소모됩니다"
+        label.numberOfLines = 0
+        label.setLineSpacing(spacing: 5)
+        label.textAlignment = .center
         return label
     }()
     
-    private let randomBoxImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "chu")
-        imageView.contentMode = .scaleAspectFit
-        imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-        imageView.setContentHuggingPriority(.defaultLow, for: .vertical)
-        return imageView
-    }()
+    private let randomBoxImage: LottieAnimationView = LottieAnimationView(name: "randomBox")
+    
+//    private let randomBoxImage: UIImageView = {
+//        let imageView = UIImageView()
+//        imageView.image = UIImage(named: "chu")
+//        imageView.contentMode = .scaleAspectFit
+//        imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+//        imageView.setContentHuggingPriority(.defaultLow, for: .vertical)
+//        return imageView
+//    }()
     
     private let numberLabel: UILabel = {
         let label = UILabel()
@@ -124,40 +129,33 @@ final class RandomBoxViewController: UIViewController {
     }
     
     private func addViews() {
-        [backgroundImageView, randomBoxTitleLabel, contentLabel, guidLabel, randomBoxImage, numberLabel, countLabel, plusButton, minusButton, normalBoxButton, advancedBoxButton, infoButton].forEach { item in
-            view.addSubview(item)
-        }
+        view.addSubview([backgroundImageView, titleLabel, contentLabel, guidLabel, randomBoxImage, numberLabel, countLabel, plusButton, minusButton, normalBoxButton, advancedBoxButton, infoButton])
     }
     
     private func makeConstraints() {
         let padding: CGFloat = 20
-        let half: CGFloat = 0.5
-        let buttonWidth: CGFloat = Screen.width / 2 - padding - 10
         
         backgroundImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
-        randomBoxTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(Screen.height / 12)
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
             make.centerX.equalToSuperview()
         }
         
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(randomBoxTitleLabel.snp.bottom).offset(padding)
+            make.top.equalTo(titleLabel.snp.bottom).offset(padding)
             make.centerX.equalToSuperview()
         }
         
         guidLabel.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(padding * half)
+            make.top.equalTo(contentLabel.snp.bottom).offset(padding)
             make.centerX.equalToSuperview()
         }
         
         randomBoxImage.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(padding)
-            make.centerX.equalToSuperview()
-            make.width.equalTo(randomBoxImage.snp.height)
-            make.height.equalTo(Screen.height / 3)
+            make.center.equalTo(view.safeAreaLayoutGuide)
         }
         
         numberLabel.snp.makeConstraints { make in
@@ -187,14 +185,14 @@ final class RandomBoxViewController: UIViewController {
             make.top.equalTo(countLabel.snp.bottom).offset(padding)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(padding)
             make.trailing.equalTo(advancedBoxButton.snp.leading).offset(-padding)
-            make.width.equalTo(buttonWidth)
+            make.width.equalTo(120)
             make.height.equalTo(padding * 2)
         }
         
         advancedBoxButton.snp.makeConstraints { make in
             make.top.equalTo(countLabel.snp.bottom).offset(padding)
             make.leading.equalTo(normalBoxButton.snp.trailing).offset(padding)
-            make.width.equalTo(buttonWidth)
+            make.width.equalTo(120)
             make.height.equalTo(padding * 2)
         }
         
@@ -241,7 +239,7 @@ final class RandomBoxViewController: UIViewController {
             self.advancedBoxButton.isEnabled = true
         }
     }
-
+    
     private func tappedAdvancedBox(count: Int) {
         var boxHistory: [Int] = []
         
@@ -267,7 +265,7 @@ final class RandomBoxViewController: UIViewController {
             self.advancedBoxButton.isEnabled = true
         }
     }
-
+    
     private func showAlert(with message: Int) {
         let messageSting: String = "\(message)"
         showCustomAlert(alertType: .onlyConfirm, titleText: "뽑기 결과", messageText: "\(messageSting)츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
@@ -291,13 +289,13 @@ final class RandomBoxViewController: UIViewController {
         cell.velocity = 300
         cell.velocityRange = 50
         cell.yAcceleration = 600
-
+        
         emitterLayer.emitterPosition = CGPoint(x: view.bounds.midX, y: view.bounds.midY)
         emitterLayer.emitterShape = .point
         emitterLayer.renderMode = .additive
         emitterLayer.emitterCells = [cell]
     }
-
+    
     private func showParticleEffect() {
         view.layer.addSublayer(emitterLayer)
     }
@@ -308,42 +306,75 @@ extension RandomBoxViewController {
         infoButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                let messageText = self.randomBoxManager.boxInfo()
-                showCustomAlert(alertType: .onlyConfirm, titleText: "상자 구성품", messageText: messageText, confirmButtonText: "닫기", comfrimAction: {
-                    self.dismiss(animated: true, completion: nil)
-                })
+                let messageText = randomBoxManager.boxInfo()
+                showCustomAlert(
+                    alertType: .onlyConfirm,
+                    titleText: "상자 구성품",
+                    messageText: messageText,
+                    confirmButtonText: "닫기",
+                    comfrimAction: { [weak self] in
+                        guard let self = self else { return }
+                        dismiss(animated: true, completion: nil)
+                    })
             })
             .disposed(by: disposeBag)
         
         normalBoxButton.rx.tap
             .withUnretained(self)
-            .subscribe(onNext: { [weak self] _, _ in
-                guard let self = self else { return }
-                if let countText = self.countLabel.text, let count = Int(countText), UserDefaultsManager.shared.getChuCount() < (10 * count) {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "취소", confirmButtonText: "스토어로 이동", comfrimAction: {
-                        let storeViewController = StoreViewController(viewModel: StoreViewModel())
-                        self.navigationController?.pushViewController(storeViewController, animated: true)
-                    })
+            .subscribe(onNext: { viewController, _ in
+                if let countText = viewController.countLabel.text, let count = Int(countText), UserDefaultsManager.shared.getChuCount() < (10 * count) {
+                    viewController.showCustomAlert(
+                        alertType: .canCancel,
+                        titleText: "보유 츄 부족",
+                        messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개",
+                        cancelButtonText: "취소",
+                        confirmButtonText: "스토어로 이동",
+                        comfrimAction: { [weak self] in
+                            guard let self else { return }
+                            let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                            navigationController?.pushViewController(storeViewController, animated: true)
+                        })
                 } else {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "일반 박스", messageText: "보유 츄 : \(UserDefaultsManager.shared.getChuCount())\n\(10 * (Int(self.countLabel.text ?? "") ?? 1))츄를 사용하여\n일반 박스 \(self.countLabel.text ?? "1")개를 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
-                        self.tappedNormalBox(count: Int(self.countLabel.text ?? "0") ?? 0)
-                    })
+                    viewController.showCustomAlert(
+                        alertType: .canCancel,
+                        titleText: "일반 박스",
+                        messageText: "보유 츄 : \(UserDefaultsManager.shared.getChuCount())\n\(10 * (Int(self.countLabel.text ?? "") ?? 1))츄를 사용하여\n일반 박스 \(self.countLabel.text ?? "1")개를 구매합니다",
+                        cancelButtonText: "취소",
+                        confirmButtonText: "구매하기",
+                        comfrimAction: { [weak self] in
+                            guard let self else { return }
+                            tappedNormalBox(count: Int(self.countLabel.text ?? "0") ?? 0)
+                        })
                 }
             })
             .disposed(by: disposeBag)
-
+        
         advancedBoxButton.rx.tap
             .withUnretained(self)
-            .subscribe(onNext: { _, _ in
-                if let countText = self.countLabel.text, let count = Int(countText), UserDefaultsManager.shared.getChuCount() < (30 * count) {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "취소", confirmButtonText: "스토어로 이동", comfrimAction: {
-                        let storeViewController = StoreViewController(viewModel: StoreViewModel())
-                        self.navigationController?.pushViewController(storeViewController, animated: true)
-                    })
+            .subscribe(onNext: { viewController, _ in
+                if let countText = viewController.countLabel.text, let count = Int(countText), UserDefaultsManager.shared.getChuCount() < (30 * count) {
+                    viewController.showCustomAlert(
+                        alertType: .canCancel,
+                        titleText: "보유 츄 부족",
+                        messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개",
+                        cancelButtonText: "취소",
+                        confirmButtonText: "스토어로 이동",
+                        comfrimAction: { [weak self] in
+                            guard let self else { return }
+                            let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                            navigationController?.pushViewController(storeViewController, animated: true)
+                        })
                 } else {
-                    self.showCustomAlert(alertType: .canCancel, titleText: "고급 박스", messageText: "보유 츄 : \(UserDefaultsManager.shared.getChuCount())\n\(30 * (Int(self.countLabel.text ?? "") ?? 1))츄를 사용하여\n고급 박스 \(self.countLabel.text ?? "1")개를 구매합니다", cancelButtonText: "취소", confirmButtonText: "구매하기", comfrimAction: {
-                        self.tappedAdvancedBox(count: Int(self.countLabel.text ?? "0") ?? 0)
-                    })
+                    viewController.showCustomAlert(
+                        alertType: .canCancel,
+                        titleText: "고급 박스",
+                        messageText: "보유 츄 : \(UserDefaultsManager.shared.getChuCount())\n\(30 * (Int(viewController.countLabel.text ?? "") ?? 1))츄를 사용하여\n고급 박스 \(viewController.countLabel.text ?? "1")개를 구매합니다",
+                        cancelButtonText: "취소",
+                        confirmButtonText: "구매하기",
+                        comfrimAction: { [weak self] in
+                            guard let self else { return }
+                            self.tappedAdvancedBox(count: Int(countLabel.text ?? "0") ?? 0)
+                        })
                 }
             })
             .disposed(by: disposeBag)

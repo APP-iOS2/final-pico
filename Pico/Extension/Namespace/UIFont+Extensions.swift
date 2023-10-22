@@ -72,4 +72,8 @@ extension UIFont {
     static var picoProfileNameFont: UIFont {
         return UIFont.systemFont(ofSize: 25, weight: .medium)
     }
+    /// 게임 제목 폰트 사이즈 (40, semibold)
+    static var picoGameTitleFont: UIFont {
+        return UIFont.systemFont(ofSize: 40, weight: .semibold)
+    }
 }

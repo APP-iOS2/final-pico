@@ -31,6 +31,7 @@ final class MailReceiveTableListController: BaseViewController {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(cell: MailListTableViewCell.self)
         tableView.showsVerticalScrollIndicator = false
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         return tableView
     }()
     

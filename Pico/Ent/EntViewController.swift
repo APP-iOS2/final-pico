@@ -9,16 +9,22 @@ final class EntViewController: BaseViewController {
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
         imageView.contentMode = .scaleAspectFill
+        imageView.alpha = 0.7
         return imageView
     }()
     
-    private let randomBoxHeaderView: RandomBoxView = {
-        let view = RandomBoxView()
-        view.backgroundColor = .white
-        return view
+    private let headerView: UIView = UIView()
+    
+    private let headerImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "banner")
+        imageView.contentMode = .scaleAspectFill
+        return imageView
     }()
     
-    private let worldCupTitleLabel: UILabel = {
+    private let worldcupView: UIView = UIView()
+    
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoTitleFont
@@ -29,7 +35,7 @@ final class EntViewController: BaseViewController {
     private let pickMeLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.boldSystemFont(ofSize: 36)
+        label.font = .picoGameTitleFont
         label.text = "Pick Me"
         label.textColor = .picoBlue
         return label
@@ -37,10 +43,10 @@ final class EntViewController: BaseViewController {
     
     private let contentLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
-        label.font = UIFont.picoButtonFont
-        label.text = "마음에 드는 이성을 골라보세요!\n최종 선택 이성에게 채팅신청 시\n피코가 채팅 신청 비용의 50%를\n부담해 드릴게요!"
+        label.text = "마음에 드는 이성을 골라보세요!\n최종 선택 이성에게 채팅신청 시, 피코가 채팅 신청 비용의 50%를 부담해 드릴게요!"
         label.numberOfLines = 0
+        label.setLineSpacing(spacing: 10)
+        label.textAlignment = .center
         return label
     }()
     
@@ -53,8 +59,9 @@ final class EntViewController: BaseViewController {
     private let guideLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.picoButtonFont
-        label.textColor = .gray
+        label.textColor = .picoFontGray
+        label.font = .picoDescriptionFont
+        label.text = "24시간에 한 번만 진행 가능합니다"
         return label
     }()
     
@@ -65,71 +72,70 @@ final class EntViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
         configNavigationBackButton()
         addViews()
         makeConstraints()
         configRxBinding()
         configTapGesture()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        checkGameAvailability()
-    }
-    
+
     deinit {
         timer?.invalidate()
         timer = nil
     }
     
     private func addViews() {
-        [backgroundImageView, randomBoxHeaderView, worldCupTitleLabel, pickMeLabel, contentLabel, gameStartButton, guideLabel].forEach { item in
-            view.addSubview(item)
-        }
+        view.addSubview([backgroundImageView, headerView, titleLabel, pickMeLabel, contentLabel, gameStartButton, guideLabel])
+        headerView.addSubview(headerImageView)
     }
     
     private func makeConstraints() {
-        let padding: CGFloat = 20
-        let half: CGFloat = 0.5
+        let padding: CGFloat = 30
         
         backgroundImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
-        randomBoxHeaderView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+        headerView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            make.height.equalTo(Screen.height * 0.15)
+            make.height.equalTo(120)
         }
         
-        worldCupTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(randomBoxHeaderView.snp.bottom).offset(padding * 2)
-            make.centerX.equalToSuperview().offset(half)
+        headerImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(headerImageView.snp.bottom).offset(60)
+            make.leading.equalToSuperview().offset(45)
+            make.trailing.equalToSuperview().offset(-45)
         }
         
         pickMeLabel.snp.makeConstraints { make in
-            make.top.equalTo(worldCupTitleLabel.snp.bottom).offset(padding)
-            make.centerX.equalToSuperview().offset(half)
+            make.top.equalTo(titleLabel.snp.bottom).offset(padding)
+            make.leading.equalTo(titleLabel.snp.leading)
+            make.trailing.equalTo(titleLabel.snp.trailing)
         }
         
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(pickMeLabel.snp.bottom).offset(padding)
-            make.centerX.equalToSuperview().offset(half)
+            make.leading.equalTo(titleLabel.snp.leading)
+            make.trailing.equalTo(titleLabel.snp.trailing)
         }
         
         gameStartButton.snp.makeConstraints { make in
-            make.top.equalTo(contentLabel.snp.bottom).offset(Screen.height / 10)
-            make.centerX.equalToSuperview().offset(half)
-            make.leading.equalToSuperview().offset(Screen.width / 4)
-            make.trailing.equalToSuperview().offset(-Screen.width / 4)
-            make.height.equalTo(Screen.width / 10)
+            make.leading.equalToSuperview().offset(Screen.width * 0.2)
+            make.trailing.equalToSuperview().offset(-Screen.width * 0.2)
+            make.height.equalTo(40)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-80)
         }
         
         guideLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-padding * 1.5)
+            make.top.equalTo(gameStartButton.snp.bottom).offset(15)
+            make.leading.equalTo(titleLabel.snp.leading)
+            make.trailing.equalTo(titleLabel.snp.trailing)
         }
     }
     
@@ -154,11 +160,10 @@ final class EntViewController: BaseViewController {
                 gameStartButton.isEnabled = false
             } else {
                 gameStartButton.isEnabled = true
-                guideLabel.text = "24시간에 한 번만 진행 가능합니다"
             }
         }
     }
-
+    
     private func tappedGameStartButton() {
         let currentTime = Date()
         UserDefaults.standard.set(currentTime, forKey: "lastStartedTime")
@@ -169,7 +174,7 @@ final class EntViewController: BaseViewController {
             self.dismiss(animated: true, completion: nil)
         }
     }
-
+    
     private func startTimer() {
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
         if let timer = timer {
@@ -185,19 +190,19 @@ final class EntViewController: BaseViewController {
             let seconds = remainingTime % 60
             guideLabel.text = String(format: "%02d시간 %02d분 %02d초 뒤에 다시 시작 가능합니다", hours, minutes, seconds)
         } else {
-            guideLabel.text = "24시간에 한 번만 진행 가능합니다"
             gameStartButton.isEnabled = true
             timer?.invalidate()
             timer = nil
+            guideLabel.text = "24시간에 한 번만 진행 가능합니다"
         }
     }
     
     private func configTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedRandomBoxView))
-        randomBoxHeaderView.addGestureRecognizer(tapGesture)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedHeaderView))
+        headerView.addGestureRecognizer(tapGesture)
     }
     
-    @objc func tappedRandomBoxView(_ sender: UITapGestureRecognizer) {
+    @objc func tappedHeaderView(_ sender: UITapGestureRecognizer) {
         let randomBoxViewController = RandomBoxViewController()
         self.navigationController?.pushViewController(randomBoxViewController, animated: true)
         self.tabBarController?.tabBar.isHidden = true
