@@ -12,10 +12,10 @@ final class HobbyCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.text = "test"
         label.layer.masksToBounds = true
-        label.layer.cornerRadius = 6
-        label.font = .picoContentFont
+        label.layer.cornerRadius = 4
+        label.font = .picoButtonFont
         label.textAlignment = .center
-        label.backgroundColor = .picoGray
+        label.backgroundColor = .systemGray6
         return label
     }()
     

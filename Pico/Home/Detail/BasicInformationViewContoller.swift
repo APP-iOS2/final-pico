@@ -26,7 +26,7 @@ final class BasicInformationViewContoller: UIViewController {
     private let locationLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = .picoContentFont
+        label.font = .picoMBTISmallLabelFont
         return label
     }()
     
@@ -40,7 +40,7 @@ final class BasicInformationViewContoller: UIViewController {
     private let heightLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = .picoContentFont
+        label.font = .picoMBTISmallLabelFont
         return label
     }()
     
@@ -58,7 +58,7 @@ final class BasicInformationViewContoller: UIViewController {
         locationLabel.text = locationText
         
         if let heightText = heightText {
-            heightLabel.text = " \(heightText) cm"
+            heightLabel.text = " \(heightText)cm"
         } else {
             [heightImageView, heightLabel].forEach {
                 $0.removeFromSuperview()

@@ -26,6 +26,7 @@ final class MailSendTableListController: BaseViewController {
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(cell: MailListTableViewCell.self)
+        tableView.showsVerticalScrollIndicator = false
         return tableView
     }()
     // MARK: - MailView +LifeCycle
@@ -34,14 +35,12 @@ final class MailSendTableListController: BaseViewController {
         bind()
         configRefresh()
         configTableView()
-        loadDataPublsher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if viewModel.sendList.isEmpty {
-            refreshPublisher.onNext(())
-        }
+        loadDataPublsher.onNext(())
+        refreshPublisher.onNext(())
         checkSendEmptyPublisher.onNext(())
         mailListTableView.reloadData()
     }
@@ -74,9 +73,8 @@ extension MailSendTableListController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MailListTableViewCell.self)
-        
-        let item = viewModel.sendList[indexPath.row]
-        cell.getData(senderUser: item, type: .send)
+        guard let item = viewModel.sendList[safe: indexPath.row] else { return UITableViewCell() }
+        cell.config(senderUser: item, type: .send)
         cell.selectionStyle = .none
         
         return cell
@@ -125,9 +123,7 @@ extension MailSendTableListController {
                 } else {
                     viewController.view.addSubview(viewController.mailListTableView)
                     viewController.mailListTableView.snp.makeConstraints { make in
-                        make.top.equalToSuperview().offset(10)
-                        make.leading.trailing.equalToSuperview()
-                        make.bottom.equalToSuperview().offset(-10)
+                        make.edges.equalToSuperview()
                     }
                 }
             })

@@ -135,7 +135,11 @@ final class CustomPopupViewController: UIViewController {
         alertView.snp.makeConstraints { make in
             make.centerX.centerY.equalTo(safeArea)
             make.height.lessThanOrEqualTo(safeArea).multipliedBy(0.4)
-            make.width.equalTo(safeArea).multipliedBy(0.7)
+            if UIDevice.current.model.contains("iPhone") {
+                make.width.equalTo(safeArea).multipliedBy(0.7)
+            } else if UIDevice.current.model.contains("iPad") {
+                make.width.equalTo(300)
+            }
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -153,11 +157,11 @@ final class CustomPopupViewController: UIViewController {
         }
         
         buttonsView.snp.makeConstraints { make in
-            make.top.equalTo(messageLabel.snp.bottom).offset(20)
+            make.top.equalTo(messageLabel.snp.bottom).offset(30)
             make.centerX.equalToSuperview()
             make.leading.trailing.equalTo(titleLabel)
             make.bottom.equalToSuperview().offset(-20)
-            make.height.equalTo(90)
+            make.height.equalTo(80)
         }
         switch alertType {
         case .onlyConfirm:
@@ -166,7 +170,7 @@ final class CustomPopupViewController: UIViewController {
                 make.centerX.equalToSuperview()
                 make.bottom.equalToSuperview().offset(-20)
                 make.width.equalTo(titleLabel)
-                make.height.equalTo(40)
+                make.height.equalTo(30)
             }
             confirmButton.snp.makeConstraints { make in
                 make.top.leading.trailing.bottom.equalToSuperview()
@@ -174,11 +178,11 @@ final class CustomPopupViewController: UIViewController {
         case .canCancel:
             confirmButton.snp.makeConstraints { make in
                 make.top.leading.trailing.equalToSuperview()
-                make.height.equalTo(40)
+                make.height.equalTo(35)
             }
             cancelButton.snp.makeConstraints { make in
                 make.leading.trailing.bottom.equalToSuperview()
-                make.height.equalTo(40)
+                make.height.equalTo(35)
             }
         }
     }

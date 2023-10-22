@@ -1,8 +1,8 @@
 //
-//  NotificationTableViewCell.swift
+//  AdminUserTableViewCell.swift
 //  Pico
 //
-//  Created by 방유빈 on 2023/09/26.
+//  Created by 최하늘 on 10/21/23.
 //
 
 import UIKit
@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 import Kingfisher
 
-final class NotificationTableViewCell: UITableViewCell {
+final class AdminUserTableViewCell: UITableViewCell {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -35,7 +35,7 @@ final class NotificationTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: nil, scale: .small)
+    private let mbitLabel: MBTILabelView = MBTILabelView(mbti: .enfp, scale: .small)
     
     private let contentLabel: UILabel = {
         let label = UILabel()
@@ -65,35 +65,76 @@ final class NotificationTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         profileImageView.image = UIImage(named: "AppIcon")
-        mbtiLabel.setMbti(mbti: nil)
         iconImageView.image = UIImage()
         nameLabel.text = ""
         contentLabel.text = ""
     }
     
-    func configData(notitype: NotiType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, date: Double) {
+    private func setData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType) {
         guard let url = URL(string: imageUrl) else { return }
         profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         profileImageView.kf.setImage(with: url)
-        iconImageView.image = UIImage(systemName: notitype.iconSystemImageName)
-        iconImageView.tintColor = notitype.iconColor
-        contentLabel.text = notitype.content
         nameLabel.text = "\(nickName), \(age)"
-        mbtiLabel.setMbti(mbti: mbti)
-        createDateLabel.isHidden = false
-        createDateLabel.text = date.timeAgoSinceDate()
+        mbitLabel.setMbti(mbti: mbti)
     }
+    
+    func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
+        setData(imageUrl: imageUrl, nickName: nickName, age: age, mbti: mbti)
+        iconImageView.image = UIImage()
+        contentLabel.text = "가입일자 \(createdDate.toString(dateSeparator: .dot))"
+        contentLabel.font = .picoDescriptionFont
+        contentLabel.textColor = .picoFontGray
+    }
+    
+    func configData(recordType: RecordType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
+        setData(imageUrl: imageUrl, nickName: nickName, age: age, mbti: mbti)
+        iconImageView.image = UIImage(systemName: recordType.iconSystemImageName)
+        iconImageView.tintColor = recordType.iconColor
+        contentLabel.text = recordType.content
+        createDateLabel.isHidden = false
+        createDateLabel.text = createdDate.timeAgoSinceDate()
+    }
+    
+    func configData(recordType: RecordType, payment: Payment.PaymentInfo) {
+        updateConstraint()
+        profileImageView.image = UIImage(named: "AppIcon")
+        iconImageView.image = UIImage(systemName: recordType.iconSystemImageName)
+        iconImageView.tintColor = recordType.iconColor
+        mbitLabel.isHidden = true
+        nameLabel.text = "\(payment.purchaseChuCount)츄"
+        nameLabel.textAlignment = .right
+        if payment.price != 0 {
+            contentLabel.text = "\(payment.price.formattedSeparator())\(recordType.content)"
+        } else {
+            contentLabel.text = ""
+        }
+        contentLabel.textAlignment = .right
+        createDateLabel.isHidden = false
+        createDateLabel.text = payment.purchasedDate.timeAgoSinceDate()
+        createDateLabel.textAlignment = .right
+    }
+    
+    private func updateConstraint() {
+        nameLabel.snp.remakeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(10)
+        }
+    }
+}
+
+extension AdminUserTableViewCell {
     
     private func addViews() {
         contentView.addSubview([profileImageView, iconImageView, labelView])
-        labelView.addSubview([nameLabel, mbtiLabel, contentLabel, createDateLabel])
+        labelView.addSubview([nameLabel, mbitLabel, contentLabel, createDateLabel])
     }
     
     private func makeConstraints() {
         profileImageView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
+            make.top.equalToSuperview().offset(10)
             make.leading.equalTo(10)
-            make.width.height.equalTo(60)
+            make.bottom.equalToSuperview().offset(-10)
+            make.width.equalTo(profileImageView.snp.height)
         }
         
         iconImageView.snp.makeConstraints { make in
@@ -102,8 +143,8 @@ final class NotificationTableViewCell: UITableViewCell {
         }
         
         labelView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-10)
             make.leading.equalTo(profileImageView.snp.trailing).offset(10)
+            make.trailing.equalToSuperview().offset(-10)
             make.centerY.equalTo(profileImageView)
         }
         
@@ -112,23 +153,23 @@ final class NotificationTableViewCell: UITableViewCell {
             make.leading.equalToSuperview()
         }
         
-        mbtiLabel.snp.makeConstraints { make in
+        mbitLabel.snp.makeConstraints { make in
             make.leading.equalTo(nameLabel.snp.trailing).offset(10)
             make.centerY.equalTo(nameLabel)
-            make.height.equalTo(mbtiLabel.frame.size.height)
-            make.width.equalTo(mbtiLabel.frame.size.width)
+            make.height.equalTo(mbitLabel.frame.size.height)
+            make.width.equalTo(mbitLabel.frame.size.width)
         }
         
         contentLabel.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(5)
             make.leading.equalTo(nameLabel)
-            make.trailing.equalToSuperview()
+            make.trailing.equalTo(-10)
         }
         
         createDateLabel.snp.makeConstraints { make in
             make.top.equalTo(contentLabel.snp.bottom).offset(5)
-            make.leading.equalTo(nameLabel)
-            make.trailing.equalToSuperview()
+            make.leading.equalTo(nameLabel).offset(2)
+            make.trailing.equalTo(contentLabel.snp.trailing)
             make.bottom.equalToSuperview()
         }
     }

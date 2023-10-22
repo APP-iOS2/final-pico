@@ -22,7 +22,7 @@ final class AdminUserViewController: UIViewController {
     }()
 
     private func createMenu() -> UIMenu {
-        let usingMenu = UIAction(title: "사용중인 유저", image: UIImage(), handler: { [weak self] _ in
+        let usingMenu = UIAction(title: "사용중인 회원", image: UIImage(), handler: { [weak self] _ in
             guard let self = self else { return }
             userListTypeBehavior.onNext(.using)
         })
@@ -35,7 +35,7 @@ final class AdminUserViewController: UIViewController {
         let secondSectionActions = SortType.allCases.map { sortType in
             return UIAction(title: sortType.name, image: UIImage(), handler: { [weak self] _ in
                 guard let self = self else { return }
-                sortedTpyeBehavior.onNext(sortType)
+                sortedTypeBehavior.onNext(sortType)
             })
         }
 
@@ -66,7 +66,7 @@ final class AdminUserViewController: UIViewController {
     
     private let viewDidLoadPublisher = PublishSubject<Void>()
     private let viewWillAppearPublisher = PublishSubject<Void>()
-    private let sortedTpyeBehavior = BehaviorSubject(value: SortType.dateDescending)
+    private let sortedTypeBehavior = BehaviorSubject(value: SortType.dateDescending)
     private let userListTypeBehavior = BehaviorSubject(value: UserListType.using)
     private let searchButtonPublisher = PublishSubject<String>()
     private let tableViewOffsetPublisher = PublishSubject<Void>()
@@ -122,7 +122,7 @@ final class AdminUserViewController: UIViewController {
     
     private func configTableView() {
         userListTableView.refreshControl = refreshControl
-        userListTableView.register(cell: NotificationTableViewCell.self)
+        userListTableView.register(cell: AdminUserTableViewCell.self)
         userListTableView.rowHeight = 80
     }
     
@@ -130,7 +130,7 @@ final class AdminUserViewController: UIViewController {
         let input = AdminUserViewModel.Input(
             viewDidLoad: viewDidLoadPublisher.asObservable(),
             viewWillAppear: viewWillAppearPublisher.asObservable(),
-            sortedTpye: sortedTpyeBehavior.asObservable(),
+            sortedType: sortedTypeBehavior.asObservable(),
             userListType: userListTypeBehavior.asObservable(),
             searchButton: searchButtonPublisher.asObservable(),
             tableViewOffset: tableViewOffsetPublisher.asObservable(),
@@ -145,7 +145,7 @@ final class AdminUserViewController: UIViewController {
         let mergedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList, output.resultPagingList)
         
         mergedData
-            .bind(to: userListTableView.rx.items(cellIdentifier: NotificationTableViewCell.reuseIdentifier, cellType: NotificationTableViewCell.self)) { _, item, cell in
+            .bind(to: userListTableView.rx.items(cellIdentifier: AdminUserTableViewCell.reuseIdentifier, cellType: AdminUserTableViewCell.self)) { _, item, cell in
                 guard let imageURL = item.imageURLs[safe: 0] else { return }
                 cell.configData(imageUrl: imageURL, nickName: item.nickName, age: item.age, mbti: item.mbti, createdDate: item.createdDate)
             }
@@ -164,8 +164,8 @@ final class AdminUserViewController: UIViewController {
     @objc private func refreshTable(_ refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            if let currentSortType = try? self.sortedTpyeBehavior.value() {
-                self.sortedTpyeBehavior.onNext(currentSortType)
+            if let currentSortType = try? self.sortedTypeBehavior.value() {
+                self.sortedTypeBehavior.onNext(currentSortType)
             }
             refreshablePublisher.onNext(())
             refresh.endRefreshing()

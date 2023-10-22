@@ -42,7 +42,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
     
     private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .lightGray
+        view.trackTintColor = .picoGray
         view.progressTintColor = .picoBlue
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
@@ -112,6 +112,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         makeConstraints()
         configButtons()
         configTextField()
+        updateNextButton(isEnabled: false)
     }
     
     override func viewDidAppear(_ animated: Bool) {

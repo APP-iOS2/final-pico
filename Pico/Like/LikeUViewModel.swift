@@ -87,8 +87,8 @@ final class LikeUViewModel: ViewModelType {
                 viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() - 50
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
                     .flatMap { _ -> Observable<Void> in
-                        let payment: Payment = Payment(price: 0, purchaseChuCount: -chu)
-                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "purchases", data: payment)
+                        let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: -chu, paymentType: .mail)
+                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
                     }
             }
             .withUnretained(self)
@@ -114,13 +114,13 @@ final class LikeUViewModel: ViewModelType {
                 
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType == .like }) {
-                        let likes = datas.sorted { like1, like2 in
-                            return like1.createdDate > like2.createdDate
+                        let sorted = datas.sorted {
+                            return $0.createdDate > $1.createdDate
                         }
-                        if startIndex > datas.count - 1 {
+                        if startIndex > sorted.count - 1 {
                             return
                         }
-                        let currentPageDatas: [Like.LikeInfo] = Array(datas[0..<min(endIndex, datas.count)])
+                        let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
                         likeUList = currentPageDatas
                         startIndex += currentPageDatas.count
                         reloadTableViewPublisher.onNext(())

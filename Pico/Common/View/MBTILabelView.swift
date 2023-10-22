@@ -60,15 +60,13 @@ final class MBTILabelView: UIView {
         return label
     }()
     
-    private var mbti: MBTIType
+    private var mbti: MBTIType?
     private var labelScale: LabelScale
     
-    init(mbti: MBTIType, scale: LabelScale) {
+    init(mbti: MBTIType?, scale: LabelScale) {
         self.mbti = mbti
         self.labelScale = scale
-        
         super.init(frame: labelScale.frameSize)
-        
         configUI()
         addViews()
         makeConstraints()
@@ -79,17 +77,19 @@ final class MBTILabelView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setMbti(mbti: MBTIType) {
-        textLabel.text = mbti.nameString
-        self.backgroundColor = UIColor(hex: mbti.colorName)
+    func setMbti(mbti: MBTIType?) {
+        guard let mbti else { return }
+        self.mbti = mbti
+        configUI()
     }
     
     private func configUI() {
-        self.backgroundColor = UIColor(hex: mbti.colorName)
-        self.layer.cornerRadius = labelScale.radius
-        self.clipsToBounds = true
+        guard let mbti else { return }
         textLabel.text = mbti.nameString
-        textLabel.font = self.labelScale.font
+        textLabel.font = labelScale.font
+        backgroundColor = UIColor(hex: mbti.colorName)
+        layer.cornerRadius = labelScale.radius
+        clipsToBounds = true
     }
     
     private func addViews() {

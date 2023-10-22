@@ -31,7 +31,7 @@ final class YoloManager {
             if let label = result.labels.first {
                 if label.identifier == "person" {
                     detectedObjects += "\(label.identifier) (\(String(format: "%.2f", label.confidence * 100))%)\n"
-                    if label.confidence * 100 >= 80 {
+                    if label.confidence * 100 >= 90 {
                         print(label.confidence)
                         return true
                     }

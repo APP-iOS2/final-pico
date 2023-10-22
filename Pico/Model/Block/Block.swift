@@ -28,6 +28,6 @@ struct Block: Codable {
             let ageComponents = calendar.dateComponents([.year], from: birthdate, to: currentDate)
             return ageComponents.year ?? 0
         }
-        let createdDate: Double?
+        let createdDate: Double
     }
 }

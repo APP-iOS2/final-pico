@@ -41,16 +41,27 @@ final class AdminUserDetailViewController: UIViewController {
     
     private let tableView: UITableView = UITableView()
     
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .picoBlue
+        indicator.hidesWhenStopped = true
+        indicator.isHidden = true
+        return indicator
+    }()
+
     private var viewModel: AdminUserDetailViewModel
     private let disposeBag: DisposeBag = DisposeBag()
     
-    private let recordTypePublish = PublishSubject<RecordType>()
+    private let viewDidLoadPublish = PublishSubject<Void>()
+    private let selectedRecordTypePublish = PublishSubject<RecordType>()
     private let refreshablePublish = PublishSubject<RecordType>()
     private let unsubscribePublish = PublishSubject<Void>()
     
-    private var currentRecordType: RecordType = .report
-    private let footerView = FooterView()
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
+    private var currentRecordType: RecordType = .report {
+        didSet {
+            reloadRecordSection()
+        }
+    }
     
     init(viewModel: AdminUserDetailViewModel) {
         self.viewModel = viewModel
@@ -70,10 +81,7 @@ final class AdminUserDetailViewController: UIViewController {
         configTableView()
         configButtons()
         bind()
-        activityIndicator.tintColor = .picoBlue
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.isHidden = true
-        tableView.tableFooterView = activityIndicator
+        viewDidLoadPublish.onNext(())
     }
     
     private func configTableView() {
@@ -82,13 +90,10 @@ final class AdminUserDetailViewController: UIViewController {
         tableView.register(cell: DetailUserImageTableViewCell.self)
         tableView.register(cell: DetailUserInfoTableViewCell.self)
         tableView.register(cell: RecordHeaderTableViewCell.self)
-        tableView.register(cell: NotificationTableViewCell.self)
+        tableView.register(cell: AdminUserTableViewCell.self)
+        tableView.register(cell: RecordEmptyTableViewCell.self)
         tableView.separatorStyle = .none
-        
-        footerView.frame = CGRect(x: 0,
-                                  y: 0,
-                                  width: tableView.bounds.size.width,
-                                  height: 80)
+        tableView.tableFooterView = activityIndicator
     }
     
     private func configButtons() {
@@ -98,39 +103,35 @@ final class AdminUserDetailViewController: UIViewController {
     
     private func bind() {
         let input = AdminUserDetailViewModel.Input(
-            selectedRecordType: recordTypePublish.asObservable(),
+            viewDidLoad: viewDidLoadPublish.asObservable(),
+            selectedRecordType: selectedRecordTypePublish.asObservable(),
             refreshable: refreshablePublish.asObservable(),
             isUnsubscribe: unsubscribePublish.asObservable()
         )
         let output = viewModel.transform(input: input)
         
-        let merged = Observable.merge(output.needToFirstLoad, output.needToRefresh)
-        
-        merged
+        output.needToFirstLoad
             .withUnretained(self)
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { viewController, recordType in
-                viewController.currentRecordType = recordType
-                viewController.reloadRecord()
-            })
+            .subscribe { viewController, _ in
+                print("viewController.viewModel.reportList \(viewController.viewModel.reportList.count)")
+                print("viewController.viewModel.likeList \(viewController.viewModel.likeList.count)")
+            }
             .disposed(by: disposeBag)
         
-        //        output.needToFirstLoad
-        //            .withUnretained(self)
-        //            .observe(on: MainScheduler.instance)
-        //            .subscribe { viewController, recordType in
-        //                viewController.currentRecordType = recordType
-        //                viewController.reloadRecord()
-        //            }
-        //            .disposed(by: disposeBag)
-        //
-        //        output.needToRefresh
-        //            .withUnretained(self)
-        //            .observe(on: MainScheduler.instance)
-        //            .subscribe { viewController, _ in
-        //                viewController.reloadRecord()
-        //            }
-        //            .disposed(by: disposeBag)
+        output.resultRecordType
+            .withUnretained(self)
+            .subscribe { viewController, recordType in
+                print("선택한 레코드타입 도착, \(recordType)")
+                viewController.currentRecordType = recordType
+            }
+            .disposed(by: disposeBag)
+        
+        output.needToRefresh
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                print("viewController 리프레시 도착, 신고 \(viewController.viewModel.reportList.count), 좋아요 \(viewController.viewModel.likeList.count)")
+            }
+            .disposed(by: disposeBag)
         
         output.resultIsUnsubscribe
             .withUnretained(self)
@@ -142,16 +143,19 @@ final class AdminUserDetailViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        output.needToReload
+        output.needToRecordReload
             .withUnretained(self)
             .subscribe(onNext: { viewController, _ in
-                viewController.tableView.reloadData()
+                viewController.reloadRecordSection()
             })
             .disposed(by: disposeBag)
     }
     
-    private func reloadRecord() {
-        tableView.reloadSections(IndexSet(3...3), with: .automatic)
+    private func reloadRecordSection() {
+        print("리로리로리로리드")
+        let emptyIndex: Int = TableViewCase.empty.rawValue
+        let recordIndex: Int = TableViewCase.record.rawValue
+        tableView.reloadSections(IndexSet(emptyIndex...recordIndex), with: .automatic)
         activityIndicator.stopAnimating()
     }
     
@@ -160,26 +164,18 @@ final class AdminUserDetailViewController: UIViewController {
     }
     
     @objc private func tappedUnsubscribeButton(_ sender: UIButton) {
-        let actionSheetController = UIAlertController()
-        let actionUnsubscribe = UIAlertAction(title: "탈퇴", style: .destructive) { [weak self] _ in
+        showCustomAlert(alertType: .canCancel, titleText: "탈퇴 알림", messageText: "탈퇴시키시겠습니까 ?", confirmButtonText: "탈퇴", comfrimAction: { [weak self] in
             guard let self else { return }
-            showCustomAlert(alertType: .canCancel, titleText: "탈퇴", messageText: "탈퇴하시겠습니까 ?", confirmButtonText: "탈퇴", comfrimAction: { [weak self] in
-                guard let self else { return }
-                unsubscribePublish.onNext(())
-            })
-        }
-        let actionCancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        [actionUnsubscribe, actionCancel].forEach {
-            actionSheetController.addAction($0)
-        }
-        self.present(actionSheetController, animated: true)
+            unsubscribePublish.onNext(())
+        })
     }
 }
 
 extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSource {
-    enum TableViewCase: CaseIterable {
+    enum TableViewCase: Int, CaseIterable {
         case image, info
         case recordHeader
+        case empty
         case record
     }
     
@@ -189,16 +185,18 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         switch tableViewCase {
         case .image, .info, .recordHeader:
             return 1
+        case .empty:
+            return viewModel.isEmpty ? 1 : 0
         case .record:
             switch currentRecordType {
             case .report:
-                return 0
+                return viewModel.reportList.count
             case .block:
-                return 0
+                return viewModel.blockList.count
             case .like:
                 return viewModel.likeList.count
             case .payment:
-                return 0
+                return viewModel.paymentList.count
             }
         }
     }
@@ -211,46 +209,63 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
         guard let tableViewCase = TableViewCase.allCases[safe: indexPath.section] else { return UITableViewCell()}
         
         switch tableViewCase {
+        // MARK: - image
         case .image:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: DetailUserImageTableViewCell.self)
             cell.config(images: viewModel.selectedUser.imageURLs)
             cell.selectionStyle = .none
             return cell
             
+        // MARK: - info
         case .info:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: DetailUserInfoTableViewCell.self)
             cell.config(user: viewModel.selectedUser)
             cell.selectionStyle = .none
             return cell
             
+        // MARK: - recordHeader
         case .recordHeader:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RecordHeaderTableViewCell.self)
-            cell.selectionStyle = .none
-            cell.selectedRecordTypePublisher.asObservable()
+            cell.selectedRecordTypePublisher
                 .withUnretained(self)
                 .subscribe(onNext: { viewController, recordType in
-                    print(recordType)
-                    viewController.recordTypePublish.onNext(recordType)
+                    print("selectedRecordType \(recordType)")
+                    viewController.selectedRecordTypePublish.onNext(recordType)
                 })
                 .disposed(by: disposeBag)
+            cell.selectionStyle = .none
             return cell
             
+        // MARK: - empty
+        case .empty:
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RecordEmptyTableViewCell.self)
+            cell.selectionStyle = .none
+            return cell
+            
+        // MARK: - record
         case .record:
-            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: NotificationTableViewCell.self)
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: AdminUserTableViewCell.self)
             
             switch currentRecordType {
+            // 신고기록
             case .report:
-                break
-                
+                guard let user = viewModel.reportList[safe: indexPath.row] else { return UITableViewCell() }
+                cell.configData(recordType: .report, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, createdDate: user.createdDate)
+            
+            // 차단기록
             case .block:
-                break
+                guard let user = viewModel.blockList[safe: indexPath.row] else { return UITableViewCell() }
+                cell.configData(recordType: .block, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, createdDate: user.createdDate)
                 
+            // 좋아요기록
             case .like:
                 guard let user = viewModel.likeList[safe: indexPath.row] else { return UITableViewCell() }
-                cell.configData(notitype: .like, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, date: Date().timeIntervalSince1970)
-                
+                cell.configData(recordType: .like, imageUrl: user.imageURL, nickName: user.nickName, age: user.age, mbti: user.mbti, createdDate: user.createdDate)
+            
+            // 결제기록
             case .payment:
-                break
+                guard let payment = viewModel.paymentList[safe: indexPath.row] else { return UITableViewCell() }
+                cell.configData(recordType: .payment, payment: payment)
             }
             
             cell.selectionStyle = .none
@@ -268,6 +283,8 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
             return UITableView.automaticDimension
         case .recordHeader:
             return 70
+        case .empty:
+            return Screen.height * 0.3
         case .record:
             return 80
         }

@@ -13,14 +13,6 @@ final class MailViewController: BaseViewController {
     private var mailTypeButtons: [UIButton] = []
     private var mailType: MailType = .receive
     
-    private let mailText: UILabel = {
-        let label = UILabel()
-        label.text = "Mail"
-        label.font = UIFont.picoTitleFont
-        label.textColor = .picoFontBlack
-        return label
-    }()
-    
     private let buttonStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -32,7 +24,7 @@ final class MailViewController: BaseViewController {
         let button = UIButton()
         button.backgroundColor = .picoAlphaBlue
         button.setTitle("받은 쪽지", for: .normal)
-        button.titleLabel?.font = .picoDescriptionFont
+        button.titleLabel?.font = .picoContentBoldFont
         button.layer.cornerRadius = 10
         button.clipsToBounds = true
         button.setTitleColor(.white, for: .normal)
@@ -47,16 +39,13 @@ final class MailViewController: BaseViewController {
         button.titleLabel?.font = .picoDescriptionFont
         button.layer.cornerRadius = 10
         button.clipsToBounds = true
-        button.setTitleColor(.picoBetaBlue, for: .normal)
+        button.setTitleColor(.white, for: .normal)
         return button
     }()
     
     private lazy var tableViewController = [MailSendTableListController(), MailReceiveTableListController(viewController: self)]
     
-    private let contentsView: UIView = {
-        let view = UIView()
-        return view
-    }()
+    private let contentsView: UIView = UIView()
     
     private lazy var pageViewController: UIPageViewController = {
         let pageController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
@@ -77,36 +66,29 @@ final class MailViewController: BaseViewController {
             mailTypeButtons.append(item)
         }
         buttonStack.addArrangedSubview([receiveButton, sendButton])
-        view.addSubview([mailText, buttonStack, contentsView])
+        view.addSubview([buttonStack, contentsView])
         contentsView.addSubview([pageViewController.view])
     }
     
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
-        mailText.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalTo(safeArea).offset(20)
-            make.trailing.equalTo(safeArea).offset(-30)
-        }
-        
         buttonStack.snp.makeConstraints { make in
-            make.top.equalTo(mailText.snp.bottom).offset(10)
-            make.leading.equalTo(safeArea.snp.leading).offset(20)
+            make.top.equalTo(safeArea).offset(10)
+            make.leading.equalTo(safeArea.snp.leading).offset(10)
         }
         
         sendButton.snp.makeConstraints { make in
-            make.width.equalTo(60)
+            make.width.equalTo(70)
         }
         
         receiveButton.snp.makeConstraints { make in
-            make.width.equalTo(60)
+            make.width.equalTo(70)
         }
         
         contentsView.snp.makeConstraints { make in
             make.top.equalTo(buttonStack.snp.bottom).offset(10)
-            make.leading.equalTo(safeArea).offset(10)
-            make.trailing.bottom.equalTo(safeArea).offset(-10)
+            make.leading.trailing.bottom.equalTo(safeArea)
         }
     }
     // MARK: - config
@@ -126,7 +108,7 @@ final class MailViewController: BaseViewController {
             switch button.isSelected {
             case true:
                 sender.backgroundColor = .picoAlphaBlue
-                sender.setTitleColor(.white, for: .normal)
+                sender.titleLabel?.font = .picoContentBoldFont
                 mailType = MailReceiveModel().toType(text: text)
                 if mailType == .receive {
                     pageViewController.setViewControllers([tableViewController[1]], direction: .reverse, animated: true)
@@ -135,7 +117,7 @@ final class MailViewController: BaseViewController {
                 }
             case false:
                 button.backgroundColor = .picoGray
-                button.setTitleColor(.picoBetaBlue, for: .normal)
+                button.titleLabel?.font = .picoDescriptionFont
             }
         }
     }

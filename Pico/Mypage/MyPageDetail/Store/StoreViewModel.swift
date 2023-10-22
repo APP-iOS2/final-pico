@@ -38,8 +38,8 @@ final class StoreViewModel: ViewModelType {
                 viewModel.currentChuCount = storeModel.count + UserDefaultsManager.shared.getChuCount()
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
                     .flatMap { _ -> Observable<Void> in
-                        let payment: Payment = Payment(price: storeModel.price, purchaseChuCount: storeModel.count)
-                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "purchases", data: payment)
+                        let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: storeModel.price, purchaseChuCount: storeModel.count, paymentType: .purchase)
+                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
                     }
             }
             .withUnretained(self)
