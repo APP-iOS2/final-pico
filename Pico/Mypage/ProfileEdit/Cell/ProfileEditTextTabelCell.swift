@@ -46,6 +46,8 @@ final class ProfileEditTextTabelCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         contentLabel.text = "추가"
+        contentLabel.font = .picoDescriptionFont
+        contentLabel.textColor = .picoBlue
         contentLabel.textAlignment = .right
         titleLabel.text = nil
         nextImageView.image = UIImage(systemName: "chevron.right")

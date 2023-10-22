@@ -134,7 +134,7 @@ final class ProfileEditViewController: UIViewController {
     @objc private func refreshTable(refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            profileViewModel.loadUserData()
+            profileEditViewModel.loadUserData()
             refresh.endRefreshing()
         }
     }
