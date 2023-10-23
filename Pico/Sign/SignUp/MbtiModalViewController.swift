@@ -95,7 +95,7 @@ final class MbtiModalViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor(color: .white)
+        view.configBackgroundColor(color: .systemBackground)        
         addSubViews()
         makeConstraints()
         configMbtiButton()

@@ -99,7 +99,7 @@ final class SignUpNickNameViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor(color: .white)
+        view.configBackgroundColor(color: .systemBackground)        
         configNavigationBackButton()
         nickNameTextField.becomeFirstResponder()
         tappedDismissKeyboard(without: [nextButton])
