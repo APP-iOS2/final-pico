@@ -76,7 +76,7 @@ final class SignUpGenderViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.configBackgroundColor(color: .white)
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
