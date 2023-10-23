@@ -95,7 +95,6 @@ extension SettingNotiTableCell: SwitchButtonDelegate {
             
         } else {
            
-           
         }
     }
 }

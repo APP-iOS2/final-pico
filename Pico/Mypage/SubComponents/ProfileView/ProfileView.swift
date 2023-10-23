@@ -23,8 +23,8 @@ final class ProfileView: UIView {
         return imageView
     }()
     
-    private let editImageView: UIView = {
-        let view = UIView()
+    private let editImageView: UIImageView = {
+        let view = UIImageView()
         view.backgroundColor = .white
         view.layer.masksToBounds = false
         view.layer.cornerRadius = 25

@@ -186,7 +186,9 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            break
+            let randomBoxViewController = RandomBoxViewController()
+            self.navigationController?.pushViewController(randomBoxViewController, animated: true)
+            
         default:
             showCustomAlert(
                 alertType: .canCancel,
