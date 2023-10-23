@@ -313,9 +313,9 @@ extension AdminUserDetailViewController: UITableViewDelegate, UITableViewDataSou
             topView.backgroundColor = .clear
         case 1...maxHeight:
             let alpha = offset * maxAlpha / maxHeight
-            topView.backgroundColor = .systemBackground.withAlphaComponent(alpha)
+            topView.backgroundColor = .secondarySystemBackground.withAlphaComponent(alpha)
         default:
-            topView.backgroundColor = .systemBackground.withAlphaComponent(maxAlpha)
+            topView.backgroundColor = .secondarySystemBackground.withAlphaComponent(maxAlpha)
         }
     }
     
