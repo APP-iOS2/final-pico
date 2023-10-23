@@ -101,7 +101,7 @@ extension MyPageCollectionTableCell: UICollectionViewDataSource, UICollectionVie
         case 0:
             cell.configure(imageName: "chu", title: "내 포인트", subTitle: "\(chuCount ?? 0) 츄")
         case 1:
-            cell.configure(imageName: "mbtiImage", title: "MBTI검사", subTitle: "내 성향 알아보기")
+            cell.configure(imageName: "mbtiImage", title: "MBTI검사", subTitle: "성향 알아보기")
         default:
             break
         }

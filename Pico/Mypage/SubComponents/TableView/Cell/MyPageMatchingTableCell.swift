@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class MyPageMatchingTableCell: UITableViewCell {
-
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
@@ -24,11 +24,17 @@ final class MyPageMatchingTableCell: UITableViewCell {
         label.text = "나와 성향이 잘 맞는 사람 우선 추천"
         return label
     }()
+    private let premiumImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "premiumImage")
+        return imageView
+    }()
     private let premiumLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
         label.font = UIFont.picoSubTitleFont
-        label.text = "Premium"
+        label.text = "premiumImage"
         label.textAlignment = .center
         label.textColor = .white
         label.backgroundColor = .purple
@@ -47,33 +53,33 @@ final class MyPageMatchingTableCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
     
     private func addSubView() {
-        [premiumLabel, titleLabel, subtitleLabel].forEach {
+        [premiumImage, titleLabel, subtitleLabel].forEach {
             contentView.addSubview($0)
         }
     }
     
     private func makeConstraints() {
-        premiumLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(15)
-            make.leading.equalToSuperview().offset(15)
-            make.height.equalTo(35)
-            make.width.equalTo(100)
+        premiumImage.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-15)
+            make.centerY.equalToSuperview()
+            make.height.equalTo(40)
+            make.width.equalTo(120)
         }
         titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(premiumImage)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().inset(10)
-            make.bottom.equalTo(subtitleLabel.snp.top).offset(-2)
         }
         subtitleLabel.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-15)
+            make.top.equalTo(titleLabel.snp.bottom).offset(5)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().inset(10)
         }
