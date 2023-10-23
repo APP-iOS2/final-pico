@@ -29,7 +29,6 @@ final class MailSendModel {
     private let dbRef = Firestore.firestore()
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 90)
     var startIndex = 0
-    var user: User?
     
     struct Input {
         let listLoad: Observable<Void>
@@ -243,25 +242,5 @@ final class MailSendModel {
         let receiverNoti = Noti(receiveId: receiveUser.id, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
         
         FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
-    }
-    
-    func getUser(userId: String, completion: @escaping () -> ()) {
-        DispatchQueue.global().async {
-            let query = self.dbRef.collection(Collections.users.name)
-                .whereField("id", isEqualTo: userId)
-            
-            query.getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print(error)
-                } else {
-                    for document in querySnapshot!.documents {
-                        if let userdata = try? document.data(as: User.self) {
-                            self.user = userdata
-                            completion()
-                        }
-                    }
-                }
-            }
-        }
     }
 }

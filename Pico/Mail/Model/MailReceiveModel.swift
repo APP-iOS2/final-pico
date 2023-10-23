@@ -155,26 +155,6 @@ final class MailReceiveModel {
         ])
     }
     
-    func getUser(userId: String, completion: @escaping () -> ()) {
-        DispatchQueue.global().async {
-            let query = self.dbRef.collection(Collections.users.name)
-                .whereField("id", isEqualTo: userId)
-            
-            query.getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print(error)
-                } else {
-                    for document in querySnapshot!.documents {
-                        if let userdata = try? document.data(as: User.self) {
-                            self.user = userdata
-                            completion()
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
     func updateNewData(data: Mail.MailInfo) {
         let updateData: Mail.MailInfo = Mail.MailInfo(id: data.id, sendedUserId: data.sendedUserId, receivedUserId: data.receivedUserId, mailType: data.mailType, message: data.message, sendedDate: data.sendedDate, isReading: true)
         
