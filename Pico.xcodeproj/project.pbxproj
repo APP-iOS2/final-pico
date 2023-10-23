@@ -48,6 +48,7 @@
 		534790C22AC3B2F20028610D /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C12AC3B2F20028610D /* NotificationViewController.swift */; };
 		534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534790C32AC3B3190028610D /* NotificationTableViewCell.swift */; };
 		536635EC2AE1521200D3EED3 /* WorldCupResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536635EB2AE1521200D3EED3 /* WorldCupResultViewModel.swift */; };
+		53725C9F2AE603B500E6BEEA /* worldcupAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 53725C9E2AE603B500E6BEEA /* worldcupAnimation.json */; };
 		5375E74A2ACD2C09001A571D /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E7492ACD2C09001A571D /* NotificationViewModel.swift */; };
 		5375E74C2ACD4590001A571D /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74B2ACD4590001A571D /* String+Extensions.swift */; };
 		5375E74E2ACD4755001A571D /* LikeMeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5375E74D2ACD4755001A571D /* LikeMeViewModel.swift */; };
@@ -275,6 +276,7 @@
 		534790C12AC3B2F20028610D /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		534790C32AC3B3190028610D /* NotificationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTableViewCell.swift; sourceTree = "<group>"; };
 		536635EB2AE1521200D3EED3 /* WorldCupResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewModel.swift; sourceTree = "<group>"; };
+		53725C9E2AE603B500E6BEEA /* worldcupAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = worldcupAnimation.json; sourceTree = "<group>"; };
 		5375E7492ACD2C09001A571D /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
 		5375E74B2ACD4590001A571D /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		5375E74D2ACD4755001A571D /* LikeMeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeMeViewModel.swift; sourceTree = "<group>"; };
@@ -541,6 +543,7 @@
 		4B2665592ACF86DF0074D4E2 /* WorldCupResultView */ = {
 			isa = PBXGroup;
 			children = (
+				53725C9E2AE603B500E6BEEA /* worldcupAnimation.json */,
 				4B2665442ACD4A390074D4E2 /* WorldCupResultViewController.swift */,
 				536635EB2AE1521200D3EED3 /* WorldCupResultViewModel.swift */,
 			);
@@ -1408,6 +1411,7 @@
 				BCD6253B2AE5B5940079BD28 /* HomeEmptyLottie.json in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */,
+				53725C9F2AE603B500E6BEEA /* worldcupAnimation.json in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
