@@ -20,9 +20,9 @@ final class UserDetailViewController: UIViewController {
     // SubViews
     private let userImageViewController = UserImageViewController()
     private let basicInformationViewContoller = BasicInformationViewContoller()
-//    private let introViewController = IntroViewController()
-//    private let aboutMeViewController = AboutMeViewController()
-//    private let subInfomationViewController = SubInfomationViewController()
+    private let introViewController = IntroViewController()
+    private let aboutMeViewController = AboutMeViewController()
+    private let subInfomationViewController = SubInfomationViewController()
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isScrollEnabled = true

@@ -46,12 +46,10 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
     private func makeConstraints() {
         imageView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
-            make.centerY.equalToSuperview()
             make.width.height.equalTo(20)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.centerY.trailing.equalToSuperview()
             make.leading.equalTo(imageView.snp.trailing).offset(10)
         }
     }
