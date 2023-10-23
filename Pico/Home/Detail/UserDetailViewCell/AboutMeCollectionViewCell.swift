@@ -51,7 +51,7 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.centerY.trailing.equalToSuperview()
+            make.centerY.equalToSuperview()
             make.leading.equalTo(imageView.snp.trailing).offset(10)
         }
     }

@@ -20,9 +20,9 @@ final class UserDetailViewController: UIViewController {
     // SubViews
     private let userImageViewController = UserImageViewController()
     private let basicInformationViewContoller = BasicInformationViewContoller()
-//    private let introViewController = IntroViewController()
-//    private let aboutMeViewController = AboutMeViewController()
-//    private let subInfomationViewController = SubInfomationViewController()
+    private let introViewController = IntroViewController()
+    private let aboutMeViewController = AboutMeViewController()
+    private let subInfomationViewController = SubInfomationViewController()
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isScrollEnabled = true
@@ -34,7 +34,7 @@ final class UserDetailViewController: UIViewController {
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.alignment = .fill
-        stackView.spacing = 5
+        stackView.spacing = 20
         return stackView
     }()
     
@@ -260,11 +260,11 @@ extension UserDetailViewController {
     private func addViews() {
         view.addSubview([scrollView, disLikeButton, likeButton])
         scrollView.addSubview([userImageViewController.view, verticalStackView])
-        verticalStackView.addArrangedSubview(basicInformationViewContoller.view)
+//        verticalStackView.addArrangedSubview(basicInformationViewContoller.view)
         
-//        [basicInformationViewContoller.view, introViewController.view, aboutMeViewController.view, subInfomationViewController.view].forEach {
-//            verticalStackView.addArrangedSubview($0)
-//        }
+        [basicInformationViewContoller.view, introViewController.view, aboutMeViewController.view, subInfomationViewController.view].forEach {
+            verticalStackView.addArrangedSubview($0)
+        }
     }
     
     private func makeConstraints() {

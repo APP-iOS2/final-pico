@@ -81,6 +81,7 @@
 		6A2060482ACD28E100435723 /* CircularProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2060472ACD28E100435723 /* CircularProgressBarView.swift */; };
 		6A20604A2ACD2CF600435723 /* SwitchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2060492ACD2CF600435723 /* SwitchButton.swift */; };
 		6A50B8112ADCDBBE005E6BD9 /* ProfileEditModalMbtiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A50B8102ADCDBBE005E6BD9 /* ProfileEditModalMbtiCell.swift */; };
+		6A59FA0F2AE69F2B00B7F538 /* LeftAlignedCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A59FA0E2AE69F2B00B7F538 /* LeftAlignedCollectionViewFlowLayout.swift */; };
 		6A65EDCA2AE16FE30048778D /* PremiumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A65EDC92AE16FE30048778D /* PremiumViewController.swift */; };
 		6A65EDCC2AE1700C0048778D /* AdvertisementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A65EDCB2AE1700C0048778D /* AdvertisementViewController.swift */; };
 		6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */; };
@@ -308,6 +309,7 @@
 		6A2060472ACD28E100435723 /* CircularProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBarView.swift; sourceTree = "<group>"; };
 		6A2060492ACD2CF600435723 /* SwitchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchButton.swift; sourceTree = "<group>"; };
 		6A50B8102ADCDBBE005E6BD9 /* ProfileEditModalMbtiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditModalMbtiCell.swift; sourceTree = "<group>"; };
+		6A59FA0E2AE69F2B00B7F538 /* LeftAlignedCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftAlignedCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		6A65EDC92AE16FE30048778D /* PremiumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumViewController.swift; sourceTree = "<group>"; };
 		6A65EDCB2AE1700C0048778D /* AdvertisementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementViewController.swift; sourceTree = "<group>"; };
 		6A73784A2AC26AB30047DE35 /* MyPageTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTableView.swift; sourceTree = "<group>"; };
@@ -1058,6 +1060,7 @@
 				B14D2AB72AD8E2900014DE29 /* HobbyCollectionViewCell.swift */,
 				B17CC8162AE30E05003D1873 /* AboutMeCollectionViewCell.swift */,
 				B14D2AB82AD8E2900014DE29 /* MbtiCollectionViewCell.swift */,
+				6A59FA0E2AE69F2B00B7F538 /* LeftAlignedCollectionViewFlowLayout.swift */,
 			);
 			path = UserDetailViewCell;
 			sourceTree = "<group>";
@@ -1630,6 +1633,7 @@
 				B17D67902AC0AC15006F91DC /* Block.swift in Sources */,
 				6A2060482ACD28E100435723 /* CircularProgressBarView.swift in Sources */,
 				53DD41C02ADF675F00C5FE39 /* Token.swift in Sources */,
+				6A59FA0F2AE69F2B00B7F538 /* LeftAlignedCollectionViewFlowLayout.swift in Sources */,
 				4B2665372AC3E30B0074D4E2 /* WorldCupCollectionViewCell.swift in Sources */,
 				6ADDE2EA2AC31D1300CE4482 /* SettingNotiTableCell.swift in Sources */,
 				36A9B0072AC40F2D00D994EA /* SignUpPictureViewController.swift in Sources */,
