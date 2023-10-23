@@ -20,15 +20,6 @@ final class LoadingAnimationView: UIView {
                 return 9
             }
         }
-        
-        var alphaValue: CGFloat {
-            switch self {
-            case .large:
-                return 0.3
-            case .small:
-                return 0.2
-            }
-        }
     }
     
     private let dotStackView: UIStackView = {
@@ -49,10 +40,7 @@ final class LoadingAnimationView: UIView {
     
     init(circleSize: CircleSize = .large) {
         self.circleSize = circleSize
-        
         super.init(frame: .zero)
-        
-        backgroundColor = .black.withAlphaComponent(circleSize.alphaValue)
         addViews()
         makeConstraints()
         configCircle()

@@ -69,7 +69,7 @@ final class UserDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         Loading.showLoading()
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
         addChilds()
         addViews()
         bind()

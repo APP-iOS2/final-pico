@@ -21,7 +21,7 @@ final class MailReceiveViewController: UIViewController {
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = .systemBackground
+        navigationBar.barTintColor = .secondarySystemBackground
         return navigationBar
     }()
     

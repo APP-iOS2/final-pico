@@ -35,7 +35,6 @@ final class StoreViewModel: ViewModelType {
         let responsePurchase = input.purchaseChuCount
             .withUnretained(self)
             .flatMap { viewModel, storeModel in
-                Loading.showLoading()
                 viewModel.currentChuCount = storeModel.count + UserDefaultsManager.shared.getChuCount()
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
                     .flatMap { _ -> Observable<Void> in
@@ -45,8 +44,7 @@ final class StoreViewModel: ViewModelType {
             }
             .withUnretained(self)
             .map { viewModel, _ in
-                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
-                return Loading.hideLoading()
+                return UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
             }
         return Output(
             resultPurchase: responsePurchase

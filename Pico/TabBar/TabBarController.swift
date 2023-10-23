@@ -14,7 +14,7 @@ final class TabBarController: UITabBarController {
         super.viewDidLoad()
         configureTabBar()
         addShadowToTabBar()
-        UITabBar.appearance().backgroundColor = .systemBackground
+        UITabBar.appearance().backgroundColor = .secondarySystemBackground
         UITabBar.appearance().tintColor = .picoBlue
         NotificationService.shared.registerRemoteNotification()
     }
@@ -46,7 +46,7 @@ final class TabBarController: UITabBarController {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.shadowColor = UIColor.clear
-        appearance.backgroundColor = .systemBackground
+        appearance.backgroundColor = .secondarySystemBackground
         tabBar.standardAppearance = appearance
         tabBar.tintColor = .picoBlue
         tabBar.layer.masksToBounds = false
