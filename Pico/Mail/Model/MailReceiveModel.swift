@@ -29,7 +29,6 @@ final class MailReceiveModel {
     private let dbRef = Firestore.firestore()
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 90)
     var startIndex = 0
-    var user: User?
     
     struct Input {
         let listLoad: Observable<Void>
@@ -122,7 +121,6 @@ final class MailReceiveModel {
                     print("받은 문서를 찾을 수 없습니다.")
                 }
             }
-            // receiveList.sort(by: {$0.sendedDate > $1.sendedDate})
         }
     }
     

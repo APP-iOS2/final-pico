@@ -122,8 +122,6 @@ final class MailSendModel {
                         print("보낸 문서를 찾을 수 없습니다.")
                     }
                 }
-                // sendList.sort(by: {$0.sendedDate > $1.sendedDate})
-                
             }
         }
     }
