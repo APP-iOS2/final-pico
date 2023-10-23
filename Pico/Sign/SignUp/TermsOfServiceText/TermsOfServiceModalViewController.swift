@@ -62,7 +62,7 @@ final class TermsOfServiceModalViewController: UIViewController {
 extension TermsOfServiceModalViewController {
     private func setupUI() {
         let safeArea = view.safeAreaLayoutGuide
-        view.backgroundColor = .white
+        view.configBackgroundColor(color: .systemBackground) 
         view.addSubview(closeButton)
         view.addSubview(textView)
         view.addSubview(titleLabel)
