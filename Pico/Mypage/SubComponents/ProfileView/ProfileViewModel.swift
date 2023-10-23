@@ -62,7 +62,9 @@ final class ProfileViewModel {
                     return }
                 
                 if subInfoData.intro != nil {
-                    self.percent += 10
+                    if let text = subInfoData.intro {
+                        self.percent += text.isEmpty ? 0 : 10
+                    }
                 }
                 if subInfoData.height != nil {
                     self.percent += 10
@@ -80,7 +82,9 @@ final class ProfileViewModel {
                     self.percent += 5
                 }
                 if subInfoData.job != nil {
-                    self.percent += 10
+                    if let text = subInfoData.job {
+                        self.percent += text.isEmpty ? 0 : 10
+                    }
                 }
                 if subInfoData.hobbies != nil {
                     self.percent += 10
@@ -89,7 +93,9 @@ final class ProfileViewModel {
                     self.percent += 10
                 }
                 if subInfoData.favoriteMBTIs != nil {
-                    self.percent += 10
+                    if let arr = subInfoData.favoriteMBTIs {
+                        self.percent += arr.isEmpty ? 0 : 10
+                    }
                 }
                 self.profilePerfection.accept(self.percent)
             case .failure(let err):
