@@ -25,11 +25,14 @@ final class HomeViewModel {
     private let disposeBag = DisposeBag()
     
     init() {
+                UserDefaults.standard.setValue(false, forKey: UserDefaultsManager.Key.dontWatchAgain.rawValue)
+    }
+    
+    func fetchUser() {
         loadFilterDefault()
         loadMySendBlocks()
         loadMyLikesRx()
         loadUsersCodable()
-        //        UserDefaults.standard.setValue(false, forKey: UserDefaultsManager.Key.dontWatchAgain.rawValue)
     }
     
     func calculateDistance(user: User) -> CLLocationDistance {

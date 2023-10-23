@@ -35,11 +35,11 @@ final class HomeViewController: BaseViewController {
         configNavigationBarItem()
         configButtons()
         bind()
-        loadCards()
     }
     
     override func viewIsAppearing(_ animated: Bool) {
-//        emptyView.animate()
+        viewModel.fetchUser()
+        loadCards()
     }
     
     private func bind() {
@@ -141,7 +141,6 @@ final class HomeViewController: BaseViewController {
         emptyView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
-//        emptyView.animate()
     }
     
     func addUserCards() {

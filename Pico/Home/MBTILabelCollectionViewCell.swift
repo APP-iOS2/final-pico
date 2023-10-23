@@ -71,7 +71,6 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
                     UserDefaults.standard.set(mbtiData, forKey: UserDefaultsManager.Key.filterMbti.rawValue)
                 }
             }
-            HomeFilterViewController.filterChangeState = true
         }
     }
 }

@@ -346,6 +346,7 @@ final class HomeUserCardViewController: UIViewController {
             break
         }
     }
+    
     @objc func tappedLikeButton() {
         self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.likeLabel.alpha = 1
