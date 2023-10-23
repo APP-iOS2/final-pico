@@ -54,6 +54,14 @@ final class WorldCupGameViewController: UIViewController {
         return imageView
     }()
     
+    private let startNewRoundButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.font = UIFont.picoButtonFont
+        button.backgroundColor = .picoBlue
+        button.layer.cornerRadius = 10
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.configBackgroundColor()
@@ -61,6 +69,7 @@ final class WorldCupGameViewController: UIViewController {
         makeConstraints()
         configCollectionView()
         configUserData()
+        configStartNewRoundButton()
         worldCupViewModel.playBackgroundMusic()
     }
     
@@ -107,50 +116,69 @@ final class WorldCupGameViewController: UIViewController {
     }
     
     private func addViews() {
-        [backgroundImageView, roundLabel, contentLabel, collectionView, vsImageView].forEach { item in
+        [backgroundImageView, roundLabel, contentLabel, collectionView, vsImageView, startNewRoundButton].forEach { item in
             view.addSubview(item)
         }
     }
     
     private func cellClickAction(indexPath: IndexPath) {
         worldCupViewModel.selectedIndexPath = indexPath
-        worldCupViewModel.animateSelectedCell(collectionView: collectionView, indexPath: indexPath)
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
-        }
+        worldCupViewModel.animateSelectedCell(collectionView: collectionView, indexPath: indexPath, completion: {
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                
+                if self.index == 8 || self.index == 12 {
+                    self.changeRoundLabel(withText: self.index == 8 ? "4강" : "결승")
+                }
+                
+                if self.index == 14 {
+                    let selectedItem = self.winner[0]
+                    self.showResultViewController(with: selectedItem)
+                }
+            }
+        })
+    }
 
+    private func configStartNewRoundButton() {
+        startNewRoundButton.isHidden = true
+        startNewRoundButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.collectionView.isHidden = false
+                self?.vsImageView.isHidden = false
+                self?.startNewRoundButton.isHidden = true
+                self?.animateToNextRound()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func animateStartNewRoundButton() {
+        startNewRoundButton.isHidden = false
+        UIView.transition(with: startNewRoundButton, duration: 1.5, options: .transitionCrossDissolve, animations: {
+            self.startNewRoundButton.transform = .identity
+        })
     }
     
     private func animateToNextRound() {
-        UIView.transition(with: collectionView, duration: 1.5, options: .transitionCrossDissolve, animations: {
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-        }, completion: nil)
+        DispatchQueue.main.async {
+            let transition = CATransition()
+            transition.type = CATransitionType.push
+            transition.subtype = CATransitionSubtype.fromRight
+            transition.duration = 0.5
+            
+            self.collectionView.layer.add(transition, forKey: nil)
+            self.collectionView.reloadData()
+            
+            self.vsImageView.layer.add(transition, forKey: nil)
+            self.vsImageView.isHidden = false
+        }
     }
-    
+
     private func changeRoundLabel(withText text: String) {
         roundLabel.text = text
-        roundLabel.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-        roundLabel.alpha = 0
-        
-        let scale = UIScreen.main.bounds.width / roundLabel.bounds.width
-        
-        UIView.animate(withDuration: 1.0, delay: 1.0, options: .curveEaseOut, animations: {
-            self.roundLabel.transform = CGAffineTransform(scaleX: scale, y: scale)
-            self.roundLabel.alpha = 1
-            self.roundLabel.layer.zPosition = 1
-            self.roundLabel.transform.tx = 0
-            self.roundLabel.transform.ty = 0
-        }, completion: { _ in
-            UIView.animate(withDuration: 1.0, delay: 1.0, options: .curveEaseOut, animations: {
-                self.roundLabel.transform = .identity
-                self.roundLabel.alpha = 1
-                self.roundLabel.layer.zPosition = 0
-            }, completion: { _ in
-                self.animateToNextRound()
-            })
-        })
+        startNewRoundButton.setTitle(text == "4강" ? "4강 시작" : "결승 시작", for: .normal)
+        animateStartNewRoundButton()
+        collectionView.isHidden = true
+        vsImageView.isHidden = true
     }
 
     private func makeConstraints() {
@@ -183,6 +211,13 @@ final class WorldCupGameViewController: UIViewController {
             make.centerY.equalTo(collectionView.snp.centerY).offset(-padding * 1.5)
             make.width.equalTo(25)
             make.height.equalTo(25)
+        }
+        
+        startNewRoundButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.width.equalTo(200)
+            make.height.equalTo(50)
         }
     }
 }
@@ -238,7 +273,7 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             let selectedItem = users.value[index + indexPath.item]
             semifinals.append(selectedItem)
             index += 2
-            changeRoundLabel(withText: "4강")
+            cellClickAction(indexPath: indexPath)
         case 8..<10:
             let selectedItem = semifinals[index - 8 + indexPath.item]
             finals.append(selectedItem)
@@ -248,11 +283,12 @@ extension WorldCupGameViewController: UICollectionViewDataSource, UICollectionVi
             let selectedItem = semifinals[index - 8 + indexPath.item]
             finals.append(selectedItem)
             index += 2
-            changeRoundLabel(withText: "결승")
+            cellClickAction(indexPath: indexPath)
         default:
             let selectedItem = finals[index - 12 + indexPath.item]
+            winner.append(selectedItem)
+            index += 2
             cellClickAction(indexPath: indexPath)
-            showResultViewController(with: selectedItem)
         }
     }
 }
