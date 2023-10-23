@@ -83,14 +83,22 @@ final class SettingViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let isPushOn = UIApplication.shared.isRegisteredForRemoteNotifications
-        if isPushOn {
-            notiState = true
-            notiMarketinState = true
-        } else {
-            notiState = false
-            notiMarketinState = false
-        }
+        let current = UNUserNotificationCenter.current()
+        current.getNotificationSettings(completionHandler: { [weak self] permission in
+            guard let self = self else { return }
+            switch permission.authorizationStatus {
+            case .authorized:
+                self.notiState = true
+                self.notiMarketinState = true
+            case .denied, .notDetermined, .ephemeral:
+                self.notiState = false
+                self.notiMarketinState = false
+            case .provisional:
+              break
+            @unknown default:
+                break
+            }
+        })
         tableView.reloadData()
     }
     

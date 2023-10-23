@@ -87,14 +87,32 @@ final class SettingNotiTableCell: UITableViewCell {
 extension SettingNotiTableCell: SwitchButtonDelegate {
     func isOnValueChange(isOnSwitch: Bool) {
         if isOnSwitch {
-//            NotificationService.shared.registerRemoteNotification()
-//            showCustomAlert(alertType: <#T##AlertType#>, titleText: <#T##String#>, messageText: <#T##String#>, cancelButtonText: <#T##String?#>, confirmButtonText: <#T##String#>, comfrimAction: <#T##(() -> Void)?#>, cancelAction: <#T##(() -> Void)?#>)
-            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(settingsURL, options: [:], completionHandler: nil)
-            }
             
+            let current = UNUserNotificationCenter.current()
+            current.getNotificationSettings(completionHandler: { permission in
+                switch permission.authorizationStatus {
+                case .authorized:
+                    debugPrint("User granted permission for notification")
+                case .denied, .notDetermined, .ephemeral:
+                    DispatchQueue.main.async {
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                       let viewController = windowScene.windows.first?.rootViewController {
+                        viewController.showCustomAlert(alertType: .canCancel, titleText: "위치 권한 필요", messageText: "이 앱을 사용하려면 위치 권한이 필요합니다. 설정에서 권한을 변경할 수 있습니다.", confirmButtonText: "설정으로 이동", comfrimAction: {
+                            viewController.navigationController?.popViewController(animated: true)
+                            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(settingsURL)
+                            }
+                        })
+                    }
+                    }
+                case .provisional:
+                    break
+                @unknown default:
+                  break
+                }
+            })
         } else {
-           
+           debugPrint("off")
         }
     }
 }
