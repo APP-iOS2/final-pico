@@ -28,7 +28,7 @@ final class UserImageViewController: UIViewController {
         let pageControl = UIPageControl()
         pageControl.currentPage = 0
         pageControl.pageIndicatorTintColor = UIColor.lightGray
-        pageControl.currentPageIndicatorTintColor = UIColor.white
+        pageControl.currentPageIndicatorTintColor = UIColor.picoBlue
         return pageControl
     }()
     

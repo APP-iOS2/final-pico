@@ -70,7 +70,6 @@
 		548AD18D2AE32C8900B1513C /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1882AE32C8800B1513C /* UserDetailViewController.swift */; };
 		548AD18E2AE32C8900B1513C /* UserImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1892AE32C8800B1513C /* UserImageViewController.swift */; };
 		548AD19F2AE5D19B00B1513C /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD19E2AE5D19B00B1513C /* IntroViewController.swift */; };
-		548AD1A12AE5DEC500B1513C /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1A02AE5DEC500B1513C /* ToastView.swift */; };
 		6915C84D2ADA8F7200994F55 /* UIStackView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6915C84C2ADA8F7200994F55 /* UIStackView+Extensions.swift */; };
 		6922687B2AE0121700E83F02 /* MailReceiveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6922687A2AE0121700E83F02 /* MailReceiveModel.swift */; };
 		6922687E2AE0135F00E83F02 /* MailSendTableListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6922687D2AE0135F00E83F02 /* MailSendTableListController.swift */; };
@@ -297,7 +296,6 @@
 		548AD1882AE32C8800B1513C /* UserDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		548AD1892AE32C8800B1513C /* UserImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserImageViewController.swift; sourceTree = "<group>"; };
 		548AD19E2AE5D19B00B1513C /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
-		548AD1A02AE5DEC500B1513C /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		6915C84C2ADA8F7200994F55 /* UIStackView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Extensions.swift"; sourceTree = "<group>"; };
 		6922687A2AE0121700E83F02 /* MailReceiveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveModel.swift; sourceTree = "<group>"; };
 		6922687D2AE0135F00E83F02 /* MailSendTableListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendTableListController.swift; sourceTree = "<group>"; };
@@ -580,7 +578,6 @@
 		54B4411A2AC1616500EC8846 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				548AD1A02AE5DEC500B1513C /* ToastView.swift */,
 				548AD1882AE32C8800B1513C /* UserDetailViewController.swift */,
 				548AD1892AE32C8800B1513C /* UserImageViewController.swift */,
 				548AD1852AE32C8800B1513C /* BasicInformationViewContoller.swift */,
@@ -1412,7 +1409,6 @@
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
 				BCD6253B2AE5B5940079BD28 /* HomeEmptyLottie.json in Resources */,
-				548AD1832AE20E2C00B1513C /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
@@ -1493,7 +1489,6 @@
 				6A8BE1F12ADFE3510021B993 /* ProfileEditPickerViewController.swift in Sources */,
 				36A9B0092AC410D900D994EA /* SignUpTermsOfServiceViewController.swift in Sources */,
 				53B5295B2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift in Sources */,
-				B1701F962AD436F80014850D /* RandomBoxView.swift in Sources */,
 				548AD18D2AE32C8900B1513C /* UserDetailViewController.swift in Sources */,
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
 				B130BB4C2ACF207A0039A1FA /* AdminUserViewModel.swift in Sources */,
@@ -1529,7 +1524,6 @@
 				BC5DE6642AC6EFB00082D18D /* HomeEmptyView.swift in Sources */,
 				534790C22AC3B2F20028610D /* NotificationViewController.swift in Sources */,
 				B15ABE282AC2721200529C29 /* MBTI.swift in Sources */,
-				548AD1A12AE5DEC500B1513C /* ToastView.swift in Sources */,
 				53836F532ACC903800D98F77 /* LoadingAnimationView.swift in Sources */,
 				6A9F73272AD8C940002F13AC /* ProfileEditEmptyCollectionCell.swift in Sources */,
 				531C4ED82AC26BA300ADC614 /* CustomTransitionAnimator.swift in Sources */,

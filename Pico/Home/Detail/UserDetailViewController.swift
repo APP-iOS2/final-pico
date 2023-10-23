@@ -23,7 +23,6 @@ final class UserDetailViewController: UIViewController {
     private let introViewController = IntroViewController()
     private let aboutMeViewController = AboutMeViewController()
     private let subInfomationViewController = SubInfomationViewController()
-    var toastView = ToastView(text: "This is a toast message", backgroundColor: .blue, textColor: .white)
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isScrollEnabled = true
@@ -81,7 +80,6 @@ final class UserDetailViewController: UIViewController {
         buttonAction()
         Loading.hideLoading()
         tabBarController?.tabBar.isHidden = true
-        
     }
     
     // MARK: - objc
@@ -98,25 +96,17 @@ final class UserDetailViewController: UIViewController {
                 self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .like)
                 let viewController = HomeViewController()
                 self.navigationController?.pushViewController(viewController, animated: true)
-            }, onCompleted: {
-                self.toastView = ToastView(text: "Pass", backgroundColor: .blue, textColor: .blue)
             })
             .disposed(by: disposeBag)
         
         disLikeButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                //                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "Like", messageText: "\(self.viewModel.user.nickName)님 DisLike", confirmButtonText: "확인", comfrimAction: nil)
-                self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .dislike)
+                 self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .dislike)
                 let viewController = HomeViewController()
                 self.navigationController?.pushViewController(viewController, animated: true)
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func configToastView() {
-        toastView.center = view.center
-        view.addSubview(toastView)
     }
     
     // Bind Code

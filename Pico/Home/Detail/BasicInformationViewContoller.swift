@@ -12,7 +12,7 @@ final class BasicInformationViewContoller: UIViewController {
     private let nameAgeLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = .picoTitleFont
+        label.font = .picoLargeTitleFont
         return label
     }()
     
@@ -26,7 +26,7 @@ final class BasicInformationViewContoller: UIViewController {
     private let locationLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = .picoMBTISmallLabelFont
+        label.font = .picoSubTitleFont
         return label
     }()
     
@@ -40,7 +40,7 @@ final class BasicInformationViewContoller: UIViewController {
     private let heightLabel: UILabel = {
         let label = UILabel()
         label.text = ""
-        label.font = .picoMBTISmallLabelFont
+        label.font = .picoSubTitleFont
         return label
     }()
     
