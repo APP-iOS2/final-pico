@@ -32,7 +32,7 @@ final class KeyboardManager {
             UIView.animate(
                 withDuration: 0.5,
                 animations: {
-                    button.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 50)
+                    button.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height + 25)
                 }
             )
         }
