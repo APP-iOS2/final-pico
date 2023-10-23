@@ -66,7 +66,7 @@ final class EntViewController: BaseViewController {
         addViews()
         makeConstraints()
         configRxBinding()
-//        checkGameAvailability()
+        checkGameAvailability()
     }
 
     deinit {
