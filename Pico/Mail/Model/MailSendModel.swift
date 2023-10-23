@@ -150,7 +150,6 @@ final class MailSendModel {
             print("삭제 실패: 해당 유저 정보 얻기 실패")
             return
         }
-        print(index)
         sendList.remove(at: index)
         reloadMailTableViewPublisher.onNext(())
         
@@ -203,8 +202,6 @@ final class MailSendModel {
             ], merge: true) { error in
                 if let error = error {
                     print("평가 업데이트 에러: \(error)")
-                } else {
-                    print("평가 업데이트 성공")
                 }
             }
         
@@ -217,8 +214,6 @@ final class MailSendModel {
                 ], merge: true) { error in
                     if let error = error {
                         print("평가 업데이트 에러: \(error)")
-                    } else {
-                        print("평가 업데이트 성공")
                     }
                 }
             
@@ -232,8 +227,6 @@ final class MailSendModel {
                 ], merge: true) { error in
                     if let error = error {
                         print("평가 업데이트 에러: \(error)")
-                    } else {
-                        print("평가 업데이트 성공")
                     }
                 }
         }
