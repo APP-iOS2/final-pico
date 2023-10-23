@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class IntroViewController: UIViewController {
     private let introLabel: UILabel = {

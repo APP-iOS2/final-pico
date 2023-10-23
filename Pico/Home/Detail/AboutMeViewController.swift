@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class AboutMeViewController: UIViewController {
     private var cellInfomation: [[String]] = [["", ""]]
@@ -19,7 +20,6 @@ final class AboutMeViewController: UIViewController {
         return stackView
     }()
     
-  
     private let basicLabel: UILabel = {
         let label = UILabel()
         label.text = "기본 정보"
@@ -61,10 +61,14 @@ final class AboutMeViewController: UIViewController {
             return [icon, text]
         }
         
+        print(cellInfomation.count)
+        
         if cellInfomation.isEmpty {
             aboutMeCollectionView.isHidden = true
             basicLabel.isHidden = true
             view.isHidden = true
+        } else {
+            updateConstraints()
         }
         
         aboutMeCollectionView.reloadData()
@@ -75,14 +79,32 @@ final class AboutMeViewController: UIViewController {
         aboutMeCollectionView.delegate = self
         aboutMeCollectionView.dataSource = self
         
-        if let layout = aboutMeCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.minimumInteritemSpacing = 2
-            layout.minimumLineSpacing = 2
-            let itemWidth = view.frame.width / 2.5
-            layout.itemSize = CGSize(width: itemWidth, height: 35)
-        }
+//        if let layout = aboutMeCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+//            layout.minimumInteritemSpacing = 2
+//            layout.minimumLineSpacing = 2
+//            let itemWidth = view.frame.width / 2.5
+//            layout.itemSize = CGSize(width: itemWidth, height: 35)
+//        }
     }
     
+    private func updateConstraints() {
+        var height: Int = 0
+        switch cellInfomation.count {
+        case 0:
+            height = 0
+        case 1, 2:
+            height = 50
+        case 3, 4:
+            height = 100
+        default:
+            height = 150
+        }
+        aboutMeCollectionView.snp.remakeConstraints { make in
+            make.top.equalTo(basicLabel.snp.bottom).offset(15)
+            make.height.equalTo(height)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+    }
 }
 
 // MARK: - UI 관련
@@ -100,12 +122,13 @@ extension AboutMeViewController {
         
         aboutMeCollectionView.snp.makeConstraints { make in
             make.top.equalTo(basicLabel.snp.bottom).offset(15)
+            make.height.equalTo(150)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
 
-extension AboutMeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension AboutMeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cellInfomation.count
@@ -117,4 +140,7 @@ extension AboutMeViewController: UICollectionViewDelegate, UICollectionViewDataS
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width / 2 - 20, height: 35)
+    }
 }

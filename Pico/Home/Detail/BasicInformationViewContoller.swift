@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class BasicInformationViewContoller: UIViewController {
     private var mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .enfj, scale: .large)
@@ -61,9 +62,18 @@ final class BasicInformationViewContoller: UIViewController {
             heightLabel.text = " \(heightText)cm"
         } else {
             [heightImageView, heightLabel].forEach {
-                $0.removeFromSuperview()
                 $0.isHidden = true
             }
+            updateConstraints()
+        }
+    }
+    
+    private func updateConstraints() {
+        locationImageView.snp.makeConstraints { make in
+            make.top.equalTo(nameAgeLabel.snp.bottom).offset(15)
+            make.leading.equalTo(view.safeAreaLayoutGuide)
+            make.width.height.equalTo(20)
+            make.bottom.equalToSuperview()
         }
     }
 }
@@ -101,7 +111,7 @@ extension BasicInformationViewContoller {
         
         heightImageView.snp.makeConstraints { make in
             make.top.equalTo(locationLabel.snp.bottom).offset(10)
-            make.leading.equalTo(view.safeAreaLayoutGuide)
+            make.leading.equalTo(locationImageView.snp.leading)
             make.width.height.equalTo(20)
         }
         
@@ -109,6 +119,7 @@ extension BasicInformationViewContoller {
             make.top.equalTo(heightImageView.snp.top)
             make.leading.equalTo(heightImageView.snp.trailing).offset(5)
             make.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
 }

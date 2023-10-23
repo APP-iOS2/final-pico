@@ -20,9 +20,9 @@ final class UserDetailViewController: UIViewController {
     // SubViews
     private let userImageViewController = UserImageViewController()
     private let basicInformationViewContoller = BasicInformationViewContoller()
-    private let introViewController = IntroViewController()
-    private let aboutMeViewController = AboutMeViewController()
-    private let subInfomationViewController = SubInfomationViewController()
+//    private let introViewController = IntroViewController()
+//    private let aboutMeViewController = AboutMeViewController()
+//    private let subInfomationViewController = SubInfomationViewController()
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isScrollEnabled = true
@@ -258,11 +258,13 @@ extension UserDetailViewController {
     }
     
     private func addViews() {
-        [scrollView, disLikeButton, likeButton].forEach { view.addSubview($0) }
-        [userImageViewController.view, verticalStackView].forEach { scrollView.addSubview($0) }
-        [basicInformationViewContoller.view, introViewController.view, aboutMeViewController.view, subInfomationViewController.view].forEach {
-            verticalStackView.addArrangedSubview($0)
-        }
+        view.addSubview([scrollView, disLikeButton, likeButton])
+        scrollView.addSubview([userImageViewController.view, verticalStackView])
+        verticalStackView.addArrangedSubview(basicInformationViewContoller.view)
+        
+//        [basicInformationViewContoller.view, introViewController.view, aboutMeViewController.view, subInfomationViewController.view].forEach {
+//            verticalStackView.addArrangedSubview($0)
+//        }
     }
     
     private func makeConstraints() {
@@ -290,17 +292,5 @@ extension UserDetailViewController {
             make.top.equalTo(userImageViewController.view.snp.bottom).offset(20)
             make.leading.trailing.bottom.width.equalToSuperview().inset(20)
         }
-        
-        basicInformationViewContoller.view.snp.makeConstraints { make in
-            make.height.equalTo(Screen.height * 0.2)
-        }
-        
-        aboutMeViewController.view.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(Screen.height * 0.28)
-        }
-        
-        //        subInfomationViewController.view.snp.makeConstraints { make in
-        //            make.height.equalTo(Screen.height * 0.65)
-        //        }
     }
 }
