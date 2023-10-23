@@ -34,7 +34,7 @@ final class UserDetailViewController: UIViewController {
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.alignment = .fill
-        stackView.spacing = 5
+        stackView.spacing = 20
         return stackView
     }()
     
