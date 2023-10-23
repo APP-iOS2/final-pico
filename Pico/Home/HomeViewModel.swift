@@ -25,7 +25,7 @@ final class HomeViewModel {
     private let disposeBag = DisposeBag()
     
     init() {
-                UserDefaults.standard.setValue(false, forKey: UserDefaultsManager.Key.dontWatchAgain.rawValue)
+//                UserDefaults.standard.setValue(false, forKey: UserDefaultsManager.Key.dontWatchAgain.rawValue)
     }
     
     func fetchUser() {
