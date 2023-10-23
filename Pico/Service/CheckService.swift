@@ -13,19 +13,19 @@ import FirebaseFirestoreSwift
 
 final class CheckService {
     private let dbRef = Firestore.firestore()
-    private let fireService = FirestoreService()
     
     func checkUserId(userId: String, completion: @escaping (_ isRight: Bool) -> ()) {
-        Loading.showWhiteLoading()
-        self.dbRef.collection("users")
-            .whereField("id", isEqualTo: userId)
-            .getDocuments { snapShot, err in
-                guard err == nil, let documents = snapShot?.documents else {
-                    return
+        Loading.showLoading(backgroundColor: .systemBackground.withAlphaComponent(0.8))
+        DispatchQueue.global().async {
+            self.dbRef.collection("users")
+                .whereField("id", isEqualTo: userId)
+                .getDocuments { snapShot, err in
+                    guard err == nil, let documents = snapShot?.documents else {
+                        return
+                    }
+                    completion(documents.first != nil)
                 }
-                completion(documents.first != nil)
-                Loading.hideLoading()
-            }
+        }
     }
     
     func checkPhoneNumber(userNumber: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {

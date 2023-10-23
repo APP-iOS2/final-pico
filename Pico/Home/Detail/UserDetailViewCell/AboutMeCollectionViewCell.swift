@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class AboutMeCollectionViewCell: UICollectionViewCell {
     
@@ -18,7 +19,6 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.textColor = .darkGray
         label.font = .picoContentBoldFont
         return label
@@ -45,14 +45,12 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
     
     private func makeConstraints() {
         imageView.snp.makeConstraints { make in
-            make.top.leading.bottom.equalToSuperview()
+            make.leading.equalToSuperview()
             make.width.height.equalTo(20)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
             make.leading.equalTo(imageView.snp.trailing).offset(10)
-            make.trailing.bottom.equalToSuperview()
         }
     }
     

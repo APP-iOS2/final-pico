@@ -116,22 +116,21 @@ final class HomeViewController: BaseViewController {
                }
                 addLoadingView()
                 addUserCards()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    self.addEmptyView()
-                    self.loadingView.removeFromSuperview()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                    guard let self = self else { return }
+                    addEmptyView()
+                    loadingView.removeFromSuperview()
                 }
                 addSubView()
                 addGuideView()
                 makeConstraints()
-            }, onError: { error in
-                print(error)
             })
             .disposed(by: disposeBag)
     }
     
     private func addLoadingView() {
         loadingView.frame = view.frame
-        loadingView.backgroundColor = .systemBackground
+        loadingView.configBackgroundColor()
         loadingView.animate()
         view.addSubview(loadingView)
     }

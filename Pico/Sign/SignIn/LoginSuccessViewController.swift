@@ -39,7 +39,7 @@ final class LoginSuccessViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.configBackgroundColor(color: .white)
         hideNavigationBackButton()
         addSubViews()
         makeConstraints()

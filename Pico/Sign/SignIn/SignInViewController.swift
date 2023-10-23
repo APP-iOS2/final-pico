@@ -93,7 +93,7 @@ final class SignInViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.configBackgroundColor(color: .white)
         tappedDismissKeyboard(without: [nextButton])
         addSubViews()
         makeConstraints()

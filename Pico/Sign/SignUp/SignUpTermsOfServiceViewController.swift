@@ -82,10 +82,14 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         return button
     }()
     
-    private let firstTermsAgreementLabel: UILabel = {
+    private lazy var firstTermsAgreementLabel: UILabel = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
         let label = UILabel()
         label.text = "Pico 서비스 이용약관에 동의합니다."
+        label.tag = 0
         label.numberOfLines = 0
+        label.addGestureRecognizer(tapGesture)
+        label.isUserInteractionEnabled = true
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontGray
@@ -124,16 +128,20 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         return button
     }()
     
-    private let secondTermsAgreementLabel: UILabel = {
+    private lazy var secondTermsAgreementLabel: UILabel = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
         let label = UILabel()
         label.text = "개인정보 수집에 동의합니다."
+        label.tag = 1
         label.numberOfLines = 0
+        label.addGestureRecognizer(tapGesture)
+        label.isUserInteractionEnabled = true
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontGray
         return label
     }()
-
+    
     private lazy var secondCheckBoxButton: UIButton = {
         let button = UIButton(type: .custom)
         let uncheckedImage = UIImage(systemName: "checkmark.circle")
@@ -166,9 +174,13 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         return button
     }()
     
-    private let thirdTermsAgreementLabel: UILabel = {
+    private lazy var thirdTermsAgreementLabel: UILabel = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
         let label = UILabel()
+        label.tag = 2
         label.text = "위치기반 서비스에 동의합니다."
+        label.addGestureRecognizer(tapGesture)
+        label.isUserInteractionEnabled = true
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.picoDescriptionFont
@@ -200,7 +212,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.configBackgroundColor(color: .white)
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
@@ -229,9 +241,40 @@ extension SignUpTermsOfServiceViewController {
     }
     
     // MARK: - @objc
+    
+    @objc private func tappedLabel(_ sender: UITapGestureRecognizer) {
+        switch sender.view?.tag {
+        case 0:
+            firstCheckBoxButton.isSelected.toggle()
+            firstTermsOfServiceButton.backgroundColor = firstCheckBoxButton.isSelected ? .picoAlphaBlue : .picoGray
+            firstCheckBoxButton.tintColor = firstCheckBoxButton.isSelected ? .picoAlphaBlue : .picoFontGray
+        case 1:
+            secondCheckBoxButton.isSelected.toggle()
+            secondTermsOfServiceButton.backgroundColor = secondCheckBoxButton.isSelected ? .picoAlphaBlue : .picoGray
+            secondCheckBoxButton.tintColor = secondCheckBoxButton.isSelected ? .picoAlphaBlue : .picoFontGray
+        case 2:
+            thirdCheckBoxButton.isSelected.toggle()
+            thirdTermsOfServiceButton.backgroundColor = thirdCheckBoxButton.isSelected ? .picoAlphaBlue : .picoGray
+            thirdCheckBoxButton.tintColor = thirdCheckBoxButton.isSelected ? .picoAlphaBlue : .picoFontGray
+        default:
+            return
+        }
+        updateNextButton(isCheck: isCheckBoxSelected)
+    }
+    
     @objc private func tappedCheckBoxButton(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         sender.tintColor = sender.isSelected ? .picoAlphaBlue : .picoFontGray
+        switch sender.tag {
+        case 0:
+            firstTermsOfServiceButton.backgroundColor = sender.isSelected ? .picoAlphaBlue : .picoGray
+        case 1:
+            secondTermsOfServiceButton.backgroundColor = sender.isSelected ? .picoAlphaBlue : .picoGray
+        case 2:
+            thirdTermsOfServiceButton.backgroundColor = sender.isSelected ? .picoAlphaBlue : .picoGray
+        default:
+            return
+        }
         updateNextButton(isCheck: isCheckBoxSelected)
     }
     
@@ -249,6 +292,7 @@ extension SignUpTermsOfServiceViewController {
         default:
             return
         }
+        updateNextButton(isCheck: isCheckBoxSelected)
         sender.backgroundColor = .picoAlphaBlue
         present(TermsOfServiceModalViewController(tag: sender.tag), animated: true)
     }

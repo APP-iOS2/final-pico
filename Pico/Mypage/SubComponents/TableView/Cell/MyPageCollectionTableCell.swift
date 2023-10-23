@@ -94,7 +94,7 @@ extension MyPageCollectionTableCell: UICollectionViewDataSource, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyPageCollectionCell", for: indexPath) as? MyPageCollectionCell else { return UICollectionViewCell() }
         
-        cell.backgroundColor = .white
+        cell.backgroundColor = .systemBackground
         cell.layer.masksToBounds = true
         cell.layer.cornerRadius = 10
         switch indexPath.row {

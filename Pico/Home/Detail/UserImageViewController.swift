@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 import RxSwift
 import RxCocoa
 
@@ -28,7 +29,7 @@ final class UserImageViewController: UIViewController {
         let pageControl = UIPageControl()
         pageControl.currentPage = 0
         pageControl.pageIndicatorTintColor = UIColor.lightGray
-        pageControl.currentPageIndicatorTintColor = UIColor.white
+        pageControl.currentPageIndicatorTintColor = UIColor.picoBlue
         return pageControl
     }()
     
@@ -54,7 +55,7 @@ final class UserImageViewController: UIViewController {
             if let image = URL(string: image) {
                 imageView.kf.setImage(with: image)
             }
-            imageView.contentMode = .scaleToFill
+            imageView.contentMode = .scaleAspectFit
             imageView.frame = CGRect(x: Screen.width * CGFloat(index),
                                      y: 0,
                                      width: Screen.width,

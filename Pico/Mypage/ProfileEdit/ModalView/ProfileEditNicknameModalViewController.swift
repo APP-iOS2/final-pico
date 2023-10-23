@@ -41,10 +41,10 @@ final class ProfileEditNicknameModalViewController: UIViewController {
     private let cancelButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "x.circle"), for: .normal)
-        button.tintColor = .black
+        button.tintColor = .picoGray
         button.imageView?.contentMode = .scaleAspectFit
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         return button
     }()
     
@@ -88,7 +88,7 @@ final class ProfileEditNicknameModalViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
         addViews()
         makeConstraints()
         textFieldConfigure()
@@ -145,16 +145,17 @@ final class ProfileEditNicknameModalViewController: UIViewController {
                     guard let self = self else { return }
                     guard isRight else {
                         SignLoadingManager.hideLoading()
-                        self.showAlert(message: message) {
+                        self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: {
                             self.textField.text = ""
-                        }
+                        })
                         return
                     }
+                    self.view.endEditing(true)
                     SignLoadingManager.hideLoading()
-                    self.showAlert(message: message) {
+                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: {
                         self.completeButton.isEnabled = true
                         self.completeButton.backgroundColor = .picoBlue
-                    }
+                    })
                 }
             }
             .disposed(by: disposeBag)

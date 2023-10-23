@@ -29,7 +29,6 @@ final class MailSendModel {
     private let dbRef = Firestore.firestore()
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 90)
     var startIndex = 0
-    var user: User?
     
     struct Input {
         let listLoad: Observable<Void>
@@ -95,6 +94,8 @@ final class MailSendModel {
         let ref = dbRef.collection(Collections.mail.name)
             .document(UserDefaultsManager.shared.getUserData().userId)
         
+        let endIndex = startIndex + itemsPerPage
+        
         DispatchQueue.global().async {
             ref.getDocument { [weak self] document, error in
                 guard let self = self else { return }
@@ -112,16 +113,17 @@ final class MailSendModel {
                         if startIndex > sorted.count - 1 {
                             return
                         }
-                        let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(itemsPerPage, sorted.count)])
-                        sendList.append(contentsOf: currentPageDatas)
-                        startIndex += currentPageDatas.count
+                        let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        sendList = currentPageDatas
+                        startIndex = currentPageDatas.count
+                        
+                        reloadMailTableViewPublisher.onNext(())
                     } else {
                         print("보낸 문서를 찾을 수 없습니다.")
                     }
                 }
-                sendList.sort(by: {$0.sendedDate > $1.sendedDate})
+                // sendList.sort(by: {$0.sendedDate > $1.sendedDate})
                 
-                reloadMailTableViewPublisher.onNext(())
             }
         }
     }
@@ -148,7 +150,6 @@ final class MailSendModel {
             print("삭제 실패: 해당 유저 정보 얻기 실패")
             return
         }
-        print(index)
         sendList.remove(at: index)
         reloadMailTableViewPublisher.onNext(())
         
@@ -201,8 +202,6 @@ final class MailSendModel {
             ], merge: true) { error in
                 if let error = error {
                     print("평가 업데이트 에러: \(error)")
-                } else {
-                    print("평가 업데이트 성공")
                 }
             }
         
@@ -215,8 +214,6 @@ final class MailSendModel {
                 ], merge: true) { error in
                     if let error = error {
                         print("평가 업데이트 에러: \(error)")
-                    } else {
-                        print("평가 업데이트 성공")
                     }
                 }
             
@@ -230,8 +227,6 @@ final class MailSendModel {
                 ], merge: true) { error in
                     if let error = error {
                         print("평가 업데이트 에러: \(error)")
-                    } else {
-                        print("평가 업데이트 성공")
                     }
                 }
         }
@@ -240,25 +235,5 @@ final class MailSendModel {
         let receiverNoti = Noti(receiveId: receiveUser.id, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
         
         FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
-    }
-    
-    func getUser(userId: String, completion: @escaping () -> ()) {
-        DispatchQueue.global().async {
-            let query = self.dbRef.collection(Collections.users.name)
-                .whereField("id", isEqualTo: userId)
-            
-            query.getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print(error)
-                } else {
-                    for document in querySnapshot!.documents {
-                        if let userdata = try? document.data(as: User.self) {
-                            self.user = userdata
-                            completion()
-                        }
-                    }
-                }
-            }
-        }
     }
 }

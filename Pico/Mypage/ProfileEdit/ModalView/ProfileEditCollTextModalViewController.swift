@@ -33,7 +33,7 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         let label = UILabel()
         label.font = .picoDescriptionFont
         label.textColor = .picoFontGray
-        label.text = "0/7"
+        label.text = "0/5"
         return label
     }()
     
@@ -113,7 +113,7 @@ final class ProfileEditCollTextModalViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
         addViews()
         makeConstraints()
         textFieldConfigure()
@@ -160,7 +160,7 @@ final class ProfileEditCollTextModalViewController: UIViewController {
             .disposed(by: disposeBag)
         
         collectionData = profileEditViewModel.collectionData ?? []
-        countLabel.text = "\(collectionData.count)/7"
+        countLabel.text = "\(collectionData.count)/5"
     }
     
     private func textFieldConfigure() {
@@ -245,8 +245,8 @@ final class ProfileEditCollTextModalViewController: UIViewController {
     }
     
     private func cheeckCollectionCount() -> Bool {
-        if collectionData.count >= 7 {
-            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "최대 7개까지만 선택할 수 있습니다.", confirmButtonText: "확인")
+        if collectionData.count >= 5 {
+            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "최대 5개까지 등록할 수 있습니다.", confirmButtonText: "확인")
             return false
         } else {
             return true
@@ -259,7 +259,7 @@ final class ProfileEditCollTextModalViewController: UIViewController {
         guard !trimmedText.isEmpty else { return }
         guard cheeckCollectionCount() else { return }
         collectionData.append(trimmedText)
-        countLabel.text = "\(collectionData.count)/7"
+        countLabel.text = "\(collectionData.count)/5"
         collectionView.reloadData()
         checkSameData()
     }

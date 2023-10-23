@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class AboutMeViewController: UIViewController {
     private var cellInfomation: [[String]] = [["", ""]]
@@ -17,18 +18,6 @@ final class AboutMeViewController: UIViewController {
         stackView.alignment = .fill
         stackView.spacing = 5
         return stackView
-    }()
-    
-    private let introLabel: UILabel = {
-        let label = PaddingLabel(padding: UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 5))
-        label.text = ""
-        label.font = .picoSubTitleFont
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.backgroundColor = .systemGray6
-        label.layer.masksToBounds = true
-        label.layer.cornerRadius = 10
-        return label
     }()
     
     private let basicLabel: UILabel = {
@@ -54,16 +43,7 @@ final class AboutMeViewController: UIViewController {
     }
     
     // MARK: - Config
-    func config(intro: String?, eduText: String?, religionText: String?, smokeText: String?, jobText: String?, drinkText: String?) {
-        var allNil = true
-        
-        if let intro = intro {
-            introLabel.text = intro
-            allNil = false
-        } else {
-            introLabel.text = nil
-            introLabel.isHidden = true
-        }
+    func config(eduText: String?, religionText: String?, smokeText: String?, jobText: String?, drinkText: String?) {
         
         cellInfomation.removeAll()
         
@@ -78,20 +58,18 @@ final class AboutMeViewController: UIViewController {
         // nil이 아닌 항목만 필터링하고, 옵셔널 바인딩을 사용하여 값 추출
         cellInfomation = infoArray.compactMap { icon, text in
             guard let text = text else { return nil }
-            allNil = false // 변수가 하나라도 nil이 아닌 값을 가지고 있으면 allNil을 false로 설정
             return [icon, text]
         }
+        
+        print(cellInfomation.count)
         
         if cellInfomation.isEmpty {
             aboutMeCollectionView.isHidden = true
             basicLabel.isHidden = true
+            view.isHidden = true
+        } else {
+            updateConstraints()
         }
-        
-        // 모든 변수가 nil인 경우 뷰를 숨김
-        if allNil {
-            view.removeFromSuperview()
-        }
-        view.isHidden = allNil
         
         aboutMeCollectionView.reloadData()
     }
@@ -101,40 +79,56 @@ final class AboutMeViewController: UIViewController {
         aboutMeCollectionView.delegate = self
         aboutMeCollectionView.dataSource = self
         
-        if let layout = aboutMeCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.minimumInteritemSpacing = 2
-            layout.minimumLineSpacing = 2
-            let itemWidth = view.frame.width / 2.5
-            layout.itemSize = CGSize(width: itemWidth, height: 35)
-        }
+//        if let layout = aboutMeCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+//            layout.minimumInteritemSpacing = 2
+//            layout.minimumLineSpacing = 2
+//            let itemWidth = view.frame.width / 2.5
+//            layout.itemSize = CGSize(width: itemWidth, height: 35)
+//        }
     }
     
-}
-
-// MARK: - UI 관련
-extension AboutMeViewController {
-    private func addViews() {
-        [introLabel, aboutMeCollectionView, basicLabel].forEach { view.addSubview($0) }
-    }
-    
-    private func makeConstraints() {
-        introLabel.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
+    private func updateConstraints() {
+        var height: Int = 0
+        switch cellInfomation.count {
+        case 0:
+            height = 0
+        case 1, 2:
+            height = 50
+        case 3, 4:
+            height = 100
+        default:
+            height = 150
         }
-        
-        basicLabel.snp.makeConstraints { make in
-            make.top.equalTo(introLabel.snp.bottom).offset(20)
-            make.leading.trailing.equalToSuperview()
-        }
-        
-        aboutMeCollectionView.snp.makeConstraints { make in
+        aboutMeCollectionView.snp.remakeConstraints { make in
             make.top.equalTo(basicLabel.snp.bottom).offset(15)
+            make.height.equalTo(height)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
 
-extension AboutMeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+// MARK: - UI 관련
+extension AboutMeViewController {
+    private func addViews() {
+        view.addSubview([aboutMeCollectionView, basicLabel])
+    }
+    
+    private func makeConstraints() {
+    
+        basicLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
+        }
+        
+        aboutMeCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(basicLabel.snp.bottom).offset(15)
+            make.height.equalTo(150)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+    }
+}
+
+extension AboutMeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cellInfomation.count
@@ -146,4 +140,7 @@ extension AboutMeViewController: UICollectionViewDelegate, UICollectionViewDataS
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width / 2 - 20, height: 35)
+    }
 }

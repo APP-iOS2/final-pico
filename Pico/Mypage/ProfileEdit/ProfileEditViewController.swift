@@ -226,7 +226,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalType = .religion
                 profileEditViewModel.modalCollectionData = profileEditViewModel.religionType
                 profileEditViewModel.selectedIndex = profileEditViewModel.findIndex(for: profileEditViewModel.userData?.subInfo?.religion?.rawValue ?? "", in: ReligionType.allCases.map({ $0.rawValue})) ?? nil
-                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 250)
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel, collectionHeight: 110), viewHeight: 250)
                 
             case 4:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.drink.name)
@@ -234,7 +234,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalCollectionData = profileEditViewModel.frequencyType
                 profileEditViewModel.selectedIndex = profileEditViewModel.findIndex(for: profileEditViewModel.userData?.subInfo?.drinkStatus?.rawValue ?? "", in: FrequencyType.allCases.map({ $0.rawValue})) ?? nil
                 
-                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 180)
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel, collectionHeight: 40), viewHeight: 180)
                 
             case 5:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.smoke.name)
@@ -242,7 +242,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalCollectionData = profileEditViewModel.frequencyType
                 profileEditViewModel.selectedIndex = profileEditViewModel.findIndex(for: profileEditViewModel.userData?.subInfo?.smokeStatus?.rawValue ?? "", in: FrequencyType.allCases.map({ $0.rawValue})) ?? nil
                 
-                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 180)
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel, collectionHeight: 40), viewHeight: 180)
                 
             case 6:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.education.name)
@@ -250,7 +250,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalCollectionData = profileEditViewModel.educationType
                 profileEditViewModel.selectedIndex = profileEditViewModel.findIndex(for: profileEditViewModel.userData?.subInfo?.education?.rawValue ?? "", in: EducationType.allCases.map({ $0.rawValue})) ?? nil
                 
-                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 210)
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel, collectionHeight: 70), viewHeight: 210)
                 
             case 7:
                 profileEditViewModel.modalName.accept(ProfileEditViewModel.SubInfoCase.personalities.name)
@@ -269,7 +269,7 @@ extension ProfileEditViewController: UITableViewDelegate {
                 profileEditViewModel.modalType = .favoriteMBTIs
                 profileEditViewModel.selectedIndexs = profileEditViewModel.findMbtiIndex(for: profileEditViewModel.userData?.subInfo?.favoriteMBTIs?.map({ $0.rawValue }) ?? [], in: MBTIType.allCases.map { $0.rawValue })
                 profileEditViewModel.modalCollectionData = MBTIType.allCases.map { $0.nameString }
-                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel), viewHeight: 290)
+                presentModalView(viewController: ProfileEditCollectionModalViewController(profileEditViewModel: profileEditViewModel, collectionHeight: 150), viewHeight: 290)
             default:
                 break
             }
@@ -341,7 +341,6 @@ extension ProfileEditViewController {
             }
             detectionGroup.notify(queue: .main) {
                 SignLoadingManager.hideLoading()
-                // TODO: 알럿호출시점 바꾸기
                 if allImagesDetected {
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인")
                 } else {

@@ -11,7 +11,7 @@ import SnapKit
 final class HomeGuideView: UIView {
     private let backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.configBackgroundColor()
         return view
     }()
     
@@ -85,7 +85,6 @@ final class HomeGuideView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         addSubview()
         makeConstraints()
         configButton()

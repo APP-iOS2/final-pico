@@ -5,12 +5,12 @@
 //  Created by 오영석 on 2023/10/10.
 //
 
-import Foundation
 import RxSwift
 import RxCocoa
 import Firebase
 import AVFoundation
 import Kingfisher
+import UIKit
 
 final class WorldCupViewModel {
     
@@ -21,6 +21,14 @@ final class WorldCupViewModel {
     
     init() {
         loadUsersRx()
+    }
+    
+    func checkStart() -> Bool {
+        if users.value.count < 8 {
+            return false
+        } else {
+            return true
+        }
     }
     
     func loadUsersRx() {
@@ -47,7 +55,7 @@ final class WorldCupViewModel {
 
         if let imageURL = URL(string: user.imageURLs.first ?? "") {
             cell.userImage.kf.setImage(with: imageURL) { [weak self] result in
-                if case .success(_) = result {
+                if case .success = result {
                     cell.mbtiLabel.setMbti(mbti: user.mbti)
                     cell.userNickname.text = String(user.nickName)
                     cell.userAge.text = "\(user.age)세"
