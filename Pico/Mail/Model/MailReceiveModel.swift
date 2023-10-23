@@ -93,6 +93,8 @@ final class MailReceiveModel {
         let ref = dbRef.collection(Collections.mail.name)
             .document(UserDefaultsManager.shared.getUserData().userId)
         
+        let endIndex = startIndex + itemsPerPage
+        
         DispatchQueue.global().async {
             ref.getDocument { [weak self] document, error in
                 guard let self = self else { return }
@@ -110,17 +112,17 @@ final class MailReceiveModel {
                         if startIndex > sorted.count - 1 {
                             return
                         }
-                        let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(itemsPerPage, sorted.count)])
-                        receiveList.append(contentsOf: currentPageDatas)
-                        startIndex += currentPageDatas.count
-                    } else {
-                        print("받은 문서를 찾을 수 없습니다.")
+                        let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        receiveList = currentPageDatas
+                        startIndex = currentPageDatas.count
+                        
+                        reloadMailTableViewPublisher.onNext(())
                     }
+                } else {
+                    print("받은 문서를 찾을 수 없습니다.")
                 }
-                receiveList.sort(by: {$0.sendedDate > $1.sendedDate})
-                
-                reloadMailTableViewPublisher.onNext(())
             }
+            // receiveList.sort(by: {$0.sendedDate > $1.sendedDate})
         }
     }
     

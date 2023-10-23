@@ -95,6 +95,8 @@ final class MailSendModel {
         let ref = dbRef.collection(Collections.mail.name)
             .document(UserDefaultsManager.shared.getUserData().userId)
         
+        let endIndex = startIndex + itemsPerPage
+        
         DispatchQueue.global().async {
             ref.getDocument { [weak self] document, error in
                 guard let self = self else { return }
@@ -112,16 +114,17 @@ final class MailSendModel {
                         if startIndex > sorted.count - 1 {
                             return
                         }
-                        let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(itemsPerPage, sorted.count)])
-                        sendList.append(contentsOf: currentPageDatas)
-                        startIndex += currentPageDatas.count
+                        let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        sendList = currentPageDatas
+                        startIndex = currentPageDatas.count
+                        
+                        reloadMailTableViewPublisher.onNext(())
                     } else {
                         print("보낸 문서를 찾을 수 없습니다.")
                     }
                 }
-                sendList.sort(by: {$0.sendedDate > $1.sendedDate})
+                // sendList.sort(by: {$0.sendedDate > $1.sendedDate})
                 
-                reloadMailTableViewPublisher.onNext(())
             }
         }
     }
