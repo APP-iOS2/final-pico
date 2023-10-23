@@ -248,6 +248,7 @@ final class RandomBoxViewController: UIViewController {
         let messageSting: String = "\(message)"
         showCustomAlert(alertType: .onlyConfirm, titleText: "뽑기 결과", messageText: "\(messageSting)츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
             self.dismiss(animated: true, completion: nil)
+            self.randomBoxImage.stop()
             self.countLabel.text = "1"
             DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
                 self?.emitterLayer.removeFromSuperlayer()
@@ -269,9 +270,8 @@ final class RandomBoxViewController: UIViewController {
         cell.velocityRange = 50
         cell.yAcceleration = 600
         
-        emitterLayer.emitterPosition = CGPoint(x: view.bounds.midX, y: view.bounds.midY)
+        emitterLayer.emitterPosition = CGPoint(x: view.bounds.midX, y: view.bounds.midY + 45)
         emitterLayer.emitterShape = .point
-        emitterLayer.renderMode = .additive
         emitterLayer.emitterCells = [cell]
     }
     
@@ -302,11 +302,13 @@ extension RandomBoxViewController {
         output.resultObtainChu
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.showParticleEffect()
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                self.randomBoxImage.play()
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.7) {
+                    viewController.showParticleEffect()
+                }
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2) {
                     viewController.showAlert(with: viewController.randomBoxViewModel.obtainedChu)
                 }
-                
                 viewController.normalBoxButton.isEnabled = true
                 viewController.advancedBoxButton.isEnabled = true
             }
