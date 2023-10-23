@@ -83,7 +83,7 @@ final class AdminUserTableViewCell: UITableViewCell {
         mbtiLabel.setMbti(mbti: mbti)
         mbtiLabel.isHidden = false
     }
-    
+    /// 유저리스트 config
     func configData(imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double) {
         setData(imageUrl: imageUrl, nickName: nickName, age: age, mbti: mbti)
         iconImageView.image = UIImage()
@@ -91,7 +91,7 @@ final class AdminUserTableViewCell: UITableViewCell {
         contentLabel.font = .picoDescriptionFont
         contentLabel.textColor = .picoFontGray
     }
-    
+    /// 신고, 차단, 좋아요기록 config
     func configData(recordType: RecordType, imageUrl: String, nickName: String, age: Int, mbti: MBTIType, createdDate: Double, reportReason: String = "") {
         setData(imageUrl: imageUrl, nickName: nickName, age: age, mbti: mbti)
         iconImageView.image = UIImage(systemName: recordType.iconSystemImageName)
@@ -104,7 +104,7 @@ final class AdminUserTableViewCell: UITableViewCell {
         createDateLabel.isHidden = false
         createDateLabel.text = createdDate.timeAgoSinceDate()
     }
-    
+    /// 결제기록 config
     func configData(recordType: RecordType, payment: Payment.PaymentInfo) {
         iconImageView.image = UIImage(systemName: recordType.iconSystemImageName)
         iconImageView.tintColor = recordType.iconColor
@@ -120,6 +120,21 @@ final class AdminUserTableViewCell: UITableViewCell {
         }
         createDateLabel.isHidden = false
         createDateLabel.text = payment.purchasedDate.timeAgoSinceDate()
+    }
+    /// 신고목록 config
+    func configData(recordType: RecordType, report: AdminReport) {
+        guard let url = URL(string: report.imageURL) else { return }
+        profileImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+        profileImageView.kf.setImage(with: url)
+        mbtiLabel.setMbti(mbti: nil)
+        mbtiLabel.isHidden = true
+        iconImageView.image = UIImage(systemName: recordType.iconSystemImageName)
+        iconImageView.tintColor = recordType.iconColor
+        
+        nameLabel.text = "피신고자: \(report.reportedNickname), \(report.age)"
+        contentLabel.text = "신고자: \(report.reportNickname) (\(report.reason))"
+        createDateLabel.isHidden = false
+        createDateLabel.text = report.createdDate.timeAgoSinceDate()
     }
 }
 

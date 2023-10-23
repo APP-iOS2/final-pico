@@ -241,7 +241,28 @@ final class UserDetailViewController: UIViewController {
     // DB에 신고 내용 저장
     private func reportAction(reason: String) {
         self.viewModel.reportUser(reportedUser: viewModel.user, reason: reason) {
-            self.showCustomAlert(alertType: .onlyConfirm, titleText: "신고", messageText: "\(self.viewModel.user.nickName)님 신고 완료", confirmButtonText: "확인", comfrimAction: nil)
+            self.showCustomAlert(alertType: .onlyConfirm, titleText: "신고", messageText: "\(self.viewModel.user.nickName)님 신고 완료", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                guard let self else { return }
+                guard let imageURL = viewModel.user.imageURLs[safe: 0] else { return }
+                let reportInfo = AdminReport(
+                    reportUserId: UserDefaultsManager.shared.getUserData().userId,
+                    reportNickname: UserDefaultsManager.shared.getUserData().nickName,
+                    
+                    reportedUserId: viewModel.user.id,
+                    reportedNickname: viewModel.user.nickName,
+                    reason: reason, birth: viewModel.user.birth,
+                    mbti: viewModel.user.mbti,
+                    imageURL: imageURL,
+                    createdDate: Date().timeIntervalSince1970)
+                FirestoreService.shared.saveDocument(collectionId: .adminReport, documentId: reportInfo.id, data: reportInfo) { result in
+                    switch result {
+                    case .success:
+                        print("성공")
+                    case .failure(let err):
+                        print(err)
+                    }
+                }
+            })
         }
     }
 }

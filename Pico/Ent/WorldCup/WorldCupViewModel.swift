@@ -91,20 +91,20 @@ final class WorldCupViewModel {
         return dataLabelTexts
     }
     
-    func animateSelectedCell(collectionView: UICollectionView, indexPath: IndexPath) {
-        guard let selectedCell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else {
-            return
+    func animateSelectedCell(collectionView: UICollectionView, indexPath: IndexPath, completion: @escaping () -> Void) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else { return }
+
+        UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseInOut, animations: {
+            cell.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { _ in
+            UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseInOut, animations: {
+                cell.transform = .identity
+            }, completion: { _ in
+                completion()
+            })
         }
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            selectedCell.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-        }, completion: { _ in
-            UIView.animate(withDuration: 0.3) {
-                selectedCell.transform = .identity
-            }
-        })
     }
-    
+
     func playBackgroundMusic() {
         guard let url = Bundle.main.url(forResource: "gameMusic", withExtension: "mp3") else { return }
         

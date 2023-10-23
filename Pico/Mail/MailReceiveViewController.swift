@@ -16,7 +16,6 @@ final class MailReceiveViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var mailUser: Mail.MailInfo = Mail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
     
-    // var rootView: MailReceiveTableListController?
     weak var mailReceiveDelegate: MailReceiveDelegate?
     
     private let navigationBar: UINavigationBar = {
@@ -122,6 +121,10 @@ final class MailReceiveViewController: UIViewController {
         makeConstraints()
         configNavigationBarItem()
         configSenderStack()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         tappedNavigationButton()
     }
     
@@ -174,15 +177,15 @@ final class MailReceiveViewController: UIViewController {
         rightBarButton.rx.tap
             .bind { [weak self] in
                 guard let self = self else { return }
+                
                 let mailSendView = MailSendViewController()
                 mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId, atMessageView: true)
                 mailSendView.modalPresentationStyle = .formSheet
                 mailSendView.modalTransitionStyle = .flipHorizontal
-                self.present(mailSendView, animated: true, completion: nil)
+                present(mailSendView, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
     }
-    
     // MARK: - MailReceive + config
     func configData(mailSender: Mail.MailInfo) {
         mailUser = mailSender

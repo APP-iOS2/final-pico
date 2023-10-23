@@ -199,6 +199,7 @@
 		B1BFE18F2AD6BAED0094253A /* AdminReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE18E2AD6BAED0094253A /* AdminReportViewController.swift */; };
 		B1BFE1912AD6F5CB0094253A /* AdminUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE1902AD6F5CB0094253A /* AdminUserDetailViewController.swift */; };
 		B1BFE1932AD6F6960094253A /* AdminBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE1922AD6F6960094253A /* AdminBaseViewController.swift */; };
+		B1CC4BA32AE6733700457827 /* AdminReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1CC4BA22AE6733700457827 /* AdminReportViewModel.swift */; };
 		B1DFF1352AD7957200610519 /* DetailUserInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */; };
 		B1E30BDD2AD5E21A00F95C66 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BDC2AD5E21A00F95C66 /* ViewModelType.swift */; };
 		B1E30BE02AD5E7B500F95C66 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B1E30BDF2AD5E7B500F95C66 /* Kingfisher */; };
@@ -424,6 +425,7 @@
 		B1BFE18E2AD6BAED0094253A /* AdminReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminReportViewController.swift; sourceTree = "<group>"; };
 		B1BFE1902AD6F5CB0094253A /* AdminUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUserDetailViewController.swift; sourceTree = "<group>"; };
 		B1BFE1922AD6F6960094253A /* AdminBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminBaseViewController.swift; sourceTree = "<group>"; };
+		B1CC4BA22AE6733700457827 /* AdminReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminReportViewModel.swift; sourceTree = "<group>"; };
 		B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailUserInfoTableViewCell.swift; sourceTree = "<group>"; };
 		B1E30BDC2AD5E21A00F95C66 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
 		B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
@@ -1233,6 +1235,7 @@
 			isa = PBXGroup;
 			children = (
 				B1BFE18E2AD6BAED0094253A /* AdminReportViewController.swift */,
+				B1CC4BA22AE6733700457827 /* AdminReportViewModel.swift */,
 			);
 			path = ReportList;
 			sourceTree = "<group>";
@@ -1560,6 +1563,7 @@
 				6A7378532AC26D2E0047DE35 /* MyPageCollectionCell.swift in Sources */,
 				B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */,
 				367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */,
+				B1CC4BA32AE6733700457827 /* AdminReportViewModel.swift in Sources */,
 				36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */,
 				6922687B2AE0121700E83F02 /* MailReceiveModel.swift in Sources */,
 				B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */,

@@ -12,7 +12,7 @@ final class AdminViewController: AdminBaseViewController {
     
     private let viewControllers = [
         UINavigationController(rootViewController: AdminUserViewController(viewModel: AdminUserViewModel())),
-        UINavigationController(rootViewController: AdminReportViewController())
+        UINavigationController(rootViewController: AdminReportViewController(viewModel: AdminReportViewModel()))
     ]
     
     private let tabSegmentedControl: UISegmentedControl = {

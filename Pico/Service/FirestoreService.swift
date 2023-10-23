@@ -20,6 +20,7 @@ enum Collections {
     case unsubscribe
     case report
     case block
+    case adminReport
     
     var name: String {
         switch self {
@@ -41,6 +42,8 @@ enum Collections {
             return "Report"
         case .block:
             return "Block"
+        case .adminReport:
+            return "reports"
         }
     }
 }

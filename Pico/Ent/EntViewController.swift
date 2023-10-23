@@ -66,6 +66,7 @@ final class EntViewController: BaseViewController {
         addViews()
         makeConstraints()
         configRxBinding()
+        checkGameAvailability()
     }
 
     deinit {
@@ -134,17 +135,17 @@ final class EntViewController: BaseViewController {
             let currentTime = Date()
             let timeInterval = currentTime.timeIntervalSince(lastStartedTime)
             let secondsIn24Hours: Double = 24 * 60 * 60
-            
+
             if timeInterval < secondsIn24Hours {
                 remainingTime = Int(secondsIn24Hours - timeInterval)
-                startTimer()
                 gameStartButton.isEnabled = false
+                startTimer()
             } else {
                 gameStartButton.isEnabled = true
             }
         }
     }
-    
+
     private func tappedGameStartButton() {
         let currentTime = Date()
         UserDefaults.standard.set(currentTime, forKey: "lastStartedTime")
@@ -177,15 +178,4 @@ final class EntViewController: BaseViewController {
             guideLabel.text = "24시간에 한 번만 진행 가능합니다"
         }
     }
-    
-//    private func configTapGesture() {
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedHeaderView))
-//        headerView.addGestureRecognizer(tapGesture)
-//    }
-//    
-//    @objc func tappedHeaderView(_ sender: UITapGestureRecognizer) {
-//        let randomBoxViewController = RandomBoxViewController()
-//        self.navigationController?.pushViewController(randomBoxViewController, animated: true)
-//        self.tabBarController?.tabBar.isHidden = true
-//    }
 }

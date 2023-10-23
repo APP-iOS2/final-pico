@@ -87,7 +87,7 @@ final class SignUpPictureViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor(color: .white)
+        view.configBackgroundColor(color: .systemBackground)        
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
