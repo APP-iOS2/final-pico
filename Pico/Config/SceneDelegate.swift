@@ -21,23 +21,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return curentUser.userId
         }
         
-        if UserDefaultsManager.shared.isLogin() {
-            checkService.checkUserId(userId: userId) { isUser in
-                if isUser {
-                    let rootViewController = TabBarController()
-                    self.window?.rootViewController = rootViewController
-                } else {
-                    let rootViewController = UINavigationController(rootViewController: SignViewController())
-                    self.window?.rootViewController = rootViewController
-                }
-            }
-        } else {
-            let rootViewController = UINavigationController(rootViewController: SignViewController())
-            window?.rootViewController = rootViewController
-        }
+//        if UserDefaultsManager.shared.isLogin() {
+//            checkService.checkUserId(userId: userId) { isUser in
+//                if isUser {
+//                    let rootViewController = TabBarController()
+//                    self.window?.rootViewController = rootViewController
+//                } else {
+//                    let rootViewController = UINavigationController(rootViewController: SignViewController())
+//                    self.window?.rootViewController = rootViewController
+//                }
+//            }
+//        } else {
+//            let rootViewController = UINavigationController(rootViewController: SignViewController())
+//            window?.rootViewController = rootViewController
+//        }
        
-//        let rootViewController = UINavigationController(rootViewController: AdminViewController())
-//        window?.rootViewController = rootViewController
+        let rootViewController = UINavigationController(rootViewController: AdminViewController())
+        window?.rootViewController = rootViewController
  
         window?.makeKeyAndVisible()
     }

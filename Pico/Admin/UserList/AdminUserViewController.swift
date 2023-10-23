@@ -39,7 +39,7 @@ final class AdminUserViewController: UIViewController {
     
     lazy var sortTypeMenu = UIMenu(title: "정렬 구분", options: .displayInline, children: sortMenus)
     
-    lazy var sortMenus = SortType.allCases.map { sortType in
+    lazy var sortMenus = UserSortType.allCases.map { sortType in
         return UIAction(title: sortType.name, image: UIImage(), handler: { [weak self] _ in
             guard let self = self else { return }
             sortedTypeBehavior.onNext(sortType)
@@ -74,7 +74,7 @@ final class AdminUserViewController: UIViewController {
     
     private let viewDidLoadPublisher = PublishSubject<Void>()
     private let viewWillAppearPublisher = PublishSubject<Void>()
-    private let sortedTypeBehavior = BehaviorSubject(value: SortType.dateDescending)
+    private let sortedTypeBehavior = BehaviorSubject(value: UserSortType.dateDescending)
     private let userListTypeBehavior = BehaviorSubject(value: UserListType.using)
     private let searchButtonPublisher = PublishSubject<String>()
     private let tableViewOffsetPublisher = PublishSubject<Void>()
@@ -130,6 +130,7 @@ final class AdminUserViewController: UIViewController {
     }
     
     private func configTableView() {
+        tableView.showsVerticalScrollIndicator = false
         tableView.refreshControl = refreshControl
         tableView.register(cell: AdminUserTableViewCell.self)
         tableView.rowHeight = 80

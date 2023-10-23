@@ -33,7 +33,7 @@ enum UserListType: CaseIterable {
     }
 }
 
-enum SortType: CaseIterable {
+enum UserSortType: CaseIterable {
     /// 가입일 내림차순
     case dateDescending
     /// 가입일 오름차순
@@ -87,7 +87,7 @@ final class AdminUserViewModel: ViewModelType {
     struct Input {
         let viewDidLoad: Observable<Void>
         let viewWillAppear: Observable<Void>
-        let sortedType: Observable<SortType>
+        let sortedType: Observable<UserSortType>
         let userListType: Observable<UserListType>
         let searchButton: Observable<String>
         let tableViewOffset: Observable<Void>

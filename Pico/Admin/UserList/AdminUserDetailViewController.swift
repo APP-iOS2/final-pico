@@ -164,7 +164,7 @@ final class AdminUserDetailViewController: UIViewController {
         print("리로리로리로리드")
         let emptyIndex: Int = TableViewCase.empty.rawValue
         let recordIndex: Int = TableViewCase.record.rawValue
-        tableView.reloadSections(IndexSet(emptyIndex...recordIndex), with: .automatic)
+        tableView.reloadSections(IndexSet(emptyIndex...recordIndex), with: .none)
         activityIndicator.stopAnimating()
     }
     

@@ -11,7 +11,7 @@ import SnapKit
 final class RecordEmptyTableViewCell: UITableViewCell {
     
     private let chuImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "chu"))
+        let imageView = UIImageView(image: UIImage(named: "magnifier"))
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
