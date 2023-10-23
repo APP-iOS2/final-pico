@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class ProfileEditTextTabelCell: UITableViewCell {
     
@@ -49,16 +50,19 @@ final class ProfileEditTextTabelCell: UITableViewCell {
         contentLabel.font = .picoDescriptionFont
         contentLabel.textColor = .picoBlue
         contentLabel.textAlignment = .right
-        titleLabel.text = nil
+        titleLabel.text = ""
+        titleLabel.textAlignment = .left
         nextImageView.image = UIImage(systemName: "chevron.right")
     }
     
     func configure(titleLabel: String, contentLabel: String?) {
         self.titleLabel.text = titleLabel
+        self.titleLabel.textAlignment = .left
         guard let contentLabel else { return }
         if !contentLabel.isEmpty {
             self.contentLabel.text = contentLabel
             self.contentLabel.textColor = .picoFontBlack
+            self.contentLabel.textAlignment = .right
         }
     }
     
@@ -71,13 +75,13 @@ final class ProfileEditTextTabelCell: UITableViewCell {
     private func makeConstraints() {
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(15)
-            make.trailing.equalTo(contentLabel.snp.leading).offset(-50)
             make.centerY.equalToSuperview()
         }
         
         contentLabel.snp.makeConstraints { make in
             make.trailing.equalTo(nextImageView.snp.leading).offset(-10)
             make.centerY.equalToSuperview()
+            make.width.equalTo(150)
         }
         
         nextImageView.snp.makeConstraints { make in

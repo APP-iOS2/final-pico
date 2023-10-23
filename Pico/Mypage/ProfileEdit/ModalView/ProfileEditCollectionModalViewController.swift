@@ -54,12 +54,14 @@ final class ProfileEditCollectionModalViewController: UIViewController {
         return view
     }()
     
+    let collectionHeight: Int
     let profileEditViewModel: ProfileEditViewModel
     private let disposeBag = DisposeBag()
     private var selectedData = ""
     private var selectedIndexs = [Int]()
         
-    init(profileEditViewModel: ProfileEditViewModel) {
+    init(profileEditViewModel: ProfileEditViewModel, collectionHeight: Int) {
+        self.collectionHeight = collectionHeight
         self.profileEditViewModel = profileEditViewModel
         
         super.init(nibName: nil, bundle: nil)
@@ -140,15 +142,13 @@ final class ProfileEditCollectionModalViewController: UIViewController {
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(30)
-            make.height.equalTo(300)
-            //!!!: 높이바꾸기
+            make.height.equalTo(collectionHeight)
         }
         
         completeButton.snp.makeConstraints { make in
-//            make.top.equalTo(collectionView.snp.bottom).offset(20)
+            make.top.equalTo(collectionView.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(40)
-            make.bottom.equalToSuperview().offset(-44)
         }
     }
     

@@ -153,8 +153,8 @@ extension MypageViewController: MyPageCollectionDelegate {
     }
 }
 
-extension MypageViewController : MFMailComposeViewControllerDelegate{
+extension MypageViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        self.dismiss(animated:true,completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
 }
