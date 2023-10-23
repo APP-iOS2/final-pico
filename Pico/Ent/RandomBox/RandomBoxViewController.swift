@@ -152,7 +152,7 @@ final class RandomBoxViewController: UIViewController {
             make.leading.equalToSuperview().offset(padding)
             make.height.greaterThanOrEqualTo(Screen.height * 0.3).priority(.required)
         }
-
+        
         countLabel.snp.makeConstraints { make in
             make.top.equalTo(randomBoxImage.snp.bottom)
             make.centerX.equalToSuperview()
@@ -302,8 +302,10 @@ extension RandomBoxViewController {
         output.resultObtainChu
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.showAlert(with: viewController.randomBoxViewModel.obtainedChu)
                 viewController.showParticleEffect()
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) {
+                    viewController.showAlert(with: viewController.randomBoxViewModel.obtainedChu)
+                }
                 
                 viewController.normalBoxButton.isEnabled = true
                 viewController.advancedBoxButton.isEnabled = true

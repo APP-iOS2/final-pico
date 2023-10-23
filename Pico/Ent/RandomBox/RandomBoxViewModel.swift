@@ -50,39 +50,23 @@ final class RandomBoxViewModel: ViewModelType {
     func transform(input: Input) -> Output {
         let resultNormal = input.requestNormalPayment
             .withUnretained(self)
-            .flatMap { viewModel, chu -> Observable<Void> in  
+            .flatMap { viewModel, chu -> Observable<Void> in
                 viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() - chu
-                Loading.showLoading()
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
                     .flatMap { _ -> Observable<Void> in
                         let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: -chu, paymentType: .randombox)
                         return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
                     }
-            }
-            .withUnretained(self)
-            .map { viewModel, _ in
-                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
-                return DispatchQueue.main.async {
-                    Loading.hideLoading()
-                }
             }
         
         let resultAdvanced = input.requestAdvancedPayment
             .withUnretained(self)
             .flatMap { viewModel, chu -> Observable<Void> in  viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() - chu
-                Loading.showLoading()
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
                     .flatMap { _ -> Observable<Void> in
                         let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: -chu, paymentType: .randombox)
                         return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
                     }
-            }
-            .withUnretained(self)
-            .map { viewModel, _ in
-                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
-                return DispatchQueue.main.async {
-                    Loading.hideLoading()
-                }
             }
         
         let resultObtainChu = input.obtainChu
@@ -93,7 +77,7 @@ final class RandomBoxViewModel: ViewModelType {
                 UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
             }
- 
+        
         return Output(resultNormal: resultNormal, resultAdvanced: resultAdvanced, resultObtainChu: resultObtainChu)
     }
     
@@ -120,14 +104,14 @@ final class RandomBoxViewModel: ViewModelType {
         animation.duration = duration
         animation.values = [-0.15, 0.15, -0.15]
         animation.repeatCount = repeatCount
-
+        
         CATransaction.begin()
         CATransaction.setCompletionBlock {
             completion?()
         }
-
+        
         view.layer.add(animation, forKey: "shake")
-
+        
         CATransaction.commit()
     }
     
