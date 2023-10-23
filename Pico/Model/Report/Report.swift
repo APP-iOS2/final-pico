@@ -31,7 +31,7 @@ struct Report: Codable {
     }
 }
 
-struct AdminReport: Codable {
+struct AdminReport: Codable, Hashable {
     var id: String = UUID().uuidString
     let reportUserId: String
     let reportNickname: String
@@ -49,4 +49,12 @@ struct AdminReport: Codable {
         return ageComponents.year ?? 0
     }
     let createdDate: Double
+    
+    static func == (lhs: AdminReport, rhs: AdminReport) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }

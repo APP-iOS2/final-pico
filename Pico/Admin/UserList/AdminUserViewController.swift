@@ -218,9 +218,10 @@ extension AdminUserViewController {
             .disposed(by: disposeBag)
 
         tableView.rx.modelSelected(User.self)
-            .subscribe { [weak self] user in
+            .withUnretained(self)
+            .subscribe { viewController, user in
                 let viewController = AdminUserDetailViewController(viewModel: AdminUserDetailViewModel(selectedUser: user))
-                self?.navigationController?.pushViewController(viewController, animated: true)
+                viewController.navigationController?.pushViewController(viewController, animated: true)
             }
             .disposed(by: disposeBag)
     }
