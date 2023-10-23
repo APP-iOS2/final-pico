@@ -20,7 +20,7 @@ final class MailSendViewController: UIViewController {
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = .systemBackground
+        navigationBar.barTintColor = .secondarySystemBackground
         return navigationBar
     }()
     
@@ -178,26 +178,32 @@ final class MailSendViewController: UIViewController {
     func configData(userId: String, atMessageView: Bool ) {
         isMessageView = atMessageView
         
-        viewModel.getUser(userId: userId) { [weak self] in
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }
-            if let user = viewModel.user {
-                receiver = user
-                guard let imageURL = user.imageURLs[safe: 0] else { return }
-                guard let url = URL(string: imageURL) else { return }
-                receiverImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-                receiverImageView.kf.setImage(with: url)
-                receiverNameLabel.text = user.nickName
-                receiverNameLabel.sizeToFit()
-                mbtiLabelView.isHidden = false
-                mbtiLabelView.setMbti(mbti: user.mbti)
-                sendButton.isHidden = false
-            } else {
-                receiverImageView.image = UIImage(named: "AppIcon_gray")
-                receiverNameLabel.text = "탈퇴된 회원"
-                receiverNameLabel.sizeToFit()
-                mbtiLabelView.isHidden = true
-                mbtiLabelView.setMbti(mbti: nil)
-                sendButton.isHidden = true
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    receiver = userData
+                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
+                    guard let url = URL(string: imageURL) else { return }
+                    receiverImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+                    receiverImageView.kf.setImage(with: url)
+                    receiverNameLabel.text = userData.nickName
+                    receiverNameLabel.sizeToFit()
+                    mbtiLabelView.isHidden = false
+                    mbtiLabelView.setMbti(mbti: userData.mbti)
+                    sendButton.isHidden = false
+                } else {
+                    receiverImageView.image = UIImage(named: "AppIcon_gray")
+                    receiverNameLabel.text = "탈퇴된 회원"
+                    receiverNameLabel.sizeToFit()
+                    mbtiLabelView.isHidden = true
+                    mbtiLabelView.setMbti(mbti: nil)
+                    sendButton.isHidden = true
+                }
+            case .failure(let err):
+                print(err)
             }
         }
     }

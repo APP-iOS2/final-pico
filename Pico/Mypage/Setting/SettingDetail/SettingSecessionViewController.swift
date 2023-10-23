@@ -40,7 +40,7 @@ final class SettingSecessionViewController: UIViewController {
   
     private func viewConfig() {
         title = "회원관리"
-        view.backgroundColor = .systemBackground
+        view.configBackgroundColor()
     }
     
     private func addSubView() {

@@ -97,11 +97,17 @@ final class StoreViewController: UIViewController {
             .withUnretained(self)
             .subscribe { viewController, _ in
                 sleep(2)
+                Loading.hideLoading()
                 DispatchQueue.main.async {
-                    viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "결제 확인", messageText: "결제되셨습니다.", confirmButtonText: "확인", comfrimAction: {
-                        viewController.navigationController?.popViewController(animated: true)
-                        print(UserDefaultsManager.shared.getChuCount())
-                    })
+                    viewController.showCustomAlert(
+                        alertType: .onlyConfirm,
+                        titleText: "결제 알림",
+                        messageText: "결제되셨습니다.",
+                        confirmButtonText: "확인",
+                        comfrimAction: {
+                            viewController.navigationController?.popViewController(animated: true)
+                            print(UserDefaultsManager.shared.getChuCount())
+                        })
                 }
             }
             .disposed(by: disposeBag)
@@ -180,14 +186,21 @@ extension StoreViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:
-            break
+            let randomBoxViewController = RandomBoxViewController()
+            self.navigationController?.pushViewController(randomBoxViewController, animated: true)
+            
         default:
-            self.showCustomAlert(alertType: .canCancel, titleText: "결제 알림", messageText: "결제하시겠습니까 ?", confirmButtonText: "결제", comfrimAction: { [weak self] in
-                guard let self = self else { return }
-                guard let storeModel = viewModel.storeModels[safe: indexPath.section - 1] else { return }
-                
-                purchaseChuCountPublish.onNext(storeModel)
-            })
+            showCustomAlert(
+                alertType: .canCancel,
+                titleText: "결제 알림",
+                messageText: "결제하시겠습니까 ?",
+                confirmButtonText: "결제",
+                comfrimAction: { [weak self] in
+                    guard let self else { return }
+                    guard let storeModel = viewModel.storeModels[safe: indexPath.section - 1] else { return }
+                    Loading.showLoading()
+                    purchaseChuCountPublish.onNext(storeModel)
+                })
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }

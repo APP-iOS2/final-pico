@@ -9,14 +9,17 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import Lottie
 
 final class WorldCupResultViewController: UIViewController {
     
-    var selectedItem: User?
+    var selectedItem: User? = User(mbti: .enfj, phoneNumber: "010-1111-1111", gender: .female, birth: "1999-01-01", nickName: "sdaaf", location: Location(address: "sss", latitude: 13, longitude: 31), imageURLs: ["https://thumb.mtstarnews.com/06/2023/06/2023062215005684112_1.jpg/dims/optimize"], createdDate: 1, chuCount: 0, isSubscribe: false)
     private let disposeBag = DisposeBag()
     private let viewModel = WorldCupResultViewModel()
     private let requestMessagePublisher = PublishSubject<User>()
-
+    
+    private let animationView: LottieAnimationView = .init(name: "worldcupAnimation")
+    
     private let worldCupTitleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -114,16 +117,26 @@ final class WorldCupResultViewController: UIViewController {
         makeConstraints()
         configResultUserCell()
         bind()
+        configAnimationView()
+    }
+    
+    private func configAnimationView() {
+        animationView.contentMode = .scaleAspectFill
+        animationView.play()
     }
     
     private func addViews() {
         cardView.addSubview([mbtiLabel, userImage, userTitle, userLocation, chatButton, guideLabel])
-        view.addSubview([worldCupTitleLabel, pickMeLabel, contentLabel, cardView, cancelButton])
+        view.addSubview([animationView, worldCupTitleLabel, pickMeLabel, contentLabel, cardView, cancelButton])
     }
     
     private func makeConstraints() {
         let padding: CGFloat = 20
         let half: CGFloat = 0.5
+        
+        animationView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
         worldCupTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)

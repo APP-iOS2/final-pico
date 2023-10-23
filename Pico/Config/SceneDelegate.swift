@@ -10,15 +10,14 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
+    let checkService = CheckService()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let checkService = CheckService()
-        let userDefaultsManager = UserDefaultsManager()
         var userId: String {
-            let curentUser = userDefaultsManager.getUserData()
+            let curentUser = UserDefaultsManager.shared.getUserData()
             return curentUser.userId
         }
         

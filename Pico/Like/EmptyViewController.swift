@@ -74,7 +74,7 @@ final class EmptyViewController: UIViewController {
         case .notification:
             typeImage.image = UIImage(systemName: "bell.fill", withConfiguration: config)
         }
-        typeImage.tintColor = .picoFontGray
+        typeImage.tintColor = .picoGray
     }
     
     @objc func tappedLinkButton(_ sender: UIButton) {

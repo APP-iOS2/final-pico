@@ -5,6 +5,7 @@ import RxCocoa
 import RxDataSources
 
 final class EntViewController: BaseViewController {
+    private let viewModel = WorldCupViewModel()
     
     private let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "gameBackground"))
@@ -120,7 +121,11 @@ final class EntViewController: BaseViewController {
         gameStartButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.tappedGameStartButton()
+                if viewModel.checkStart() {
+                    tappedGameStartButton()
+                } else {
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "준비중", messageText: "가입자 수가 부족하여 아직 게임을 진행할 수 없습니다.", confirmButtonText: "확인")
+                }
             })
             .disposed(by: disposeBag)
     }

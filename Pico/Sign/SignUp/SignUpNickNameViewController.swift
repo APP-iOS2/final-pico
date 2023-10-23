@@ -99,9 +99,10 @@ final class SignUpNickNameViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
-        view.tappedDismissKeyboard()
+        view.configBackgroundColor(color: .white)
         configNavigationBackButton()
+        nickNameTextField.becomeFirstResponder()
+        tappedDismissKeyboard(without: [nextButton])
         addSubViews()
         makeConstraints()
         configButtons()
@@ -215,7 +216,25 @@ extension SignUpNickNameViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
-
+extension SignUpNickNameViewController: UIGestureRecognizerDelegate {
+    func tappedDismissKeyboard(without buttons: [UIButton]) {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard(_:)))
+        tapGesture.cancelsTouchesInView = false
+        tapGesture.delegate = self
+        self.view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view is UIButton {
+            return false
+        }
+        return true
+    }
+}
 // MARK: - 텍스트 필드 관련
 extension SignUpNickNameViewController: UITextFieldDelegate {
     

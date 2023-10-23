@@ -212,7 +212,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.configBackgroundColor(color: .white)
         configNavigationBackButton()
         addSubViews()
         makeConstraints()

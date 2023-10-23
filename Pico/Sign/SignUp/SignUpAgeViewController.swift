@@ -89,7 +89,7 @@ final class SignUpAgeViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.configBackgroundColor(color: .white)
         configNavigationBackButton()
         addSubViews()
         makeConstraints()

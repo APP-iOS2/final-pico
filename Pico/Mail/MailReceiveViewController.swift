@@ -21,7 +21,7 @@ final class MailReceiveViewController: UIViewController {
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = .systemBackground
+        navigationBar.barTintColor = .secondarySystemBackground
         return navigationBar
     }()
     
@@ -251,17 +251,23 @@ final class MailReceiveViewController: UIViewController {
     @objc func tappedSenderStack() {
         dismiss(animated: true)
         
+        var userId: String
         if self.mailUser.mailType == .receive {
-            self.viewModel.getUser(userId: self.mailUser.sendedUserId) {
-                if let user = self.viewModel.user {
-                    self.mailReceiveDelegate?.pushUserDetailViewController(user: user)
-                }
-            }
+            userId = self.mailUser.sendedUserId
         } else {
-            self.viewModel.getUser(userId: self.mailUser.receivedUserId) {
-                if let user = self.viewModel.user {
-                    self.mailReceiveDelegate?.pushUserDetailViewController(user: user)
+            userId = self.mailUser.receivedUserId
+        }
+        
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    mailReceiveDelegate?.pushUserDetailViewController(user: userData)
                 }
+            case .failure(let err):
+                print(err)
             }
         }
     }
