@@ -73,18 +73,56 @@ final class HomeUserCardViewController: UIViewController {
         return label
     }()
     
-    private lazy var pickBackButton: UIButton = createHomeButton(iconName: "arrow.uturn.backward", backgroundColor: .lightGray.withAlphaComponent(0.5))
-    private lazy var disLikeButton: UIButton = createHomeButton(iconName: "hand.thumbsdown.fill", backgroundColor: .picoBlue.withAlphaComponent(0.8))
-    private lazy var likeButton: UIButton = createHomeButton(iconName: "hand.thumbsup.fill", backgroundColor: .picoBlue.withAlphaComponent(0.8))
+    private let pickBackButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
+        let image = UIImage(systemName: "arrow.uturn.backward", withConfiguration: imageConfig)
+        let button = UIButton()
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .lightGray.withAlphaComponent(0.5)
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.accessibilityLabel = "pickBackButton"
+        button.accessibilityHint = "This is pickBackButton"
+        return button
+    }()
     
-    private let infoHStack: UIStackView = {
+    private let disLikeButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
+        let image = UIImage(systemName: "hand.thumbsdown.fill", withConfiguration: imageConfig)
+        let button = UIButton()
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .picoBlue.withAlphaComponent(0.8)
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.accessibilityLabel = "disLikeButton"
+        button.accessibilityHint = "This is disLikeButton"
+        return button
+    }()
+    
+    private let likeButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
+        let image = UIImage(systemName: "hand.thumbsup.fill", withConfiguration: imageConfig)
+        let button = UIButton()
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .picoBlue.withAlphaComponent(0.8)
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.accessibilityLabel = "likeButton"
+        button.accessibilityHint = "This is likeButton"
+        return button
+    }()
+    
+    private let infoHorizontalStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.alignment = .top
         return stack
     }()
     
-    private let infoVStack: UIStackView = {
+    private let infoVerticalStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = 5
@@ -126,13 +164,13 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func addSubView() {
-        view.addSubview([scrollView, pageControl, pageRightButton, pageLeftButton, pickBackButton, disLikeButton, likeButton, infoHStack, infoMBTILabel, distanceLabel])
+        view.addSubview([scrollView, pageControl, pageRightButton, pageLeftButton, pickBackButton, disLikeButton, likeButton, infoHorizontalStack, infoMBTILabel, distanceLabel])
         
-        infoHStack.addArrangedSubview(infoVStack)
-        infoHStack.addArrangedSubview(infoButton)
+        infoHorizontalStack.addArrangedSubview(infoVerticalStack)
+        infoHorizontalStack.addArrangedSubview(infoButton)
         
-        infoVStack.addArrangedSubview(infoNameAgeLabel)
-        infoVStack.addArrangedSubview(infoLocationLabel)
+        infoVerticalStack.addArrangedSubview(infoNameAgeLabel)
+        infoVerticalStack.addArrangedSubview(infoLocationLabel)
     }
     private func makeConstraints() {
         let paddingVertical = 25
@@ -184,7 +222,7 @@ final class HomeUserCardViewController: UIViewController {
             make.height.equalTo(buttonFrame)
         }
         
-        infoHStack.snp.makeConstraints { make in
+        infoHorizontalStack.snp.makeConstraints { make in
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(paddingVertical)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-paddingVertical)
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-100)
@@ -192,7 +230,7 @@ final class HomeUserCardViewController: UIViewController {
         }
         
         infoButton.snp.makeConstraints { make in
-            make.trailing.equalTo(infoHStack.snp.trailing)
+            make.trailing.equalTo(infoHorizontalStack.snp.trailing)
             make.width.height.equalTo(25)
         }
         
@@ -235,18 +273,6 @@ final class HomeUserCardViewController: UIViewController {
     private func configGesture() {
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(touchGesture(_:)))
         self.view.addGestureRecognizer(panGesture)
-    }
-    
-    private func createHomeButton(iconName: String, backgroundColor: UIColor) -> UIButton {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
-        let image = UIImage(systemName: iconName, withConfiguration: imageConfig)
-        let button = UIButton()
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = backgroundColor
-        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
-        return button
     }
     
     private func loadUserImages() {

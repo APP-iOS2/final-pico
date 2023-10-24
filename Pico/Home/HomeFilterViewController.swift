@@ -71,7 +71,7 @@ final class HomeFilterViewController: UIViewController {
         return button
     }()
     
-    private let genderHStack: UIStackView = {
+    private let genderHorizontalStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.spacing = 5
@@ -79,13 +79,13 @@ final class HomeFilterViewController: UIViewController {
         return stack
     }()
     
-    private let genderLabelVStack: UIStackView = {
+    private let genderLabelVerticalStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         return stack
     }()
     
-    private let genderButtonHStack: UIStackView = {
+    private let genderButtonHorizontalStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.spacing = 5
@@ -147,11 +147,11 @@ final class HomeFilterViewController: UIViewController {
     }
     
     private func addSubView() {
-        view.addSubview([genderHStack, mbtiLabel, ageSlider, distanceSlider, distanceLabel, distanceValueLabel])
+        view.addSubview([genderHorizontalStack, mbtiLabel, ageSlider, distanceSlider, distanceLabel, distanceValueLabel])
         
-        genderHStack.addArrangedSubview([genderLabelVStack, genderButtonHStack])
-        genderLabelVStack.addArrangedSubview([genderLabel, genderSubLabel])
-        genderButtonHStack.addArrangedSubview([manButton, womanButton, etcButton])
+        genderHorizontalStack.addArrangedSubview([genderLabelVerticalStack, genderButtonHorizontalStack])
+        genderLabelVerticalStack.addArrangedSubview([genderLabel, genderSubLabel])
+        genderButtonHorizontalStack.addArrangedSubview([manButton, womanButton, etcButton])
         
         addChild(mbtiCollectionViewController)
         view.addSubview(mbtiCollectionViewController.view)
@@ -159,7 +159,7 @@ final class HomeFilterViewController: UIViewController {
     }
     
     private func makeConstraints() {
-        genderHStack.snp.makeConstraints { make in
+        genderHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
@@ -167,10 +167,10 @@ final class HomeFilterViewController: UIViewController {
         }
         
         ageSlider.snp.makeConstraints { make in
-            make.top.equalTo(genderHStack.snp.bottom).offset(45)
+            make.top.equalTo(genderHorizontalStack.snp.bottom).offset(45)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
-            make.bottom.equalTo(genderHStack.snp.bottom).offset(100)
+            make.bottom.equalTo(genderHorizontalStack.snp.bottom).offset(100)
         }
         
         distanceSlider.snp.makeConstraints { make in
