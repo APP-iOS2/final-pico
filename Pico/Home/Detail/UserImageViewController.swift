@@ -50,9 +50,9 @@ final class UserImageViewController: UIViewController {
     func config(images: [String]) {
         scrollView.contentSize = CGSize(width: Screen.width * CGFloat(images.count), height: scrollView.bounds.height)
         pageControl.numberOfPages = images.count
-        for (index, image) in images.enumerated() {
+        for index in images.indices {
             let imageView = UIImageView()
-            if let image = URL(string: image) {
+            if let image = URL(string: images[index]) {
                 imageView.kf.setImage(with: image)
             }
             imageView.contentMode = .scaleAspectFit

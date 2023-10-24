@@ -131,7 +131,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
                     showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                     return
                 }
-                viewController.viewModel = UserDetailViewModel(user: data)
+                viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
                 navigationController?.pushViewController(viewController, animated: true)
             case .failure(let error):
                 print(error)

@@ -125,7 +125,7 @@ final class UserDetailViewController: UIViewController {
             distance = viewModel.calculateDistance()
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
-                                                      locationText: "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
+                                                      locationText: distance < 1000.0 ? "\(viewModel.user.location.address),   가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
                                                       heightText: String(subInfo.height ?? 0))
             
             self.introViewController.config(intro: subInfo.intro)
@@ -144,7 +144,7 @@ final class UserDetailViewController: UIViewController {
         } else {
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
-                                                      locationText: "\(viewModel.user.location.address)",
+                                                      locationText: distance < 1000.0 ? "\(viewModel.user.location.address),   가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
                                                       heightText: nil)
             [self.aboutMeViewController.view, self.introViewController.view, self.subInfomationViewController.view].forEach {
                 self.verticalStackView.removeArrangedSubview($0)
