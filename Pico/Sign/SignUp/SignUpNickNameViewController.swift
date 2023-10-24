@@ -86,6 +86,7 @@ final class SignUpNickNameViewController: UIViewController {
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
         button.tintColor = .picoGray
+        button.accessibilityHint = "닉네임을 지우는 버튼"
         return button
     }()
     

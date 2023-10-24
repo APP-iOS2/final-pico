@@ -53,6 +53,7 @@ final class SignUpPictureViewController: UIViewController {
         label.lineBreakMode = .byWordWrapping
         label.textColor = .picoFontGray
         label.font = UIFont.picoDescriptionFont
+        label.accessibilityHint = "라벨 밑에 사진을 고르는 버튼이 있습니다."
         return label
     }()
     

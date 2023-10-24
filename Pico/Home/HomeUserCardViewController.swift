@@ -60,12 +60,14 @@ final class HomeUserCardViewController: UIViewController {
     private lazy var pageRightButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(tappedPageRight), for: .touchUpInside)
+        button.accessibilityHint = "페이지 다음 버튼"
         return button
     }()
     
     private lazy var pageLeftButton: UIButton = {
         let button = UIButton()
         button.addTarget(self, action: #selector(tappedPageLeft), for: .touchUpInside)
+        button.accessibilityHint = "페이지 이전 버튼"
         return button
     }()
     
