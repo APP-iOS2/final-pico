@@ -52,6 +52,7 @@ final class SignUpViewController: UIViewController {
         button.layer.borderColor = UIColor.picoGray.cgColor
         button.tag = 0
         button.clipsToBounds = true
+        button.accessibilityHint = "MBTI 첫번째 버튼"
         return button
     }()
     
@@ -64,6 +65,7 @@ final class SignUpViewController: UIViewController {
         button.layer.borderColor = UIColor.picoGray.cgColor
         button.tag = 1
         button.clipsToBounds = true
+        button.accessibilityHint = "MBTI 두번째 버튼"
         return button
     }()
     
@@ -76,6 +78,7 @@ final class SignUpViewController: UIViewController {
         button.layer.borderColor = UIColor.picoGray.cgColor
         button.tag = 2
         button.clipsToBounds = true
+        button.accessibilityHint = "MBTI 세번째 버튼"
         return button
     }()
     
@@ -88,6 +91,7 @@ final class SignUpViewController: UIViewController {
         button.layer.borderColor = UIColor.picoGray.cgColor
         button.tag = 3
         button.clipsToBounds = true
+        button.accessibilityHint = "MBTI 네번째 버튼"
         return button
     }()
     
