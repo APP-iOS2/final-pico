@@ -61,4 +61,14 @@ final class UserDefaultsManager {
     func updateChuCount(_ chuCount: Int) {
         UserDefaults.standard.setValue(chuCount, forKey: Key.chuCount.rawValue)
     }
+    
+    func updateLastWorldCupTime(_ time: Date) {
+        let key = "lastStartedTime_\(UserDefaultsManager.shared.getUserData().userId)"
+        UserDefaults.standard.set(time, forKey: key)
+    }
+    
+    func getLastWorldCupTime() -> Date? {
+        let key = "lastStartedTime_\(UserDefaultsManager.shared.getUserData().userId)"
+        return UserDefaults.standard.object(forKey: key) as? Date
+    }
 }

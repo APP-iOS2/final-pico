@@ -49,10 +49,7 @@ final class MBTILabelCollectionViewCell: UICollectionViewCell {
         mbtiButton.isUserInteractionEnabled = true
         mbtiButton.addTarget(self, action: #selector(buttonTouch), for: .touchUpInside)
     }
-//    private func updateButtonAppearance(_ button: UIButton) {
-//        guard let mbti = button.titleLabel?.text?.lowercased() as? MBTIType else { return }
-//        button.setTitleColor(button.isSelected ? .white : .picoFontGray, for: .normal)
-//    }
+    
     @objc func buttonTouch() {
         mbtiButton.isSelected.toggle()
         if let buttonText = mbtiButton.titleLabel?.text?.lowercased(), let mbti = MBTIType(rawValue: buttonText) {
