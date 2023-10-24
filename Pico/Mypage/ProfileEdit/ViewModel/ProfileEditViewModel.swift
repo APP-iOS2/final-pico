@@ -182,9 +182,9 @@ final class ProfileEditViewModel {
         guard let field = modalType?.dataName else { return }
         
         if modalType == .location {
-            SignLoadingManager.showLoading(text: "위치정보를 받는중이에요!!")
+            Loading.showLoading(title: "위치정보를 받는중이에요!")
             FirestoreService.shared.updataDocuments(collectionId: .users, documentId: userId, field: field, data: data) { _ in
-                SignLoadingManager.hideLoading()
+                Loading.hideLoading()
             }
         } else {
             FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: field, data: data) { result in

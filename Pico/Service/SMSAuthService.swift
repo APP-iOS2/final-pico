@@ -1,5 +1,5 @@
 //
-//  SMSAuthManager.swift
+//  SMSAuthService.swift
 //  Pico
 //
 //  Created by LJh on 10/15/23.
@@ -7,7 +7,7 @@
 import Foundation
 import CommonCrypto
 
-final class SMSAuthManager {
+final class SMSAuthService {
     enum SMSRequestType: String {
         case sms
         case lms

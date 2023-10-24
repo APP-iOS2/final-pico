@@ -23,7 +23,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let locationManager = LocationManager()
+    private let locationManager = LocationService()
     private let disposeBag = DisposeBag()
     private var isLoading: Bool = false
     private var isCheckBoxSelected: Bool {

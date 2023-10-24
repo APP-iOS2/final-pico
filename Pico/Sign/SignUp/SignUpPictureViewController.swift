@@ -23,7 +23,7 @@ final class SignUpPictureViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let pictureManager: PictureManager = PictureManager()
+    private let pictureManager: PictureService = PictureService()
     private var isDetectedImage: Bool? = false
     private var objectDetectionRequest: VNCoreMLRequest?
     private var userImages: [UIImage] = []
@@ -53,6 +53,7 @@ final class SignUpPictureViewController: UIViewController {
         label.lineBreakMode = .byWordWrapping
         label.textColor = .picoFontGray
         label.font = UIFont.picoDescriptionFont
+        label.accessibilityHint = "라벨 밑에 사진을 고르는 버튼이 있습니다."
         return label
     }()
     
@@ -111,8 +112,8 @@ final class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
-        SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
-        let yoloManager: YoloManager = YoloManager()
+        Loading.showLoading(title: "사진 평가중이에요!\n잠시만 기다려주세요! (최대 1분 소요)")
+        let yoloManager: YoloService = YoloService()
         yoloManager.loadYOLOv3Model()
         
         let detectionGroup = DispatchGroup()
@@ -136,7 +137,7 @@ final class SignUpPictureViewController: UIViewController {
             detectionGroup.notify(queue: .main) { [weak self] in
                 guard let self = self else { return }
                 
-                SignLoadingManager.hideLoading()
+                Loading.hideLoading()
                 if allImagesDetected {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }

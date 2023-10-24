@@ -52,7 +52,7 @@ final class WorldCupViewModel {
     
     func configure(cell: WorldCupCollectionViewCell, with user: User) {
         Loading.showLoading()
-
+        
         if let imageURL = URL(string: user.imageURLs.first ?? "") {
             cell.userImage.kf.setImage(with: imageURL) { [weak self] result in
                 if case .success = result {
@@ -60,7 +60,7 @@ final class WorldCupViewModel {
                     cell.userNickname.text = String(user.nickName)
                     cell.userAge.text = "\(user.age)세"
                     cell.userInfoStackView.setDataLabelTexts(self?.addDataLabels(user) ?? [])
-
+                    
                     Loading.hideLoading()
                 } else {
                     Loading.hideLoading()
@@ -70,7 +70,7 @@ final class WorldCupViewModel {
             Loading.hideLoading()
         }
     }
-
+    
     private func addDataLabels(_ currentUser: User) -> [String] {
         var dataLabelTexts: [String] = []
         
@@ -93,18 +93,18 @@ final class WorldCupViewModel {
     
     func animateSelectedCell(collectionView: UICollectionView, indexPath: IndexPath, completion: @escaping () -> Void) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? WorldCupCollectionViewCell else { return }
-
+        
         UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseInOut, animations: {
             cell.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-        }) { _ in
+        }, completion: { _ in 
             UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseInOut, animations: {
                 cell.transform = .identity
             }, completion: { _ in
                 completion()
             })
-        }
+        })
     }
-
+    
     func playBackgroundMusic() {
         guard let url = Bundle.main.url(forResource: "gameMusic", withExtension: "mp3") else { return }
         

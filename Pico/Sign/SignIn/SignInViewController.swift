@@ -11,8 +11,8 @@ import RxSwift
 import RxCocoa
 
 final class SignInViewController: UIViewController {
-    private let authManager = SMSAuthManager()
-    private let keyboardManager = KeyboardManager()
+    private let authManager = SMSAuthService()
+    private let keyboardManager = KeyboardService()
     private let checkService = CheckService()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
@@ -40,6 +40,7 @@ final class SignInViewController: UIViewController {
         textField.placeholder = "번호를 입력하세요."
         textField.textColor = .gray
         textField.keyboardType = .numberPad
+        textField.accessibilityHint = "전화번호를 입력하는 텍스트필드"
         return textField
     }()
     
@@ -49,6 +50,7 @@ final class SignInViewController: UIViewController {
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
         button.tintColor = .picoGray
+        button.accessibilityHint = "전화번호를 지우는 버튼"
         return button
     }()
     
@@ -60,6 +62,7 @@ final class SignInViewController: UIViewController {
         button.layer.cornerRadius = 13
         button.backgroundColor = .picoBlue
         button.isHidden = true
+        button.accessibilityHint = "전화번호를 인증하는 버튼"
         return button
     }()
     
@@ -110,6 +113,7 @@ final class SignInViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        view.endEditing(true)
         keyboardManager.unregisterKeyboard()
     }
 }
@@ -164,6 +168,7 @@ extension SignInViewController {
         authButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
+                view.endEditing(true)
                 authButton.tappedAnimation()
                 guard isFullPhoneNumber else { return }
                 guard let text = phoneNumberTextField.text else { return }
@@ -226,7 +231,7 @@ extension SignInViewController {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                
+                view.endEditing(true)
                 configAuthText()
                 if authManager.checkRightCode(code: authText) {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
@@ -371,6 +376,7 @@ extension SignInViewController {
             textField.layer.borderColor = UIColor.picoGray.cgColor
             textField.tag = tag
             textField.clipsToBounds = true
+            textField.accessibilityHint = "인증번호를 받는 텍스트필드"
             authTextFields.append(textField)
         }
     }

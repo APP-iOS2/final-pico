@@ -165,8 +165,6 @@ final class AdminUserViewController: UIViewController {
         output.needToReload
             .withUnretained(self)
             .subscribe(onNext: { viewController, _ in
-                // 질문 :
-                // 데이터 삭제하고 viewWillAppear 가 실행되고 오면 리로드했는데 배열이 안사라짐 ㅜ
                 viewController.tableView.reloadData()
             })
             .disposed(by: disposeBag)
@@ -217,13 +215,14 @@ extension AdminUserViewController {
             })
             .disposed(by: disposeBag)
 
-        tableView.rx.modelSelected(User.self)
+        tableView.rx.itemSelected
             .withUnretained(self)
-            .subscribe { viewController, user in
+            .subscribe(onNext: { viewController, indexPath in
+                guard let user = viewController.viewModel.userList[safe: indexPath.row] else { return }
                 let viewController = AdminUserDetailViewController(viewModel: AdminUserDetailViewModel(selectedUser: user))
                 viewController.navigationController?.pushViewController(viewController, animated: true)
-            }
-            .disposed(by: disposeBag)
+            })
+            .disposed(by: disposeBag)            
     }
 }
 

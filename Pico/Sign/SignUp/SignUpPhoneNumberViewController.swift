@@ -10,8 +10,8 @@ import SnapKit
 import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
-    private let keyboardManager = KeyboardManager()
-    private let smsAuthManager: SMSAuthManager = SMSAuthManager()
+    private let keyboardManager = KeyboardService()
+    private let smsAuthManager: SMSAuthService = SMSAuthService()
     private let checkService = CheckService()
     let viewModel: SignUpViewModel
     private var cooldownTimer: Timer?
@@ -62,6 +62,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         textField.font = .picoTitleFont
         textField.textColor = .gray
         textField.keyboardType = .numberPad
+        textField.accessibilityHint = "전화번호를 입력하세요."
         return textField
     }()
     
@@ -73,6 +74,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         button.layer.cornerRadius = 13
         button.backgroundColor = .picoBlue
         button.isHidden = true
+        button.accessibilityHint = "전화번호를 인증하는 버튼"
         return button
     }()
     
@@ -82,6 +84,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
         button.tintColor = .picoGray
+        button.accessibilityHint = "전화번호를 지우는 버튼"
         return button
     }()
     
@@ -126,6 +129,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        view.endEditing(true)
         keyboardManager.unregisterKeyboard()
     }
 }
@@ -225,6 +229,7 @@ extension SignUpPhoneNumberViewController {
         configReset()
     }
     @objc private func tappedAuthButton(_ sender: UIButton) {
+        view.endEditing(true)
         sender.tappedAnimation()
         
         guard cooldownTimer == nil else { return }
@@ -243,7 +248,7 @@ extension SignUpPhoneNumberViewController {
                 guard let self = self else { return }
                 
                 guard isRight else {
-                    SignLoadingManager.hideLoading()
+                    Loading.hideLoading()
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         viewModel.isRightPhoneNumber = isRight
@@ -251,7 +256,7 @@ extension SignUpPhoneNumberViewController {
                     })
                     return
                 }
-                SignLoadingManager.hideLoading()
+                Loading.hideLoading()
                 
                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                     guard let self = self else { return }
@@ -268,6 +273,7 @@ extension SignUpPhoneNumberViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
+        view.endEditing(true)
         sender.tappedAnimation()
         configAuthText()
         guard smsAuthManager.checkRightCode(code: authText) else {
@@ -359,6 +365,7 @@ extension SignUpPhoneNumberViewController {
             textField.layer.borderColor = UIColor.picoGray.cgColor
             textField.tag = tag
             textField.clipsToBounds = true
+            textField.accessibilityHint = "인증번호를 받는 텍스트필드"
             authTextFields.append(textField)
         }
     }

@@ -86,7 +86,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
                 FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.likedUserId, dataType: User.self) { result in
                     switch result {
                     case .success(let data):
-                        guard let user = data else {
+                        guard data != nil else {
                             viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                             return
                         }

@@ -34,7 +34,7 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
     }()
     
     private var profileEditViewModel: ProfileEditViewModel?
-    private let locationManager = LocationManager()
+    private let locationManager = LocationService()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

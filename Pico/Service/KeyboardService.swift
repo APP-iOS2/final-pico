@@ -1,5 +1,5 @@
 //
-//  KeyboardManager.swift
+//  KeyboardService.swift
 //  Pico
 //
 //  Created by LJh on 10/16/23.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class KeyboardManager {
+final class KeyboardService {
     var button: UIButton?
     
     func registerKeyboard(with button: UIButton) {
