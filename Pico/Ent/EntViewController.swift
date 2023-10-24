@@ -66,9 +66,13 @@ final class EntViewController: BaseViewController {
         addViews()
         makeConstraints()
         configRxBinding()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         checkGameAvailability()
     }
-
+    
     deinit {
         timer?.invalidate()
         timer = nil
@@ -131,13 +135,12 @@ final class EntViewController: BaseViewController {
     }
     
     private func checkGameAvailability() {
-        if let lastStartedTime = UserDefaults.standard.object(forKey: "lastStartedTime") as? Date {
+        if let lastStartedTime = UserDefaultsManager.shared.getLastWorldCupTime() {
             let currentTime = Date()
             let timeInterval = currentTime.timeIntervalSince(lastStartedTime)
-            let secondsIn24Hours: Double = 24 * 60 * 60
-
-            if timeInterval < secondsIn24Hours {
-                remainingTime = Int(secondsIn24Hours - timeInterval)
+            let dayForSecond: Double = 24 * 60 * 60
+            if timeInterval < dayForSecond {
+                remainingTime = Int(dayForSecond - timeInterval)
                 gameStartButton.isEnabled = false
                 startTimer()
             } else {
@@ -148,7 +151,7 @@ final class EntViewController: BaseViewController {
 
     private func tappedGameStartButton() {
         let currentTime = Date()
-        UserDefaults.standard.set(currentTime, forKey: "lastStartedTime")
+        UserDefaultsManager.shared.updateLastWorldCupTime(currentTime)
         if let navigationController = self.navigationController {
             navigationController.pushViewController(WorldCupGameViewController(), animated: true)
             self.tabBarController?.tabBar.isHidden = true
