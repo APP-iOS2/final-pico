@@ -20,7 +20,11 @@ final class UserDetailViewModel {
     private let sendedlikesUpdateFiled = "sendedlikes"
     private let recivedlikesUpdateFiled = "recivedlikes"
     
-    init(user: User) {
+    init(user: User, isHome: Bool) {
+        var user = user
+        if isHome {
+            user.imageURLs.remove(at: 1)
+        }
         self.user = user
     }
     

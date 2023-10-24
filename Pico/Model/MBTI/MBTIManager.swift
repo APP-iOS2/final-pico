@@ -1,5 +1,5 @@
 //
-//  MBTIConformityChart.swift
+//  MBTIManager.swift
 //  Pico
 //
 //  Created by 임대진 on 10/18/23.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MBTICompatibilityChart {
+struct MBTIManager {
     
     func get(mbti1: MBTIType, mbti2: MBTIType) -> CompatibilityType {
         return compatibilityDictionary[mbti1]?[mbti2] ?? .best

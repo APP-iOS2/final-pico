@@ -16,7 +16,6 @@ The MIT License (MIT) Copyright (c) 2019 Wei Wang
 https://github.com/onevcat/Kingfisher
 
 **lottie-ios**
-Public
 Apache License Version 2.0
 https://github.com/airbnb/lottie-ios
 

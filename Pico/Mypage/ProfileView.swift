@@ -20,6 +20,8 @@ final class ProfileView: UIView {
         imageView.backgroundColor = .black
         imageView.contentMode = .scaleAspectFill
         imageView.image = UIImage(named: "chu")
+        imageView.accessibilityLabel = "유저사진"
+        imageView.isAccessibilityElement = true
         return imageView
     }()
     
@@ -28,6 +30,8 @@ final class ProfileView: UIView {
         view.backgroundColor = .white
         view.layer.masksToBounds = false
         view.layer.cornerRadius = 25
+        view.accessibilityLabel = "프로필수정"
+        view.isAccessibilityElement = true
         return view
     }()
     

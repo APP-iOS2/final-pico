@@ -179,11 +179,11 @@ final class HomeViewController: BaseViewController {
         let filterImage = UIImage(systemName: "slider.horizontal.3")
         let filterButton = UIBarButtonItem(image: filterImage, style: .plain, target: self, action: #selector(tappedFilterButton))
         filterButton.tintColor = .darkGray
-        
+        filterButton.accessibilityLabel = "필터"
         let notificationImage = UIImage(systemName: "bell.fill")
         let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: self, action: #selector(tappedNotificationButton))
         notificationButton.tintColor = .darkGray
-        
+        notificationButton.accessibilityLabel = "알림"
         navigationItem.rightBarButtonItems = [filterButton, notificationButton]
     }
     

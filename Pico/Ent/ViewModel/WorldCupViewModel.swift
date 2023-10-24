@@ -77,13 +77,13 @@ final class WorldCupViewModel {
         if let height = currentUser.subInfo?.height {
             dataLabelTexts.append("\(height)")
         } else {
-            dataLabelTexts.append("")
+            dataLabelTexts.append("-")
         }
         
         if let job = currentUser.subInfo?.job {
             dataLabelTexts.append("\(job)")
         } else {
-            dataLabelTexts.append("")
+            dataLabelTexts.append("-")
         }
         
         dataLabelTexts.append("\(currentUser.location.address)")

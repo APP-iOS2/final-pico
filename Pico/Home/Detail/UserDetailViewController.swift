@@ -102,9 +102,9 @@ final class UserDetailViewController: UIViewController {
         disLikeButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                 self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .dislike)
+                viewModel.saveLikeData(receiveUserInfo: viewModel.user, likeType: .dislike)
                 let viewController = HomeViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
+                navigationController?.pushViewController(viewController, animated: true)
             })
             .disposed(by: disposeBag)
     }
@@ -125,7 +125,7 @@ final class UserDetailViewController: UIViewController {
             distance = viewModel.calculateDistance()
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
-                                                      locationText: "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
+                                                      locationText: distance < 1000.0 ? "\(viewModel.user.location.address), 가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
                                                       heightText: String(subInfo.height ?? 0))
             
             self.introViewController.config(intro: subInfo.intro)
@@ -144,7 +144,7 @@ final class UserDetailViewController: UIViewController {
         } else {
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
-                                                      locationText: "\(viewModel.user.location.address)",
+                                                      locationText: distance < 1000.0 ? "\(viewModel.user.location.address), 가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
                                                       heightText: nil)
             [self.aboutMeViewController.view, self.introViewController.view, self.subInfomationViewController.view].forEach {
                 self.verticalStackView.removeArrangedSubview($0)
@@ -281,7 +281,7 @@ extension UserDetailViewController {
     private func addViews() {
         view.addSubview([scrollView, disLikeButton, likeButton])
         scrollView.addSubview([userImageViewController.view, verticalStackView])
-//        verticalStackView.addArrangedSubview(basicInformationViewContoller.view)
+        //        verticalStackView.addArrangedSubview(basicInformationViewContoller.view)
         
         [basicInformationViewContoller.view, introViewController.view, aboutMeViewController.view, subInfomationViewController.view].forEach {
             verticalStackView.addArrangedSubview($0)

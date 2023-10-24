@@ -15,7 +15,7 @@ final class BasicInformationViewContoller: UIViewController {
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.alignment = .fill
-        stackView.spacing = 5
+        stackView.spacing = 10
         return stackView
     }()
     
@@ -107,7 +107,6 @@ extension BasicInformationViewContoller {
     }
     
     private func makeConstraints() {
-     
         mbtiLabelView.snp.makeConstraints { make in
             make.top.leading.equalToSuperview()
             make.width.equalTo(65)
@@ -118,32 +117,13 @@ extension BasicInformationViewContoller {
             make.leading.trailing.bottom.equalToSuperview()
         }
         
-//        nameAgeLabel.snp.makeConstraints { make in
-//            make.top.equalTo(mbtiLabelView.snp.bottom).offset(15)
-//            make.leading.trailing.equalToSuperview()
-//        }
-        
         locationImageView.snp.makeConstraints { make in
-//            make.top.equalTo(nameAgeLabel.snp.bottom).offset(15)
+            make.top.equalTo(nameAgeLabel.snp.bottom).offset(15)
             make.width.height.equalTo(20)
         }
-//
-//        locationLabel.snp.makeConstraints { make in
-//            make.top.equalTo(locationImageView.snp.top)
-//            make.leading.equalTo(locationImageView.snp.trailing).offset(5)
-//            make.trailing.equalToSuperview()
-//        }
-//
+
         heightImageView.snp.makeConstraints { make in
-//            make.top.equalTo(locationLabel.snp.bottom).offset(10)
-//            make.leading.equalTo(view.safeAreaLayoutGuide)
             make.width.height.equalTo(20)
         }
-//
-//        heightLabel.snp.makeConstraints { make in
-//            make.top.equalTo(heightImageView.snp.top)
-//            make.leading.equalTo(heightImageView.snp.trailing).offset(5)
-//            make.trailing.equalToSuperview()
-//        }
     }
 }

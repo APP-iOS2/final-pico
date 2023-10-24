@@ -1,5 +1,5 @@
 //
-//  MailReceiveModel.swift
+//  MailReceiveViewModel.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/10/05.
@@ -10,7 +10,7 @@ import RxSwift
 import RxRelay
 import FirebaseFirestore
 
-final class MailReceiveModel {
+final class MailReceiveViewModel {
     
     private(set) var receiveList: [Mail.MailInfo] = [] {
         didSet {

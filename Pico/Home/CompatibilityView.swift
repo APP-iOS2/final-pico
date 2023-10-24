@@ -13,7 +13,7 @@ final class CompatibilityView: UIView {
     private let compatibilityLabel = UILabel()
     private var starImageViews: [UIImageView] = []
     private var starSystemName = ""
-    private let compatibilityChart = MBTICompatibilityChart()
+    private let compatibilityChart = MBTIManager()
     
     private let starStackView: UIStackView = {
         let view = UIStackView()

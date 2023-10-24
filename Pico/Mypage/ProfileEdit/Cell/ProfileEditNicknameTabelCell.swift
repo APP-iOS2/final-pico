@@ -35,6 +35,7 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.picoBlue.cgColor
         button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
+        button.accessibilityLabel = "50츄내고 이름변경"
         return button
     }()
     

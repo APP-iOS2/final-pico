@@ -12,7 +12,7 @@ import RxCocoa
 
 final class MailSendTableListController: BaseViewController {
     
-    private let viewModel = MailSendModel()
+    private let viewModel = MailSendViewModel()
     private let disposeBag = DisposeBag()
     private let emptyView: EmptyViewController = EmptyViewController(type: .message)
     private let refreshControl = UIRefreshControl()
@@ -110,7 +110,7 @@ extension MailSendTableListController: UITableViewDataSource, UITableViewDelegat
 // MARK: - bind
 extension MailSendTableListController {
     private func bind() {
-        let input = MailSendModel.Input(listLoad: loadDataPublsher,
+        let input = MailSendViewModel.Input(listLoad: loadDataPublsher,
                                         deleteUser: deleteSendPublisher,
                                         refresh: refreshPublisher,
                                         isSendEmptyChecked: checkSendEmptyPublisher)

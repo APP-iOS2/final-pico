@@ -30,6 +30,7 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         configuration.titleAlignment = .trailing
         button.configuration = configuration
         button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
+        button.accessibilityLabel = "현재위치 변경"
         return button
     }()
     

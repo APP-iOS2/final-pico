@@ -70,6 +70,8 @@ final class ProfileEditPickerViewController: UIViewController {
         if let height =
             profileEditViewModel?.userData?.subInfo?.height {
             pickerView.selectRow(height - heightsInCm[0], inComponent: 0, animated: false)
+        } else {
+            pickerView.selectRow(20, inComponent: 0, animated: false)
         }
     }
     

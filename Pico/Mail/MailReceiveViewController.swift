@@ -12,7 +12,7 @@ import RxCocoa
 
 final class MailReceiveViewController: UIViewController {
     
-    private let viewModel = MailReceiveModel()
+    private let viewModel = MailReceiveViewModel()
     private let disposeBag = DisposeBag()
     private var mailUser: Mail.MailInfo = Mail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
     

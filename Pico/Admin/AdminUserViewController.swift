@@ -217,10 +217,11 @@ extension AdminUserViewController {
 
         tableView.rx.itemSelected
             .withUnretained(self)
+            .observe(on: MainScheduler.instance)
             .subscribe(onNext: { viewController, indexPath in
                 guard let user = viewController.viewModel.userList[safe: indexPath.row] else { return }
-                let viewController = AdminUserDetailViewController(viewModel: AdminUserDetailViewModel(selectedUser: user))
-                viewController.navigationController?.pushViewController(viewController, animated: true)
+                let detailViewController = AdminUserDetailViewController(viewModel: AdminUserDetailViewModel(selectedUser: user))
+                viewController.navigationController?.pushViewController(detailViewController, animated: true)
             })
             .disposed(by: disposeBag)            
     }

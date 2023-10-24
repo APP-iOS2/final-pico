@@ -94,7 +94,7 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
                 switch result {
                 case .success(let data):
                     guard let data = data else { return }
-                    viewController.viewModel = UserDetailViewModel(user: data)
+                    viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
                     self.navigationController?.pushViewController(viewController, animated: true)
                 case .failure(let error):
                     print(error)

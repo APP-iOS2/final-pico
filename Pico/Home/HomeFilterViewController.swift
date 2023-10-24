@@ -22,7 +22,7 @@ final class HomeFilterViewController: UIViewController {
     private lazy var womanButton: UIButton = createFilterButton(title: "여자")
     private lazy var etcButton: UIButton = createFilterButton(title: "기타")
     
-    private let ageSlider = RangeSlider()
+    private let ageSlider = RangeSliderView()
     private let distanceSlider = UISlider()
     
     // MARK: - 스택

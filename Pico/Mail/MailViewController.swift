@@ -109,7 +109,7 @@ final class MailViewController: BaseViewController {
             case true:
                 sender.backgroundColor = .picoAlphaBlue
                 sender.titleLabel?.font = .picoContentBoldFont
-                mailType = MailReceiveModel().toType(text: text)
+                mailType = MailReceiveViewModel().toType(text: text)
                 if mailType == .receive {
                     pageViewController.setViewControllers([tableViewController[1]], direction: .reverse, animated: true)
                 } else {

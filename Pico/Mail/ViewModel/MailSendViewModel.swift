@@ -1,5 +1,5 @@
 //
-//  MailSendModel.swift
+//  MailSendViewModel.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/10/05.
@@ -10,7 +10,7 @@ import RxSwift
 import RxRelay
 import FirebaseFirestore
 
-final class MailSendModel {
+final class MailSendViewModel {
     
     private(set) var sendList: [Mail.MailInfo] = [] {
         didSet {

@@ -104,6 +104,7 @@ final class AdminReportViewController: UIViewController {
     private func configButtons() {
         searchButton.rx.tap
             .withUnretained(self)
+            .observe(on: MainScheduler.instance)
             .subscribe(onNext: { viewController, _ in
                 viewController.searchButton.tappedAnimation()
                 let text = viewController.textFieldView.textField.text
@@ -191,6 +192,7 @@ extension AdminReportViewController {
 
         tableView.rx.modelSelected(AdminReport.self)
             .withUnretained(self)
+            .observe(on: MainScheduler.instance)
             .subscribe { viewController, report in
                 viewController.reportedUserIdPublisher.onNext(report.reportedUserId)
             }

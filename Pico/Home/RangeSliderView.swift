@@ -1,5 +1,5 @@
 //
-//  RangeSlider.swift
+//  RangeSliderView.swift
 //  Pico
 //
 //  Created by 임대진 on 10/12/23.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class RangeSlider: UIView {
+final class RangeSliderView: UIView {
     private let sliderBar = UIView()
     private let rangeBar = UIView()
     private let leftBall = UIImageView()
