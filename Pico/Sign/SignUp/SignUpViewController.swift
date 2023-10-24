@@ -110,7 +110,6 @@ final class SignUpViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configButtons()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {

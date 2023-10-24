@@ -73,22 +73,19 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         return label
     }()
     
-    private lazy var firstTermsOfServiceButton: UIButton = {
+    private let firstTermsOfServiceButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("서비스 이용약관 보기", for: .normal)
         button.tag = 0
         button.backgroundColor = .picoGray
-        button.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
         return button
     }()
     
-    private lazy var firstTermsAgreementLabel: UILabel = {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
+    private let firstTermsAgreementLabel: UILabel = {
         let label = UILabel()
         label.text = "Pico 서비스 이용약관에 동의합니다."
         label.tag = 0
         label.numberOfLines = 0
-        label.addGestureRecognizer(tapGesture)
         label.isUserInteractionEnabled = true
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.picoDescriptionFont
@@ -96,7 +93,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         return label
     }()
 
-    private lazy var firstCheckBoxButton: UIButton = {
+    private let firstCheckBoxButton: UIButton = {
         let button = UIButton(type: .custom)
         let uncheckedImage = UIImage(systemName: "checkmark.circle")
         let checkedImage = UIImage(systemName: "checkmark.circle.fill")
@@ -105,7 +102,6 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         button.setImage(checkedImage, for: .selected)
         button.tintColor = .picoFontGray
         button.tag = 0
-        button.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
         return button
     }()
     
@@ -119,22 +115,19 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         return label
     }()
     
-    private lazy var secondTermsOfServiceButton: UIButton = {
+    private let secondTermsOfServiceButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("개인정보 수집 및 이용약관 보기", for: .normal)
         button.tag = 1
         button.backgroundColor = .picoGray
-        button.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
         return button
     }()
     
-    private lazy var secondTermsAgreementLabel: UILabel = {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
+    private let secondTermsAgreementLabel: UILabel = {
         let label = UILabel()
         label.text = "개인정보 수집에 동의합니다."
         label.tag = 1
         label.numberOfLines = 0
-        label.addGestureRecognizer(tapGesture)
         label.isUserInteractionEnabled = true
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.picoDescriptionFont
@@ -142,7 +135,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         return label
     }()
     
-    private lazy var secondCheckBoxButton: UIButton = {
+    private let secondCheckBoxButton: UIButton = {
         let button = UIButton(type: .custom)
         let uncheckedImage = UIImage(systemName: "checkmark.circle")
         let checkedImage = UIImage(systemName: "checkmark.circle.fill")
@@ -151,7 +144,6 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         button.setImage(checkedImage, for: .selected)
         button.tintColor = .picoFontGray
         button.tag = 1
-        button.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
         return button
     }()
     
@@ -165,21 +157,18 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         return label
     }()
     
-    private lazy var thirdTermsOfServiceButton: UIButton = {
+    private let thirdTermsOfServiceButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("위치기반 서비스 이용약관 보기", for: .normal)
         button.tag = 2
         button.backgroundColor = .picoGray
-        button.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
         return button
     }()
     
-    private lazy var thirdTermsAgreementLabel: UILabel = {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
+    private let thirdTermsAgreementLabel: UILabel = {
         let label = UILabel()
         label.tag = 2
         label.text = "위치기반 서비스에 동의합니다."
-        label.addGestureRecognizer(tapGesture)
         label.isUserInteractionEnabled = true
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
@@ -187,8 +176,8 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         label.textColor = .picoFontGray
         return label
     }()
-
-    private lazy var thirdCheckBoxButton: UIButton = {
+    
+    private let thirdCheckBoxButton: UIButton = {
         let button = UIButton(type: .custom)
         let uncheckedImage = UIImage(systemName: "checkmark.circle")
         let checkedImage = UIImage(systemName: "checkmark.circle.fill")
@@ -197,16 +186,14 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         button.setImage(checkedImage, for: .selected)
         button.tintColor = .picoFontGray
         button.tag = 2
-        button.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
         return button
     }()
     
-    private lazy var nextButton: UIButton = {
+    private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("완료", for: .normal)
         button.backgroundColor = .picoGray
         button.isEnabled = false
-        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
     
@@ -216,6 +203,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
+        configButton()
         viewModel.isSaveSuccess
             .observe(on: MainScheduler.instance)
             .bind { [weak self] _ in
@@ -239,7 +227,24 @@ extension SignUpTermsOfServiceViewController {
         nextButton.isEnabled = isCheck
         nextButton.backgroundColor = isCheck ? .picoBlue : .picoGray
     }
-    
+    // MARK: - Config
+    private func configButton() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
+
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+        
+        firstCheckBoxButton.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
+        firstTermsAgreementLabel.addGestureRecognizer(tapGesture)
+        firstTermsOfServiceButton.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
+
+        secondTermsOfServiceButton.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
+        secondTermsAgreementLabel.addGestureRecognizer(tapGesture)
+        secondCheckBoxButton.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
+
+        thirdTermsOfServiceButton.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
+        thirdTermsAgreementLabel.addGestureRecognizer(tapGesture)
+        thirdCheckBoxButton.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
+    }
     // MARK: - @objc
     
     @objc private func tappedLabel(_ sender: UITapGestureRecognizer) {

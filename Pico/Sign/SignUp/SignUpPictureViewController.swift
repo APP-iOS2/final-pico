@@ -57,10 +57,9 @@ final class SignUpPictureViewController: UIViewController {
         return label
     }()
     
-    private lazy var nextButton: UIButton = {
+    private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
-        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         button.isEnabled = false
         button.backgroundColor = .picoGray
         return button
@@ -92,6 +91,7 @@ final class SignUpPictureViewController: UIViewController {
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
+        configButton()
         configCollectionView()
         pictureManager.requestPhotoLibraryAccess(in: self)
     }
@@ -99,6 +99,10 @@ final class SignUpPictureViewController: UIViewController {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 6)
     }
     // MARK: - Config
+    private func configButton() {
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+    }
+    
     private func configCollectionView() {
         collectionView.configBackgroundColor()
         collectionView.dataSource = self

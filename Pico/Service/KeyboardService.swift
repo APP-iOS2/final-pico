@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class KeyboardService {
-    var button: UIButton?
+    private var button: UIButton?
     
     func registerKeyboard(with button: UIButton) {
         self.button = button
@@ -24,7 +24,7 @@ final class KeyboardService {
         button = nil
     }
     
-    @objc func keyboardUp(_ notification: NSNotification) {
+    @objc private func keyboardUp(_ notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue,
            let button = button {
             let keyboardRectangle = keyboardFrame.cgRectValue

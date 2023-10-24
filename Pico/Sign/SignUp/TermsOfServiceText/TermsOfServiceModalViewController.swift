@@ -15,6 +15,7 @@ final class TermsOfServiceModalViewController: UIViewController {
         self.tag = tag
         super.init(nibName: nil, bundle: nil)
         setupUI()
+        configButton()
         titleLabel.text = termTitle[tag]
     }
     
@@ -33,7 +34,7 @@ final class TermsOfServiceModalViewController: UIViewController {
         textView.showsVerticalScrollIndicator = false
         return textView
     }()
-    
+   
     private lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
         if let symbolImage = UIImage(systemName: "xmark.circle")?.withRenderingMode(.alwaysTemplate) {
@@ -42,7 +43,6 @@ final class TermsOfServiceModalViewController: UIViewController {
         button.tintColor = .picoFontGray
         let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
         button.setPreferredSymbolConfiguration(symbolConfiguration, forImageIn: .normal)
-        button.addTarget(self, action: #selector(tappedCloseButton), for: .touchUpInside)
         return button
     }()
     
@@ -53,6 +53,10 @@ final class TermsOfServiceModalViewController: UIViewController {
         label.textColor = .picoFontBlack
         return label
     }()
+    
+    private func configButton() {
+        closeButton.addTarget(self, action: #selector(tappedCloseButton), for: .touchUpInside)
+    }
     
     @objc private func tappedCloseButton() {
         dismiss(animated: true, completion: nil)

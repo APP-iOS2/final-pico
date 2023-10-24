@@ -22,9 +22,9 @@ final class SignUpViewModel {
     
     var isRightPhoneNumber: Bool = false
     var isRightName: Bool = false
-    let id = UUID().uuidString
+    private let id = UUID().uuidString
     var userMbti = ""
-    lazy var mbti: MBTIType = {
+    private lazy var mbti: MBTIType = {
         guard let mbtiType = MBTIType(rawValue: userMbti.lowercased()) else {
             return .enfj
         }
@@ -39,11 +39,11 @@ final class SignUpViewModel {
     var createdDate: Double = Date().timeIntervalSince1970
     var chuCount: Int = 0
     var isSubscribe: Bool = false
+    var progressStatus: Float = 0.0
     
-    lazy var newUser: User =
+    private lazy var newUser: User =
     User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
     
-    var progressStatus: Float = 0.0
     
     init() {
         locationSubject.subscribe { [weak self] location in

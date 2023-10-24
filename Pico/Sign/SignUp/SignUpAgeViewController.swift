@@ -9,6 +9,8 @@ import UIKit
 import SnapKit
 
 final class SignUpAgeViewController: UIViewController {
+    
+    let viewModel: SignUpViewModel
     private var isChoiceAge: Bool = false
     private var selectedYear: Int = 2000
     private var selectedMonth: Int = 1
@@ -25,7 +27,6 @@ final class SignUpAgeViewController: UIViewController {
 
     private let months = Array(1...12)
     private var days: [Int] = []
-    let viewModel: SignUpViewModel
     
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
@@ -35,6 +36,7 @@ final class SignUpAgeViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     private var userAge: String {
         let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -78,11 +80,10 @@ final class SignUpAgeViewController: UIViewController {
         return picker
     }()
 
-    private lazy var nextButton: UIButton = {
+    private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
         button.backgroundColor = .picoGray
-        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
     
@@ -93,6 +94,7 @@ final class SignUpAgeViewController: UIViewController {
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
+        configButton()
         configDatePicker()
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -104,6 +106,10 @@ extension SignUpAgeViewController {
     private func configNextButton() {
         isChoiceAge = true
         nextButton.backgroundColor = .picoBlue
+    }
+    
+    private func configButton() {
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
     private func configDatePicker() {
