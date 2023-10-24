@@ -10,8 +10,8 @@ import SnapKit
 import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
-    private let keyboardManager = KeyboardManager()
-    private let smsAuthManager: SMSAuthManager = SMSAuthManager()
+    private let keyboardManager = KeyboardService()
+    private let smsAuthManager: SMSAuthService = SMSAuthService()
     private let checkService = CheckService()
     let viewModel: SignUpViewModel
     private var cooldownTimer: Timer?
@@ -129,6 +129,7 @@ final class SignUpPhoneNumberViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        view.endEditing(true)
         keyboardManager.unregisterKeyboard()
     }
 }
@@ -228,6 +229,7 @@ extension SignUpPhoneNumberViewController {
         configReset()
     }
     @objc private func tappedAuthButton(_ sender: UIButton) {
+        view.endEditing(true)
         sender.tappedAnimation()
         
         guard cooldownTimer == nil else { return }
@@ -246,7 +248,7 @@ extension SignUpPhoneNumberViewController {
                 guard let self = self else { return }
                 
                 guard isRight else {
-                    SignLoadingManager.hideLoading()
+                    Loading.hideLoading()
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         viewModel.isRightPhoneNumber = isRight
@@ -254,7 +256,7 @@ extension SignUpPhoneNumberViewController {
                     })
                     return
                 }
-                SignLoadingManager.hideLoading()
+                Loading.hideLoading()
                 
                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                     guard let self = self else { return }
@@ -271,6 +273,7 @@ extension SignUpPhoneNumberViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
+        view.endEditing(true)
         sender.tappedAnimation()
         configAuthText()
         guard smsAuthManager.checkRightCode(code: authText) else {

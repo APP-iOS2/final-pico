@@ -37,7 +37,7 @@ final class CheckService {
             return
         }
         
-        SignLoadingManager.showLoading(text: "")
+        Loading.showLoading()
         
         self.dbRef.collection("users")
             .whereField("phoneNumber", isEqualTo: userNumber)
@@ -61,7 +61,7 @@ final class CheckService {
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let matches = regex.matches(in: name, options: [], range: NSRange(location: 0, length: name.utf16.count))
             
-            SignLoadingManager.showLoading(text: "")
+            Loading.showLoading()
             
             if matches.isEmpty {
                 self.dbRef

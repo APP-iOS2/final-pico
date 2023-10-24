@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class LoadingAnimationView: UIView {
     enum CircleSize {
@@ -22,6 +23,18 @@ final class LoadingAnimationView: UIView {
         }
     }
     
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = title
+        label.setLineSpacing(spacing: 10)
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        label.font = UIFont.picoSubTitleFont
+        label.textColor = .picoBlue
+        label.textAlignment = .center
+        return label
+    }()
+    
     private let dotStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.distribution = .fill
@@ -37,8 +50,10 @@ final class LoadingAnimationView: UIView {
     private lazy var circles = [circleA, circleB, circleC]
     
     private var circleSize: CircleSize
+    private var title: String
     
-    init(circleSize: CircleSize = .large) {
+    init(circleSize: CircleSize = .large, title: String = "") {
+        self.title = title
         self.circleSize = circleSize
         super.init(frame: .zero)
         addViews()
@@ -104,9 +119,7 @@ final class LoadingAnimationView: UIView {
     }
     
     private func addViews() {
-        [dotStackView].forEach {
-            addSubview($0)
-        }
+        addSubview([dotStackView, titleLabel])
         circles.forEach {
             dotStackView.addArrangedSubview($0)
         }
@@ -122,6 +135,11 @@ final class LoadingAnimationView: UIView {
                 make.width.equalTo(circleSize.value)
                 make.height.equalTo(circleSize.value)
             }
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+                make.top.equalTo(dotStackView.snp.bottom).offset(20)
+                make.centerX.equalToSuperview()
         }
     }
 }

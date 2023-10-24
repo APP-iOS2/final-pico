@@ -143,15 +143,14 @@ final class ProfileEditNicknameModalViewController: UIViewController {
                 guard let self else { return }
                 self.checkService.checkNickName(name: self.textField.text?.trimmed() ?? "") { [weak self] message, isRight in
                     guard let self = self else { return }
+                    Loading.hideLoading()
                     guard isRight else {
-                        SignLoadingManager.hideLoading()
                         self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: {
                             self.textField.text = ""
                         })
                         return
                     }
                     self.view.endEditing(true)
-                    SignLoadingManager.hideLoading()
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: {
                         self.completeButton.isEnabled = true
                         self.completeButton.backgroundColor = .picoBlue

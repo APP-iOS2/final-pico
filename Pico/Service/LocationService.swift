@@ -1,5 +1,5 @@
 //
-//  LocationManager.swift
+//  LocationService.swift
 //  Pico
 //
 //  Created by LJh on 10/6/23.
@@ -10,7 +10,7 @@ import CoreLocation
 import RxSwift
 import RxRelay
 
-final class LocationManager: CLLocationManager, CLLocationManagerDelegate {
+final class LocationService: CLLocationManager, CLLocationManagerDelegate {
     
     var locationManager: CLLocationManager = CLLocationManager()
     var currentLocation: CLLocationCoordinate2D?

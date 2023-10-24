@@ -11,8 +11,8 @@ import RxSwift
 import RxCocoa
 
 final class SignInViewController: UIViewController {
-    private let authManager = SMSAuthManager()
-    private let keyboardManager = KeyboardManager()
+    private let authManager = SMSAuthService()
+    private let keyboardManager = KeyboardService()
     private let checkService = CheckService()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
@@ -113,6 +113,7 @@ final class SignInViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        view.endEditing(true)
         keyboardManager.unregisterKeyboard()
     }
 }
@@ -167,6 +168,7 @@ extension SignInViewController {
         authButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
+                view.endEditing(true)
                 authButton.tappedAnimation()
                 guard isFullPhoneNumber else { return }
                 guard let text = phoneNumberTextField.text else { return }
@@ -229,7 +231,7 @@ extension SignInViewController {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                
+                view.endEditing(true)
                 configAuthText()
                 if authManager.checkRightCode(code: authText) {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in

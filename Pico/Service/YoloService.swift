@@ -1,4 +1,4 @@
-//  YoloManager.swift
+//  YoloService.swift
 //  Pico
 //
 //  Created by LJh on 10/16/23.
@@ -8,7 +8,7 @@ import CoreML
 import Vision
 import UIKit
 
-final class YoloManager {
+final class YoloService {
     var isDetectedImage: Bool? = false
     var objectDetectionRequest: VNCoreMLRequest?
 

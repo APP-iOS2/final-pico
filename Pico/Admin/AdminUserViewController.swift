@@ -165,8 +165,6 @@ final class AdminUserViewController: UIViewController {
         output.needToReload
             .withUnretained(self)
             .subscribe(onNext: { viewController, _ in
-                // 질문 :
-                // 데이터 삭제하고 viewWillAppear 가 실행되고 오면 리로드했는데 배열이 안사라짐 ㅜ
                 viewController.tableView.reloadData()
             })
             .disposed(by: disposeBag)

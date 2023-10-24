@@ -48,7 +48,7 @@ final class SignUpViewModel {
     init() {
         locationSubject.subscribe { [weak self] location in
             guard let self = self else { return }
-            SignLoadingManager.showLoading(text: "")
+            Loading.showLoading()
             self.newUser.location = location
             self.saveImage()
         }
@@ -68,7 +68,7 @@ final class SignUpViewModel {
                 print("스트링 저장완료")
                 self.newUser.imageURLs = strings
                 self.saveNewUser()
-                SignLoadingManager.hideLoading()
+                Loading.hideLoading()
             }.disposed(by: disposeBag)
     }
     

@@ -29,7 +29,7 @@ final class ProfileEditViewController: UIViewController {
     private let disposeBag = DisposeBag()
     weak var profileEditImageDelegate: ProfileEditImageDelegate?
     weak var profileEditNicknameDelegate: ProfileEditNicknameDelegate?
-    private let pictureManager = PictureManager()
+    private let pictureManager = PictureService()
     private var userImages: [UIImage] = []
     private let profileViewModel: ProfileViewModel
     private lazy var profileEditViewModel = ProfileEditViewModel(profileViewModel: self.profileViewModel)
@@ -315,12 +315,12 @@ extension ProfileEditViewController: ProfileEditNicknameDelegate {
 
 extension ProfileEditViewController {
     func detectionYolo() {
-        let yoloManager: YoloManager = YoloManager()
+        let yoloManager: YoloService = YoloService()
         yoloManager.loadYOLOv3Model()
         
         let detectionGroup = DispatchGroup()
         
-        SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
+        Loading.showLoading(title: "사진 평가중이에요!\n잠시만 기다려주세요! (최대 1분 소요)")
         DispatchQueue.global().async {
             var allImagesDetected = true
             
@@ -340,7 +340,7 @@ extension ProfileEditViewController {
                 self.profileEditViewModel.saveImage()
             }
             detectionGroup.notify(queue: .main) {
-                SignLoadingManager.hideLoading()
+                Loading.hideLoading()
                 if allImagesDetected {
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인")
                 } else {

@@ -10,7 +10,6 @@ import RxCocoa
 import SnapKit
 import UIKit
 
-// 질문 Using 'class' keyword to define a class-constrained protocol is deprecated; use 'AnyObject' instead
 protocol MyPageViewDelegate: AnyObject {
     func updateProfileViewLayout(newHeight: CGFloat)
     func tabelDidSelectItem(item: Int)

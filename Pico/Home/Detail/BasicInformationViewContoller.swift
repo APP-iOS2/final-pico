@@ -107,7 +107,6 @@ extension BasicInformationViewContoller {
     }
     
     private func makeConstraints() {
-        let safeArea = view.safeAreaLayoutGuide
      
         mbtiLabelView.snp.makeConstraints { make in
             make.top.leading.equalToSuperview()
