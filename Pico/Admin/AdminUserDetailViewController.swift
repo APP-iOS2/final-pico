@@ -77,6 +77,7 @@ final class AdminUserDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.configBackgroundColor()
+        view.tappedDismissKeyboard()
         addViews()
         makeConstraints()
         configTableView()

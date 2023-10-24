@@ -95,6 +95,7 @@ final class AdminUserViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.tappedDismissKeyboard()
         Loading.showLoading()
         addViews()
         makeConstraints()

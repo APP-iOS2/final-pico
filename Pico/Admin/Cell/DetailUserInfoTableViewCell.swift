@@ -49,7 +49,7 @@ final class DetailUserInfoTableViewCell: UITableViewCell {
     
     private let moreButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("더보기", for: .normal)
+        button.setTitle("추가정보 더보기", for: .normal)
         button.titleLabel?.font = .picoDescriptionFont
         button.setTitleColor(.picoFontGray, for: .normal)
         button.isHidden = true

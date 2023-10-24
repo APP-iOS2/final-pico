@@ -116,48 +116,50 @@ final class SignUpPictureViewController: UIViewController {
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
-        Loading.showLoading(title: "사진 평가중이에요!\n잠시만 기다려주세요! (최대 1분 소요)")
-        let yoloManager: YoloService = YoloService()
-        yoloManager.loadYOLOv3Model()
-        
-        let detectionGroup = DispatchGroup()
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
+        Loading.showLoading(title: "AI가 얼굴인식 중이에요!\n잠시만 기다려주세요! (최대 1분 소요)")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+            let yoloManager: YoloService = YoloService()
+            yoloManager.loadYOLOv3Model()
             
-            var allImagesDetected = true
-            
-            for image in userImages {
-                detectionGroup.enter()
-                
-                yoloManager.detectPeople(image: image) {
-                    detectionGroup.leave()
-                }
-                
-                if !(yoloManager.isDetectedImage ?? true) {
-                    allImagesDetected = false
-                }
-            }
-            
-            detectionGroup.notify(queue: .main) { [weak self] in
+            let detectionGroup = DispatchGroup()
+            DispatchQueue.global().async { [weak self] in
                 guard let self = self else { return }
                 
-                Loading.hideLoading()
-                if allImagesDetected {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                        guard let self = self else { return }
-                        
-                        viewModel.imageArray = self.userImages
-                        let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
-                        navigationController?.pushViewController(viewController, animated: true)
-                    })
-                } else {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진 등록에 실패하였습니다.\n얼굴이 잘 나온 사진을 등록해 주세요.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                        guard let self = self else { return }
-                        
-                        userImages.removeAll()
-                        collectionView.reloadData()
-                        configNextButton(isEnabled: false)
-                    })
+                var allImagesDetected = true
+                
+                for image in userImages {
+                    detectionGroup.enter()
+                    
+                    yoloManager.detectPeople(image: image) {
+                        detectionGroup.leave()
+                    }
+                    
+                    if !(yoloManager.isDetectedImage ?? true) {
+                        allImagesDetected = false
+                    }
+                }
+                
+                detectionGroup.notify(queue: .main) { [weak self] in
+                    guard let self = self else { return }
+                    
+                    Loading.hideLoading()
+                    if allImagesDetected {
+                        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                            guard let self = self else { return }
+                            
+                            viewModel.imageArray = self.userImages
+                            let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
+                            navigationController?.pushViewController(viewController, animated: true)
+                        })
+                    } else {
+                        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진 등록에 실패하였습니다.\n얼굴이 잘 나온 사진을 등록해 주세요.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                            guard let self = self else { return }
+                            
+                            userImages.removeAll()
+                            collectionView.reloadData()
+                            configNextButton(isEnabled: false)
+                        })
+                    }
                 }
             }
         }

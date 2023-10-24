@@ -181,11 +181,10 @@ extension SignInViewController {
                     return
                 }
                 
-                viewModel.signIn(userNumber: text) { [weak self] user, message in
+                viewModel.signIn(userNumber: text) { [weak self] _, message in
                     guard let self = self else { return }
-                    
-                    guard self.viewModel.isRightUser else {
-                        self.checkService.checkBlockUser(userNumber: text) { [weak self] isBlock in
+                    guard viewModel.isRightUser else {
+                        checkService.checkBlockUser(userNumber: text) { [weak self] isBlock in
                             guard let self = self else { return }
                             
                             if isBlock {
@@ -199,9 +198,6 @@ extension SignInViewController {
                         return
                     }
                     Loading.hideLoading()
-                    if let user = user {
-                        UserDefaultsManager.shared.setUserData(userData: user)
-                    }
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                             guard let self = self else { return }
                             
@@ -237,8 +233,12 @@ extension SignInViewController {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         
-                        let viewController = LoginSuccessViewController()
-                        self.navigationController?.pushViewController(viewController, animated: true)
+                        if let user = viewModel.loginUser {
+                            let viewController = LoginSuccessViewController(user: user)
+                            self.navigationController?.pushViewController(viewController, animated: true)
+                        } else {
+                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "로그인에 실패하셨습니다.", confirmButtonText: "확인")
+                        }
                     })
                 } else {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 틀렸습니다.", confirmButtonText: "확인")

@@ -102,7 +102,7 @@ final class AdminUserViewModel: ViewModelType {
         let needToReload: Observable<Void>
     }
     
-    private let itemsPerPage: Int = 20
+    private let itemsPerPage: Int = 12
     private var lastDocumentSnapshot: DocumentSnapshot?
     
     private(set) var userList: [User] = []

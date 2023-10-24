@@ -44,7 +44,6 @@ final class SignUpViewModel {
     private lazy var newUser: User =
     User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
     
-    
     init() {
         locationSubject.subscribe { [weak self] location in
             guard let self = self else { return }
