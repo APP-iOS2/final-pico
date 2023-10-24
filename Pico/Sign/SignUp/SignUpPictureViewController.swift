@@ -53,6 +53,7 @@ final class SignUpPictureViewController: UIViewController {
         label.lineBreakMode = .byWordWrapping
         label.textColor = .picoFontGray
         label.font = UIFont.picoDescriptionFont
+        label.accessibilityHint = "라벨 밑에 사진을 고르는 버튼이 있습니다."
         return label
     }()
     
@@ -87,7 +88,7 @@ final class SignUpPictureViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor(color: .white)
+        view.configBackgroundColor(color: .systemBackground)        
         configNavigationBackButton()
         addSubViews()
         makeConstraints()

@@ -102,16 +102,18 @@ final class AdminUserViewModel: ViewModelType {
         let needToReload: Observable<Void>
     }
     
-    private let itemsPerPage: Int = 15
+    private let itemsPerPage: Int = 20
     private var lastDocumentSnapshot: DocumentSnapshot?
     
     private(set) var userList: [User] = []
     private let reloadPublisher = PublishSubject<Void>()
     
     func transform(input: Input) -> Output {
-        let responseViewDidLoad = Observable.combineLatest(input.userListType, input.sortedType, input.viewDidLoad)
+        let merged = Observable.merge(input.viewDidLoad, input.viewWillAppear)
+        
+        let responseViewDidLoad = Observable.combineLatest(input.userListType, input.sortedType, merged)
             .withUnretained(self)
-            .flatMapLatest { (viewModel, value) -> Observable<([User], DocumentSnapshot?)> in
+            .flatMap { (viewModel, value) -> Observable<([User], DocumentSnapshot?)> in
                 let (userListType, sortedType, _) = value
                 return FirestoreService.shared.loadDocumentRx(collectionId: userListType.collectionId, dataType: User.self, orderBy: sortedType.orderBy, itemsPerPage: viewModel.itemsPerPage, lastDocumentSnapshot: nil)
             }

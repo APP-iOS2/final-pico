@@ -10,21 +10,24 @@ import SnapKit
 
 final class MyPageCollectionCell: UICollectionViewCell {
     
+    private var imageSize: Int = 0
+    
     private let image: UIImageView = {
         let image = UIImageView()
-        image.contentMode = .scaleAspectFill
+        image.contentMode = .scaleAspectFit
         return image
     }()
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoFontBlack
-        label.font = .picoSubTitleSmallFont
+        label.font = .picoSubTitleFont
         return label
     }()
+    
     private let subTitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .picoGradientMedium
-        label.font = .picoSubTitleSmallFont
+        label.font = .picoMBTISmallLabelFont
         return label
     }()
     
@@ -43,6 +46,12 @@ final class MyPageCollectionCell: UICollectionViewCell {
         image.image = UIImage(named: imageName)
         titleLabel.text = title
         subTitleLabel.text = subTitle
+        
+        imageSize = (imageName != "chu") ? 45 : 60
+        image.snp.makeConstraints { make in
+            make.height.equalTo(imageSize)
+            make.width.equalTo(imageSize)
+        }
     }
     
     private func addSubView() {
@@ -52,19 +61,19 @@ final class MyPageCollectionCell: UICollectionViewCell {
     }
     
     private func makeConstraints() {
-        image.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(3)
-            make.centerX.equalToSuperview()
-            make.height.equalTo(45)
-            make.width.equalTo(40)
-        }
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(image.snp.bottom).offset(-6)
-            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(15)
+            make.centerY.equalToSuperview().offset(-10)
         }
+        
         subTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom)
-            make.centerX.equalToSuperview()
+            make.leading.equalTo(titleLabel)
+            make.centerY.equalToSuperview().offset(10)
+        }
+        
+        image.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-10)
+            make.centerY.equalToSuperview()
         }
     }
 }

@@ -131,8 +131,8 @@ final class AdminUserTableViewCell: UITableViewCell {
         iconImageView.image = UIImage(systemName: recordType.iconSystemImageName)
         iconImageView.tintColor = recordType.iconColor
         
-        nameLabel.text = "To. \(report.reportedNickname), \(report.age)"
-        contentLabel.text = "From. \(report.reportNickname) (\(report.reason))"
+        nameLabel.text = "피신고자: \(report.reportedNickname), \(report.age)"
+        contentLabel.text = "신고자: \(report.reportNickname) (\(report.reason))"
         createDateLabel.isHidden = false
         createDateLabel.text = report.createdDate.timeAgoSinceDate()
     }

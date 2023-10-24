@@ -31,7 +31,11 @@ final class AdminReportViewController: UIViewController {
         })
     }
 
-    private let textFieldView: CommonTextField = CommonTextField()
+    private let textFieldView: CommonTextField = {
+        let textfield = CommonTextField()
+        textfield.textField.placeholder = "\"신고자\"의 이름을 검색하세요."
+        return textfield
+    }()
     
     private let searchButton: UIButton = {
         let button = UIButton()
@@ -57,6 +61,9 @@ final class AdminReportViewController: UIViewController {
     private let disposeBag: DisposeBag = DisposeBag()
     
     private let viewDidLoadPublisher = PublishSubject<ReportSortType>()
+    private let searchButtonPublisher = PublishSubject<String>()
+    private let tableViewOffsetPublisher = PublishSubject<Void>()
+    private let reportedUserIdPublisher = PublishSubject<String>()
     
     private let refreshControl = UIRefreshControl()
     
@@ -79,6 +86,7 @@ final class AdminReportViewController: UIViewController {
         configRefresh()
         configButtons()
         configTableView()
+        configTableViewDatasource()
         bind()
         viewDidLoadPublisher.onNext(ReportSortType.dateDescending)
     }
@@ -98,8 +106,8 @@ final class AdminReportViewController: UIViewController {
             .withUnretained(self)
             .subscribe(onNext: { viewController, _ in
                 viewController.searchButton.tappedAnimation()
-//                let text = viewController.textFieldView.textField.text
-//                viewController.searchButtonPublisher.onNext(text ?? "")
+                let text = viewController.textFieldView.textField.text
+                viewController.searchButtonPublisher.onNext(text ?? "")
                 viewController.scrollToTop()
             })
             .disposed(by: disposeBag)
@@ -121,26 +129,77 @@ final class AdminReportViewController: UIViewController {
     @objc private func refreshTable(_ refresh: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-//            if let currentSortType = try? self.sortedTypeBehavior.value() {
-//                self.sortedTypeBehavior.onNext(currentSortType)
-//            }
-//            refreshablePublisher.onNext(())
+            viewDidLoadPublisher.onNext(viewModel.selectedSortType)
             refresh.endRefreshing()
         }
     }
     
     private func bind() {
         let input = AdminReportViewModel.Input(
-            viewDidLoad: viewDidLoadPublisher.asObservable()
+            viewDidLoad: viewDidLoadPublisher.asObservable(),
+            searchButton: searchButtonPublisher.asObservable(),
+            tableViewOffset: tableViewOffsetPublisher.asObservable(),
+            reportedUserId: reportedUserIdPublisher.asObservable()
         )
         
         let output = viewModel.transform(input: input)
         
-        output.resultToViewDidLoad
+        let mergedData = Observable.merge(output.resultToViewDidLoad, output.resultSearchUserList, output.resultPagingList)
+        
+        mergedData
             .bind(to: tableView.rx.items(cellIdentifier: AdminUserTableViewCell.reuseIdentifier, cellType: AdminUserTableViewCell.self)) { _, report, cell in
                 cell.configData(recordType: .report, report: report)
             }
             .disposed(by: disposeBag)
+        
+        output.resultReportedUser
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, user in
+                guard let user else { return }
+                viewController.pushAdminUserDetial(user)
+            })
+            .disposed(by: disposeBag)
+    }
+}
+
+extension AdminReportViewController {
+    
+    private func configTableViewDatasource() {
+        var isOffsetPublisherCalled = false
+
+        tableView.rx.contentOffset
+            .withUnretained(self)
+            .subscribe(onNext: { viewController, contentOffset in
+                let contentOffsetY = contentOffset.y
+                let contentHeight = viewController.tableView.contentSize.height
+                let boundsHeight = viewController.tableView.frame.size.height
+
+                if contentOffsetY > contentHeight - boundsHeight && !viewController.activityIndicator.isAnimating {
+                    if !isOffsetPublisherCalled {
+                        viewController.activityIndicator.startAnimating()
+                        viewController.tableViewOffsetPublisher.onNext(())
+                        isOffsetPublisherCalled = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            viewController.activityIndicator.stopAnimating()
+                        }
+                    }
+                } else {
+                    isOffsetPublisherCalled = false
+                }
+            })
+            .disposed(by: disposeBag)
+
+        tableView.rx.modelSelected(AdminReport.self)
+            .withUnretained(self)
+            .subscribe { viewController, report in
+                viewController.reportedUserIdPublisher.onNext(report.reportedUserId)
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func pushAdminUserDetial(_ user: User) {
+        let viewController = AdminUserDetailViewController(viewModel: AdminUserDetailViewModel(selectedUser: user))
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

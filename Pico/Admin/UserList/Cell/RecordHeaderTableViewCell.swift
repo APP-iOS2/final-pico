@@ -22,11 +22,11 @@ enum RecordType: String, CaseIterable {
     var title: String {
         switch self {
         case .report:
-            return "신고 기록"
+            return "받은 신고 기록"
         case .block:
-            return "차단 기록"
+            return "받은 차단 기록"
         case .like:
-            return "좋아요 기록"
+            return "받은 좋아요 기록"
         case .payment:
             return "결제 기록"
         }

@@ -71,18 +71,18 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
         
         mbtiLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView.snp.top).offset(padding)
-            make.leading.equalTo(contentView.snp.leading).offset(padding)
-            make.trailing.equalTo(contentView.snp.trailing).offset(-padding)
-            make.width.equalTo(mbtiLabel.frame.size.width)
-            make.height.equalTo(mbtiLabel.frame.size.height)
+            make.leading.equalToSuperview().offset(padding)
+            make.trailing.equalToSuperview().offset(-padding)
+            make.width.equalToSuperview().offset(-padding * 2)
+            make.height.equalTo(padding * 2)
         }
         
         userImage.snp.makeConstraints { make in
             make.top.equalTo(mbtiLabel.snp.bottom).offset(padding * half)
-            make.leading.equalTo(contentView.snp.leading).offset(padding)
-            make.trailing.equalTo(contentView.snp.trailing).offset(padding)
-            make.width.equalTo(contentView.snp.width).offset(-padding * 2)
-            make.height.equalTo(contentView.snp.width).offset(-padding * 2)
+            make.leading.equalToSuperview().offset(padding)
+            make.trailing.equalToSuperview().offset(-padding)
+            make.width.equalTo(mbtiLabel)
+            make.height.equalTo(self.snp.width)
         }
         
         userNickname.snp.makeConstraints { make in

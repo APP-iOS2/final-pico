@@ -97,7 +97,7 @@ final class AboutMeViewController: UIViewController {
         case 3, 4:
             height = 100
         default:
-            height = 150
+            height = 120
         }
         aboutMeCollectionView.snp.remakeConstraints { make in
             make.top.equalTo(basicLabel.snp.bottom).offset(15)

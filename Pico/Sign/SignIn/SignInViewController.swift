@@ -40,6 +40,7 @@ final class SignInViewController: UIViewController {
         textField.placeholder = "번호를 입력하세요."
         textField.textColor = .gray
         textField.keyboardType = .numberPad
+        textField.accessibilityHint = "전화번호를 입력하는 텍스트필드"
         return textField
     }()
     
@@ -49,6 +50,7 @@ final class SignInViewController: UIViewController {
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
         button.tintColor = .picoGray
+        button.accessibilityHint = "전화번호를 지우는 버튼"
         return button
     }()
     
@@ -60,6 +62,7 @@ final class SignInViewController: UIViewController {
         button.layer.cornerRadius = 13
         button.backgroundColor = .picoBlue
         button.isHidden = true
+        button.accessibilityHint = "전화번호를 인증하는 버튼"
         return button
     }()
     
@@ -93,7 +96,7 @@ final class SignInViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor(color: .white)
+        view.configBackgroundColor(color: .systemBackground)        
         tappedDismissKeyboard(without: [nextButton])
         addSubViews()
         makeConstraints()
@@ -371,6 +374,7 @@ extension SignInViewController {
             textField.layer.borderColor = UIColor.picoGray.cgColor
             textField.tag = tag
             textField.clipsToBounds = true
+            textField.accessibilityHint = "인증번호를 받는 텍스트필드"
             authTextFields.append(textField)
         }
     }

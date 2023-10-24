@@ -14,14 +14,14 @@ final class MailSendTableListController: BaseViewController {
     
     private let viewModel = MailSendModel()
     private let disposeBag = DisposeBag()
-    
     private let emptyView: EmptyViewController = EmptyViewController(type: .message)
-    
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkSendEmptyPublisher = PublishSubject<Void>()
     private let deleteSendPublisher = PublishSubject<String>()
+    private let footerView = FooterView()
+    private var isRefresh = false
     
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -36,6 +36,7 @@ final class MailSendTableListController: BaseViewController {
         bind()
         configRefresh()
         configTableView()
+        loadDataPublsher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,6 +48,8 @@ final class MailSendTableListController: BaseViewController {
     }
     // MARK: - config
     private func configTableView() {
+        
+        footerView.frame = CGRect(x: 0, y: 0, width: mailListTableView.bounds.size.width, height: 80)
         mailListTableView.dataSource = self
         mailListTableView.delegate = self
     }
@@ -59,10 +62,12 @@ final class MailSendTableListController: BaseViewController {
     
     // MARK: - objc
     @objc private func refreshTable(refresh: UIRefreshControl) {
+        isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             refreshPublisher.onNext(())
             refresh.endRefreshing()
+            isRefresh = false
         }
     }
 }
@@ -145,9 +150,14 @@ extension MailSendTableListController: UIScrollViewDelegate {
         let contentOffsetY = scrollView.contentOffset.y
         let tableViewContentSizeY = mailListTableView.contentSize.height
         
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
-            mailListTableView.reloadData()
+        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
+            mailListTableView.tableFooterView = footerView
             loadDataPublsher.onNext(())
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.mailListTableView.reloadData()
+                self.mailListTableView.tableFooterView = nil
+            }
         }
     }
 }
