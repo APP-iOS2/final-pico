@@ -7,12 +7,12 @@ gitGraph
     branch dev
     checkout dev
     commit id: "Dev"
-    branch Feature/home
-    checkout Feature/home
+    branch feature/home
+    checkout feature/home
     commit id: "${name}-${taskA}"
     commit id: "${name}-${taskB}"
     checkout dev
-    merge Feature/home
+    merge feature/home
     commit
     commit
     checkout main
