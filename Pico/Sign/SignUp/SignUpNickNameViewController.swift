@@ -61,7 +61,7 @@ final class SignUpNickNameViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var nickNameTextField: UITextField = {
+    private let nickNameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "3자리 부터 8자리 까지"
         textField.font = .picoTitleFont
@@ -80,7 +80,7 @@ final class SignUpNickNameViewController: UIViewController {
         return button
     }()
     
-    private lazy var nickNameCancleButton: UIButton = {
+    private let nickNameCancleButton: UIButton = {
         let button = UIButton(type: .custom)
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)

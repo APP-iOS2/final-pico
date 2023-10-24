@@ -11,7 +11,7 @@ import FirebaseFirestoreSwift
 
 final class SignInViewModel {
     private let dbRef = Firestore.firestore()
-    var loginUser: User?
+    private var loginUser: User?
     var isRightUser = false
     
     func signIn(userNumber: String, completion: @escaping (User?, String) -> ()) {
@@ -47,7 +47,6 @@ final class SignInViewModel {
                 let gender = data["gender"] as? GenderType ?? .etc
                 let birth = data["birth"] as? String ?? ""
                 let nickName = data["nickName"] as? String ?? ""
-                // 제현님 여기 컴플릿나면 이거로 해주세요
                 let locationData = data["location"] as? [String: Any]
                 guard let address = locationData?["address"] as? String,
                       let latitude = locationData?["latitude"] as? Double,

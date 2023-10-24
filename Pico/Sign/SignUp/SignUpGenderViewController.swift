@@ -65,11 +65,10 @@ final class SignUpGenderViewController: UIViewController {
     private lazy var girlButton: UIButton = configGenderButtons(title: "여자")
     private lazy var otherButton: UIButton = configGenderButtons(title: "기타")
     
-    private lazy var nextButton: UIButton = {
+    private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
         button.backgroundColor = .picoGray
-        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
     
@@ -80,6 +79,7 @@ final class SignUpGenderViewController: UIViewController {
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
+        configButton()
     }
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 3)
@@ -90,6 +90,10 @@ extension SignUpGenderViewController {
     private func configNextButton() {
         isTappedGenderButton = true
         nextButton.backgroundColor = .picoBlue
+    }
+    
+    private func configButton() {
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
     private func configGenderButtons(title: String) -> UIButton {
