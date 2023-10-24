@@ -9,6 +9,34 @@ import UIKit
 import SnapKit
 
 final class BasicInformationViewContoller: UIViewController {
+    
+    private let verticalStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        stackView.spacing = 5
+        return stackView
+    }()
+    
+    private let locationStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .leading
+        stackView.spacing = 5
+        return stackView
+    }()
+    
+    private let heightStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .leading
+        stackView.spacing = 5
+        return stackView
+    }()
+    
     private var mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .enfj, scale: .large)
     private let nameAgeLabel: UILabel = {
         let label = UILabel()
@@ -47,7 +75,7 @@ final class BasicInformationViewContoller: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.backgroundColor = .systemBackground
         addViews()
         makeConstraints()
         
@@ -62,18 +90,9 @@ final class BasicInformationViewContoller: UIViewController {
             heightLabel.text = " \(heightText)cm"
         } else {
             [heightImageView, heightLabel].forEach {
+                verticalStackView.removeArrangedSubview(heightStackView)
                 $0.isHidden = true
             }
-            updateConstraints()
-        }
-    }
-    
-    private func updateConstraints() {
-        locationImageView.snp.makeConstraints { make in
-            make.top.equalTo(nameAgeLabel.snp.bottom).offset(15)
-            make.leading.equalTo(view.safeAreaLayoutGuide)
-            make.width.height.equalTo(20)
-            make.bottom.equalToSuperview()
         }
     }
 }
@@ -81,45 +100,51 @@ final class BasicInformationViewContoller: UIViewController {
 // MARK: - UI 관련
 extension BasicInformationViewContoller {
     private func addViews() {
-        [mbtiLabelView, nameAgeLabel, locationLabel, locationImageView, heightLabel, heightImageView].forEach { view.addSubview($0) }
+        view.addSubview([mbtiLabelView, verticalStackView])
+        locationStackView.addArrangedSubview([locationImageView, locationLabel])
+        heightStackView.addArrangedSubview([heightImageView, heightLabel])
+        verticalStackView.addArrangedSubview([nameAgeLabel, locationStackView, heightStackView])
     }
     
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
+     
         mbtiLabelView.snp.makeConstraints { make in
             make.top.leading.equalToSuperview()
             make.width.equalTo(65)
             make.height.equalTo(35)
         }
-        
-        nameAgeLabel.snp.makeConstraints { make in
-            make.top.equalTo(mbtiLabelView.snp.bottom).offset(15)
-            make.leading.trailing.equalToSuperview()
+        verticalStackView.snp.makeConstraints { make in
+            make.top.equalTo(mbtiLabelView.snp.bottom).offset(12)
+            make.leading.trailing.bottom.equalToSuperview()
         }
+        
+//        nameAgeLabel.snp.makeConstraints { make in
+//            make.top.equalTo(mbtiLabelView.snp.bottom).offset(15)
+//            make.leading.trailing.equalToSuperview()
+//        }
         
         locationImageView.snp.makeConstraints { make in
-            make.top.equalTo(nameAgeLabel.snp.bottom).offset(15)
-            make.leading.equalTo(safeArea)
+//            make.top.equalTo(nameAgeLabel.snp.bottom).offset(15)
             make.width.height.equalTo(20)
         }
-        
-        locationLabel.snp.makeConstraints { make in
-            make.top.equalTo(locationImageView.snp.top)
-            make.leading.equalTo(locationImageView.snp.trailing).offset(5)
-            make.trailing.equalToSuperview()
-        }
-        
+//
+//        locationLabel.snp.makeConstraints { make in
+//            make.top.equalTo(locationImageView.snp.top)
+//            make.leading.equalTo(locationImageView.snp.trailing).offset(5)
+//            make.trailing.equalToSuperview()
+//        }
+//
         heightImageView.snp.makeConstraints { make in
-            make.top.equalTo(locationLabel.snp.bottom).offset(10)
-            make.leading.equalTo(locationImageView.snp.leading)
+//            make.top.equalTo(locationLabel.snp.bottom).offset(10)
+//            make.leading.equalTo(view.safeAreaLayoutGuide)
             make.width.height.equalTo(20)
         }
-        
-        heightLabel.snp.makeConstraints { make in
-            make.top.equalTo(heightImageView.snp.top)
-            make.leading.equalTo(heightImageView.snp.trailing).offset(5)
-            make.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
+//
+//        heightLabel.snp.makeConstraints { make in
+//            make.top.equalTo(heightImageView.snp.top)
+//            make.leading.equalTo(heightImageView.snp.trailing).offset(5)
+//            make.trailing.equalToSuperview()
+//        }
     }
 }
