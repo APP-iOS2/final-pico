@@ -1,3 +1,22 @@
-# 프로젝트 제목을 적어주세요
+# PICO
 
-프로젝트 소개글을 적어주세요
+## ＞ Branch Convention
+```mermaid
+gitGraph
+    commit id: "MAIN"
+    branch dev
+    checkout dev
+    commit id: "Dev"
+    branch Feature/home
+    checkout Feature/home
+    commit id: "${name}-${taskA}"
+    commit id: "${name}-${taskB}"
+    checkout dev
+    merge Feature/home
+    commit
+    commit
+    checkout main
+    merge dev
+    commit id: "Deploy"
+    
+```
