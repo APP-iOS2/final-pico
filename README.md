@@ -27,14 +27,13 @@
   
 ## 설치 / 실행 방법
 1. 아래 파일은 필수 파일이므로 다음 이메일로 파일을 요청해주세요.  
-(temp@gmail.com)  
+(rlaalsrl1227@gmail.com)  
 ```
-- APIKeys.plist
 - GoogleService-Info.plist
 - YOLOv3.mlmodel
 ```
-2. 
-3.
+2. Pico.xcodeproj 파일 실행을 해주세요.
+3. Config 폴더에 필수파일을 추가한 뒤 빌드해주세요
 
 ## Branch Convention
 ```mermaid
