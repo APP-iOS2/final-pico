@@ -6,19 +6,30 @@
 //
 
 import UIKit
+import SnapKit
 
 class AboutMeCollectionViewCell: UICollectionViewCell {
     
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .fill
+        stackView.spacing = 10
+        return stackView
+    }()
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = .gray
+        imageView.tintColor = .darkGray
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
+        label.textColor = .darkGray
+        label.font = .picoContentBoldFont
         return label
     }()
     
@@ -29,23 +40,26 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
     }
     
     func config(image: String, title: String) {
-        self.imageView.image = UIImage(systemName: image)
+        if image == "smoke" || image == "religion" {
+            self.imageView.image = UIImage(named: image)
+        } else {
+            self.imageView.image = UIImage(systemName: image)
+        }
         self.titleLabel.text = title
     }
     
     private func addViews() {
-        [imageView, titleLabel].forEach { contentView.addSubview($0) }
+        contentView.addSubview(stackView)
+        stackView.addArrangedSubview([imageView, titleLabel])
     }
     
     private func makeConstraints() {
-        imageView.snp.makeConstraints { make in
-            make.top.leading.bottom.equalToSuperview()
+        stackView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalTo(imageView.snp.trailing).offset(10)
-            make.trailing.bottom.equalToSuperview()
+        imageView.snp.makeConstraints { make in
+            make.width.height.equalTo(20)
         }
     }
     

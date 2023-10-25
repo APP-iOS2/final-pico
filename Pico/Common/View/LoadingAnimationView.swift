@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class LoadingAnimationView: UIView {
     enum CircleSize {
@@ -20,16 +21,19 @@ final class LoadingAnimationView: UIView {
                 return 9
             }
         }
-        
-        var alphaValue: CGFloat {
-            switch self {
-            case .large:
-                return 0.3
-            case .small:
-                return 0.2
-            }
-        }
     }
+    
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = title
+        label.setLineSpacing(spacing: 10)
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        label.font = UIFont.picoSubTitleFont
+        label.textColor = .picoBlue
+        label.textAlignment = .center
+        return label
+    }()
     
     private let dotStackView: UIStackView = {
         let stackView = UIStackView()
@@ -46,13 +50,12 @@ final class LoadingAnimationView: UIView {
     private lazy var circles = [circleA, circleB, circleC]
     
     private var circleSize: CircleSize
+    private var title: String
     
-    init(circleSize: CircleSize = .large) {
+    init(circleSize: CircleSize = .large, title: String = "") {
+        self.title = title
         self.circleSize = circleSize
-        
         super.init(frame: .zero)
-        
-        backgroundColor = .black.withAlphaComponent(circleSize.alphaValue)
         addViews()
         makeConstraints()
         configCircle()
@@ -86,6 +89,27 @@ final class LoadingAnimationView: UIView {
         }
     }
     
+    func animateNow() {
+        let jumpDuration: Double = 0.30
+        let delayDuration: Double = 1.25
+        let totalDuration: Double = delayDuration + jumpDuration * 2
+        
+        let jumpRelativeDuration: Double = jumpDuration / totalDuration
+        layoutIfNeeded()
+        
+        for (index, circle) in circles.enumerated() {
+            let delay = jumpDuration * 2 * TimeInterval(index) / TimeInterval(circles.count)
+            UIView.animateKeyframes(withDuration: totalDuration, delay: delay, options: [.repeat], animations: {
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: jumpRelativeDuration) {
+                    circle.frame.origin.y -= 30
+                }
+                UIView.addKeyframe(withRelativeStartTime: 1, relativeDuration: jumpRelativeDuration) {
+                    circle.frame.origin.y += 30
+                }
+            })
+        }
+    }
+    
     private func configCircle() {
         circles.forEach {
             $0.layer.cornerRadius = CGFloat(circleSize.value / 2)
@@ -95,9 +119,7 @@ final class LoadingAnimationView: UIView {
     }
     
     private func addViews() {
-        [dotStackView].forEach {
-            addSubview($0)
-        }
+        addSubview([dotStackView, titleLabel])
         circles.forEach {
             dotStackView.addArrangedSubview($0)
         }
@@ -113,6 +135,11 @@ final class LoadingAnimationView: UIView {
                 make.width.equalTo(circleSize.value)
                 make.height.equalTo(circleSize.value)
             }
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+                make.top.equalTo(dotStackView.snp.bottom).offset(20)
+                make.centerX.equalToSuperview()
         }
     }
 }

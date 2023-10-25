@@ -12,7 +12,7 @@ final class AdminViewController: AdminBaseViewController {
     
     private let viewControllers = [
         UINavigationController(rootViewController: AdminUserViewController(viewModel: AdminUserViewModel())),
-        UINavigationController(rootViewController: AdminReportViewController())
+        UINavigationController(rootViewController: AdminReportViewController(viewModel: AdminReportViewModel()))
     ]
     
     private let tabSegmentedControl: UISegmentedControl = {
@@ -57,9 +57,18 @@ final class AdminViewController: AdminBaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.tappedDismissKeyboard()
         addViews()
         makeConstraints()
+        configNavigationBarButton()
         configTabBar()
+    }
+    
+    private func configNavigationBarButton() {
+        let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .done, target: self, action: #selector(tappedBarButton))
+        setButton.tintColor = .darkGray
+        setButton.accessibilityLabel = "설정"
+        navigationItem.rightBarButtonItem = setButton
     }
     
     private func configTabBar() {
@@ -82,6 +91,12 @@ final class AdminViewController: AdminBaseViewController {
         })
         
         pageViewController.setViewControllers([viewControllers[tabSegmentedControl.selectedSegmentIndex]], direction: segmentIndex == 1.0 ? .forward : .reverse, animated: true)
+    }
+    
+    @objc private func tappedBarButton() {
+        showCustomAlert(alertType: .canCancel, titleText: "나가기", messageText: "로그인화면으로 이동하시겠습니까 ?", confirmButtonText: "확인", comfrimAction: {
+            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(UINavigationController(rootViewController: SignViewController()), animated: true)
+        })
     }
 }
 

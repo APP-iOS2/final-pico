@@ -8,7 +8,7 @@
 import UIKit
 
 final class Loading {
-    static func showLoading() {
+    static func showLoading(title: String = "", backgroundColor: UIColor = .black.withAlphaComponent(0.7)) {
         DispatchQueue.main.async {
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = windowScene.windows.last {
@@ -18,15 +18,16 @@ final class Loading {
                 }) as? LoadingAnimationView {
                     loadingView = existedView
                 } else {
-                    loadingView = LoadingAnimationView()
+                    loadingView = LoadingAnimationView(title: title)
                     loadingView.frame = window.frame
+                    loadingView.configBackgroundColor(color: backgroundColor)
                     window.addSubview(loadingView)
                 }
                 loadingView.animate()
             }
         }
     }
-
+    
     static func hideLoading() {
         DispatchQueue.main.async {
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

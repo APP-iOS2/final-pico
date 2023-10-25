@@ -35,6 +35,7 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.picoBlue.cgColor
         button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
+        button.accessibilityLabel = "50츄내고 이름변경"
         return button
     }()
     
@@ -68,7 +69,7 @@ final class ProfileEditNicknameTabelCell: UITableViewCell {
         }
         
         nicknameChangeButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-15)
+            make.trailing.equalToSuperview().offset(-20)
             make.centerY.equalToSuperview()
             make.width.equalTo(100)
             make.height.equalTo(30)

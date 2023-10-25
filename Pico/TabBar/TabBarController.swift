@@ -6,14 +6,17 @@
 //
 
 import UIKit
+import SnapKit
 
 final class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTabBar()
-        UITabBar.appearance().backgroundColor = UIColor.systemBackground
-        UITabBar.appearance().tintColor = UIColor.picoBlue
+        addShadowToTabBar()
+        UITabBar.appearance().backgroundColor = .secondarySystemBackground
+        UITabBar.appearance().tintColor = .picoBlue
+        NotificationService.shared.registerRemoteNotification()
     }
     
     private func configureTabBar() {
@@ -23,11 +26,11 @@ final class TabBarController: UITabBarController {
         let entViewController = UINavigationController(rootViewController: EntViewController())
         let mypageViewController = UINavigationController(rootViewController: MypageViewController())
         
-        homeViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house.fill"), tag: 0)
-        mailViewController.tabBarItem = UITabBarItem(title: "Mail", image: UIImage(systemName: "envelope.fill"), tag: 1)
-        likeViewController.tabBarItem = UITabBarItem(title: "Like", image: UIImage(systemName: "heart.fill"), tag: 2)
-        entViewController.tabBarItem = UITabBarItem(title: "Ent", image: UIImage(systemName: "gamecontroller.fill"), tag: 3)
-        mypageViewController.tabBarItem = UITabBarItem(title: "MyPage", image: UIImage(systemName: "person.fill"), tag: 4)
+        homeViewController.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house.fill"), tag: 0)
+        mailViewController.tabBarItem = UITabBarItem(title: "메일", image: UIImage(systemName: "envelope.fill"), tag: 1)
+        likeViewController.tabBarItem = UITabBarItem(title: "좋아요", image: UIImage(systemName: "heart.fill"), tag: 2)
+        entViewController.tabBarItem = UITabBarItem(title: "게임", image: UIImage(systemName: "gamecontroller.fill"), tag: 3)
+        mypageViewController.tabBarItem = UITabBarItem(title: "마이", image: UIImage(systemName: "person.fill"), tag: 4)
         
         homeViewController.navigationBar.prefersLargeTitles = false
         mailViewController.navigationBar.prefersLargeTitles = false
@@ -37,6 +40,20 @@ final class TabBarController: UITabBarController {
         
         self.viewControllers = [homeViewController, mailViewController, likeViewController, entViewController, mypageViewController]
         delegate = self
+    }
+    
+    private func addShadowToTabBar() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.shadowColor = UIColor.clear
+        appearance.backgroundColor = .secondarySystemBackground
+        tabBar.standardAppearance = appearance
+        tabBar.tintColor = .picoBlue
+        tabBar.layer.masksToBounds = false
+        tabBar.layer.shadowColor = UIColor.black.cgColor
+        tabBar.layer.shadowOpacity = 0.2
+        tabBar.layer.shadowOffset = CGSize(width: 0, height: 0)
+        tabBar.layer.shadowRadius = 6
     }
 }
 

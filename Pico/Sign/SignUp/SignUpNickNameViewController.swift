@@ -9,9 +9,10 @@ import UIKit
 import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
-    private let keyboardManager = KeyboardManager()
+    private let keyboardManager = KeyboardService()
     private let viewModel: SignUpViewModel
     private let checkNickNameService = CheckService()
+    private let slangWordArray: [String] = ["시발", "병신", "개새끼", "꺼져", "지랄", "애미", "애비", "등신", "따까리", "미친", "씨발", "씨팔", "시팔", "쌍놈", "쌍년", "아가리", "장애인", "호구"] // 비속어 필터 API가 있는데 돈주고 하는거라고 하더라구요.
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -26,7 +27,7 @@ final class SignUpNickNameViewController: UIViewController {
     private var userNickName: String = ""
     private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .lightGray
+        view.trackTintColor = .picoGray
         view.progressTintColor = .picoBlue
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
@@ -45,7 +46,7 @@ final class SignUpNickNameViewController: UIViewController {
     
     private let subNotifyLabel: UILabel = {
         let label = UILabel()
-        label.text = "신중하게 정해주세요😁(추후 변경은 유료)"
+        label.text = "신중하게 정해주세요😁"
         label.numberOfLines = 2
         label.lineBreakMode = .byWordWrapping
         label.textColor = .picoFontGray
@@ -60,7 +61,7 @@ final class SignUpNickNameViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var nickNameTextField: UITextField = {
+    private let nickNameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "3자리 부터 8자리 까지"
         textField.font = .picoTitleFont
@@ -79,12 +80,13 @@ final class SignUpNickNameViewController: UIViewController {
         return button
     }()
     
-    private lazy var nickNameCancleButton: UIButton = {
+    private let nickNameCancleButton: UIButton = {
         let button = UIButton(type: .custom)
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
         button.tintColor = .picoGray
+        button.accessibilityHint = "닉네임을 지우는 버튼"
         return button
     }()
     
@@ -98,9 +100,10 @@ final class SignUpNickNameViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
-        view.tappedDismissKeyboard()
+        view.configBackgroundColor(color: .systemBackground)        
         configNavigationBackButton()
+        nickNameTextField.becomeFirstResponder()
+        tappedDismissKeyboard(without: [nextButton])
         addSubViews()
         makeConstraints()
         configButtons()
@@ -117,6 +120,7 @@ final class SignUpNickNameViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        view.endEditing(true)
         keyboardManager.unregisterKeyboard()
     }
 }
@@ -134,94 +138,107 @@ extension SignUpNickNameViewController {
     }
     
     private func updateCheckButton(isFull: Bool, ischeck: Bool = false) {
-        switch isFull {
-        case true:
-            nickNameCheckButton.isHidden = false
-        case false:
-            nickNameCheckButton.isHidden = true
-        }
-        switch ischeck {
-        case true:
-            nickNameCheckButton.backgroundColor = .picoGray
-        case false:
-            nickNameCheckButton.backgroundColor = .picoBlue
-        }
+        nickNameCheckButton.isHidden = !isFull
+        nickNameCheckButton.backgroundColor = ischeck ? .picoGray : .picoBlue
     }
     
     private func updateNextButton(isCheck: Bool) {
-        switch isCheck {
-        case true:
-            nextButton.backgroundColor = .picoBlue
-            nextButton.isEnabled = true
-            isCheckNickName = true
-        case false:
-            nextButton.backgroundColor = .picoGray
-            nextButton.isEnabled = false
-            isCheckNickName = false
-        }
+        nextButton.backgroundColor = isCheck ? .picoBlue : .picoGray
+        nextButton.isEnabled = isCheck ? true : false
+        isCheckNickName = isCheck ? true : false
     }
     
     private func reset() {
-        self.nickNameTextField.text = ""
-        self.nickNameCancleButton.isEnabled = true
-        self.nickNameTextField.isEnabled = true
-        self.nickNameTextField.becomeFirstResponder()
-        self.updateCheckButton(isFull: false)
-        self.updateNextButton(isCheck: false)
+        nickNameTextField.text = ""
+        nickNameCancleButton.isEnabled = true
+        nickNameTextField.isEnabled = true
+        updateCheckButton(isFull: false)
+        updateNextButton(isCheck: false)
+    }
+    
+    private func searchSlangWord(name: String) -> Bool {
+        var isSlang = false
+        for slangWord in slangWordArray {
+            if name.contains(slangWord) {
+                isSlang = true
+                showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "비속어 및 성적인 단어가 포함되어있습니다.", confirmButtonText: "확인")
+                reset()
+                return true
+            } else {
+                isSlang = false
+            }
+        }
+        return isSlang
     }
     // MARK: - @objc
     @objc private func tappedCheckButton(_ sender: UIButton) {
+        view.endEditing(true)
         sender.tappedAnimation()
         guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
-        showAlert(message: "\(userNickName) 이름으로 설정합니다.", isCancelButton: true) { [weak self] in
+        guard !searchSlangWord(name: userNickName) else { return }
+        
+        showCustomAlert(alertType: .canCancel, titleText: "알림", messageText: "\(userNickName) 이름으로 설정합니다.\n변경불가능합니다(추후 변경은 유료)", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
-            self.checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
+            
+            checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
+                
+                Loading.hideLoading()
                 guard isRight else {
-                    SignLoadingManager.hideLoading()
-                    self.showAlert(message: message) {
-                        self.viewModel.isRightName = isRight
-                        self.reset()
-                    }
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
+                        guard let self = self else { return }
+                        
+                        viewModel.isRightName = isRight
+                        reset()
+                    })
                     return
                 }
-                SignLoadingManager.hideLoading()
-                self.showAlert(message: message) {
-                    self.viewModel.isRightName = isRight
+                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
+                    guard let self = self else { return }
+                    
+                    viewModel.isRightName = isRight
                     self.userNickName = userNickName
-                }
+                })
             }
-            self.updateCheckButton(isFull: true, ischeck: true)
-            self.updateNextButton(isCheck: true)
-            self.nickNameTextField.textColor = .picoBlue
-        }
+            updateCheckButton(isFull: true, ischeck: true)
+            updateNextButton(isCheck: true)
+            nickNameTextField.textColor = .picoBlue
+        })
     }
     
     @objc private func tappedNickNameCancleButton(_ sender: UIButton) {
         sender.tappedAnimation()
         nickNameTextField.text = ""
-        self.nickNameTextField.textColor = .gray
+        nickNameTextField.textColor = .gray
         updateCheckButton(isFull: false)
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
-        /*
-         !!!: 멘토링 질문
-         2023-10-16 18:25:04.804179+0900 Pico[8452:2229602] Metal API Validation Enabled
-         2023-10-16 18:25:09.469090+0900 Pico[8452:2229938] Task <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1> finished with error [-1002] Error Domain=NSURLErrorDomain Code=-1002 "unsupported URL" UserInfo={NSLocalizedDescription=unsupported URL, NSErrorFailingURLStringKey=chu, NSErrorFailingURLKey=chu, _NSURLErrorRelatedURLSessionTaskErrorKey=(
-             "LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>"
-         ), _NSURLErrorFailingURLSessionTaskErrorKey=LocalDataTask <BF9206B6-8FA7-407D-A60C-BC0F55BF1635>.<1>, NSUnderlyingError=0x281268f90 {Error Domain=kCFErrorDomainCFNetwork Code=-1002 "(null)"}}
-         Pico[8452:2229602] [SystemGestureGate] <0x10600de80> Gesture: System gesture gate timed out.
-         Pico[8452:2229602] [Presentation] Attempt to present <UIAlertController: 0x105abde00> on <Pico.PictureManager: 0x1064935e0> (from <Pico.PictureManager: 0x1064935e0>) whose view is not in the window hierarchy.
-         
-         위에 메시지가 뜨면서 다음 뷰컨으로 넘어가는게 조금 걸립니다 !
-         */
+        view.endEditing(true)
         viewModel.nickName = userNickName
         let viewController = SignUpPictureViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
-
+extension SignUpNickNameViewController: UIGestureRecognizerDelegate {
+    func tappedDismissKeyboard(without buttons: [UIButton]) {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard(_:)))
+        tapGesture.cancelsTouchesInView = false
+        tapGesture.delegate = self
+        self.view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view is UIButton {
+            return false
+        }
+        return true
+    }
+}
 // MARK: - 텍스트 필드 관련
 extension SignUpNickNameViewController: UITextFieldDelegate {
     

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 import RxSwift
 import RxCocoa
 
@@ -18,6 +19,8 @@ final class LikeUViewController: UIViewController {
     private let listLoadPublisher = PublishSubject<Void>()
     private let refreshPublisher = PublishSubject<Void>()
     private let checkEmptyPublisher = PublishSubject<Void>()
+    private let sendMessagePublisher = PublishSubject<Int>()
+    private let pushSendConrollerPublisher = PublishSubject<Void>()
     private var isLoading = false
     private var isRefresh = false
     
@@ -35,7 +38,6 @@ final class LikeUViewController: UIViewController {
         bind()
         configCollectionView()
         configRefresh()
-        bind()
         listLoadPublisher.onNext(())
     }
     
@@ -44,6 +46,8 @@ final class LikeUViewController: UIViewController {
         collectionView.register(CollectionViewFooterLoadingCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 20, right: 0)
     }
     
     private func configRefresh() {
@@ -77,20 +81,40 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
         guard let item = viewModel.likeUList[safe: indexPath.row] else { return cell }
         cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
         cell.messageButtonTapObservable
-            .subscribe { [weak self] _ in
-                self?.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭되지 않은 사용자에게 메일을 보내기 위해서는 50츄가 필요합니다.", confirmButtonText: "보내기 (50츄)", comfrimAction: {
-                    if UserDefaultsManager.shared.getChuCount() < 50 {
-                        self?.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
-                            let storeViewController = StoreViewController(viewModel: StoreViewModel())
-                            self?.navigationController?.pushViewController(storeViewController, animated: true)
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.likedUserId, dataType: User.self) { result in
+                    switch result {
+                    case .success(let data):
+                        guard data != nil else {
+                            viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                            return
+                        }
+                        viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭되지 않은 사용자에게 메일을 보내기 위해서는 50츄가 필요합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", confirmButtonText: "보내기 (50츄)", comfrimAction: {
+                            let resultChu = UserDefaultsManager.shared.getChuCount() - 50
+                            if resultChu < 0 {
+                                viewController.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                                    let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                                    viewController.navigationController?.pushViewController(storeViewController, animated: true)
+                                })
+                            } else {
+                                viewController.sendMessagePublisher.onNext(50)
+                                viewController.pushSendConrollerPublisher
+                                    .subscribe(onNext: { _ in
+                                        let mailSendView = MailSendViewController()
+                                        mailSendView.configData(userId: item.likedUserId, atMessageView: false)
+                                        mailSendView.modalPresentationStyle = .formSheet
+                                        self.present(mailSendView, animated: true, completion: nil)
+                                    })
+                                    .disposed(by: cell.disposeBag)
+                            }
                         })
-                    } else {
-                        let mailSendView = MailSendViewController()
-                        mailSendView.configData(userId: item.likedUserId)
-                        mailSendView.modalPresentationStyle = .formSheet
-                        self?.present(mailSendView, animated: true, completion: nil)
+                    case .failure(let error):
+                        print(error)
+                        viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                        return
                     }
-                })
+                }
             }
             .disposed(by: cell.disposeBag)
         return cell
@@ -99,14 +123,19 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let viewController = UserDetailViewController()
         guard let selectedUser = viewModel.likeUList[safe: indexPath.row] else { return }
-        FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { result in
+        FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let data):
-                guard let data = data else { return }
-                viewController.viewModel = UserDetailViewModel(user: data)
-                self.navigationController?.pushViewController(viewController, animated: true)
+                guard let data = data else {
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                    return
+                }
+                viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
+                navigationController?.pushViewController(viewController, animated: true)
             case .failure(let error):
                 print(error)
+                showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                 return
             }
         }
@@ -117,8 +146,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
             guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer", for: indexPath) as? CollectionViewFooterLoadingCell else {
                 return CollectionViewFooterLoadingCell()
             }
-            footer.startLoading()
-            
+            footer.startLoading()  
             return footer
         }
         return UICollectionReusableView()
@@ -165,7 +193,7 @@ extension LikeUViewController: UIScrollViewDelegate {
 // MARK: - bind
 extension LikeUViewController {
     private func bind() {
-        let input = LikeUViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher)
+        let input = LikeUViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher, sendMessage: sendMessagePublisher)
         let output = viewModel.transform(input: input)
         
         output.likeUIsEmpty
@@ -181,8 +209,9 @@ extension LikeUViewController {
                 } else {
                     viewController.view.addSubview(viewController.collectionView)
                     viewController.collectionView.snp.makeConstraints { make in
-                        make.top.leading.equalToSuperview().offset(10)
-                        make.trailing.bottom.equalToSuperview().offset(-10)
+                        make.top.bottom.equalToSuperview()
+                        make.leading.equalToSuperview().offset(10)
+                        make.trailing.equalToSuperview().offset(-10)
                     }
                 }
             })
@@ -193,6 +222,13 @@ extension LikeUViewController {
             .subscribe { viewController, _ in
                 viewController.collectionView.reloadData()
                 viewController.checkEmptyPublisher.onNext(())
+            }
+            .disposed(by: disposeBag)
+        
+        output.resultMessage
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.pushSendConrollerPublisher.onNext(())
             }
             .disposed(by: disposeBag)
     }

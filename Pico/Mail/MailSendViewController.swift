@@ -12,14 +12,15 @@ import RxCocoa
 
 final class MailSendViewController: UIViewController {
     
-    private let viewModel = MailSendModel()
+    private let viewModel = MailSendViewModel()
     private let disposeBag = DisposeBag()
     
-    private var receiver: User?
+    private var receiver: User = User(mbti: .infj, phoneNumber: "", gender: .etc, birth: "", nickName: "", location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [], createdDate: 0, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
+    private var isMessageView = true
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = .systemBackground
+        navigationBar.barTintColor = .secondarySystemBackground
         return navigationBar
     }()
     
@@ -54,6 +55,7 @@ final class MailSendViewController: UIViewController {
     
     private let receiverImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = UIImage(named: "AppIcon")
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
@@ -66,7 +68,7 @@ final class MailSendViewController: UIViewController {
         return label
     }()
     
-    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj, scale: .small)
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: nil, scale: .small)
     
     private let contentView: UIStackView = {
         let stackView = UIStackView()
@@ -149,14 +151,13 @@ final class MailSendViewController: UIViewController {
         }
         
         receiverStack.snp.makeConstraints { make in
-            make.top.equalTo(receiverImageView).offset(10)
+            make.top.equalTo(receiverImageView).offset(12)
             make.leading.equalTo(receiverImageView.snp.trailing).offset(10)
         }
         
         mbtiLabelView.snp.makeConstraints { make in
-            make.centerY.equalTo(receiverNameLabel)
-            make.height.equalTo(mbtiLabelView.frame.size.height)
             make.width.equalTo(mbtiLabelView.frame.size.width)
+            make.height.equalTo(mbtiLabelView.frame.size.height)
         }
         
         contentView.snp.makeConstraints { make in
@@ -174,16 +175,35 @@ final class MailSendViewController: UIViewController {
         }
     }
     // MARK: - MailSend +Config
-    func configData(userId: String) {
-        viewModel.getUser(userId: userId) {
-            if let user = self.viewModel.user {
-                self.receiver = user
-                guard let url = URL(string: user.imageURLs[0]) else { return }
-                self.receiverImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-                self.receiverImageView.kf.setImage(with: url)
-                self.receiverNameLabel.text = user.nickName
-                self.receiverNameLabel.sizeToFit()
-                self.mbtiLabelView.setMbti(mbti: user.mbti)
+    func configData(userId: String, atMessageView: Bool ) {
+        isMessageView = atMessageView
+        
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    receiver = userData
+                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
+                    guard let url = URL(string: imageURL) else { return }
+                    receiverImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+                    receiverImageView.kf.setImage(with: url)
+                    receiverNameLabel.text = userData.nickName
+                    receiverNameLabel.sizeToFit()
+                    mbtiLabelView.isHidden = false
+                    mbtiLabelView.setMbti(mbti: userData.mbti)
+                    sendButton.isHidden = false
+                } else {
+                    receiverImageView.image = UIImage(named: "AppIcon_gray")
+                    receiverNameLabel.text = "탈퇴된 회원"
+                    receiverNameLabel.sizeToFit()
+                    mbtiLabelView.isHidden = true
+                    mbtiLabelView.setMbti(mbti: nil)
+                    sendButton.isHidden = true
+                }
+            case .failure(let err):
+                print(err)
             }
         }
     }
@@ -201,9 +221,12 @@ final class MailSendViewController: UIViewController {
                 self.sendButton.tappedAnimation()
                 if let text = self.messageView.text {
                     // sender: 로그인한 사람, recevie 받는 사람
-                    if let receiver = self.receiver {
-                        self.viewModel.saveMailData(receiveUser: receiver, message: text)
+                    self.viewModel.saveMailData(receiveUser: receiver, message: text, type: .message)
+                    if isMessageView {
                         self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                    } else {
+                        dismiss(animated: true)
+                        
                     }
                 }
             }

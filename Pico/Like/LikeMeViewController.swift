@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 import RxSwift
 import RxCocoa
 
@@ -16,7 +17,6 @@ final class LikeMeViewController: UIViewController {
     private let disposeBag: DisposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
-    private let loadDataPublsher = PublishSubject<Void>()
     private let listLoadPublisher = PublishSubject<Void>()
     private let deleteUserPublisher = PublishSubject<String>()
     private let likeUserPublisher = PublishSubject<String>()
@@ -38,7 +38,7 @@ final class LikeMeViewController: UIViewController {
         configCollectionView()
         bind()
         configRefresh()
-        loadDataPublsher.onNext(())
+        listLoadPublisher.onNext(())
     }
     
     private func configCollectionView() {
@@ -46,6 +46,8 @@ final class LikeMeViewController: UIViewController {
         collectionView.register(CollectionViewFooterLoadingCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 20, right: 0)
     }
     
     private func configRefresh() {
@@ -121,14 +123,19 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let viewController = UserDetailViewController()
         let selectedUser = viewModel.likeMeList[indexPath.row]
-        FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { result in
+        FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let data):
-                guard let data = data else { return }
-                viewController.viewModel = UserDetailViewModel(user: data)
-                self.navigationController?.pushViewController(viewController, animated: true)
+                guard let data = data else {
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                    return
+                }
+                viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
+                navigationController?.pushViewController(viewController, animated: true)
             case .failure(let error):
                 print(error)
+                showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                 return
             }
         }
@@ -142,8 +149,10 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }
-    
-    // MARK: - 페이징 처리
+}
+
+// MARK: - 페이징 처리
+extension LikeMeViewController: UIScrollViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let contentOffsetY = scrollView.contentOffset.y
         let collectionViewContentSizeY = collectionView.contentSize.height
@@ -151,7 +160,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
         if contentOffsetY > collectionViewContentSizeY - scrollView.frame.size.height && !isRefresh {
             self.isLoading = true
             self.collectionView.reloadData()
-            listLoadPublisher.onNext(())
+            self.listLoadPublisher.onNext(())
             DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
                 self.isLoading = false
                 DispatchQueue.main.async {
@@ -165,7 +174,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
 // MARK: - Bind
 extension LikeMeViewController {
     private func bind() {
-        let input = LikeMeViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher, deleteUser: deleteUserPublisher, likeUser: likeUserPublisher, checkEmpty: checkEmptyPublisher)
+        let input = LikeMeViewModel.Input(listLoad: listLoadPublisher, refresh: refreshPublisher, deleteUser: deleteUserPublisher, likeUser: likeUserPublisher, checkEmpty: checkEmptyPublisher)
         let output = viewModel.transform(input: input)
         
         output.likeUIsEmpty
@@ -181,8 +190,9 @@ extension LikeMeViewController {
                 } else {
                     viewController.view.addSubview(viewController.collectionView)
                     viewController.collectionView.snp.makeConstraints { make in
-                        make.top.leading.equalToSuperview().offset(10)
-                        make.trailing.bottom.equalToSuperview().offset(-10)
+                        make.top.bottom.equalToSuperview()
+                        make.leading.equalToSuperview().offset(10)
+                        make.trailing.equalToSuperview().offset(-10)
                     }
                 }
             })
@@ -193,6 +203,13 @@ extension LikeMeViewController {
             .subscribe { viewController, _ in
                 viewController.collectionView.reloadData()
                 viewController.checkEmptyPublisher.onNext(())
+            }
+            .disposed(by: disposeBag)
+        
+        output.failLike
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
             }
             .disposed(by: disposeBag)
     }

@@ -6,37 +6,31 @@
 //
 
 import UIKit
+import SnapKit
 
 final class AboutMeViewController: UIViewController {
     private var cellInfomation: [[String]] = [["", ""]]
+    
     private let verticalStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fill
         stackView.alignment = .fill
+        stackView.spacing = 5
         return stackView
     }()
     
-    private let introLabelContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .picoGray
-        view.layer.masksToBounds = true
-        view.layer.cornerRadius = 10
-        return view
-    }()
-    
-    private let introLabel: UILabel = {
+    private let basicLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
-        label.textAlignment = .left
-        label.numberOfLines = 0
+        label.text = "기본 정보"
+        label.font = UIFont.picoSubTitleFont
         return label
     }()
     
-    private let aboutMeCollectionView: UICollectionView = {
+    private var aboutMeCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        layout.minimumInteritemSpacing = 3
+        collectionView.isScrollEnabled = false
         return collectionView
     }()
     
@@ -49,38 +43,34 @@ final class AboutMeViewController: UIViewController {
     }
     
     // MARK: - Config
-    func config(intro: String?, eduText: String?, religionText: String?, smokeText: String?, jobText: String?, drinkText: String?) {
-        var allNil = true
-        
-        if let intro = intro {
-            introLabel.text = intro
-            allNil = false
-        } else {
-            introLabel.text = nil
-            introLabel.removeFromSuperview()
-            introLabelContainerView.removeFromSuperview()
-        }
+    func config(eduText: String?, religionText: String?, smokeText: String?, jobText: String?, drinkText: String?) {
         
         cellInfomation.removeAll()
         
         let infoArray: [(icon: String, text: String?)] = [
-            ("graduationcap.fill", eduText),
-            ("hands.sparkles.fill", religionText),
+            ("graduationcap", eduText),
+            ("religion", religionText),
             ("smoke", smokeText),
-            ("building.columns.fill", jobText),
-            ("wineglass.fill", drinkText)
+            ("case", jobText),
+            ("wineglass", drinkText)
         ]
-
+        
         // nil이 아닌 항목만 필터링하고, 옵셔널 바인딩을 사용하여 값 추출
         cellInfomation = infoArray.compactMap { icon, text in
             guard let text = text else { return nil }
-            allNil = false // 변수가 하나라도 nil이 아닌 값을 가지고 있으면 allNil을 false로 설정
             return [icon, text]
         }
-
-        // 모든 변수가 nil인 경우 뷰를 숨김
-        view.isHidden = allNil
-
+        
+        print(cellInfomation.count)
+        
+        if cellInfomation.isEmpty {
+            aboutMeCollectionView.isHidden = true
+            basicLabel.isHidden = true
+            view.isHidden = true
+        } else {
+            updateConstraints()
+        }
+        
         aboutMeCollectionView.reloadData()
     }
     
@@ -89,52 +79,68 @@ final class AboutMeViewController: UIViewController {
         aboutMeCollectionView.delegate = self
         aboutMeCollectionView.dataSource = self
         
-        if let layout = aboutMeCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.minimumInteritemSpacing = 3
-            layout.minimumLineSpacing = 3
-            let itemWidth = (view.frame.width - 3 * 2) / 3
-            layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
-        }
+//        if let layout = aboutMeCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+//            layout.minimumInteritemSpacing = 2
+//            layout.minimumLineSpacing = 2
+//            let itemWidth = view.frame.width / 2.5
+//            layout.itemSize = CGSize(width: itemWidth, height: 35)
+//        }
     }
     
+    private func updateConstraints() {
+        var height: Int = 0
+        switch cellInfomation.count {
+        case 0:
+            height = 0
+        case 1, 2:
+            height = 50
+        case 3, 4:
+            height = 100
+        default:
+            height = 120
+        }
+        aboutMeCollectionView.snp.remakeConstraints { make in
+            make.top.equalTo(basicLabel.snp.bottom).offset(15)
+            make.height.equalTo(height)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+    }
 }
 
 // MARK: - UI 관련
 extension AboutMeViewController {
     private func addViews() {
-        view.addSubview(verticalStackView)
-        [introLabelContainerView, aboutMeCollectionView].forEach { verticalStackView.addArrangedSubview($0) }
-        introLabelContainerView.addSubview(introLabel)
+        view.addSubview([aboutMeCollectionView, basicLabel])
     }
     
     private func makeConstraints() {
-        verticalStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+    
+        basicLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
         }
         
-        introLabelContainerView.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(50)
+        aboutMeCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(basicLabel.snp.bottom).offset(15)
+            make.height.equalTo(150)
+            make.leading.trailing.bottom.equalToSuperview()
         }
-        
-        introLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 15, left: 10, bottom: 15, right: 10))
-        }
-        
-//        aboutMeCollectionView.snp.makeConstraints { make in
-//            make.height.greaterThanOrEqualTo(100).priority(.low)
-//        }
     }
 }
 
-extension AboutMeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension AboutMeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cellInfomation.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "aboutMeCollectionViewCell", for: indexPath) as? AboutMeCollectionViewCell else { return UICollectionViewCell() }
-            cell.config(image: cellInfomation[indexPath.row][0], title: cellInfomation[indexPath.row][1])
+        cell.config(image: cellInfomation[indexPath.row][0], title: cellInfomation[indexPath.row][1])
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width / 2 - 20, height: 35)
+    }
 }

@@ -11,6 +11,7 @@ import PhotosUI
 
 protocol ProfileEditImageDelegate: AnyObject {
     func presentPickerView()
+    func presentCustomAlert(messageText: String)
 }
 
 final class ProfileEditImageTableCell: UITableViewCell {
@@ -29,6 +30,8 @@ final class ProfileEditImageTableCell: UITableViewCell {
         view.showsVerticalScrollIndicator = false
         view.contentInset = .zero
         view.backgroundColor = .clear
+        view.accessibilityLabel = "사진추가"
+        view.isAccessibilityElement = true
         view.register(cell: ProfileEditCollectionCell.self)
         view.register(cell: ProfileEditEmptyCollectionCell.self)
         return view
@@ -81,6 +84,10 @@ final class ProfileEditImageTableCell: UITableViewCell {
         }
     }
     @objc private func tappedDeleteButton(_ sender: UIButton) {
+        guard images.count > 1 else {
+            profileEditImageDelegate?.presentCustomAlert(messageText: "최소 한개 이상의 사진을 등록해 주세요.")
+            return
+        }
         let index = sender.tag
         images.remove(at: index)
         profileEditViewModel?.modalType = .imageURLs
@@ -113,12 +120,16 @@ extension ProfileEditImageTableCell: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth = (collectionView.bounds.width / 3) - 25
+        let cellWidth: CGFloat = (collectionView.bounds.width / 3) - 20
         let cellHeight = collectionView.bounds.height
         return CGSize(width: cellWidth, height: cellHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard images.count < 3 else {
+            profileEditImageDelegate?.presentCustomAlert(messageText: "사진은 최대 3개까지 등록가능합니다.")
+            return
+        }
         if images.count == indexPath.row {
             profileEditViewModel?.modalType = .imageURLs
             profileEditViewModel?.collectionData = images

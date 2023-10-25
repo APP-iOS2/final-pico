@@ -20,8 +20,8 @@ final class EmptyViewController: UIViewController {
     
     private let contentsView = UIView()
     
-    private let chuImage: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "chu"))
+    private let typeImage: UIImageView = {
+        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -29,6 +29,7 @@ final class EmptyViewController: UIViewController {
     private lazy var infomationLabel: UILabel = {
         let label = UILabel()
         label.text = viewType.rawValue
+        label.textColor = .picoFontGray
         label.textAlignment = .center
         return label
     }()
@@ -36,7 +37,7 @@ final class EmptyViewController: UIViewController {
     lazy var linkButton: UIButton = {
         let button = UIButton(configuration: .plain())
         button.setTitle("둘러보기 >", for: .normal)
-        button.setTitleColor(.darkGray, for: .normal)
+        button.setTitleColor(.picoFontGray, for: .normal)
         button.tintColor = .clear
         button.addTarget(self, action: #selector(tappedLinkButton), for: .touchUpInside)
         return button
@@ -45,6 +46,7 @@ final class EmptyViewController: UIViewController {
     private var messageSubLabel: UILabel = {
         let label = UILabel()
         label.text = "서로 좋아요가 연결되는 순간 채팅 가능~"
+        label.textColor = .picoFontGray
         return label
     }()
     
@@ -57,6 +59,22 @@ final class EmptyViewController: UIViewController {
         super.viewDidLoad()
         addViews()
         makeConstraints()
+        configImage()
+    }
+    
+    private func configImage() {
+        let config = UIImage.SymbolConfiguration(pointSize: 30)
+        switch viewType {
+        case .iLikeU:
+            typeImage.image = UIImage(systemName: "heart.fill", withConfiguration: config)
+        case .uLikeMe:
+            typeImage.image = UIImage(systemName: "heart.fill", withConfiguration: config)
+        case .message:
+            typeImage.image = UIImage(systemName: "message.fill", withConfiguration: config)
+        case .notification:
+            typeImage.image = UIImage(systemName: "bell.fill", withConfiguration: config)
+        }
+        typeImage.tintColor = .picoGray
     }
     
     @objc func tappedLinkButton(_ sender: UIButton) {
@@ -71,7 +89,7 @@ final class EmptyViewController: UIViewController {
     
     private func addViews() {
         view.addSubview(contentsView)
-        contentsView.addSubview([chuImage, infomationLabel])
+        contentsView.addSubview([typeImage, infomationLabel])
         if viewType == .iLikeU {
             contentsView.addSubview(linkButton)
         }
@@ -85,13 +103,13 @@ final class EmptyViewController: UIViewController {
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
-        chuImage.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
-            make.height.equalToSuperview().multipliedBy(0.4)
+        typeImage.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(70)
+            make.centerX.equalToSuperview()
         }
         
         infomationLabel.snp.makeConstraints { make in
-            make.top.equalTo(chuImage.snp.bottom).offset(10)
+            make.top.equalTo(typeImage.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
         }

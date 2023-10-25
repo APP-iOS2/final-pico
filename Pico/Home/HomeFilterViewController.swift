@@ -11,32 +11,96 @@ import SnapKit
 final class HomeFilterViewController: UIViewController {
     
     weak var homeViewController: HomeViewController?
-    private let mbtiCollectionViewController = MBTICollectionViewController()
     static var filterChangeState: Bool = false
-    private lazy var genderLabel: UILabel = createFilterLabel(text: "상대 성별", font: .picoSubTitleFont)
-    private lazy var genderSubLabel: UILabel = createFilterLabel(text: "중복 선택 가능", font: .picoDescriptionFont)
-    private lazy var distanceLabel: UILabel = createFilterLabel(text: "거리", font: .picoSubTitleFont)
-    private lazy var distanceValueLabel: UILabel = createFilterLabel(text: "0km ~ 200km", font: .picoSubTitleFont)
-    private lazy var mbtiLabel: UILabel = createFilterLabel(text: "성격 유형", font: .picoSubTitleFont)
-    private lazy var manButton: UIButton = createFilterButton(title: "남자")
-    private lazy var womanButton: UIButton = createFilterButton(title: "여자")
-    private lazy var etcButton: UIButton = createFilterButton(title: "기타")
-    
-    private let ageSlider = RangeSlider()
+    private let mbtiCollectionViewController = MBTICollectionViewController()
+    private let ageSlider = RangeSliderView()
     private let distanceSlider = UISlider()
     
-    // MARK: - 스택
-    private lazy var genderHStack: UIStackView = createFilterStack(axis: .horizontal, spacing: 5, distribution: .fillEqually)
-    private lazy var genderLabelVStack: UIStackView = createFilterStack(axis: .vertical, spacing: 0, distribution: nil)
-    private lazy var genderButtonHStack: UIStackView = createFilterStack(axis: .horizontal, spacing: 5, distribution: .fillEqually)
+    private let genderLabel: UILabel = {
+        let label = UILabel()
+        label.text = "상대 성별"
+        label.font = .picoSubTitleFont
+        return label
+    }()
     
-    // MARK: - viewDidLoad
+    private let genderSubLabel: UILabel = {
+        let label = UILabel()
+        label.text = "중복 선택 가능"
+        label.font = .picoDescriptionFont
+        return label
+    }()
+    
+    private let distanceLabel: UILabel = {
+        let label = UILabel()
+        label.text = "거리"
+        label.font = .picoSubTitleFont
+        return label
+    }()
+    
+    private let distanceValueLabel: UILabel = {
+        let label = UILabel()
+        label.font = .picoSubTitleFont
+        return label
+    }()
+    
+    private let mbtiLabel: UILabel = {
+        let label = UILabel()
+        label.text = "성격 유형"
+        label.font = .picoSubTitleFont
+        return label
+    }()
+    
+    private let manButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("남자", for: .normal)
+        button.layer.cornerRadius = 10
+        return button
+    }()
+    
+    private let womanButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("여자", for: .normal)
+        button.layer.cornerRadius = 10
+        return button
+    }()
+    
+    private let etcButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("기타", for: .normal)
+        button.layer.cornerRadius = 10
+        return button
+    }()
+    
+    private let genderHorizontalStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 5
+        stack.distribution = .fillEqually
+        return stack
+    }()
+    
+    private let genderLabelVerticalStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        return stack
+    }()
+    
+    private let genderButtonHorizontalStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 5
+        stack.distribution = .fillEqually
+        return stack
+    }()
+    
     override func viewDidLoad() {
         navigationItem.title = "선호 설정"
+        tabBarController?.tabBar.isHidden = true
         view.configBackgroundColor()
         addSubView()
         makeConstraints()
         configUI()
+        configButton()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -47,8 +111,6 @@ final class HomeFilterViewController: UIViewController {
     }
     
     private func configUI() {
-        ageSlider.titleLabel.text = "나이"
-        
         distanceSlider.maximumTrackTintColor = UIColor.lightGray.withAlphaComponent(0.5)
         distanceSlider.minimumTrackTintColor = .picoBlue
         distanceSlider.maximumValue = 501
@@ -60,6 +122,7 @@ final class HomeFilterViewController: UIViewController {
             distanceSlider.setThumbImage(resizedThumbImage, for: .normal)
         }
         
+        ageSlider.titleLabel.text = "나이"
         if HomeViewModel.filterDistance > 500 {
             distanceValueLabel.text = "0km ~ 500km +"
         } else {
@@ -67,7 +130,12 @@ final class HomeFilterViewController: UIViewController {
         }
         distanceValueLabel.textColor = .picoBlue
         distanceValueLabel.textAlignment = .right
-        
+    }
+    
+    private func configButton() {
+        [manButton, womanButton, etcButton].forEach { button in
+            button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
+        }
         manButton.isSelected = HomeViewModel.filterGender.contains(.male)
         updateButtonAppearance(manButton)
         
@@ -79,23 +147,17 @@ final class HomeFilterViewController: UIViewController {
     }
     
     private func addSubView() {
-        view.addSubview([genderHStack, mbtiLabel, ageSlider, distanceSlider, distanceLabel, distanceValueLabel])
-        
-        genderHStack.addArrangedSubview(genderLabelVStack)
-        genderHStack.addArrangedSubview(genderButtonHStack)
-        genderLabelVStack.addArrangedSubview(genderLabel)
-        genderLabelVStack.addArrangedSubview(genderSubLabel)
-        genderButtonHStack.addArrangedSubview(manButton)
-        genderButtonHStack.addArrangedSubview(womanButton)
-        genderButtonHStack.addArrangedSubview(etcButton)
-        
+        view.addSubview([genderHorizontalStack, mbtiLabel, ageSlider, distanceSlider, distanceLabel, distanceValueLabel])
+        genderHorizontalStack.addArrangedSubview([genderLabelVerticalStack, genderButtonHorizontalStack])
+        genderLabelVerticalStack.addArrangedSubview([genderLabel, genderSubLabel])
+        genderButtonHorizontalStack.addArrangedSubview([manButton, womanButton, etcButton])
         addChild(mbtiCollectionViewController)
         view.addSubview(mbtiCollectionViewController.view)
         mbtiCollectionViewController.didMove(toParent: self)
     }
     
     private func makeConstraints() {
-        genderHStack.snp.makeConstraints { make in
+        genderHorizontalStack.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
@@ -103,10 +165,10 @@ final class HomeFilterViewController: UIViewController {
         }
         
         ageSlider.snp.makeConstraints { make in
-            make.top.equalTo(genderHStack.snp.bottom).offset(45)
+            make.top.equalTo(genderHorizontalStack.snp.bottom).offset(45)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
-            make.bottom.equalTo(genderHStack.snp.bottom).offset(100)
+            make.bottom.equalTo(genderHorizontalStack.snp.bottom).offset(100)
         }
         
         distanceSlider.snp.makeConstraints { make in
@@ -143,31 +205,6 @@ final class HomeFilterViewController: UIViewController {
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
             make.height.equalTo(mbtiCollectionViewController.view.frame.size.height)
         }
-    }
-    
-    private func createFilterLabel(text: String, font: UIFont) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        return label
-    }
-    
-    private func createFilterStack(axis: NSLayoutConstraint.Axis, spacing: CGFloat, distribution: UIStackView.Distribution?) -> UIStackView {
-        let stack = UIStackView()
-        stack.axis = axis
-        stack.spacing = spacing
-        if let distribution = distribution {
-            stack.distribution = distribution
-        }
-        return stack
-    }
-    
-    private func createFilterButton(title: String) -> UIButton {
-        let button = UIButton()
-        button.setTitle(title, for: .normal)
-        button.layer.cornerRadius = 10
-        button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
-        return button
     }
     
     private func updateButtonAppearance(_ button: UIButton) {

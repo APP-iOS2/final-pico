@@ -8,57 +8,65 @@
 import UIKit
 import RxSwift
 
-final class SubInfomationViewController: BaseViewController {
+final class SubInfomationViewController: UIViewController {
     private var hobbies: [String] = []
     private var personalities: [String] = []
     private var likeMbtis: [MBTIType] = []
-    
-    //    private let verticalStackView: UIStackView = {
-    //        let stackView = UIStackView()
-    //        stackView.axis = .vertical
-    //        stackView.distribution = .fillProportionally
-    //        stackView.alignment = .fill
-    //        return stackView
-    //    }()
-    
-    private let hobbyCollectionView: UICollectionView = {
+    private let verticalStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        stackView.spacing = 7
+        return stackView
+    }()
+
+    private lazy var hobbyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: LeftAlignedCollectionViewFlowLayout())
         layout.minimumInteritemSpacing = 3
+        layout.estimatedItemSize = .zero
+        collectionView.isScrollEnabled = false
         return collectionView
     }()
     
-    private let personalCollectionView: UICollectionView = {
+    private lazy var personalCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: LeftAlignedCollectionViewFlowLayout())
         layout.minimumInteritemSpacing = 3
+        layout.estimatedItemSize = .zero
+        collectionView.isScrollEnabled = false
         return collectionView
     }()
     
-    private let mbtiCollectionView: UICollectionView = {
+    private lazy var mbtiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        layout.minimumInteritemSpacing = 3
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: LeftAlignedCollectionViewFlowLayout())
+        layout.minimumInteritemSpacing = 5
+        collectionView.isScrollEnabled = false
+        layout.estimatedItemSize = .zero
+        
         return collectionView
     }()
     
     private let hobbyLabel: UILabel = {
         let label = UILabel()
-        label.text = "내 취미"
+        label.text = "취미"
         label.font = UIFont.picoSubTitleFont
         return label
     }()
     
     private let personalLabel: UILabel = {
         let label = UILabel()
-        label.text = "내 성격"
+        label.text = "성격"
         label.font = UIFont.picoSubTitleFont
         return label
     }()
     
     private let likeMbtiLabel: UILabel = {
         let label = UILabel()
-        label.text = "선호하는 MBTI"
+        label.text = "선호 MBTI"
         label.font = UIFont.picoSubTitleFont
         return label
     }()
@@ -68,7 +76,9 @@ final class SubInfomationViewController: BaseViewController {
         addViews()
         makeConstraints()
         configCollectionView()
+        
     }
+    
     // MARK: - Config
     func config(hobbies: [String]?, personalities: [String]?, likeMbtis: [MBTIType]?) {
         if hobbies == nil && personalities == nil && likeMbtis == nil {
@@ -77,23 +87,30 @@ final class SubInfomationViewController: BaseViewController {
         
         if let personalities {
             self.personalities = personalities
+            
         } else {
-            personalLabel.removeFromSuperview()
-            personalCollectionView.removeFromSuperview()
+            personalLabel.isHidden = true
+            personalCollectionView.isHidden = true
+            verticalStackView.removeArrangedSubview(personalLabel)
+            verticalStackView.removeArrangedSubview(personalCollectionView)
         }
         
         if let hobbies {
             self.hobbies = hobbies
         } else {
-            hobbyLabel.removeFromSuperview()
-            hobbyCollectionView.removeFromSuperview()
+            hobbyLabel.isHidden = true
+            hobbyCollectionView.isHidden = true
+            verticalStackView.removeArrangedSubview(hobbyLabel)
+            verticalStackView.removeArrangedSubview(hobbyCollectionView)
         }
         
         if let likeMbtis {
             self.likeMbtis = likeMbtis
         } else {
-            likeMbtiLabel.removeFromSuperview()
-            mbtiCollectionView.removeFromSuperview()
+            likeMbtiLabel.isHidden = true
+            mbtiCollectionView.isHidden = true
+            verticalStackView.removeArrangedSubview(likeMbtiLabel)
+            verticalStackView.removeArrangedSubview(mbtiCollectionView)
         }
         
         hobbyCollectionView.reloadData()
@@ -113,64 +130,47 @@ final class SubInfomationViewController: BaseViewController {
         mbtiCollectionView.register(MbtiCollectionViewCell.self, forCellWithReuseIdentifier: "mbtiCollectionCell")
         mbtiCollectionView.delegate = self
         mbtiCollectionView.dataSource = self
+        
     }
 }
 // MARK: - UI관련
 extension SubInfomationViewController {
     
     private func addViews() {
-        //view.addSubview(verticalStackView)
+        view.addSubview(verticalStackView)
         [personalLabel, personalCollectionView, hobbyLabel, hobbyCollectionView, likeMbtiLabel, mbtiCollectionView].forEach {
-            view.addSubview($0)
+            verticalStackView.addArrangedSubview($0)
         }
     }
     
     private func makeConstraints() {
-        
-        //        verticalStackView.snp.makeConstraints { make in
-        //            make.edges.equalToSuperview()
-        //        }
+        verticalStackView.snp.makeConstraints { make in
+            make.top.leading.trailing.bottom.equalToSuperview()
+        }
         
         personalLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
-            make.leading.equalToSuperview()
+            make.height.equalTo(40)
         }
-        //
-        personalCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(personalLabel.snp.bottom).offset(20)
-            make.leading.equalTo(personalLabel.snp.leading)
-            make.trailing.equalToSuperview().offset(-20)
-            
-            make.height.equalTo(Screen.height * 0.2)
-        }
-        
         hobbyLabel.snp.makeConstraints { make in
-            make.top.equalTo(personalCollectionView.snp.bottom).offset(20)
-            make.leading.equalTo(personalLabel.snp.leading)
-            make.trailing.equalToSuperview()
-        }
-        
-        hobbyCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(hobbyLabel.snp.bottom).offset(20)
-            make.leading.equalTo(hobbyLabel.snp.leading)
-            make.trailing.equalToSuperview().offset(-20)
-            make.height.equalTo(Screen.height * 0.2)
+            make.height.equalTo(40)
         }
         
         likeMbtiLabel.snp.makeConstraints { make in
-            make.top.equalTo(hobbyCollectionView.snp.bottom).offset(20)
-            make.leading.equalTo(hobbyLabel.snp.leading)
-            make.trailing.equalToSuperview()
-            
+            make.height.equalTo(40)
         }
         
-        mbtiCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(likeMbtiLabel.snp.bottom).offset(20)
-            make.leading.equalTo(likeMbtiLabel.snp.leading)
-            make.trailing.equalToSuperview()
-            make.height.equalTo(Screen.height * 0.2)
-            
+        personalCollectionView.snp.makeConstraints { make in
+            make.height.equalTo(50)
         }
+        
+        hobbyCollectionView.snp.makeConstraints { make in
+            make.height.equalTo(50)
+        }
+        
+            mbtiCollectionView.snp.makeConstraints { make in
+                make.height.equalTo(50)
+            }
+        
     }
 }
 
@@ -179,14 +179,56 @@ extension SubInfomationViewController: UICollectionViewDelegate, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView {
-            
-        case hobbyCollectionView:
-            return hobbies.count
-            
         case personalCollectionView:
+            switch personalities.count {
+            case 0:
+                personalCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(30)
+                }
+            case 1, 2:
+                personalCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(60)
+                }
+            default:
+                personalCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(95)
+                }
+            }
             return personalities.count
             
+        case hobbyCollectionView:
+            
+            switch hobbies.count {
+            case 0:
+                hobbyCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(30)
+                }
+            case 1, 2:
+                hobbyCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(60)
+                }
+            default:
+                hobbyCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(60)
+                }
+            }
+            return hobbies.count
+            
         case mbtiCollectionView:
+            switch likeMbtis.count {
+            case 0...5:
+                mbtiCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(30)
+                }
+            case 6...12:
+                mbtiCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(60)
+                }
+            default:
+                mbtiCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(100)
+                }
+            }
             return likeMbtis.count
         default:
             return 0
@@ -195,7 +237,6 @@ extension SubInfomationViewController: UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         switch collectionView {
         case hobbyCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hobbyCollectionCell", for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
@@ -204,13 +245,11 @@ extension SubInfomationViewController: UICollectionViewDelegate, UICollectionVie
             
         case personalCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hobbyCollectionCell", for: indexPath) as? HobbyCollectionViewCell else { return UICollectionViewCell() }
-            
             cell.config(labelText: personalities[indexPath.row])
             return cell
             
         case mbtiCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "mbtiCollectionCell", for: indexPath) as? MbtiCollectionViewCell else { return UICollectionViewCell() }
-            
             cell.config(mbtiType: likeMbtis[indexPath.row])
             return cell
             
@@ -228,20 +267,60 @@ extension SubInfomationViewController: UICollectionViewDelegate, UICollectionVie
             label.text = hobby
             label.sizeToFit()
             let size = label.frame.size
-            return CGSize(width: size.width + 5, height: size.height + 8)
+            return CGSize(width: size.width + 10, height: size.height + 8)
             
         case personalCollectionView:
             let personal = personalities[indexPath.row]
             label.text = personal
             label.sizeToFit()
             let size = label.frame.size
-            return CGSize(width: size.width + 8, height: size.height + 8)
+            return CGSize(width: size.width + 10, height: size.height + 8)
             
         case mbtiCollectionView:
-            return CGSize(width: 70, height: 30)
-            
+            return CGSize(width: 50, height: 25)
+
         default:
-            return CGSize(width: 70, height: 70)
+            return CGSize(width: 65, height: 70)
         }
     }
+    
+    func updateCollectionViewHeight3(collectionView: UICollectionView, items: [String]) {
+        let cellHeight: CGFloat = 25
+        var totalCellWidth: CGFloat = 0
+        for item in items {
+            let label = UILabel()
+            label.text = item
+            label.sizeToFit()
+            totalCellWidth += 50
+        }
+
+        let numberOfCellsInRow = view.frame.width / totalCellWidth
+        let numberOfRows = Double(numberOfCellsInRow) * Double(items.count)
+        let collectionViewHeight: CGFloat = numberOfRows * cellHeight
+        
+        collectionView.snp.updateConstraints {
+            $0.height.equalTo(collectionViewHeight)
+        }
+    }
+    
+    func updateCollectionViewHeight(collectionView: UICollectionView, items: [String]) {
+        let cellHeight: CGFloat = 50 // 셀의 높이
+        var totalCellWidth: CGFloat = 0
+        for item in items {
+            let label = UILabel()
+            label.text = item
+            label.sizeToFit()
+      
+            totalCellWidth += label.frame.width + 10 // 10은 셀 간 여백입니다.
+        }
+
+        let numberOfCellsInRow = view.frame.width / totalCellWidth // 한 줄에 표시될 셀의 갯수
+        
+        let numberOfRows = ceil(CGFloat(items.count) / numberOfCellsInRow) // 필요한 줄의 갯수
+        let collectionViewHeight: CGFloat = numberOfRows * cellHeight
+        collectionView.snp.updateConstraints {
+            $0.height.equalTo(collectionViewHeight)
+        }
+    }
+    
 }

@@ -67,6 +67,7 @@ final class LikeViewController: BaseViewController {
     private func configBarItem() {
         let notiButton = UIBarButtonItem(image: UIImage(systemName: "bell.fill"), style: .done, target: self, action: #selector(tappedNotiButton))
         notiButton.tintColor = .darkGray
+        notiButton.accessibilityLabel = "알림"
         navigationItem.rightBarButtonItem = notiButton
     }
     

@@ -22,14 +22,14 @@ final class SignUpPictureViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    private let yoloManager: YoloManager = YoloManager()
-    private let pictureManager: PictureManager = PictureManager()
+    
+    private let pictureManager: PictureService = PictureService()
     private var isDetectedImage: Bool? = false
     private var objectDetectionRequest: VNCoreMLRequest?
     private var userImages: [UIImage] = []
     private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .lightGray
+        view.trackTintColor = .picoGray
         view.progressTintColor = .picoBlue
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
@@ -53,13 +53,13 @@ final class SignUpPictureViewController: UIViewController {
         label.lineBreakMode = .byWordWrapping
         label.textColor = .picoFontGray
         label.font = UIFont.picoDescriptionFont
+        label.accessibilityHint = "라벨 밑에 사진을 고르는 버튼이 있습니다."
         return label
     }()
     
-    private lazy var nextButton: UIButton = {
+    private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
-        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         button.isEnabled = false
         button.backgroundColor = .picoGray
         return button
@@ -87,18 +87,22 @@ final class SignUpPictureViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.configBackgroundColor(color: .systemBackground)        
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
+        configButton()
         configCollectionView()
-        yoloManager.loadYOLOv3Model()
         pictureManager.requestPhotoLibraryAccess(in: self)
     }
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 6)
     }
     // MARK: - Config
+    private func configButton() {
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+    }
+    
     private func configCollectionView() {
         collectionView.configBackgroundColor()
         collectionView.dataSource = self
@@ -106,53 +110,55 @@ final class SignUpPictureViewController: UIViewController {
     }
     
     private func configNextButton(isEnabled: Bool) {
-        if isEnabled {
-            nextButton.isEnabled = isEnabled
-            nextButton.backgroundColor = .picoBlue
-        } else {
-            nextButton.isEnabled = isEnabled
-            nextButton.backgroundColor = .picoGray
-        }
+        nextButton.isEnabled = isEnabled
+        nextButton.backgroundColor = isEnabled ? .picoBlue : .picoGray
     }
     
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
-        
-        let detectionGroup = DispatchGroup()
-        
-        SignLoadingManager.showLoading(text: "사진을 평가중이에요!")
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            var allImagesDetected = true
+        Loading.showLoading(title: "AI가 얼굴인식 중이에요!\n잠시만 기다려주세요! (최대 1분 소요)")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+            let yoloManager: YoloService = YoloService()
+            yoloManager.loadYOLOv3Model()
             
-            for image in self.userImages {
-                detectionGroup.enter()
-                
-                self.yoloManager.detectPeople(image: image) {
-                    detectionGroup.leave()
-                }
-                
-                if !(self.yoloManager.isDetectedImage ?? true) {
-                    allImagesDetected = false
-                }
-            }
-            
-            detectionGroup.notify(queue: .main) { [weak self] in
+            let detectionGroup = DispatchGroup()
+            DispatchQueue.global().async { [weak self] in
                 guard let self = self else { return }
-                SignLoadingManager.hideLoading()
                 
-                if allImagesDetected {
-                    self.showAlert(message: "이미지가 등록되었습니다.") {
-                        self.viewModel.imageArray = self.userImages
-                        
-                        let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
-                        self.navigationController?.pushViewController(viewController, animated: true)
+                var allImagesDetected = true
+                
+                for image in userImages {
+                    detectionGroup.enter()
+                    
+                    yoloManager.detectPeople(image: image) {
+                        detectionGroup.leave()
                     }
-                } else {
-                    self.showAlert(message: "이미지 등록에 실패하셨습니다.") {
-                        self.userImages.removeAll()
-                        self.collectionView.reloadData()
-                        self.configNextButton(isEnabled: false)
+                    
+                    if !(yoloManager.isDetectedImage ?? true) {
+                        allImagesDetected = false
+                    }
+                }
+                
+                detectionGroup.notify(queue: .main) { [weak self] in
+                    guard let self = self else { return }
+                    
+                    Loading.hideLoading()
+                    if allImagesDetected {
+                        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                            guard let self = self else { return }
+                            
+                            viewModel.imageArray = self.userImages
+                            let viewController = SignUpTermsOfServiceViewController(viewModel: self.viewModel)
+                            navigationController?.pushViewController(viewController, animated: true)
+                        })
+                    } else {
+                        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진 등록에 실패하였습니다.\n얼굴이 잘 나온 사진을 등록해 주세요.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                            guard let self = self else { return }
+                            
+                            userImages.removeAll()
+                            collectionView.reloadData()
+                            configNextButton(isEnabled: false)
+                        })
                     }
                 }
             }
@@ -180,17 +186,19 @@ extension SignUpPictureViewController: PHPickerViewControllerDelegate, UIImagePi
         var selectedImages: [UIImage] = []
         
         for result in results where result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-            result.itemProvider.loadObject(ofClass: UIImage.self) { (image, _ ) in
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, _ ) in
+                guard let self = self else { return }
                 
                 guard let image = image as? UIImage else { return }
                 selectedImages.append(image)
                 
                 guard selectedImages.count == results.count else { return }
-                self.userImages = selectedImages
+                userImages = selectedImages
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    self.collectionView.reloadData()
-                    self.configNextButton(isEnabled: true)
+                    
+                    collectionView.reloadData()
+                    configNextButton(isEnabled: true)
                 }
             }
         }

@@ -12,14 +12,15 @@ import RxCocoa
 
 final class MailReceiveViewController: UIViewController {
     
-    private let viewModel = MailReceiveModel()
+    private let viewModel = MailReceiveViewModel()
     private let disposeBag = DisposeBag()
+    private var mailUser: Mail.MailInfo = Mail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
     
-    private var sendMailInfo: Mail.MailInfo?
+    weak var mailReceiveDelegate: MailReceiveDelegate?
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = .systemBackground
+        navigationBar.barTintColor = .secondarySystemBackground
         return navigationBar
     }()
     
@@ -61,7 +62,6 @@ final class MailReceiveViewController: UIViewController {
     private let userInfoStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.distribution = .fillEqually
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
         return stackView
     }()
@@ -81,7 +81,7 @@ final class MailReceiveViewController: UIViewController {
         return label
     }()
     
-    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: .infj, scale: .small)
+    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: nil, scale: .small)
     
     private let sendDateLabel: UILabel = {
         let label = UILabel()
@@ -97,8 +97,7 @@ final class MailReceiveViewController: UIViewController {
         stackView.alignment = .fill
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 20
-        stackView.layer.borderColor = UIColor.picoBlue.cgColor
-        stackView.layer.borderWidth = 2
+        stackView.backgroundColor = .picoLightGray
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 20, bottom: 15, trailing: 20)
         return stackView
@@ -122,6 +121,10 @@ final class MailReceiveViewController: UIViewController {
         makeConstraints()
         configNavigationBarItem()
         configSenderStack()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         tappedNavigationButton()
     }
     
@@ -148,9 +151,8 @@ final class MailReceiveViewController: UIViewController {
         }
         
         mbtiLabelView.snp.makeConstraints { make in
-            make.centerY.equalTo(userNameLabel)
-            make.height.equalTo(mbtiLabelView.frame.size.height)
             make.width.equalTo(mbtiLabelView.frame.size.width)
+            make.height.equalTo(mbtiLabelView.frame.size.height)
         }
         
         userStack.snp.makeConstraints { make in
@@ -175,46 +177,61 @@ final class MailReceiveViewController: UIViewController {
         rightBarButton.rx.tap
             .bind { [weak self] in
                 guard let self = self else { return }
+                
                 let mailSendView = MailSendViewController()
-                if let mailUser = self.sendMailInfo {
-                    mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId)
-                }
+                mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId, atMessageView: true)
                 mailSendView.modalPresentationStyle = .formSheet
                 mailSendView.modalTransitionStyle = .flipHorizontal
-                self.present(mailSendView, animated: true, completion: nil)
+                present(mailSendView, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
     }
-    
     // MARK: - MailReceive + config
     func configData(mailSender: Mail.MailInfo) {
-        sendMailInfo = mailSender
+        mailUser = mailSender
         navItem.title = mailSender.mailType.typeString
         
+        var userId: String
         if mailSender.mailType == .receive {
-            viewModel.getUser(userId: mailSender.sendedUserId) {
-                if let user = self.viewModel.user {
-                    self.configViews(user: user)
-                }
-            }
+            userId = mailSender.sendedUserId
         } else {
-            viewModel.getUser(userId: mailSender.receivedUserId) {
-                if let user = self.viewModel.user {
-                    self.configViews(user: user)
+            userId = mailSender.receivedUserId
+        }
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
+                    guard let url = URL(string: imageURL) else { return }
+                    userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+                    userImageView.kf.setImage(with: url)
+                    
+                    userNameLabel.text = userData.nickName
+                    mbtiLabelView.isHidden = false
+                    mbtiLabelView.setMbti(mbti: userData.mbti)
+                    if #available(iOS 16.0, *) {
+                        rightBarButton.isHidden = false
+                    }
+                } else {
+                    userImageView.image = UIImage(named: "AppIcon_gray")
+                    
+                    userNameLabel.text = "탈퇴된 회원"
+                    mbtiLabelView.isHidden = true
+                    mbtiLabelView.setMbti(mbti: nil)
+                    
+                    if #available(iOS 16.0, *) {
+                        rightBarButton.isHidden = true
+                    }
                 }
+            case .failure(let err):
+                print(err)
             }
         }
+        userNameLabel.sizeToFit()
         self.sendDateLabel.text = mailSender.sendedDate.toStringTime()
         self.messageView.text = mailSender.message
-    }
-    
-    private func configViews(user: User) {
-        guard let url = URL(string: user.imageURLs[0]) else { return }
-        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-        userImageView.kf.setImage(with: url)
-        userNameLabel.text = user.nickName
-        userNameLabel.sizeToFit()
-        mbtiLabelView.setMbti(mbti: user.mbti)
     }
     
     private func configNavigationBarItem() {
@@ -236,23 +253,25 @@ final class MailReceiveViewController: UIViewController {
     
     @objc func tappedSenderStack() {
         dismiss(animated: true)
-        let viewController = UserDetailViewController()
-        if let user = sendMailInfo {
-            if user.mailType == .receive {
-                viewModel.getUser(userId: user.sendedUserId) {
-                    if let user = self.viewModel.user {
-                        viewController.viewModel = UserDetailViewModel(user: user)
-                    }
+        
+        var userId: String
+        if self.mailUser.mailType == .receive {
+            userId = self.mailUser.sendedUserId
+        } else {
+            userId = self.mailUser.receivedUserId
+        }
+        
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    mailReceiveDelegate?.pushUserDetailViewController(user: userData)
                 }
-            } else {
-                viewModel.getUser(userId: user.receivedUserId) {
-                    if let user = self.viewModel.user {
-                        viewController.viewModel = UserDetailViewModel(user: user)
-                    }
-                }
+            case .failure(let err):
+                print(err)
             }
         }
-        self.navigationController?.pushViewController(viewController, animated: true)
-        print("tap senderStack")
     }
 }

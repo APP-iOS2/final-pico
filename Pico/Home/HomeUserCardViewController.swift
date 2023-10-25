@@ -14,16 +14,20 @@ final class HomeUserCardViewController: UIViewController {
     
     weak var homeViewController: HomeViewController?
     private let user: User
-    private var distance = CLLocationDistance()
     private let disposeBag = DisposeBag()
+    private let viewModel = HomeUserCardViewModel()
+    private let storeViewModel = StoreViewModel()
+    private let currentUser = UserDefaultsManager.shared.getUserData()
+    private var compatibilityView: CompatibilityView
     private var panGesture = UIPanGestureRecognizer()
     private var initialCenter = CGPoint()
-    private let viewModel = HomeUserCardViewModel()
-    private let currentUser = UserDefaultsManager.shared.getUserData()
+    private var distance = CLLocationDistance()
     private var distanceLabel = UILabel()
+    private var pageCount = 0
     
     init(user: User) {
         self.user = user
+        compatibilityView = CompatibilityView(currentUser: currentUser, cardUser: user)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -39,7 +43,7 @@ final class HomeUserCardViewController: UIViewController {
         return scrollView
     }()
     
-    private lazy var pageControl: UIPageControl = {
+    private let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.currentPageIndicatorTintColor = UIColor.white
         pageControl.pageIndicatorTintColor = UIColor.gray
@@ -49,19 +53,17 @@ final class HomeUserCardViewController: UIViewController {
         }
         pageControl.layer.cornerRadius = 10
         pageControl.isUserInteractionEnabled = false
-        pageControl.addTarget(self, action: #selector(pageControlValueChanged(_:)), for: .valueChanged)
         return pageControl
     }()
     
-    private lazy var pageRightButton: UIButton = {
+    private let pageRightButton = UIButton()
+    private let pageLeftButton = UIButton()
+    private let infoButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
+        let image = UIImage(systemName: "info.circle.fill", withConfiguration: imageConfig)
         let button = UIButton()
-        button.addTarget(self, action: #selector(tappedPageRight), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var pageLeftButton: UIButton = {
-        let button = UIButton()
-        button.addTarget(self, action: #selector(tappedPageLeft), for: .touchUpInside)
+        button.setImage(image, for: .normal)
+        button.tintColor = .picoAlphaWhite
         return button
     }()
     
@@ -71,27 +73,76 @@ final class HomeUserCardViewController: UIViewController {
         return label
     }()
     
-    private lazy var infoButton: UIButton = {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .regular)
-        let image = UIImage(systemName: "info.circle.fill", withConfiguration: imageConfig)
+    private let pickBackButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
+        let image = UIImage(systemName: "arrow.uturn.backward", withConfiguration: imageConfig)
         let button = UIButton()
         button.setImage(image, for: .normal)
-        button.tintColor = .picoAlphaWhite
-        button.addTarget(self, action: #selector(tappedInfoButton), for: .touchUpInside)
+        button.tintColor = .white
+        button.backgroundColor = .lightGray.withAlphaComponent(0.5)
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.accessibilityLabel = "pickBackButton"
+        button.accessibilityHint = "This is pickBackButton"
         return button
     }()
     
-    private lazy var pickBackButton: UIButton = createHomeButton(iconName: "arrow.uturn.backward", backgroundColor: .lightGray.withAlphaComponent(0.5))
-    private lazy var disLikeButton: UIButton = createHomeButton(iconName: "hand.thumbsdown.fill", backgroundColor: .picoBlue.withAlphaComponent(0.8))
-    private lazy var likeButton: UIButton = createHomeButton(iconName: "hand.thumbsup.fill", backgroundColor: .picoBlue.withAlphaComponent(0.8))
+    private let disLikeButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
+        let image = UIImage(systemName: "hand.thumbsdown.fill", withConfiguration: imageConfig)
+        let button = UIButton()
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .picoBlue.withAlphaComponent(0.8)
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.accessibilityLabel = "disLikeButton"
+        button.accessibilityHint = "This is disLikeButton"
+        return button
+    }()
     
-    private lazy var infoHStack: UIStackView = createHomeStack(axis: .horizontal, alignment: .top, spacing: 0)
-    private lazy var infoVStack: UIStackView = createHomeStack(axis: .vertical, alignment: nil, spacing: 5)
+    private let likeButton: UIButton = {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
+        let image = UIImage(systemName: "hand.thumbsup.fill", withConfiguration: imageConfig)
+        let button = UIButton()
+        button.setImage(image, for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .picoBlue.withAlphaComponent(0.8)
+        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
+        button.layer.cornerRadius = 0.5 * button.bounds.size.width
+        button.accessibilityLabel = "likeButton"
+        button.accessibilityHint = "This is likeButton"
+        return button
+    }()
     
-    private lazy var infoNameAgeLabel: UILabel = createHomeLabel(text: "", font: .picoTitleFont, textColor: .white)
-    private lazy var infoLocationLabel: UILabel = createHomeLabel(text: "", font: .picoSubTitleFont, textColor: .white)
+    private let infoHorizontalStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.alignment = .top
+        return stack
+    }()
     
-    // MARK: - viewDidLoad
+    private let infoVerticalStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 5
+        return stack
+    }()
+    
+    private let infoNameAgeLabel: UILabel = {
+        let label = UILabel()
+        label.font = .picoLargeTitleFont
+        label.textColor = .white
+        return label
+    }()
+    
+    private let infoLocationLabel: UILabel = {
+        let label = UILabel()
+        label.font = .picoSubTitleFont
+        label.textColor = .white
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.delegate = self
@@ -101,17 +152,27 @@ final class HomeUserCardViewController: UIViewController {
         configButtons()
         configLabels()
         configGesture()
+        configButton()
+    }
+    
+    private func configButton() {
+        pageControl.addTarget(self, action: #selector(pageControlValueChanged(_:)), for: .valueChanged)
+        pageRightButton.addTarget(self, action: #selector(tappedPageRight), for: .touchUpInside)
+        pageLeftButton.addTarget(self, action: #selector(tappedPageLeft), for: .touchUpInside)
+        infoButton.addTarget(self, action: #selector(tappedInfoButton), for: .touchUpInside)
+        
     }
     
     private func addSubView() {
-        view.addSubview([scrollView, pageControl, pageRightButton, pageLeftButton, pickBackButton, disLikeButton, likeButton, infoHStack, infoMBTILabel, distanceLabel])
+        view.addSubview([scrollView, pageControl, pageRightButton, pageLeftButton, pickBackButton, disLikeButton, likeButton, infoHorizontalStack, infoMBTILabel, distanceLabel])
         
-        infoHStack.addArrangedSubview(infoVStack)
-        infoHStack.addArrangedSubview(infoButton)
+        infoHorizontalStack.addArrangedSubview(infoVerticalStack)
+        infoHorizontalStack.addArrangedSubview(infoButton)
         
-        infoVStack.addArrangedSubview(infoNameAgeLabel)
-        infoVStack.addArrangedSubview(infoLocationLabel)
+        infoVerticalStack.addArrangedSubview(infoNameAgeLabel)
+        infoVerticalStack.addArrangedSubview(infoLocationLabel)
     }
+    
     private func makeConstraints() {
         let paddingVertical = 25
         let paddingBottom = 30
@@ -162,7 +223,7 @@ final class HomeUserCardViewController: UIViewController {
             make.height.equalTo(buttonFrame)
         }
         
-        infoHStack.snp.makeConstraints { make in
+        infoHorizontalStack.snp.makeConstraints { make in
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(paddingVertical)
             make.trailing.equalTo(view.safeAreaLayoutGuide).offset(-paddingVertical)
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-100)
@@ -170,7 +231,7 @@ final class HomeUserCardViewController: UIViewController {
         }
         
         infoButton.snp.makeConstraints { make in
-            make.trailing.equalTo(infoHStack.snp.trailing)
+            make.trailing.equalTo(infoHorizontalStack.snp.trailing)
             make.width.height.equalTo(25)
         }
         
@@ -182,12 +243,11 @@ final class HomeUserCardViewController: UIViewController {
         }
         
         distanceLabel.snp.makeConstraints { make in
-            make.top.equalTo(infoNameAgeLabel.snp.top)
-            make.trailing.equalTo(infoNameAgeLabel.snp.trailing).offset(-15)
-            make.bottom.equalTo(infoNameAgeLabel.snp.bottom)
+            make.top.equalTo(infoNameAgeLabel.snp.bottom)
+            make.trailing.equalTo(infoButton)
+            make.bottom.equalTo(infoLocationLabel.snp.bottom).offset(10)
             make.width.equalTo(100)
         }
-        
     }
     
     private func configButtons() {
@@ -197,11 +257,15 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func configLabels() {
-        infoNameAgeLabel.text = "\(user.nickName) \(user.age)"
+        infoNameAgeLabel.text = "\(user.nickName), \(user.age)"
         infoLocationLabel.text = user.location.address
         
         distance = calculateDistance(user: user)
-        distanceLabel.text = "\(String(format: "%.2f", distance / 1000))km"
+        if distance < 1000.0 {
+            distanceLabel.text = "가까워요!"
+        } else {
+            distanceLabel.text = "\(String(format: "%.2f", distance / 1000))km"
+        }
         distanceLabel.textColor = .white
         distanceLabel.textAlignment = .right
         distanceLabel.font = .picoSubTitleFont
@@ -211,37 +275,7 @@ final class HomeUserCardViewController: UIViewController {
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(touchGesture(_:)))
         self.view.addGestureRecognizer(panGesture)
     }
-    
-    private func createHomeStack(axis: NSLayoutConstraint.Axis, alignment: UIStackView.Alignment?, spacing: CGFloat) -> UIStackView {
-        let stack = UIStackView()
-        stack.axis = axis
-        if let alignment = alignment {
-            stack.alignment = alignment
-        }
-        stack.spacing = spacing
-        return stack
-    }
-    
-    private func createHomeLabel(text: String, font: UIFont, textColor: UIColor) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        label.textColor = textColor
-        return label
-    }
-    
-    private func createHomeButton(iconName: String, backgroundColor: UIColor) -> UIButton {
-        let imageConfig = UIImage.SymbolConfiguration(pointSize: 35, weight: .regular)
-        let image = UIImage(systemName: iconName, withConfiguration: imageConfig)
-        let button = UIButton()
-        button.setImage(image, for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = backgroundColor
-        button.frame = CGRect(x: 0, y: 0, width: 65, height: 65)
-        button.layer.cornerRadius = 0.5 * button.bounds.size.width
-        return button
-    }
-    
+        
     private func loadUserImages() {
         for (index, url) in user.imageURLs.enumerated() {
             let imageView = UIImageView()
@@ -249,8 +283,6 @@ final class HomeUserCardViewController: UIViewController {
             imageView.contentMode = .scaleAspectFill
             imageView.clipsToBounds = true
             imageView.layer.cornerRadius = 10
-            imageView.layer.borderWidth = 1
-            imageView.layer.borderColor = UIColor.picoGray.cgColor
             scrollView.addSubview(imageView)
             
             imageView.snp.makeConstraints { make in
@@ -263,6 +295,13 @@ final class HomeUserCardViewController: UIViewController {
             imageView.kf.setImage(with: url)
             if index == user.imageURLs.count - 1 {
                 scrollView.contentSize = CGSize(width: view.frame.width * CGFloat(user.imageURLs.count), height: scrollView.frame.height)
+            }
+            
+            if index == 1 {
+                imageView.addSubview(compatibilityView)
+                compatibilityView.snp.makeConstraints { make in
+                    make.edges.equalTo(imageView)
+                }
             }
         }
     }
@@ -292,19 +331,25 @@ final class HomeUserCardViewController: UIViewController {
                 }
             }
         case .ended:
-            if translation.x > 100 {
+            if translation.x > 150 {
                 HomeUserCardViewModel.cardCounting += 1
                 if HomeUserCardViewModel.cardCounting == 3 {
                     HomeUserCardViewModel.cardCounting = -1
                     homeViewController?.addUserCards()
                 }
+
+                NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
+                guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+                let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+                FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+
                 UIView.animate(withDuration: 0.5) { [self] in
                     viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                     homeViewController?.removedView.append(view)
                     view.center.x += 1000
                     homeViewController?.likeLabel.alpha = 0
                 }
-            } else if translation.x < -100 {
+            } else if translation.x < -150 {
                 HomeUserCardViewModel.cardCounting += 1
                 if HomeUserCardViewModel.cardCounting == 3 {
                     HomeUserCardViewModel.cardCounting = -1
@@ -338,6 +383,12 @@ final class HomeUserCardViewController: UIViewController {
             HomeUserCardViewModel.cardCounting = -1
             homeViewController?.addUserCards()
         }
+
+        NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
+        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+        let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+
         UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
         } completion: { _ in
@@ -362,16 +413,34 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     @objc func tappedPickBackButton() {
-        HomeUserCardViewModel.cardCounting -= 1
         if let lastView = homeViewController?.removedView.last {
-            self.viewModel.deleteLikeData()
-            UIView.animate(withDuration: 0.3) {
-                lastView.center = self.view.center
-                lastView.transform = CGAffineTransform(rotationAngle: 0)
-            }
-            homeViewController?.removedView.removeLast()
+            showCustomAlert(
+                alertType: .canCancel,
+                titleText: "이전 평가로 돌아가시겠습니까?",
+                messageText: "10 츄를 소모합니다. (현재 츄: \(UserDefaultsManager.shared.getChuCount()))",
+                cancelButtonText: "취소",
+                confirmButtonText: "확인",
+                comfrimAction: { [weak self] in
+                    guard let self = self else { return }
+                    let remainingChu = UserDefaultsManager.shared.getChuCount()
+                    if remainingChu >= 10 {
+                        viewModel.purchaseChu(currentChu: remainingChu, purchaseChu: 10)
+                        self.viewModel.deleteLikeData()
+                        UIView.animate(withDuration: 0.3) {
+                            lastView.center = self.view.center
+                            lastView.transform = CGAffineTransform(rotationAngle: 0)
+                        }
+                        self.homeViewController?.removedView.removeLast()
+                    } else {
+                        showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "취소", confirmButtonText: "스토어로 이동", comfrimAction: {
+                            let storeViewController = StoreViewController(viewModel: StoreViewModel())
+                            self.navigationController?.pushViewController(storeViewController, animated: true)
+                        })
+                    }
+                }
+            )
         } else {
-            showAlert(message: "첫번째 추천입니다.", yesAction: nil)
+            showCustomAlert(alertType: .onlyConfirm, titleText: "첫번째 추천입니다.", messageText: "", confirmButtonText: "확인")
         }
     }
     
@@ -393,7 +462,7 @@ final class HomeUserCardViewController: UIViewController {
     
     @objc func tappedInfoButton() {
         let viewController = UserDetailViewController()
-        viewController.viewModel = UserDetailViewModel(user: user)
+        viewController.viewModel = UserDetailViewModel(user: user, isHome: true)
         navigationController?.pushViewController(viewController, animated: true)
     }
     

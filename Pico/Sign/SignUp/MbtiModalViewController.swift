@@ -41,18 +41,16 @@ final class MbtiModalViewController: UIViewController {
     private lazy var leftUiView: UIView = {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
         let view = UIView()
-        view.addGestureRecognizer(tapGesture)
         view.backgroundColor = .systemGray6
         view.layer.cornerRadius = 8
         view.addShadow(offset: CGSize(width: 4, height: 4), opacity: 0.2, radius: 5)
         view.tag = 1
+        view.addGestureRecognizer(tapGesture)
         return view
     }()
     
-    private lazy var rightUiView: UIView = {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
+    private let rightUiView: UIView = {
         let view = UIView()
-        view.addGestureRecognizer(tapGesture)
         view.backgroundColor = .systemGray6
         view.layer.cornerRadius = 8
         view.addShadow(offset: CGSize(width: 4, height: 4), opacity: 0.2, radius: 3)
@@ -95,10 +93,11 @@ final class MbtiModalViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.configBackgroundColor(color: .systemBackground)        
         addSubViews()
         makeConstraints()
         configMbtiButton()
+        configButton()
     }
 }
 // MARK: - Config
@@ -110,6 +109,10 @@ extension MbtiModalViewController {
         rightSubTitleLabel.text = secondSubTitleText
     }
     
+    private func configButton() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
+        rightUiView.addGestureRecognizer(tapGesture)
+    }
     // MARK: - @objc
     @objc private func tappedUiView(_ sender: UITapGestureRecognizer) {
         guard let leftTitle = leftTitleLabel.text else { return }

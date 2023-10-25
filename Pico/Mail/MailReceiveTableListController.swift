@@ -10,22 +10,42 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+protocol MailReceiveDelegate: AnyObject {
+    func pushUserDetailViewController(user: User)
+}
+
 final class MailReceiveTableListController: BaseViewController {
     
-    private let viewModel = MailReceiveModel()
+    private let viewModel = MailReceiveViewModel()
     private let disposeBag = DisposeBag()
-    
     private let emptyView: EmptyViewController = EmptyViewController(type: .message)
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkReceiveEmptyPublisher = PublishSubject<Void>()
+    private let deleteReceivePublisher = PublishSubject<String>()
+    private let footerView = FooterView()
+    private var isRefresh = false
     
     private let mailListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(cell: MailListTableViewCell.self)
+        tableView.showsVerticalScrollIndicator = false
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         return tableView
     }()
+    
+    var mailViewController: MailViewController
+    
+    init(viewController: MailViewController) {
+        self.mailViewController = viewController
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     // MARK: - MailView +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,12 +57,13 @@ final class MailReceiveTableListController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        mailListTableView.reloadData()
+        refreshPublisher.onNext(())
         checkReceiveEmptyPublisher.onNext(())
+        mailListTableView.reloadData()
     }
     // MARK: - config
     private func configTableView() {
-        mailListTableView.rowHeight = 80
+        footerView.frame = CGRect(x: 0, y: 0, width: mailListTableView.bounds.size.width, height: 80)
         mailListTableView.dataSource = self
         mailListTableView.delegate = self
     }
@@ -51,14 +72,16 @@ final class MailReceiveTableListController: BaseViewController {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
         mailListTableView.refreshControl = refreshControl
+        
     }
-    
     // MARK: - objc
     @objc private func refreshTable(refresh: UIRefreshControl) {
+        isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             refreshPublisher.onNext(())
             refresh.endRefreshing()
+            isRefresh = false
         }
     }
 }
@@ -70,8 +93,8 @@ extension MailReceiveTableListController: UITableViewDataSource, UITableViewDele
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MailListTableViewCell.self)
-        let item = viewModel.receiveList[indexPath.row]
-        cell.getData(senderUser: item, type: .receive)
+        guard let item = viewModel.receiveList[safe: indexPath.row] else { return UITableViewCell() }
+        cell.config(senderUser: item, type: .receive)
         cell.selectionStyle = .none
         return cell
     }
@@ -79,21 +102,32 @@ extension MailReceiveTableListController: UITableViewDataSource, UITableViewDele
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = viewModel.receiveList[indexPath.row]
         viewModel.updateNewData(data: item)
-        configTableviewSelect(item: item)
-        
-    }
-    
-    private func configTableviewSelect(item: Mail.MailInfo) {
         let mailReceiveView = MailReceiveViewController()
         mailReceiveView.modalPresentationStyle = .formSheet
+        mailReceiveView.mailReceiveDelegate = self
         mailReceiveView.configData(mailSender: item)
+        
         self.present(mailReceiveView, animated: true, completion: nil)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard let item = viewModel.receiveList[safe: indexPath.row] else { return }
+        self.deleteReceivePublisher.onNext(item.id)
     }
 }
 // MARK: - bind
 extension MailReceiveTableListController {
     private func bind() {
-        let input = MailReceiveModel.Input(listLoad: loadDataPublsher,
+        let input = MailReceiveViewModel.Input(listLoad: loadDataPublsher,
+                                           deleteUser: deleteReceivePublisher,
                                            refresh: refreshPublisher,
                                            isReceiveEmptyChecked: checkReceiveEmptyPublisher)
         let output = viewModel.transform(input: input)
@@ -111,8 +145,7 @@ extension MailReceiveTableListController {
                 } else {
                     viewController.view.addSubview(viewController.mailListTableView)
                     viewController.mailListTableView.snp.makeConstraints { make in
-                        make.top.leading.equalToSuperview().offset(10)
-                        make.trailing.bottom.equalToSuperview().offset(-10)
+                        make.edges.equalToSuperview()
                     }
                 }
             })
@@ -133,9 +166,22 @@ extension MailReceiveTableListController: UIScrollViewDelegate {
         let contentOffsetY = scrollView.contentOffset.y
         let tableViewContentSizeY = mailListTableView.contentSize.height
         
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
-            mailListTableView.reloadData()
+        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
+            mailListTableView.tableFooterView = footerView
             loadDataPublsher.onNext(())
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.mailListTableView.reloadData()
+                self.mailListTableView.tableFooterView = nil
+            }
         }
+    }
+}
+// MARK: - GoDetailView
+extension MailReceiveTableListController: MailReceiveDelegate {
+    func pushUserDetailViewController(user: User) {
+        let viewController = UserDetailViewController()
+        viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
+        self.mailViewController.navigationController?.pushViewController(viewController, animated: true)
     }
 }

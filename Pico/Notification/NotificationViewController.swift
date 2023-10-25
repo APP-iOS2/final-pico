@@ -30,6 +30,7 @@ final class NotificationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tabBarController?.tabBar.isHidden = true
         configViewController()
         configTableView()
         configRefresh()
@@ -41,6 +42,7 @@ final class NotificationViewController: UIViewController {
         view.configBackgroundColor()
         configNavigationBackButton()
         navigationItem.title = "알림"
+        tabBarController?.tabBar.isHidden = true
     }
     
     private func configTableView() {
@@ -79,7 +81,7 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: NotificationTableViewCell.self)
-        let item = viewModel.notifications[indexPath.row]
+        guard let item = viewModel.notifications[safe: indexPath.row] else { return UITableViewCell() }
         cell.configData(notitype: item.notiType, imageUrl: item.imageUrl, nickName: item.name, age: item.age, mbti: item.mbti, date: item.createDate)
         return cell
     }
@@ -92,7 +94,7 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
                 switch result {
                 case .success(let data):
                     guard let data = data else { return }
-                    viewController.viewModel = UserDetailViewModel(user: data)
+                    viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
                     self.navigationController?.pushViewController(viewController, animated: true)
                 case .failure(let error):
                     print(error)
@@ -128,8 +130,7 @@ extension NotificationViewController {
                 } else {
                     viewController.view.addSubview(viewController.tableView)
                     viewController.tableView.snp.makeConstraints { make in
-                        make.top.leading.equalToSuperview().offset(10)
-                        make.trailing.bottom.equalToSuperview().offset(-10)
+                        make.edges.equalToSuperview()
                     }
                 }
             })

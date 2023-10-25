@@ -25,7 +25,7 @@ final class SignUpGenderViewController: UIViewController {
     
     private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
-        view.trackTintColor = .lightGray
+        view.trackTintColor = .picoGray
         view.progressTintColor = .picoBlue
         view.layer.cornerRadius = SignView.progressViewCornerRadius
         view.layer.masksToBounds = true
@@ -65,21 +65,21 @@ final class SignUpGenderViewController: UIViewController {
     private lazy var girlButton: UIButton = configGenderButtons(title: "여자")
     private lazy var otherButton: UIButton = configGenderButtons(title: "기타")
     
-    private lazy var nextButton: UIButton = {
+    private let nextButton: UIButton = {
         let button = CommonButton(type: .custom)
         button.setTitle("다음", for: .normal)
         button.backgroundColor = .picoGray
-        button.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         return button
     }()
     
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor()
+        view.configBackgroundColor(color: .systemBackground)        
         configNavigationBackButton()
         addSubViews()
         makeConstraints()
+        configButton()
     }
     override func viewDidAppear(_ animated: Bool) {
         viewModel.animateProgressBar(progressView: progressView, endPoint: 3)
@@ -90,6 +90,10 @@ extension SignUpGenderViewController {
     private func configNextButton() {
         isTappedGenderButton = true
         nextButton.backgroundColor = .picoBlue
+    }
+    
+    private func configButton() {
+        nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
     }
     
     private func configGenderButtons(title: String) -> UIButton {

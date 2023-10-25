@@ -18,6 +18,9 @@ enum Collections {
     case payment
     case tokens
     case unsubscribe
+    case report
+    case block
+    case adminReport
     
     var name: String {
         switch self {
@@ -35,6 +38,12 @@ enum Collections {
             return "tokens"
         case .unsubscribe:
             return "unsubscribe"
+        case .report:
+            return "Report"
+        case .block:
+            return "Block"
+        case .adminReport:
+            return "reports"
         }
     }
 }
@@ -62,7 +71,7 @@ final class FirestoreService {
             do {
                 try self.dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
                 completion(.success(true))
-
+                
                 print("Success to save new document at \(collectionId.name) \(documentId)")
             } catch {
                 print("Error to save new document at \(collectionId.name) \(documentId) \(error)")
@@ -198,7 +207,7 @@ final class FirestoreService {
             }
         }
     }
-
+    
     func updateDocument<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<T, Error>) -> Void) {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
@@ -309,7 +318,7 @@ final class FirestoreService {
             return Disposables.create()
         }
     }
-
+    
     func loadDocumentRx<T: Codable>(collectionId: Collections, documentId: String, dataType: T.Type) -> Observable<T?> {
         return Observable.create { emitter in
             self.loadDocument(collectionId: collectionId, documentId: documentId, dataType: dataType) { result in
