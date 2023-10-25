@@ -61,12 +61,12 @@ gitGraph
 ## 👨‍👩‍👦‍👦 참여자
 |최하늘|김민기|방유빈|신희권|
 |:----:|:----:|:-----:|:----:| 
-|<img src = "https://avatars.githubusercontent.com/u/74815957?v=4">|<img src = "https://avatars.githubusercontent.com/u/79855248?v=4">|<img src = "https://avatars.githubusercontent.com/u/58802345?v=4">|<img src = "https://avatars.githubusercontent.com/u/55128158?v=4">|
+|<img src = "https://avatars.githubusercontent.com/u/74815957?v=4" width="300" height="150">|<img src = "https://avatars.githubusercontent.com/u/79855248?v=4" width="300" height="150">|<img src = "https://avatars.githubusercontent.com/u/58802345?v=4" width="300" height="150">|<img src = "https://avatars.githubusercontent.com/u/55128158?v=4" width="300" height="150">|
 |[최하늘 깃허브](https://github.com/HANLeeeee)|[김민기 깃허브](https://github.com/minki-kim-git)|[방유빈 깃허브](https://github.com/bangtori)|[신희권 깃허브](https://github.com/hhh131)|  
 
 |양성혜|오영석|이제현|임대진|
 |:----:|:----:|:-----:|:----:|
-|<img src = "https://avatars.githubusercontent.com/u/87599027?v=4">|<img src = "https://avatars.githubusercontent.com/u/82360640?v=4">|<img src = "https://avatars.githubusercontent.com/u/104299722?v=4">|<img src = "https://avatars.githubusercontent.com/u/115560272?v=4">|
+|<img src = "https://avatars.githubusercontent.com/u/87599027?v=4" width="300" height="150">|<img src = "https://avatars.githubusercontent.com/u/82360640?v=4" width="300" height="150">|<img src = "https://avatars.githubusercontent.com/u/104299722?v=4" width="300" height="150">|<img src = "https://avatars.githubusercontent.com/u/115560272?v=4" width="300" height="150">|
 |[양성혜 깃허브](https://github.com/seongzzang)|[오영석 깃허브](https://github.com/Youngs5)|[이제현 깃허브](https://github.com/LJH3904)|[임대진 깃허브](https://github.com/DAEJINLIM)|
 
 ---
