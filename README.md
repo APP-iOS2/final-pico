@@ -70,3 +70,5 @@ gitGraph
 |[양성혜 깃허브](https://github.com/seongzzang)|[오영석 깃허브](https://github.com/Youngs5)|[이제현 깃허브](https://github.com/LJH3904)|[임대진 깃허브](https://github.com/DAEJINLIM)|
 
 ---
+
+| [최하늘 깃허브](https://github.com/HANLeeeee) | [김민기 깃허브](https://github.com/minki-kim-git) | [방유빈 깃허브](https://github.com/bangtori) | [신희권 깃허브](https://github.com/hhh131) | [양성혜 깃허브](https://github.com/seongzzang) | [오영석 깃허브](https://github.com/Youngs5) | [이제현 깃허브](https://github.com/LJH3904) | [임대진 깃허브](https://github.com/DAEJINLIM) |
