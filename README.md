@@ -1,5 +1,5 @@
 # PICO (Pick & Connect)
-![pico](https://github.com/APPSCHOOL3-iOS/final-pico/assets/115560272/37edf834-f1f8-41d9-a375-1176e28dad07)
+![picomain](https://github.com/APPSCHOOL3-iOS/final-pico/assets/79855248/d43edeb9-46bc-4698-883d-3d33b44d544a)
 - 나와 맞는 사람을 Pick 하고 나와 잘 맞는 사람들과 Connect 
 
 ## 앱 소개(ADS)
