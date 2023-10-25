@@ -58,7 +58,7 @@ gitGraph
     commit id: "Deploy"
     
 ```
-## 👨‍👩‍👦‍👦 참여자
+## 참여자
 |최하늘|김민기|방유빈|신희권|
 |:----:|:----:|:-----:|:----:| 
 |<img src = "https://avatars.githubusercontent.com/u/74815957?v=4" width="300" height="150">|<img src = "https://avatars.githubusercontent.com/u/79855248?v=4" width="300" height="150">|<img src = "https://avatars.githubusercontent.com/u/58802345?v=4" width="300" height="150">|<img src = "https://avatars.githubusercontent.com/u/55128158?v=4" width="300" height="150">|
