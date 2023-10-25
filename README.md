@@ -1,4 +1,5 @@
 # PICO
+![pico](https://github.com/APPSCHOOL3-iOS/final-pico/assets/115560272/37edf834-f1f8-41d9-a375-1176e28dad07)
 
 ## 앱 소개(ADS)
 - MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 
