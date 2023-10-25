@@ -6,6 +6,9 @@
 - MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 
 사용자 간 커뮤니케이션을 지원는 APP
 
+## 앱 소개 영상
+https://youtu.be/efr4abi4cTk
+
 ## 기술스택
 <p align="leading">
   <img src="https://img.shields.io/badge/Swift-F05138?style=for-the-badge&logo=Swift&logoColor=white"/>
