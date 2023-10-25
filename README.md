@@ -58,78 +58,15 @@ gitGraph
     commit id: "Deploy"
     
 ```
-## 팀원
+## 👨‍👩‍👦‍👦 참여자
+|최하늘|김민기|방유빈|신희권|
+|:----:|:----:|:-----:|:----:| 
+|<img src = "https://avatars.githubusercontent.com/u/74815957?v=4">|<img src = "https://avatars.githubusercontent.com/u/79855248?v=4">|<img src = "https://avatars.githubusercontent.com/u/58802345?v=4">|<img src = "https://avatars.githubusercontent.com/u/55128158?v=4">|
+|[최하늘 깃허브](https://github.com/HANLeeeee)|[김민기 깃허브](https://github.com/minki-kim-git)|[방유빈 깃허브](https://github.com/bangtori)|[신희권 깃허브](https://github.com/hhh131)|  
 
-<div style="display: flex; overflow-x: auto;">
+|양성혜|오영석|이제현|임대진|
+|:----:|:----:|:-----:|:----:|
+|<img src = "https://avatars.githubusercontent.com/u/87599027?v=4">|<img src = "https://avatars.githubusercontent.com/u/82360640?v=4">|<img src = "https://avatars.githubusercontent.com/u/104299722?v=4">|<img src = "https://avatars.githubusercontent.com/u/115560272?v=4">|
+|[양성혜 깃허브](https://github.com/seongzzang)|[오영석 깃허브](https://github.com/Youngs5)|[이제현 깃허브](https://github.com/LJH3904)|[임대진 깃허브](https://github.com/DAEJINLIM)|
 
-<!-- 최하늘 -->
-  <div style="flex: 0 0 150px; border: 1px solid #ccc; text-align: center;">
-    <h3>최하늘</h3>
-    <div style="border-top: 1px solid #ccc;"></div>
-    <img src="arim_photo.jpg">
-    <div style="border-top: 1px solid #ccc;"></div>
-    <p><a href="https://github.com/HANLeeeee">최하늘 깃허브</a></p>
-  </div>
-  
-<!-- 김민기 -->
-  <div style="flex: 0 0 150px; border: 1px solid #ccc; text-align: center;">
-    <h3>김민기</h3>
-    <div style="border-top: 1px solid #ccc;"></div>
-    <img src="john_photo.jpg">
-    <div style="border-top: 1px solid #ccc;"></div>
-    <p><a href="https://github.com/minki-kim-git">김민기 깃허브</a></p>
-  </div>
-
-<!-- 방유빈 -->
-  <div style="flex: 0 0 150px; border: 1px solid #ccc; text-align: center;">
-    <h3>방유빈</h3>
-    <div style="border-top: 1px solid #ccc;"></div>
-    <img src="jane_photo.jpg">
-    <div style="border-top: 1px solid #ccc;"></div>
-    <p><a href="https://github.com/bangtori">방유빈 깃허브</a></p>
-  </div>
-<!-- 신희권 -->
-  <div style="flex: 0 0 150px; border: 1px solid #ccc; text-align: center;">
-    <h3>신희권</h3>
-    <div style="border-top: 1px solid #ccc;"></div>
-    <img src="jane_photo.jpg">
-    <div style="border-top: 1px solid #ccc;"></div>
-    <p><a href="https://github.com/hhh131">신희권 깃허브</a></p>
-  </div>
-
-  <div style="flex: 0 0 150px; border: 1px solid #ccc; text-align: center;">
-    <h3>양성혜</h3>
-    <div style="border-top: 1px solid #ccc;"></div>
-    <img src="jane_photo.jpg">
-    <div style="border-top: 1px solid #ccc;"></div>
-    <p><a href="https://github.com/seongzzang">양성혜 깃허브</a></p>
-  </div>
-
-<!-- 오영석 -->
-  <div style="flex: 0 0 150px; border: 1px solid #ccc; text-align: center;">
-    <h3>오영석</h3>
-    <div style="border-top: 1px solid #ccc;"></div>
-    <img src="jane_photo.jpg">
-    <div style="border-top: 1px solid #ccc;"></div>
-    <p><a href="https://github.com/Youngs5">오영석 깃허브</a></p>
-  </div>
-
-<!-- 이제현 -->
-  <div style="flex: 0 0 150px; border: 1px solid #ccc; text-align: center;">
-    <h3>이제현</h3>
-    <div style="border-top: 1px solid #ccc;"></div>
-    <img src="jane_photo.jpg">
-    <div style="border-top: 1px solid #ccc;"></div>
-    <p><a href="https://github.com/LJH3904">이제현 깃허브</a></p>
-  </div>
-
-<!-- 임대진 -->
-  <div style="flex: 0 0 150px; border: 1px solid #ccc; text-align: center;">
-    <h3>임대진</h3>
-    <div style="border-top: 1px solid #ccc;"></div>
-    <img src="jane_photo.jpg">
-    <div style="border-top: 1px solid #ccc;"></div>
-    <p><a href="https://github.com/DAEJINLIM">임대진 깃허브</a></p>
-  </div>
-
-</div>
+---
