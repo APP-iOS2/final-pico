@@ -3,7 +3,6 @@
 - 나와 맞는 사람을 Pick 하고 나와 잘 맞는 사람들과 Connect 
 
 ## 앱 소개(ADS)
-- 
 - MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 
 사용자 간 커뮤니케이션을 지원는 APP
 
@@ -13,6 +12,15 @@
     <img src="https://img.shields.io/badge/UIKit-2396F3?style=for-the-badge&logo=uikit&logoColor=white"/>
   <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=Firebase&logoColor=white"/>
 </p>
+
+## 설치 / 실행 방법
+1. 아래 파일은 필수 파일이므로 다음 이메일로 파일을 요청해주세요.  
+(temp@gmail.com)  
+```
+- APIKeys.plist
+- GoogleService-Info.plist
+- YOLOv3.mlmodel
+```
 
 ## Branch Convention
 ```mermaid
