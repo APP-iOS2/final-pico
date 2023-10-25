@@ -20,7 +20,7 @@
 - 협업 도구 : Github, Team Notion
 - 활용한 기술
   - Xcode
-  - RxSwift
+  - RxSwift ,Snap Kit
   - YoLoV3
   - FCM, Naver Cloud SMS API
   - FiresStore, Firebase Storage
