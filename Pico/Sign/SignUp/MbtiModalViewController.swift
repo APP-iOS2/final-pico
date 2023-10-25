@@ -38,12 +38,14 @@ final class MbtiModalViewController: UIViewController {
         return stackView
     }()
     
-    private let leftUiView: UIView = {
+    private lazy var leftUiView: UIView = {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
         let view = UIView()
         view.backgroundColor = .systemGray6
         view.layer.cornerRadius = 8
         view.addShadow(offset: CGSize(width: 4, height: 4), opacity: 0.2, radius: 5)
         view.tag = 1
+        view.addGestureRecognizer(tapGesture)
         return view
     }()
     
@@ -109,7 +111,6 @@ extension MbtiModalViewController {
     
     private func configButton() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedUiView))
-        leftUiView.addGestureRecognizer(tapGesture)
         rightUiView.addGestureRecognizer(tapGesture)
     }
     // MARK: - @objc
