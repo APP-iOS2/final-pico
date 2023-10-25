@@ -22,10 +22,8 @@
   - Xcode
   - RxSwift
   - YoLoV3
-  - FCM, Firebase function
+  - FCM, Naver Cloud SMS API
   - FiresStore, Firebase Storage
-  - Naver Cloud SMS API
-  - CoreData
   
 ## 설치 / 실행 방법
 1. 아래 파일은 필수 파일이므로 다음 이메일로 파일을 요청해주세요.  
