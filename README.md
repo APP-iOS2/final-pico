@@ -3,6 +3,8 @@
 
 - 나와 맞는 사람을 Pick 하고 나와 잘 맞는 사람들과 Connect
 - MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 사용자 간 커뮤니케이션을 지원는 APP
+  
+<br/>
 
 ## 📌 앱 소개 영상
 https://youtu.be/efr4abi4cTk
@@ -23,8 +25,7 @@ https://youtu.be/efr4abi4cTk
 
   
 ## 📌 설치 / 실행 방법
-1. 아래 파일은 필수 파일이므로 다음 이메일로 파일을 요청해주세요.  
-(rlaalsrl1227@gmail.com)  
+1. 아래 파일은 필수 파일이므로 다음 이메일로 파일을 요청해주세요. (rlaalsrl1227@gmail.com)  
 ```
 - GoogleService-Info.plist
 - APIKeys.plist
@@ -38,25 +39,25 @@ https://youtu.be/efr4abi4cTk
 <br/><br/><br/>
 
 
-## 📌 기술스택
+## 📌 개발 도구 및 기술 스택
 <p align="leading">
   <img src="https://img.shields.io/badge/Swift-F05138?style=for-the-badge&logo=Swift&logoColor=white"/>
     <img src="https://img.shields.io/badge/UIKit-2396F3?style=for-the-badge&logo=uikit&logoColor=white"/>
   <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=Firebase&logoColor=white"/>
 </p>
 
-
-## 📌 개발 도구 및 활용 기술
 - 개발 언어 : Swift
-- 개발 환경 : Swift5.9 15.0, iPhone SE ~ 15 Pro 호환
+- 개발 환경 : Xcode 15.0.1
+- 실행 환경 : iOS 15.0 이상
 - 디자인 툴 : Figma
 - 협업 도구 : Github, Team Notion
 - 활용한 기술
   - Xcode
-  - RxSwift ,Snap Kit
+  - RxSwift, SnapKit, Kingfisher, Lottie
   - YoLoV3
   - FCM, Naver Cloud SMS API
   - FiresStore, Firebase Storage
+  - DarkMode, VoiceOver
 
 
 <br/><br/><br/>
