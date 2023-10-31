@@ -62,6 +62,65 @@ https://youtu.be/efr4abi4cTk
 <br/><br/><br/>
 
 
+## 📌 Folder Convention
+```
+📦 PICO
++-- 🗂 Config
++-- 🗂 UserDefaults 
++-- 🗂 Extention 
+|    +-- 🗂 Namespace
+|    +-- 🗂 UI
+|    +-- 🗂 Data
++-- 🗂 Service
++-- 🗂 Common
+|    +-- 🗂 Constraints
+|    +-- 🗂 View
+|    +-- 🗂 Transition
++-- 🗂 Utils 
++-- 🗂 Model 
++-- 🗂 Sign 
+|    +-- 🗂 SignIn
+|    |    +-- 🗂 ViewModel
+|    +-- 🗂 SignUp
+|         +-- 🗂 ViewModel
+|         +-- 🗂 SignUpCell
+|         +-- 🗂 TermsOfServiceText
++-- 🗂 TabBar
++-- 🗂 Home
+|    +-- 🗂 ViewModel 
+|    +-- 🗂 Cell
+|    +-- 🗂 Detail 
+|         +-- 🗂 ViewModel
+|         +-- 🗂 Cell
++-- 🗂 Mail
+|    +-- 🗂 ViewModel 
+|    +-- 🗂 Cell
++-- 🗂 Like
+|    +-- 🗂 ViewModel 
+|    +-- 🗂 Cell
++-- 🗂 Ent
+|    +-- 🗂 ViewModel 
+|    +-- 🗂 Cell
++-- 🗂 MyPage
+|    +-- 🗂 ViewModel 
+|    +-- 🗂 Cell
+|    +-- 🗂 RandomBox
+|    |    +-- 🗂 ViewModel
+|    +-- 🗂 ProfileEdit
+|    |    +-- 🗂 ViewModel
+|    |    +-- 🗂 Cell
+|    +-- 🗂 Setting
+|    |    +-- 🗂 SettingDetail
+|    |    +-- 🗂 Cell
+|    +-- 🗂 Store
++-- 🗂 Notification
+|
++-- 🗂 Admin
+     +-- 🗂 ViewModel 
+     +-- 🗂 Cell 
+```
+
+
 ## 📌 Branch Convention
 ```mermaid
 gitGraph
