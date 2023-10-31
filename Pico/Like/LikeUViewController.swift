@@ -125,8 +125,6 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let viewController = UserDetailViewController()
         guard let selectedUser = viewModel.likeUList[safe: indexPath.row] else { return }
-        if cellTapped { return }
-        cellTapped = true
         FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -135,6 +133,8 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
                     showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                     return
                 }
+                if cellTapped { return }
+                cellTapped = true
                 viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
                 navigationController?.pushViewController(viewController, animated: true)
             case .failure(let error):
