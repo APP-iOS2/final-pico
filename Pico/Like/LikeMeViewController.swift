@@ -23,9 +23,11 @@ final class LikeMeViewController: UIViewController {
     private let checkEmptyPublisher = PublishSubject<Void>()
     private var isLoading = false
     private var isRefresh = false
+    private var cellTapped: Bool = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        cellTapped = false
         if viewModel.likeMeList.isEmpty {
             refreshPublisher.onNext(())
         }
@@ -131,6 +133,8 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
                     showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                     return
                 }
+                if cellTapped { return }
+                cellTapped = true
                 viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
                 navigationController?.pushViewController(viewController, animated: true)
             case .failure(let error):
