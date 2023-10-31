@@ -87,44 +87,21 @@ https://youtu.be/efr4abi4cTk
 +-- 🗂 Model 
 +-- 🗂 Sign 
 |    +-- 🗂 SignIn
-|    |    +-- 🗂 ViewModel
 |    +-- 🗂 SignUp
-|         +-- 🗂 ViewModel
-|         +-- 🗂 SignUpCell
-|         +-- 🗂 TermsOfServiceText
 +-- 🗂 TabBar
 +-- 🗂 Home
-|    +-- 🗂 ViewModel 
-|    +-- 🗂 Cell
 |    +-- 🗂 Detail 
-|         +-- 🗂 ViewModel
-|         +-- 🗂 Cell
 +-- 🗂 Mail
-|    +-- 🗂 ViewModel 
-|    +-- 🗂 Cell
 +-- 🗂 Like
-|    +-- 🗂 ViewModel 
-|    +-- 🗂 Cell
 +-- 🗂 Ent
-|    +-- 🗂 ViewModel 
-|    +-- 🗂 Cell
 +-- 🗂 MyPage
-|    +-- 🗂 ViewModel 
-|    +-- 🗂 Cell
 |    +-- 🗂 RandomBox
-|    |    +-- 🗂 ViewModel
 |    +-- 🗂 ProfileEdit
-|    |    +-- 🗂 ViewModel
-|    |    +-- 🗂 Cell
 |    +-- 🗂 Setting
 |    |    +-- 🗂 SettingDetail
-|    |    +-- 🗂 Cell
 |    +-- 🗂 Store
 +-- 🗂 Notification
-|
 +-- 🗂 Admin
-     +-- 🗂 ViewModel 
-     +-- 🗂 Cell 
 ```
 
 <br/><br/><br/>
