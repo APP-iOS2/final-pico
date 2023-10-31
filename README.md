@@ -34,7 +34,7 @@ https://youtu.be/efr4abi4cTk
   <tr>
     <th>푸시알림</th>
     <th>이상형 월드컵</th>
-    <th>랜덥 박스</th>
+    <th>랜덤박스</th>
     <th>마이페이지</th>
     <th>관리자모드</th>
   </tr>
