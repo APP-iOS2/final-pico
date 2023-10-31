@@ -191,12 +191,13 @@ extension AdminReportViewController {
             })
             .disposed(by: disposeBag)
 
-        tableView.rx.modelSelected(AdminReport.self)
+        tableView.rx.itemSelected
             .withUnretained(self)
             .observe(on: MainScheduler.instance)
-            .subscribe { viewController, report in
+            .subscribe(onNext: { viewController, indexPath in
+                guard let report = viewController.viewModel.reportList[safe: indexPath.row] else { return }
                 viewController.reportedUserIdPublisher.onNext(report.reportedUserId)
-            }
+            })
             .disposed(by: disposeBag)
     }
     
