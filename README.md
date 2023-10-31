@@ -1,22 +1,52 @@
 # PICO (Pick & Connect)
-![picomain](https://github.com/APPSCHOOL3-iOS/final-pico/assets/79855248/d43edeb9-46bc-4698-883d-3d33b44d544a)
-- 나와 맞는 사람을 Pick 하고 나와 잘 맞는 사람들과 Connect 
+![824d1b0b9fc4d055](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/eb4527e5-31a9-4e22-be3d-89d8b7f85339)
 
-## 앱 소개(ADS)
-- MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 
-사용자 간 커뮤니케이션을 지원는 APP
+- 나와 맞는 사람을 Pick 하고 나와 잘 맞는 사람들과 Connect
+- MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 사용자 간 커뮤니케이션을 지원는 APP
 
-## 앱 소개 영상
+## 📌 앱 소개 영상
 https://youtu.be/efr4abi4cTk
 
-## 기술스택
+
+## 📌 구동 화면
+|로그인/회원가입|사용자 추천|필터|쪽지|매칭|
+|:----:|:----:|:-----:|:----:|:----:| 
+|![얼굴인식](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/0f27ca36-f452-462b-99c8-ea7dfed70c78)|![홈](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/13b25798-ec1a-4908-9d19-5962de23be2c)|![3 필터](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/82985552-ecbc-4577-a6e4-787b36c9836b)|![쪽지](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/274eacd3-7621-403a-94a9-56a2d7c89e39)|![5 매칭](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/4642e256-8d1d-4f45-8b05-feffa88bf483)|
+
+|푸시알림|이상형 월드컵|랜덤 박스|마이페이지|관리자모드|
+|:----:|:----:|:-----:|:----:|:----:| 
+|![6 푸시알림](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/bd6c43e1-27c0-4cde-b993-a93567f716be)|![7 이상형 월드컵](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/fccd0480-78d7-4637-a12f-eed2d566c0ae)|![8 랜덤박스](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/bdba4f06-f77f-4cc1-9219-c9f3f0e48e9f)|![9 마이페이지](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/3b6b0897-d5ea-441a-b0ff-46dd522ec07f)|![10 관리자모드](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/f12ca840-d8db-4723-98a2-8add2d8cc155)|
+
+
+
+<br/><br/><br/>
+
+  
+## 📌 설치 / 실행 방법
+1. 아래 파일은 필수 파일이므로 다음 이메일로 파일을 요청해주세요.  
+(rlaalsrl1227@gmail.com)  
+```
+- GoogleService-Info.plist
+- APIKeys.plist
+- YOLOv3.mlmodel
+```
+2. Pico.xcodeproj 파일 실행을 해주세요.
+3. Config 폴더에 필수파일을 추가한 뒤 빌드해주세요.
+
+
+
+<br/><br/><br/>
+
+
+## 📌 기술스택
 <p align="leading">
   <img src="https://img.shields.io/badge/Swift-F05138?style=for-the-badge&logo=Swift&logoColor=white"/>
     <img src="https://img.shields.io/badge/UIKit-2396F3?style=for-the-badge&logo=uikit&logoColor=white"/>
   <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=Firebase&logoColor=white"/>
 </p>
 
-## 개발 도구 및 활용 기술
+
+## 📌 개발 도구 및 활용 기술
 - 개발 언어 : Swift
 - 개발 환경 : Swift5.9 15.0, iPhone SE ~ 15 Pro 호환
 - 디자인 툴 : Figma
@@ -27,18 +57,12 @@ https://youtu.be/efr4abi4cTk
   - YoLoV3
   - FCM, Naver Cloud SMS API
   - FiresStore, Firebase Storage
-  
-## 설치 / 실행 방법
-1. 아래 파일은 필수 파일이므로 다음 이메일로 파일을 요청해주세요.  
-(rlaalsrl1227@gmail.com)  
-```
-- GoogleService-Info.plist
-- YOLOv3.mlmodel
-```
-2. Pico.xcodeproj 파일 실행을 해주세요.
-3. Config 폴더에 필수파일을 추가한 뒤 빌드해주세요.
 
-## Branch Convention
+
+<br/><br/><br/>
+
+
+## 📌 Branch Convention
 ```mermaid
 gitGraph
     commit id: "MAIN"
@@ -58,7 +82,11 @@ gitGraph
     commit id: "Deploy"
     
 ```
-## 참여자
+
+<br/><br/><br/>
+
+
+## 📌 참여자
 |최하늘|김민기|방유빈|신희권|
 |:----:|:----:|:-----:|:----:| 
 |<img src = "https://avatars.githubusercontent.com/u/74815957?v=4" width="300" height="160">|<img src = "https://avatars.githubusercontent.com/u/79855248?v=4" width="300" height="160">|<img src = "https://avatars.githubusercontent.com/u/58802345?v=4" width="300" height="160">|<img src = "https://avatars.githubusercontent.com/u/55128158?v=4" width="300" height="160">|
