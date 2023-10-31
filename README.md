@@ -4,11 +4,12 @@
 - 나와 맞는 사람을 Pick 하고 나와 잘 맞는 사람들과 Connect
 - MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 사용자 간 커뮤니케이션을 지원는 APP
   
-<br/>
+<br/><br/><br/>
 
 ## 📌 앱 소개 영상
 https://youtu.be/efr4abi4cTk
 
+<br/><br/><br/>
 
 ## 📌 구동 화면
 |로그인/회원가입|사용자 추천|필터|쪽지|매칭|
@@ -33,6 +34,11 @@ https://youtu.be/efr4abi4cTk
 ```
 2. Pico.xcodeproj 파일 실행을 해주세요.
 3. Config 폴더에 필수파일을 추가한 뒤 빌드해주세요.
+
+<br/><br/><br/>
+
+## 📌 사용자 메뉴얼
+[사용자메뉴얼.pdf](https://github.com/APPSCHOOL3-iOS/final-pico/files/13216388/default.pdf)
 
 
 
@@ -121,6 +127,7 @@ https://youtu.be/efr4abi4cTk
      +-- 🗂 Cell 
 ```
 
+<br/><br/><br/>
 
 ## 📌 Branch Convention
 ```mermaid
