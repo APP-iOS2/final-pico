@@ -23,9 +23,11 @@ final class LikeUViewController: UIViewController {
     private let pushSendConrollerPublisher = PublishSubject<Void>()
     private var isLoading = false
     private var isRefresh = false
+    private var cellTapped: Bool = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        cellTapped = false
         if viewModel.likeUList.isEmpty {
             refreshPublisher.onNext(())
         }
@@ -123,6 +125,8 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let viewController = UserDetailViewController()
         guard let selectedUser = viewModel.likeUList[safe: indexPath.row] else { return }
+        if cellTapped { return }
+        cellTapped = true
         FirestoreService.shared.loadDocument(collectionId: .users, documentId: selectedUser.likedUserId, dataType: User.self) { [weak self] result in
             guard let self = self else { return }
             switch result {
