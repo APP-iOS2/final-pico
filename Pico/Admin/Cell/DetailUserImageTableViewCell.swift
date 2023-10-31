@@ -54,11 +54,7 @@ final class DetailUserImageTableViewCell: UITableViewCell {
             if let image = URL(string: image) {
                 imageView.kf.setImage(with: image)
             }
-            if UIDevice.current.model.contains("iPhone") {
-                imageView.contentMode = .scaleAspectFill
-            } else if UIDevice.current.model.contains("iPad") {
-                imageView.contentMode = .scaleAspectFit
-            }
+            imageView.contentMode = .scaleAspectFit
             imageView.frame = CGRect(x: UIScreen.main.bounds.width * CGFloat(index),
                                      y: 0,
                                      width: UIScreen.main.bounds.width,

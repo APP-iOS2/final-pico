@@ -51,7 +51,7 @@ final class AdminUserDetailViewModel: ViewModelType {
     
     var selectedUser: User
     var isEmpty: Bool = true
-    private let pageSize = 10
+    private let pageSize = 7
     private var startReportIndex = 0
     private var startBlockIndex = 0
     private var startLikeIndex = 0
