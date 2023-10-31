@@ -37,6 +37,10 @@ https://github.com/SnapKit
 Apache License Version 2.0
 https://github.com/firebase/firebase-ios-sdk
 
+**Freepik**
+작가 rawpixel.com 출처 Freepik
+https://kr.freepik.com
+
 """
                       ).padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))
             Divider()
