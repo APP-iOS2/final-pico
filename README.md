@@ -164,7 +164,7 @@ gitGraph
 <br/><br/>
 
 
-## 📌 참여자
+## 📌 팀원소개
 <table align="center">
   <tr align="center">
     <th>최하늘</th>
