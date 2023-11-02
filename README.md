@@ -166,7 +166,7 @@ gitGraph
 
 ## 📌 참여자
 <table align="center">
-  <tr>
+  <tr align="center">
     <th>최하늘</th>
     <th>김민기</th>
     <th>방유빈</th>
@@ -176,7 +176,7 @@ gitGraph
     <th>이제현</th>
     <th>임대진</th>
   </tr>
-  <tr>
+  <tr align="center">
     <td><img src="https://avatars.githubusercontent.com/u/74815957?v=4" height="80"></td>
     <td><img src="https://avatars.githubusercontent.com/u/79855248?v=4" height="80"></td>
     <td><img src="https://avatars.githubusercontent.com/u/58802345?v=4" height="80"></td>
@@ -186,7 +186,7 @@ gitGraph
     <td><img src="https://avatars.githubusercontent.com/u/104299722?v=4" height="80"></td>
     <td><img src="https://avatars.githubusercontent.com/u/115560272?v=4" height="80"></td>
   </tr>
-  <tr>
+  <tr align="center">
     <td><a href="https://github.com/HANLeeeee">@HANLeeeee</a></td>
     <td><a href="https://github.com/minki-kim-git">@minki-kim-git</a></td>
     <td><a href="https://github.com/bangtori">@bangtori</a></td>
