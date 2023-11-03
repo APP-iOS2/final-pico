@@ -7,7 +7,7 @@
 - 나와 맞는 사람을 Pick 하고 나와 잘 맞는 사람들과 Connect
 - MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 사용자 간 커뮤니케이션을 지원는 APP
 - 소개 영상: https://youtu.be/efr4abi4cTk
-- 사용자 메뉴얼: https://github.com/APPSCHOOL3-iOS/final-pico/사용자메뉴얼.pdf
+- [사용자 메뉴얼](사용자메뉴얼.pdf)
 
 
 <br/><br/>
@@ -166,26 +166,35 @@ gitGraph
     <th>김민기</th>
     <th>방유빈</th>
     <th>신희권</th>
-    <th>양성혜</th>
-    <th>오영석</th>
-    <th>이제현</th>
-    <th>임대진</th>
   </tr>
   <tr align="center">
-    <td><img src="https://avatars.githubusercontent.com/u/74815957?v=4" height="80"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/79855248?v=4" height="80"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/58802345?v=4" height="80"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/55128158?v=4" height="80"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/87599027?v=4" height="80"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/82360640?v=4" height="80"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/104299722?v=4" height="80"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/115560272?v=4" height="80"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/74815957?v=4"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/79855248?v=4"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/58802345?v=4"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/55128158?v=4"></td>
   </tr>
   <tr align="center">
     <td><a href="https://github.com/HANLeeeee">@HANLeeeee</a></td>
     <td><a href="https://github.com/minki-kim-git">@minki-kim-git</a></td>
     <td><a href="https://github.com/bangtori">@bangtori</a></td>
     <td><a href="https://github.com/hhh131">@hhh131</a></td>
+  </tr>
+</table>
+
+<table align="center">
+  <tr align="center">
+    <th>양성혜</th>
+    <th>오영석</th>
+    <th>이제현</th>
+    <th>임대진</th>
+  </tr>
+  <tr align="center">
+    <td><img src="https://avatars.githubusercontent.com/u/87599027?v=4"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/82360640?v=4"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/104299722?v=4"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/115560272?v=4"></td>
+  </tr>
+  <tr align="center">
     <td><a href="https://github.com/seongzzang">@seongzzang</a></td>
     <td><a href="https://github.com/Youngs5">@Youngs5</a></td>
     <td><a href="https://github.com/LJH3904">@LJH3904</a></td>
