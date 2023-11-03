@@ -201,3 +201,7 @@ gitGraph
     <td><a href="https://github.com/DAEJINLIM">@DAEJINLIM</a></td>
   </tr>
 </table>
+
+
+## 📌 License
+"PICO" is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
