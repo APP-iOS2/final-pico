@@ -203,5 +203,8 @@ gitGraph
 </table>
 
 
+<br/><br/>
+
+
 ## 📌 License
 "PICO" is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
