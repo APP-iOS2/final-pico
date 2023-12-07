@@ -44,7 +44,6 @@ final class SMSAuthService {
     private let secretKey = Bundle.main.secretKey
     private let serviceId = Bundle.main.serviceId
     private let senderPhoneNumber = Bundle.main.senderPhoneNumber
-    private let receiverPhoneNumber = "01095570253"
     private var randomNumber = ""
     private let method = "POST"
     private let timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
