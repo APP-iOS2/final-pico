@@ -189,8 +189,6 @@
 		B18C1DAC2ACC984400BBB207 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DAB2ACC984400BBB207 /* FirebaseFirestore */; };
 		B18C1DAE2ACC984400BBB207 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DAD2ACC984400BBB207 /* FirebaseFirestoreSwift */; };
 		B18C1DB02ACC984400BBB207 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DAF2ACC984400BBB207 /* FirebaseStorage */; };
-		B1985B3D2AF1307E002FEFC6 /* APIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = B1985B3A2AF13065002FEFC6 /* APIKeys.plist */; };
-		B1985B3F2AF1307E002FEFC6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B1985B3C2AF1307E002FEFC6 /* GoogleService-Info.plist */; };
 		B19ED9F22AD71D670089D0A1 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19ED9F12AD71D670089D0A1 /* ProfileView.swift */; };
 		B1A0C0052AE4A3910031AC65 /* UILabel+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0C0042AE4A3910031AC65 /* UILabel+Extensions.swift */; };
 		B1A0C0082AE4AD4D0031AC65 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B1A0C0072AE4AD4D0031AC65 /* Lottie */; };
@@ -416,8 +414,6 @@
 		B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicoTests.swift; sourceTree = "<group>"; };
 		B1844F752AC0D78000ACFFED /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		B1844F772AC0E3BF00ACFFED /* CommonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonButton.swift; sourceTree = "<group>"; };
-		B1985B3A2AF13065002FEFC6 /* APIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = APIKeys.plist; sourceTree = "<group>"; };
-		B1985B3C2AF1307E002FEFC6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B19ED9F12AD71D670089D0A1 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B1A0C0042AE4A3910031AC65 /* UILabel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		B1A0C0092AE4ADEF0031AC65 /* randomBox.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = randomBox.json; sourceTree = "<group>"; };
@@ -790,8 +786,6 @@
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
 				B14B58D42AC0A232009889DA /* LaunchScreen.storyboard */,
-				B1985B3A2AF13065002FEFC6 /* APIKeys.plist */,
-				B1985B3C2AF1307E002FEFC6 /* GoogleService-Info.plist */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -1369,9 +1363,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				B1985B3F2AF1307E002FEFC6 /* GoogleService-Info.plist in Resources */,
 				BCD6253B2AE5B5940079BD28 /* HomeEmptyLottie.json in Resources */,
-				B1985B3D2AF1307E002FEFC6 /* APIKeys.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
@@ -1693,6 +1685,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = C39BYRTABZ;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -1757,6 +1750,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = C39BYRTABZ;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -1787,7 +1781,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pico/Pico.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6R3M7VGRP2;
+				DEVELOPMENT_TEAM = C39BYRTABZ;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pico/Config/Info.plist;
@@ -1807,7 +1801,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ojeomsun.pico.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ojeomsun.pico;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1826,7 +1820,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pico/Pico.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6R3M7VGRP2;
+				DEVELOPMENT_TEAM = C39BYRTABZ;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pico/Config/Info.plist;
@@ -1846,7 +1840,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ojeomsun.pico.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ojeomsun.pico;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1862,7 +1856,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6R3M7VGRP2;
+				DEVELOPMENT_TEAM = C39BYRTABZ;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -1881,7 +1875,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6R3M7VGRP2;
+				DEVELOPMENT_TEAM = C39BYRTABZ;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -1901,7 +1895,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6R3M7VGRP2;
+				DEVELOPMENT_TEAM = C39BYRTABZ;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -1921,7 +1915,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6R3M7VGRP2;
+				DEVELOPMENT_TEAM = C39BYRTABZ;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
