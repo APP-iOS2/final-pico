@@ -35,10 +35,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let rootViewController = UINavigationController(rootViewController: SignViewController())
             window?.rootViewController = rootViewController
         }
-       
-//        let rootViewController = UINavigationController(rootViewController: AdminViewController())
-//        window?.rootViewController = rootViewController
- 
         window?.makeKeyAndVisible()
     }
     

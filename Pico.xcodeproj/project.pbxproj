@@ -118,9 +118,7 @@
 		6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2FC2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift */; };
 		6ADDE2FF2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2FE2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift */; };
 		6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */; };
-		B104FCF72ADB2A470093739B /* AdminUserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B104FCF62ADB2A470093739B /* AdminUserDetailViewModel.swift */; };
 		B11D2B8C2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11D2B8B2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift */; };
-		B130BB4C2ACF207A0039A1FA /* AdminUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B130BB4B2ACF207A0039A1FA /* AdminUserViewModel.swift */; };
 		B146A3BD2AD4399D003143DD /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3BC2AD4399D003143DD /* UIImage+Extensions.swift */; };
 		B146A3BF2AD44511003143DD /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3BE2AD44511003143DD /* UIImageView+Extensions.swift */; };
 		B146A3C32AD4566C003143DD /* SignViewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3C22AD4566C003143DD /* SignViewConstraints.swift */; };
@@ -128,7 +126,6 @@
 		B146A3CA2AD456D2003143DD /* MypageViewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3C92AD456D2003143DD /* MypageViewConstraints.swift */; };
 		B146A3CE2AD45795003143DD /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3CD2AD45795003143DD /* UITableView+Extensions.swift */; };
 		B14805252ACCE8120009FF71 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14805242ACCE8120009FF71 /* FirestoreService.swift */; };
-		B148052C2ACD2A900009FF71 /* AdminUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B148052B2ACD2A900009FF71 /* AdminUserViewController.swift */; };
 		B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58C92AC0A230009889DA /* AppDelegate.swift */; };
 		B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CB2AC0A230009889DA /* SceneDelegate.swift */; };
 		B14B58CE2AC0A230009889DA /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B58CD2AC0A230009889DA /* HomeViewController.swift */; };
@@ -139,11 +136,8 @@
 		B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590B2AC0A64C009889DA /* LikeViewController.swift */; };
 		B14B590E2AC0A658009889DA /* EntViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590D2AC0A658009889DA /* EntViewController.swift */; };
 		B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590F2AC0A666009889DA /* MypageViewController.swift */; };
-		B14D2AAC2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */; };
 		B14D2AB92AD8E2900014DE29 /* HobbyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AB72AD8E2900014DE29 /* HobbyCollectionViewCell.swift */; };
 		B14D2ABA2AD8E2900014DE29 /* MbtiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AB82AD8E2900014DE29 /* MbtiCollectionViewCell.swift */; };
-		B14D2AC22AD912120014DE29 /* RecordHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AC12AD912120014DE29 /* RecordHeaderTableViewCell.swift */; };
-		B14D2AC42AD913FF0014DE29 /* RecordHeaderCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AC32AD913FF0014DE29 /* RecordHeaderCollectionViewCell.swift */; };
 		B15383E02AE770650037DBBA /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15383DF2AE770650037DBBA /* WorldCupResultViewController.swift */; };
 		B15383E22AE770740037DBBA /* WorldCupResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15383E12AE770740037DBBA /* WorldCupResultViewModel.swift */; };
 		B15383E42AE770810037DBBA /* worldcupAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = B15383E32AE770810037DBBA /* worldcupAnimation.json */; };
@@ -193,19 +187,11 @@
 		B1A0C0052AE4A3910031AC65 /* UILabel+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A0C0042AE4A3910031AC65 /* UILabel+Extensions.swift */; };
 		B1A0C0082AE4AD4D0031AC65 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B1A0C0072AE4AD4D0031AC65 /* Lottie */; };
 		B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */ = {isa = PBXBuildFile; fileRef = B1A0C0092AE4ADEF0031AC65 /* randomBox.json */; };
-		B1BFE18D2AD6BA1B0094253A /* AdminViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE18C2AD6BA1B0094253A /* AdminViewController.swift */; };
-		B1BFE18F2AD6BAED0094253A /* AdminReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE18E2AD6BAED0094253A /* AdminReportViewController.swift */; };
-		B1BFE1912AD6F5CB0094253A /* AdminUserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE1902AD6F5CB0094253A /* AdminUserDetailViewController.swift */; };
-		B1BFE1932AD6F6960094253A /* AdminBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BFE1922AD6F6960094253A /* AdminBaseViewController.swift */; };
-		B1CC4BA32AE6733700457827 /* AdminReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1CC4BA22AE6733700457827 /* AdminReportViewModel.swift */; };
-		B1DFF1352AD7957200610519 /* DetailUserInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */; };
 		B1E30BDD2AD5E21A00F95C66 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BDC2AD5E21A00F95C66 /* ViewModelType.swift */; };
 		B1E30BE02AD5E7B500F95C66 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B1E30BDF2AD5E7B500F95C66 /* Kingfisher */; };
 		B1E30BEB2AD5EE3300F95C66 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */; };
 		B1E30BED2AD5EE8400F95C66 /* HomeUserCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BEC2AD5EE8400F95C66 /* HomeUserCardViewController.swift */; };
 		B1E30BF02AD5F1AC00F95C66 /* CurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BEF2AD5F1AC00F95C66 /* CurrentUser.swift */; };
-		B1E8AF3E2AE34A24001BC023 /* AdminUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E8AF3D2AE34A23001BC023 /* AdminUserTableViewCell.swift */; };
-		B1E8AF402AE3518E001BC023 /* RecordEmptyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E8AF3F2AE3518E001BC023 /* RecordEmptyTableViewCell.swift */; };
 		BC0D29312ACF1F8C0043554B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */; };
 		BC0D29332ACF1FD70043554B /* HomeUserCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */; };
 		BC49271B2ADFD70D0073E882 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC49271A2ADFD70D0073E882 /* UserService.swift */; };
@@ -345,9 +331,7 @@
 		6ADDE2FC2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditTextTabelCell.swift; sourceTree = "<group>"; };
 		6ADDE2FE2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditCollectionCell.swift; sourceTree = "<group>"; };
 		6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditTableHeaderView.swift; sourceTree = "<group>"; };
-		B104FCF62ADB2A470093739B /* AdminUserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUserDetailViewModel.swift; sourceTree = "<group>"; };
 		B11D2B8B2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextFieldDelegate+Extensions.swift"; sourceTree = "<group>"; };
-		B130BB4B2ACF207A0039A1FA /* AdminUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUserViewModel.swift; sourceTree = "<group>"; };
 		B146A3BC2AD4399D003143DD /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
 		B146A3BE2AD44511003143DD /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
 		B146A3C22AD4566C003143DD /* SignViewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignViewConstraints.swift; sourceTree = "<group>"; };
@@ -355,7 +339,6 @@
 		B146A3C92AD456D2003143DD /* MypageViewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageViewConstraints.swift; sourceTree = "<group>"; };
 		B146A3CD2AD45795003143DD /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
 		B14805242ACCE8120009FF71 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
-		B148052B2ACD2A900009FF71 /* AdminUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUserViewController.swift; sourceTree = "<group>"; };
 		B14B58C62AC0A230009889DA /* Pico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pico.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B14B58C92AC0A230009889DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B14B58CB2AC0A230009889DA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -367,11 +350,8 @@
 		B14B590B2AC0A64C009889DA /* LikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeViewController.swift; sourceTree = "<group>"; };
 		B14B590D2AC0A658009889DA /* EntViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntViewController.swift; sourceTree = "<group>"; };
 		B14B590F2AC0A666009889DA /* MypageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageViewController.swift; sourceTree = "<group>"; };
-		B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailUserImageTableViewCell.swift; sourceTree = "<group>"; };
 		B14D2AB72AD8E2900014DE29 /* HobbyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HobbyCollectionViewCell.swift; sourceTree = "<group>"; };
 		B14D2AB82AD8E2900014DE29 /* MbtiCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MbtiCollectionViewCell.swift; sourceTree = "<group>"; };
-		B14D2AC12AD912120014DE29 /* RecordHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordHeaderTableViewCell.swift; sourceTree = "<group>"; };
-		B14D2AC32AD913FF0014DE29 /* RecordHeaderCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordHeaderCollectionViewCell.swift; sourceTree = "<group>"; };
 		B15383DF2AE770650037DBBA /* WorldCupResultViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewController.swift; sourceTree = "<group>"; };
 		B15383E12AE770740037DBBA /* WorldCupResultViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewModel.swift; sourceTree = "<group>"; };
 		B15383E32AE770810037DBBA /* worldcupAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = worldcupAnimation.json; sourceTree = "<group>"; };
@@ -417,18 +397,10 @@
 		B19ED9F12AD71D670089D0A1 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B1A0C0042AE4A3910031AC65 /* UILabel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		B1A0C0092AE4ADEF0031AC65 /* randomBox.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = randomBox.json; sourceTree = "<group>"; };
-		B1BFE18C2AD6BA1B0094253A /* AdminViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewController.swift; sourceTree = "<group>"; };
-		B1BFE18E2AD6BAED0094253A /* AdminReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminReportViewController.swift; sourceTree = "<group>"; };
-		B1BFE1902AD6F5CB0094253A /* AdminUserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUserDetailViewController.swift; sourceTree = "<group>"; };
-		B1BFE1922AD6F6960094253A /* AdminBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminBaseViewController.swift; sourceTree = "<group>"; };
-		B1CC4BA22AE6733700457827 /* AdminReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminReportViewModel.swift; sourceTree = "<group>"; };
-		B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailUserInfoTableViewCell.swift; sourceTree = "<group>"; };
 		B1E30BDC2AD5E21A00F95C66 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
 		B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		B1E30BEC2AD5EE8400F95C66 /* HomeUserCardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewController.swift; sourceTree = "<group>"; };
 		B1E30BEF2AD5F1AC00F95C66 /* CurrentUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUser.swift; sourceTree = "<group>"; };
-		B1E8AF3D2AE34A23001BC023 /* AdminUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUserTableViewCell.swift; sourceTree = "<group>"; };
-		B1E8AF3F2AE3518E001BC023 /* RecordEmptyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordEmptyTableViewCell.swift; sourceTree = "<group>"; };
 		BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewModel.swift; sourceTree = "<group>"; };
 		BC49271A2ADFD70D0073E882 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
@@ -718,20 +690,6 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
-		B148052A2ACD2A730009FF71 /* Admin */ = {
-			isa = PBXGroup;
-			children = (
-				B1BFE1922AD6F6960094253A /* AdminBaseViewController.swift */,
-				B1BFE18C2AD6BA1B0094253A /* AdminViewController.swift */,
-				B148052B2ACD2A900009FF71 /* AdminUserViewController.swift */,
-				B1BFE1902AD6F5CB0094253A /* AdminUserDetailViewController.swift */,
-				B1BFE18E2AD6BAED0094253A /* AdminReportViewController.swift */,
-				B1BFE1952AD707B10094253A /* ViewModel */,
-				B1CC4B5D2AE5A66D00457827 /* Cell */,
-			);
-			path = Admin;
-			sourceTree = "<group>";
-		};
 		B14B58BD2AC0A230009889DA = {
 			isa = PBXGroup;
 			children = (
@@ -773,7 +731,6 @@
 				B14B59002AC0A2FE009889DA /* Ent */,
 				B14B59012AC0A30F009889DA /* Mypage */,
 				534790C02AC3B2B00028610D /* Notification */,
-				B148052A2ACD2A730009FF71 /* Admin */,
 			);
 			path = Pico;
 			sourceTree = "<group>";
@@ -1211,29 +1168,6 @@
 			path = PicoTests;
 			sourceTree = "<group>";
 		};
-		B1BFE1952AD707B10094253A /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				B130BB4B2ACF207A0039A1FA /* AdminUserViewModel.swift */,
-				B104FCF62ADB2A470093739B /* AdminUserDetailViewModel.swift */,
-				B1CC4BA22AE6733700457827 /* AdminReportViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		B1CC4B5D2AE5A66D00457827 /* Cell */ = {
-			isa = PBXGroup;
-			children = (
-				B1E8AF3D2AE34A23001BC023 /* AdminUserTableViewCell.swift */,
-				B14D2AAB2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift */,
-				B1DFF1342AD7957200610519 /* DetailUserInfoTableViewCell.swift */,
-				B14D2AC12AD912120014DE29 /* RecordHeaderTableViewCell.swift */,
-				B14D2AC32AD913FF0014DE29 /* RecordHeaderCollectionViewCell.swift */,
-				B1E8AF3F2AE3518E001BC023 /* RecordEmptyTableViewCell.swift */,
-			);
-			path = Cell;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1431,16 +1365,13 @@
 				6A9F73572AD8E5A7002F13AC /* CenterAlignedCollectionViewFlowLayout.swift in Sources */,
 				B19ED9F22AD71D670089D0A1 /* ProfileView.swift in Sources */,
 				369F1BB22ACE3F8000A98C7B /* TermsOfServiceText.swift in Sources */,
-				B1BFE18D2AD6BA1B0094253A /* AdminViewController.swift in Sources */,
 				53B529592ADCBD0D00A9C9D8 /* FooterView.swift in Sources */,
 				4B2665352AC3E2FB0074D4E2 /* WorldCupGameViewController.swift in Sources */,
-				B1E8AF3E2AE34A24001BC023 /* AdminUserTableViewCell.swift in Sources */,
 				6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */,
 				B146A3C72AD456A8003143DD /* CommonConstraints.swift in Sources */,
 				6A65EDCC2AE1700C0048778D /* AdvertisementViewController.swift in Sources */,
 				B146A3BF2AD44511003143DD /* UIImageView+Extensions.swift in Sources */,
 				6922687E2AE0135F00E83F02 /* MailSendTableListController.swift in Sources */,
-				B14D2AC42AD913FF0014DE29 /* RecordHeaderCollectionViewCell.swift in Sources */,
 				BC4927272AE108D40073E882 /* CompatibilityView.swift in Sources */,
 				6A20604A2ACD2CF600435723 /* SwitchButton.swift in Sources */,
 				6A8BE1F12ADFE3510021B993 /* ProfileEditPickerViewController.swift in Sources */,
@@ -1448,7 +1379,6 @@
 				53B5295B2ADCF5FC00A9C9D8 /* CollectionViewFooterLoadingCell.swift in Sources */,
 				548AD18D2AE32C8900B1513C /* UserDetailViewController.swift in Sources */,
 				B15ABE1B2AC2672300529C29 /* MBTILabelView.swift in Sources */,
-				B130BB4C2ACF207A0039A1FA /* AdminUserViewModel.swift in Sources */,
 				BC6F61922AD834160067F500 /* RangeSliderView.swift in Sources */,
 				548AD18C2AE32C8900B1513C /* AboutMeViewController.swift in Sources */,
 				6ABA9E542ACE8F4100DC6570 /* CircularProgressBarViewModel.swift in Sources */,
@@ -1467,7 +1397,6 @@
 				6A9F73532AD8E575002F13AC /* ProfileEditTextModalCollectionCell.swift in Sources */,
 				360710982AE3570C00CD38B1 /* TermsOfServiceModalViewController.swift in Sources */,
 				534172F82AC129730035E41A /* LikeUViewController.swift in Sources */,
-				B14D2AAC2AD8D4210014DE29 /* DetailUserImageTableViewCell.swift in Sources */,
 				4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */,
 				36CD4CFC2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
@@ -1490,12 +1419,10 @@
 				548AD18B2AE32C8900B1513C /* SubInfomationViewController.swift in Sources */,
 				6ADDE2E82AC31C6000CE4482 /* SettingPrivateTableCell.swift in Sources */,
 				6ADDE2F32AC3BA4700CE4482 /* ProfileEditNicknameTabelCell.swift in Sources */,
-				B1BFE18F2AD6BAED0094253A /* AdminReportViewController.swift in Sources */,
 				534790C42AC3B3190028610D /* NotificationTableViewCell.swift in Sources */,
 				6AB3CF4B2AE0F7FF005A4DF6 /* SettingSecessionViewController.swift in Sources */,
 				363CC4842ACF9CC500C86EDC /* LocationService.swift in Sources */,
 				B15ABE2B2AC276A900529C29 /* BaseViewController.swift in Sources */,
-				B104FCF72ADB2A470093739B /* AdminUserDetailViewModel.swift in Sources */,
 				548AD17B2AE1E2C100B1513C /* PaddingLabel.swift in Sources */,
 				B17D67A32AC0B21F006F91DC /* UIView+Extensions.swift in Sources */,
 				B15F16172ADE847C002952B4 /* StoreModel.swift in Sources */,
@@ -1509,7 +1436,6 @@
 				6A7378532AC26D2E0047DE35 /* MyPageCollectionCell.swift in Sources */,
 				B17D67862AC0A850006F91DC /* SignUpViewController.swift in Sources */,
 				367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */,
-				B1CC4BA32AE6733700457827 /* AdminReportViewModel.swift in Sources */,
 				36F2BA032AC1777F00EF877A /* LoginSuccessViewController.swift in Sources */,
 				6922687B2AE0121700E83F02 /* MailReceiveViewModel.swift in Sources */,
 				B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */,
@@ -1517,7 +1443,6 @@
 				548AD18E2AE32C8900B1513C /* UserImageViewController.swift in Sources */,
 				6ADDE2E62AC3109E00CE4482 /* SettingTableHeaderView.swift in Sources */,
 				6ADDE2FF2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift in Sources */,
-				B1BFE1932AD6F6960094253A /* AdminBaseViewController.swift in Sources */,
 				B146A3C32AD4566C003143DD /* SignViewConstraints.swift in Sources */,
 				6AA931D42AE4026500A648E7 /* SettingLicenseView.swift in Sources */,
 				B17D678C2AC0AB80006F91DC /* Location.swift in Sources */,
@@ -1533,7 +1458,6 @@
 				BCEACEF72AC3DF5F00C93699 /* MBTICollectionViewController.swift in Sources */,
 				BC0D29332ACF1FD70043554B /* HomeUserCardViewModel.swift in Sources */,
 				548AD19F2AE5D19B00B1513C /* IntroViewController.swift in Sources */,
-				B1BFE1912AD6F5CB0094253A /* AdminUserDetailViewController.swift in Sources */,
 				6A9F734A2AD8E528002F13AC /* ProfileEditCollectionModalViewController.swift in Sources */,
 				3677DBC92AD4EC530026E089 /* SignInViewModel.swift in Sources */,
 				6AC31B2B2AD67BEC00F111B2 /* ProfileEditViewModel.swift in Sources */,
@@ -1551,9 +1475,7 @@
 				5375E74A2ACD2C09001A571D /* NotificationViewModel.swift in Sources */,
 				698521F42AD841510051A29A /* MailListTableViewCell.swift in Sources */,
 				368D4DA52ADCD9B000322D91 /* PictureService.swift in Sources */,
-				B1E8AF402AE3518E001BC023 /* RecordEmptyTableViewCell.swift in Sources */,
 				6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */,
-				B148052C2ACD2A900009FF71 /* AdminUserViewController.swift in Sources */,
 				360854F12AD04C7900F28168 /* StorageService.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
 				6A65EDCA2AE16FE30048778D /* PremiumViewController.swift in Sources */,
@@ -1575,7 +1497,6 @@
 				B15383E22AE770740037DBBA /* WorldCupResultViewModel.swift in Sources */,
 				B15ABE372AC31DD200529C29 /* UIViewController+Extensions.swift in Sources */,
 				B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */,
-				B14D2AC22AD912120014DE29 /* RecordHeaderTableViewCell.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
 				B14D2ABA2AD8E2900014DE29 /* MbtiCollectionViewCell.swift in Sources */,
 				53DD41B52ADF62F500C5FE39 /* Bundle+Extenstions.swift in Sources */,
@@ -1590,7 +1511,6 @@
 				B1E30BEB2AD5EE3300F95C66 /* SignUpViewModel.swift in Sources */,
 				B146A3BD2AD4399D003143DD /* UIImage+Extensions.swift in Sources */,
 				B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */,
-				B1DFF1352AD7957200610519 /* DetailUserInfoTableViewCell.swift in Sources */,
 				367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */,
 				B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */,
 				6AC31B2F2AD67CA600F111B2 /* SectionModel.swift in Sources */,

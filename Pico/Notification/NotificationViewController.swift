@@ -94,7 +94,7 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
             guard let self = self else { return }
             switch result {
             case .success(let data):
-                guard let data = data else {
+                guard data != nil else {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                     return
                 }
