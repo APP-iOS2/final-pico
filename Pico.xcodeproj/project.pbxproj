@@ -797,7 +797,7 @@
 				BC6F61912AD834160067F500 /* RangeSliderView.swift */,
 				BC4927262AE108D40073E882 /* CompatibilityView.swift */,
 				BCD6253A2AE5B5940079BD28 /* HomeEmptyLottie.json */,
-				B15383EB2AE771460037DBBA /* ViweModel */,
+				B15383EB2AE771460037DBBA /* ViewModel */,
 				B15383ED2AE771A40037DBBA /* Cell */,
 				54B4411A2AC1616500EC8846 /* Detail */,
 			);
@@ -980,13 +980,13 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		B15383EB2AE771460037DBBA /* ViweModel */ = {
+		B15383EB2AE771460037DBBA /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
 				BC0D29302ACF1F8C0043554B /* HomeViewModel.swift */,
 				BC0D29322ACF1FD70043554B /* HomeUserCardViewModel.swift */,
 			);
-			path = ViweModel;
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		B15383ED2AE771A40037DBBA /* Cell */ = {
