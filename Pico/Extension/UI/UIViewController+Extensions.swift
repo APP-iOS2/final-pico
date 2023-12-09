@@ -32,6 +32,7 @@ extension UIViewController {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
         let backImage = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
         navigationController?.navigationBar.backIndicatorImage = backImage
+        backImage?.accessibilityLabel = "뒤로가기"
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = backImage
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         self.navigationItem.backBarButtonItem?.tintColor = .picoBlue

@@ -12,7 +12,7 @@ import RxCocoa
 
 final class MailSendViewController: UIViewController {
     
-    private let viewModel = MailSendModel()
+    private let viewModel = MailSendViewModel()
     private let disposeBag = DisposeBag()
     
     private var receiver: User = User(mbti: .infj, phoneNumber: "", gender: .etc, birth: "", nickName: "", location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [], createdDate: 0, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)

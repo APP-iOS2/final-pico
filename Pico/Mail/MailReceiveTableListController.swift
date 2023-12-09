@@ -16,7 +16,7 @@ protocol MailReceiveDelegate: AnyObject {
 
 final class MailReceiveTableListController: BaseViewController {
     
-    private let viewModel = MailReceiveModel()
+    private let viewModel = MailReceiveViewModel()
     private let disposeBag = DisposeBag()
     private let emptyView: EmptyViewController = EmptyViewController(type: .message)
     private let refreshControl = UIRefreshControl()
@@ -126,7 +126,7 @@ extension MailReceiveTableListController: UITableViewDataSource, UITableViewDele
 // MARK: - bind
 extension MailReceiveTableListController {
     private func bind() {
-        let input = MailReceiveModel.Input(listLoad: loadDataPublsher,
+        let input = MailReceiveViewModel.Input(listLoad: loadDataPublsher,
                                            deleteUser: deleteReceivePublisher,
                                            refresh: refreshPublisher,
                                            isReceiveEmptyChecked: checkReceiveEmptyPublisher)

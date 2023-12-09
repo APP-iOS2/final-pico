@@ -30,6 +30,8 @@ final class ProfileEditImageTableCell: UITableViewCell {
         view.showsVerticalScrollIndicator = false
         view.contentInset = .zero
         view.backgroundColor = .clear
+        view.accessibilityLabel = "사진추가"
+        view.isAccessibilityElement = true
         view.register(cell: ProfileEditCollectionCell.self)
         view.register(cell: ProfileEditEmptyCollectionCell.self)
         return view

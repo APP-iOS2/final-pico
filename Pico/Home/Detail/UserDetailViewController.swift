@@ -10,7 +10,6 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import CoreLocation
-//
 
 final class UserDetailViewController: UIViewController {
     // 이전 뷰에서 실행이 필요 해 Defalut로 작성
@@ -102,9 +101,9 @@ final class UserDetailViewController: UIViewController {
         disLikeButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                 self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .dislike)
+                viewModel.saveLikeData(receiveUserInfo: viewModel.user, likeType: .dislike)
                 let viewController = HomeViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
+                navigationController?.pushViewController(viewController, animated: true)
             })
             .disposed(by: disposeBag)
     }
@@ -247,7 +246,6 @@ final class UserDetailViewController: UIViewController {
                 let reportInfo = AdminReport(
                     reportUserId: UserDefaultsManager.shared.getUserData().userId,
                     reportNickname: UserDefaultsManager.shared.getUserData().nickName,
-                    
                     reportedUserId: viewModel.user.id,
                     reportedNickname: viewModel.user.nickName,
                     reason: reason, birth: viewModel.user.birth,
@@ -272,7 +270,6 @@ extension UserDetailViewController {
     // subInfo가 있을 시 뷰에 추가
     private func addChilds() {
         [userImageViewController, basicInformationViewContoller, introViewController, aboutMeViewController, subInfomationViewController].forEach {
-            // 이거 왜 쓰는 거지..
             addChild($0)
             $0.didMove(toParent: self)
         }
@@ -281,7 +278,7 @@ extension UserDetailViewController {
     private func addViews() {
         view.addSubview([scrollView, disLikeButton, likeButton])
         scrollView.addSubview([userImageViewController.view, verticalStackView])
-//        verticalStackView.addArrangedSubview(basicInformationViewContoller.view)
+        //        verticalStackView.addArrangedSubview(basicInformationViewContoller.view)
         
         [basicInformationViewContoller.view, introViewController.view, aboutMeViewController.view, subInfomationViewController.view].forEach {
             verticalStackView.addArrangedSubview($0)

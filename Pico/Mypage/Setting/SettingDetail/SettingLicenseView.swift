@@ -16,7 +16,6 @@ The MIT License (MIT) Copyright (c) 2019 Wei Wang
 https://github.com/onevcat/Kingfisher
 
 **lottie-ios**
-Public
 Apache License Version 2.0
 https://github.com/airbnb/lottie-ios
 
@@ -37,6 +36,10 @@ https://github.com/SnapKit
 **firebase-ios-sdk**
 Apache License Version 2.0
 https://github.com/firebase/firebase-ios-sdk
+
+**Freepik**
+작가 rawpixel.com 출처 Freepik
+https://kr.freepik.com
 
 """
                       ).padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))

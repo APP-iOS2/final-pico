@@ -45,6 +45,7 @@ final class MypageViewController: BaseViewController {
     private func configBarItem() {
         let setButton = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .done, target: self, action: #selector(tappedBarButton))
         setButton.tintColor = .darkGray
+        setButton.accessibilityLabel = "설정"
         navigationItem.rightBarButtonItem = setButton
     }
     

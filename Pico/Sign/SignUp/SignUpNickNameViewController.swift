@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class SignUpNickNameViewController: UIViewController {
-    private let keyboardManager = KeyboardManager()
+    private let keyboardManager = KeyboardService()
     private let viewModel: SignUpViewModel
     private let checkNickNameService = CheckService()
     private let slangWordArray: [String] = ["시발", "병신", "개새끼", "꺼져", "지랄", "애미", "애비", "등신", "따까리", "미친", "씨발", "씨팔", "시팔", "쌍놈", "쌍년", "아가리", "장애인", "호구"] // 비속어 필터 API가 있는데 돈주고 하는거라고 하더라구요.
@@ -61,7 +61,7 @@ final class SignUpNickNameViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var nickNameTextField: UITextField = {
+    private let nickNameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "3자리 부터 8자리 까지"
         textField.font = .picoTitleFont
@@ -80,12 +80,13 @@ final class SignUpNickNameViewController: UIViewController {
         return button
     }()
     
-    private lazy var nickNameCancleButton: UIButton = {
+    private let nickNameCancleButton: UIButton = {
         let button = UIButton(type: .custom)
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
         let image = UIImage(systemName: "x.circle", withConfiguration: imageConfig)
         button.setImage(image, for: .normal)
         button.tintColor = .picoGray
+        button.accessibilityHint = "닉네임을 지우는 버튼"
         return button
     }()
     
@@ -119,6 +120,7 @@ final class SignUpNickNameViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        view.endEditing(true)
         keyboardManager.unregisterKeyboard()
     }
 }
@@ -170,6 +172,7 @@ extension SignUpNickNameViewController {
     }
     // MARK: - @objc
     @objc private func tappedCheckButton(_ sender: UIButton) {
+        view.endEditing(true)
         sender.tappedAnimation()
         guard let userNickName = nickNameTextField.text?.replacingOccurrences(of: " ", with: "") else { return }
         guard !searchSlangWord(name: userNickName) else { return }
@@ -180,7 +183,7 @@ extension SignUpNickNameViewController {
             checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
                 
-                SignLoadingManager.hideLoading()
+                Loading.hideLoading()
                 guard isRight else {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
@@ -211,6 +214,7 @@ extension SignUpNickNameViewController {
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
+        view.endEditing(true)
         viewModel.nickName = userNickName
         let viewController = SignUpPictureViewController(viewModel: viewModel)
         self.navigationController?.pushViewController(viewController, animated: true)

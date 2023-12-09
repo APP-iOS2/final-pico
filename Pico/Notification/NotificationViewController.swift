@@ -21,9 +21,11 @@ final class NotificationViewController: UIViewController {
     private let checkEmptyPublisher = PublishSubject<Void>()
     private let footerView = FooterView()
     private var isRefresh = false
+    private var cellTapped: Bool = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        cellTapped = false
         tableView.reloadData()
         checkEmptyPublisher.onNext(())
     }
@@ -100,12 +102,32 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
                     print(error)
                     return
                 }
-            }
-        } else {
-            if let tabBarController = self.tabBarController as? TabBarController {
-                tabBarController.selectedIndex = 1
-                let viewControllers = self.navigationController?.viewControllers
-                self.navigationController?.setViewControllers(viewControllers ?? [], animated: false)
+                if cellTapped { return }
+                cellTapped = true
+                if item.notiType == .like {
+                    let viewController = UserDetailViewController()
+                    FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.sendId, dataType: User.self) { result in
+                        switch result {
+                        case .success(let data):
+                            guard let data = data else { return }
+                            viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
+                            self.navigationController?.pushViewController(viewController, animated: true)
+                        case .failure(let error):
+                            print(error)
+                            return
+                        }
+                    }
+                } else {
+                    if let tabBarController = self.tabBarController as? TabBarController {
+                        tabBarController.selectedIndex = 1
+                        let viewControllers = self.navigationController?.viewControllers
+                        self.navigationController?.setViewControllers(viewControllers ?? [], animated: false)
+                    }
+                }
+            case .failure(let error):
+                print(error)
+                showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                return
             }
         }
     }

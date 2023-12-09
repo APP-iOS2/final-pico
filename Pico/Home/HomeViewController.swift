@@ -17,9 +17,31 @@ final class HomeViewController: BaseViewController {
     var userCards: [User] = []
     var users = BehaviorRelay<[User]>(value: [])
     var myLikes = BehaviorRelay<[Like.LikeInfo]>(value: [])
-
-    lazy var likeLabel: UILabel = createLabel(text: "GOOD", setColor: .systemGreen)
-    lazy var passLabel: UILabel = createLabel(text: "PASS", setColor: .systemBlue)
+    var likeLabel: UILabel = {
+        let label = UILabel()
+        label.text = "GOOD"
+        label.font = .boldSystemFont(ofSize: 40)
+        label.textColor = .systemGreen.withAlphaComponent(0.8)
+        label.textAlignment = .center
+        label.layer.borderWidth = 4
+        label.layer.borderColor = UIColor.systemGreen.withAlphaComponent(0.8).cgColor
+        label.layer.cornerRadius = 5
+        label.alpha = 0
+        return label
+    }()
+    
+    var passLabel: UILabel = {
+        let label = UILabel()
+        label.text = "PASS"
+        label.font = .boldSystemFont(ofSize: 40)
+        label.textColor = .systemBlue.withAlphaComponent(0.8)
+        label.textAlignment = .center
+        label.layer.borderWidth = 4
+        label.layer.borderColor = UIColor.systemBlue.withAlphaComponent(0.8).cgColor
+        label.layer.cornerRadius = 5
+        label.alpha = 0
+        return label
+    }()
     
     private let numberOfCards: Int = 4
     private let emptyView = HomeEmptyView()
@@ -29,7 +51,7 @@ final class HomeViewController: BaseViewController {
     private let loadingView = LoadingAnimationView()
     private let homeGuideView = HomeGuideView()
     private let loginUser = UserDefaultsManager.shared.getUserData()
-    // MARK: - override
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configNavigationBarItem()
@@ -37,11 +59,7 @@ final class HomeViewController: BaseViewController {
         bind()
         loadCards()
     }
-    
-    override func viewIsAppearing(_ animated: Bool) {
-//        emptyView.animate()
-    }
-    
+
     private func bind() {
         viewModel.users
             .bind(to: users)
@@ -49,10 +67,6 @@ final class HomeViewController: BaseViewController {
         viewModel.myLikes
             .bind(to: myLikes)
             .disposed(by: disposeBag)
-    }
-    
-    private func addSubView() {
-        view.addSubview([likeLabel, passLabel])
     }
     
     private func addGuideView() {
@@ -128,21 +142,6 @@ final class HomeViewController: BaseViewController {
             .disposed(by: disposeBag)
     }
     
-    private func addLoadingView() {
-        loadingView.frame = view.frame
-        loadingView.configBackgroundColor()
-        loadingView.animate()
-        view.addSubview(loadingView)
-    }
-    
-    private func addEmptyView() {
-        view.insertSubview(emptyView, at: 0)
-        emptyView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-//        emptyView.animate()
-    }
-    
     func addUserCards() {
         for userCard in userCards.prefix(self.numberOfCards) {
             var user = userCard
@@ -155,8 +154,25 @@ final class HomeViewController: BaseViewController {
         }
     }
     
+    private func addLoadingView() {
+        loadingView.frame = view.frame
+        loadingView.configBackgroundColor()
+        loadingView.animate()
+        view.addSubview(loadingView)
+    }
+    
+    private func addEmptyView() {
+        view.insertSubview(emptyView, at: 0)
+        emptyView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+    
+    private func addSubView() {
+        view.addSubview([likeLabel, passLabel])
+    }
+    
     private func makeConstraints() {
-        
         likeLabel.snp.makeConstraints { make in
             make.centerX.equalTo(view.snp.centerX)
             make.centerY.equalTo(view.safeAreaLayoutGuide.snp.top).offset(70)
@@ -179,25 +195,12 @@ final class HomeViewController: BaseViewController {
         let filterImage = UIImage(systemName: "slider.horizontal.3")
         let filterButton = UIBarButtonItem(image: filterImage, style: .plain, target: self, action: #selector(tappedFilterButton))
         filterButton.tintColor = .darkGray
-        
+        filterButton.accessibilityLabel = "필터"
         let notificationImage = UIImage(systemName: "bell.fill")
         let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: self, action: #selector(tappedNotificationButton))
         notificationButton.tintColor = .darkGray
-        
+        notificationButton.accessibilityLabel = "알림"
         navigationItem.rightBarButtonItems = [filterButton, notificationButton]
-    }
-    
-    private func createLabel(text: String, setColor: UIColor) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = .boldSystemFont(ofSize: 40)
-        label.textColor = setColor.withAlphaComponent(0.8)
-        label.textAlignment = .center
-        label.layer.borderWidth = 4
-        label.layer.borderColor = setColor.withAlphaComponent(0.8).cgColor
-        label.layer.cornerRadius = 5
-        label.alpha = 0
-        return label
     }
     
     @objc func tappedPickBackButton() {

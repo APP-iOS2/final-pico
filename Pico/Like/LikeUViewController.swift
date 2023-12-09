@@ -23,9 +23,11 @@ final class LikeUViewController: UIViewController {
     private let pushSendConrollerPublisher = PublishSubject<Void>()
     private var isLoading = false
     private var isRefresh = false
+    private var cellTapped: Bool = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        cellTapped = false
         if viewModel.likeUList.isEmpty {
             refreshPublisher.onNext(())
         }
@@ -86,7 +88,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
                 FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.likedUserId, dataType: User.self) { result in
                     switch result {
                     case .success(let data):
-                        guard let user = data else {
+                        guard data != nil else {
                             viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                             return
                         }
@@ -131,6 +133,8 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
                     showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                     return
                 }
+                if cellTapped { return }
+                cellTapped = true
                 viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
                 navigationController?.pushViewController(viewController, animated: true)
             case .failure(let error):

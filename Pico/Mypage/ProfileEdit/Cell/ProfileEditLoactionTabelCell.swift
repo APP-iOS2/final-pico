@@ -30,11 +30,12 @@ final class ProfileEditLoactionTabelCell: UITableViewCell {
         configuration.titleAlignment = .trailing
         button.configuration = configuration
         button.addTarget(self, action: #selector(tappedButton), for: .touchUpInside)
+        button.accessibilityLabel = "현재위치 변경"
         return button
     }()
     
     private var profileEditViewModel: ProfileEditViewModel?
-    private let locationManager = LocationManager()
+    private let locationManager = LocationService()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
