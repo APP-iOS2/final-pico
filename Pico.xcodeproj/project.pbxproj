@@ -589,6 +589,7 @@
 				B15F16142ADE8129002952B4 /* StoreViewModel.swift */,
 				6ADDE2DB2AC2D3A200CE4482 /* StoreTableCell.swift */,
 				6A96D4342AE51AFD0068FA12 /* StoreTableBannerCell.swift */,
+				4B2665322AC3E2E70074D4E2 /* RandomBox */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -855,7 +856,6 @@
 				6A2060472ACD28E100435723 /* CircularProgressBarView.swift */,
 				B15383EE2AE7732C0037DBBA /* ViewModel */,
 				6A7378562AC2A4EF0047DE35 /* Cell */,
-				4B2665322AC3E2E70074D4E2 /* RandomBox */,
 				6ADDE2EC2AC3B95A00CE4482 /* ProfileEdit */,
 				6ADDE2DF2AC30EDE00CE4482 /* Setting */,
 				6ADDE2E02AC30EEA00CE4482 /* Store */,

@@ -42,8 +42,8 @@ final class RandomBoxViewModel: ViewModelType {
     }
     
     struct Output {
-        let resultNormal: Observable<Void>
-        let resultAdvanced: Observable<Void>
+        let resultNormal: Observable<Int>
+        let resultAdvanced: Observable<Int>
         let resultObtainChu: Observable<Int>
     }
     
@@ -51,34 +51,48 @@ final class RandomBoxViewModel: ViewModelType {
         let resultNormal = input.requestNormalPayment
             .withUnretained(self)
             .flatMap { viewModel, chu -> Observable<Void> in
-                viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() - chu
+                viewModel.currentChuCount -= chu
+                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
                     .flatMap { _ -> Observable<Void> in
                         let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: -chu, paymentType: .randombox)
                         return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
                     }
             }
+            .withUnretained(self)
+            .map { viewModel, _ in
+                return viewModel.currentChuCount
+            }
         
         let resultAdvanced = input.requestAdvancedPayment
             .withUnretained(self)
-            .flatMap { viewModel, chu -> Observable<Void> in  viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() - chu
+            .flatMap { viewModel, chu -> Observable<Void> in  viewModel.currentChuCount -= chu
+                UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
                     .flatMap { _ -> Observable<Void> in
                         let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: -chu, paymentType: .randombox)
                         return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
                     }
+            }
+            .withUnretained(self)
+            .map { viewModel, _ in
+                return viewModel.currentChuCount
             }
         
         let resultObtainChu = input.obtainChu
             .withUnretained(self)
             .flatMap { viewModel, chu -> Observable<Int> in
                 viewModel.obtainedChu = chu
-                viewModel.currentChuCount = UserDefaultsManager.shared.getChuCount() + chu
+                viewModel.currentChuCount += viewModel.obtainedChu
                 UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
             }
         
-        return Output(resultNormal: resultNormal, resultAdvanced: resultAdvanced, resultObtainChu: resultObtainChu)
+        return Output(
+            resultNormal: resultNormal,
+            resultAdvanced: resultAdvanced,
+            resultObtainChu: resultObtainChu
+        )
     }
     
     func getRandomValue(index: Int) -> Int {
