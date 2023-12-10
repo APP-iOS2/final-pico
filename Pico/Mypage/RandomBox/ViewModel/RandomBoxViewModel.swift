@@ -44,7 +44,7 @@ final class RandomBoxViewModel: ViewModelType {
     struct Output {
         let resultNormal: Observable<Int>
         let resultAdvanced: Observable<Int>
-        let resultObtainChu: Observable<Int>
+        let resultObtainChu: Observable<Void>
     }
     
     func transform(input: Input) -> Output {
@@ -81,11 +81,15 @@ final class RandomBoxViewModel: ViewModelType {
         
         let resultObtainChu = input.obtainChu
             .withUnretained(self)
-            .flatMap { viewModel, chu -> Observable<Int> in
+            .flatMap { viewModel, chu -> Observable<Void> in
                 viewModel.obtainedChu = chu
                 viewModel.currentChuCount += viewModel.obtainedChu
                 UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
                 return FirestoreService.shared.updateDocumentRx(collectionId: .users, documentId: viewModel.currentUser.userId, field: "chuCount", data: viewModel.currentChuCount)
+                    .flatMap { _ -> Observable<Void> in
+                        let payment: Payment.PaymentInfo = Payment.PaymentInfo(price: 0, purchaseChuCount: chu, paymentType: .randomboxObtain)
+                        return FirestoreService.shared.saveDocumentRx(collectionId: .payment, documentId: viewModel.currentUser.userId, fieldId: "paymentInfos", data: payment)
+                    }
             }
         
         return Output(
