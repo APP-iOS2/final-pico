@@ -1,3 +1,9 @@
+//
+//  WorldCupGameViewController.swift
+//  Pico
+//
+//  Created by 오영석 on 2023/09/25.
+//
 import UIKit
 import SnapKit
 import RxSwift
@@ -139,10 +145,10 @@ final class EntViewController: BaseViewController {
         if let lastStartedTime = UserDefaultsManager.shared.getLastWorldCupTime() {
             let currentTime = Date()
             let timeInterval = currentTime.timeIntervalSince(lastStartedTime)
-            let secondsIn30Minutes: Double = 30 * 60
+            let secondsForHalf: Double = 30 * 60
 
-            if timeInterval < secondsIn30Minutes {
-                remainingTime = Int(secondsIn30Minutes - timeInterval)
+            if timeInterval < secondsForHalf {
+                remainingTime = Int(secondsForHalf - timeInterval)
                 gameStartButton.isEnabled = false
                 startTimer()
             } else {
@@ -175,12 +181,17 @@ final class EntViewController: BaseViewController {
         if remainingTime > 0 {
             let minutes = remainingTime / 60
             let seconds = remainingTime % 60
-            guideLabel.text = String(format: "%02d분 %02d초 뒤에 다시 시작 가능합니다", minutes, seconds)
+
+            DispatchQueue.main.async {
+                self.guideLabel.text = String(format: "%02d분 %02d초 뒤에 다시 시작 가능합니다", minutes, seconds)
+            }
         } else {
-            gameStartButton.isEnabled = true
-            timer?.invalidate()
-            timer = nil
-            guideLabel.text = "30분에 한 번만 진행 가능합니다"
+            DispatchQueue.main.async {
+                self.gameStartButton.isEnabled = true
+                self.timer?.invalidate()
+                self.timer = nil
+                self.guideLabel.text = "30분에 한 번만 진행 가능합니다"
+            }
         }
     }
 }
