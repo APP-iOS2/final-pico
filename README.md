@@ -1,7 +1,8 @@
 # PICO (Pick & Connect)
 
 
-![Group 304](https://github.com/APP-iOS2/final-pico/assets/74815957/538db4db-c134-4018-818e-82ffd87246c7)
+
+![Group 304](https://github.com/APP-iOS2/final-pico/assets/74815957/57fd632c-5cf2-4d61-87f2-328d1505fa1f)
 
 
 
