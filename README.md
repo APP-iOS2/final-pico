@@ -1,11 +1,15 @@
 # PICO (Pick & Connect)
-![824d1b0b9fc4d055](https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/eb4527e5-31a9-4e22-be3d-89d8b7f85339)
-  
+
+
+![Group 304](https://github.com/APP-iOS2/final-pico/assets/74815957/538db4db-c134-4018-818e-82ffd87246c7)
+
+
+
 
 ## 📌 프로젝트 소개
 > 2023.09.25 ~ 2023.10.20 (4주간) <br/>
 - 나와 맞는 사람을 Pick 하고 나와 잘 맞는 사람들과 Connect
-- MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 사용자 간 커뮤니케이션을 지원는 APP
+- MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 사용자 간 커뮤니케이션을 지원하는 APP
 - 소개 영상: https://youtu.be/efr4abi4cTk
 - [사용자 메뉴얼](사용자메뉴얼.pdf)
 
