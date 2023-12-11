@@ -7,9 +7,18 @@
 
 import Foundation
 
+enum APIKey: String {
+    case NotificationKeys
+    case SMSAuthKeys
+    
+    var name: String {
+        return self.rawValue
+    }
+}
+
 extension Bundle {
     var notificationKey: String {
-        guard let file = self.path(forResource: "APIKeys", ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.NotificationKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -18,8 +27,9 @@ extension Bundle {
         }
         return key
     }
+    
     var senderPhoneNumber: String {
-        guard let file = self.path(forResource: "APIKeys", ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -30,7 +40,7 @@ extension Bundle {
     }
     
     var accessKey: String {
-        guard let file = self.path(forResource: "APIKeys", ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -41,7 +51,7 @@ extension Bundle {
     }
     
     var secretKey: String {
-        guard let file = self.path(forResource: "APIKeys", ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -52,7 +62,7 @@ extension Bundle {
     }
     
     var serviceId: String {
-        guard let file = self.path(forResource: "APIKeys", ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
