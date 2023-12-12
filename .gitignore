@@ -93,4 +93,5 @@ iOSInjectionProject/
 **/.DS_Store
 
 # 프로젝트의 모든 경로에서 .plist 파일을 포함하지 않도록 함
-**/*.plist
+/**/*.plist
+
