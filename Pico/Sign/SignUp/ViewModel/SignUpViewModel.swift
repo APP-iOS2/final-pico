@@ -84,13 +84,10 @@ final class SignUpViewModel {
     }
     
     func saveNewUser() {
-        var documentId: String
         if newUser.phoneNumber == Bundle.main.testPhoneNumber {
-            documentId = "test"
-        } else {
-            documentId = newUser.id
+            newUser.id = "test"
         }
-        FirestoreService().saveDocumentRx(collectionId: .users, documentId: documentId, data: newUser)
+        FirestoreService().saveDocumentRx(collectionId: .users, documentId: newUser.id, data: newUser)
             .subscribe(onNext: isSaveSuccess.onNext(_:))
             .disposed(by: disposeBag)
     }
