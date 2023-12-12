@@ -39,50 +39,55 @@ final class SignInViewModel {
                     completion(nil, "일치하는 번호가 없습니다.")
                     return
                 }
+                let retrievedUser = self.convertDocumentToUser(document: document)
                 
-                let data = document.data()
-                let id = document.documentID
-                let mbti = MBTIType(rawValue: data["mbti"] as? String ?? "") ?? .entp
-                let phoneNumber = data["phoneNumber"] as? String ?? ""
-                let gender = GenderType(rawValue: data["gender"] as? String ?? "") ?? .etc
-                let birth = data["birth"] as? String ?? ""
-                let nickName = data["nickName"] as? String ?? ""
-                let locationData = data["location"] as? [String: Any] ?? [:]
-                guard let address = locationData["address"] as? String,
-                      let latitude = locationData["latitude"] as? Double,
-                      let longitude = locationData["longitude"] as? Double else { return }
-                let imageURLs = data["imageURLs"] as? [String] ?? []
-                let createdDate = data["createdDate"] as? Double ?? 0.0
-                
-                let subInfoData = data["subInfo"] as? [String: Any] ?? [:]
-                let intro = subInfoData["intro"] as? String ?? ""
-                let height = subInfoData["height"] as? Int ?? 0
-                let drinkStatus = FrequencyType(rawValue: subInfoData["drinkStatus"] as? String ?? "") ?? .never
-                let smokeStatus = FrequencyType(rawValue: subInfoData["smokeStatus"] as? String ?? "") ?? .never
-                let religion = ReligionType(rawValue: subInfoData["religion"] as? String ?? "") ?? .etc
-                let education = EducationType(rawValue: subInfoData["education"] as? String ?? "") ?? .middle
-                let job = subInfoData["job"] as? String ?? ""
-                let hobbies = subInfoData["hobbies"] as? [String] ?? []
-                let personalities = subInfoData["personalities"] as? [String] ?? []
-                let favoriteMBTIs = subInfoData["favoriteMBTIs"] as? [String] ?? []
-                var mbtiArr: [MBTIType] = []
-                favoriteMBTIs.forEach { mbti in
-                    mbtiArr.append(MBTIType(rawValue: mbti) ?? .enfp)
-                }
-                
-                let subInfo = SubInfo(intro: intro, height: height, drinkStatus: drinkStatus, smokeStatus: smokeStatus, religion: religion, education: education, job: job, hobbies: hobbies, personalities: personalities, favoriteMBTIs: mbtiArr)
-
-                let reports = data["reports"] as? Report ?? Report(userId: "")
-                let blocks = data["blocks"] as? Block ?? Block(userId: "")
-                let chuCount = data["chuCount"] as? Int ?? 0
-                let isSubscribe = data["isSubscribe"] as? Bool ?? false
-                
-                let retrievedUser = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: Location(address: address, latitude: latitude, longitude: longitude), imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfo, reports: [reports], blocks: [blocks], chuCount: chuCount, isSubscribe: isSubscribe)
                 self.isRightUser = true
                 
                 self.loginUser = retrievedUser
                 completion(retrievedUser, "인증번호를 입력해주세요!")
             }
         }
+    }
+    
+    func convertDocumentToUser(document: QueryDocumentSnapshot) -> User {
+        let data = document.data()
+        let id = document.documentID
+        let mbti = MBTIType(rawValue: data["mbti"] as? String ?? "") ?? .entp
+        let phoneNumber = data["phoneNumber"] as? String ?? ""
+        let gender = GenderType(rawValue: data["gender"] as? String ?? "") ?? .etc
+        let birth = data["birth"] as? String ?? ""
+        let nickName = data["nickName"] as? String ?? ""
+        let locationData = data["location"] as? [String: Any] ?? [:]
+        let address = locationData["address"] as? String ?? ""
+        let latitude = locationData["latitude"] as? Double ?? 0.0
+        let longitude = locationData["longitude"] as? Double ?? 0.0
+        let imageURLs = data["imageURLs"] as? [String] ?? []
+        let createdDate = data["createdDate"] as? Double ?? 0.0
+        
+        let subInfoData = data["subInfo"] as? [String: Any] ?? [:]
+        let intro = subInfoData["intro"] as? String ?? ""
+        let height = subInfoData["height"] as? Int ?? 0
+        let drinkStatus = FrequencyType(rawValue: subInfoData["drinkStatus"] as? String ?? "") ?? .never
+        let smokeStatus = FrequencyType(rawValue: subInfoData["smokeStatus"] as? String ?? "") ?? .never
+        let religion = ReligionType(rawValue: subInfoData["religion"] as? String ?? "") ?? .etc
+        let education = EducationType(rawValue: subInfoData["education"] as? String ?? "") ?? .middle
+        let job = subInfoData["job"] as? String ?? ""
+        let hobbies = subInfoData["hobbies"] as? [String] ?? []
+        let personalities = subInfoData["personalities"] as? [String] ?? []
+        let favoriteMBTIs = subInfoData["favoriteMBTIs"] as? [String] ?? []
+        var mbtiArr: [MBTIType] = []
+        favoriteMBTIs.forEach { mbti in
+            mbtiArr.append(MBTIType(rawValue: mbti) ?? .enfp)
+        }
+        
+        let subInfo = SubInfo(intro: intro, height: height, drinkStatus: drinkStatus, smokeStatus: smokeStatus, religion: religion, education: education, job: job, hobbies: hobbies, personalities: personalities, favoriteMBTIs: mbtiArr)
+
+        let reports = data["reports"] as? Report ?? Report(userId: "")
+        let blocks = data["blocks"] as? Block ?? Block(userId: "")
+        let chuCount = data["chuCount"] as? Int ?? 0
+        let isSubscribe = data["isSubscribe"] as? Bool ?? false
+        
+        let retrievedUser = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: Location(address: address, latitude: latitude, longitude: longitude), imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfo, reports: [reports], blocks: [blocks], chuCount: chuCount, isSubscribe: isSubscribe)
+        return retrievedUser
     }
 }

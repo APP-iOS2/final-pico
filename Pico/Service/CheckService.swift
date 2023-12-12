@@ -23,6 +23,12 @@ final class CheckService {
                     guard err == nil, let documents = snapShot?.documents else {
                         return
                     }
+                    
+                    if let document = documents.first {
+                        let user = SignInViewModel().convertDocumentToUser(document: document)
+                        UserDefaultsManager.shared.setUserData(userData: user)
+                    }
+                    
                     completion(documents.first != nil)
                 }
         }
