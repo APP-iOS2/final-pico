@@ -8,8 +8,8 @@
 import Foundation
 
 enum APIKey: String {
-    case NotificationKeys
-    case SMSAuthKeys
+    case FirebaseAPIKeys
+    case NaverAPIKeys
     
     var name: String {
         return self.rawValue
@@ -18,7 +18,7 @@ enum APIKey: String {
 
 extension Bundle {
     var notificationKey: String {
-        guard let file = self.path(forResource: APIKey.NotificationKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.FirebaseAPIKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -29,7 +29,7 @@ extension Bundle {
     }
     
     var testAuthNum: String {
-        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -40,7 +40,7 @@ extension Bundle {
     }
     
     var testPhoneNumber: String {
-        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -51,7 +51,7 @@ extension Bundle {
     }
     
     var senderPhoneNumber: String {
-        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -62,7 +62,7 @@ extension Bundle {
     }
     
     var accessKey: String {
-        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -73,7 +73,7 @@ extension Bundle {
     }
     
     var secretKey: String {
-        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -84,7 +84,7 @@ extension Bundle {
     }
     
     var serviceId: String {
-        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
