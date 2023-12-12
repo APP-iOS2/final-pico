@@ -194,14 +194,14 @@ extension SignInViewController {
                     }
                     Loading.hideLoading()
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                            guard let self = self else { return }
-                            
-                            cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
-                            RunLoop.main.add(cooldownTimer!, forMode: .common)
-                            
-                            NotificationService.shared.saveToken()
-                            configTappedAuthButtonState()
-                            authManager.sendVerificationCode(number: text)
+                        guard let self = self else { return }
+                        
+                        cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
+                        RunLoop.main.add(cooldownTimer!, forMode: .common)
+                        
+                        NotificationService.shared.saveToken()
+                        configTappedAuthButtonState()
+                        authManager.sendVerificationCode(phoneNumber: text)
                     })
                 }
                 
@@ -236,7 +236,7 @@ extension SignInViewController {
                         }
                     })
                 } else {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 틀렸습니다.", confirmButtonText: "확인")
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
                     return
                 }
             })
@@ -247,7 +247,7 @@ extension SignInViewController {
         phoneNumberTextField.isEnabled = !isFull
         phoneNumberTextField.textColor = isFull ? .picoBlue : .gray
     }
-
+    
     private func updateCancelButton(isHidden: Bool) {
         cancelButton.isHidden = isHidden
     }
@@ -290,11 +290,11 @@ extension SignInViewController: UIGestureRecognizerDelegate {
         tapGesture.delegate = self
         self.view.addGestureRecognizer(tapGesture)
     }
-
+    
     @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         self.view.endEditing(true)
     }
-
+    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         if touch.view is UIButton {
             return false

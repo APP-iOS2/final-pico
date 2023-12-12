@@ -48,7 +48,11 @@ final class SMSAuthService {
     private let method = "POST"
     private let timestamp = String(Int(Date().timeIntervalSince1970 * 1000))
     
-    func sendVerificationCode(number: String) {
+    func sendVerificationCode(phoneNumber: String) {
+        guard phoneNumber != Bundle.main.testPhoneNumber else {
+            randomNumber = Bundle.main.testAuthNum
+            return
+        }
         
         let urlString = "https://sens.apigw.ntruss.com/sms/v2/services/\(serviceId)/messages"
         let signature = makeSignature()
@@ -57,8 +61,8 @@ final class SMSAuthService {
         let message = """
             PICO 인증번호: \(randomCode)
             """
-        let number = number.replacingOccurrences(of: "-", with: "")
-
+        let number = phoneNumber.replacingOccurrences(of: "-", with: "")
+        
         let smsRequest = SMSRequest(type: SMSRequestType.sms.name,
                                     from: senderPhoneNumber,
                                     subject: "PICO 인증번호 발송",
@@ -131,7 +135,7 @@ final class SMSAuthService {
         keyData.withUnsafeBytes { keyBytes in
             CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA256), keyBytes.baseAddress, keyData.count, message, message.utf8.count, &macOut)
         }
-
+        
         let hmacData = Data(bytes: macOut, count: Int(CC_SHA256_DIGEST_LENGTH))
         let base64Encoded = hmacData.base64EncodedString()
         

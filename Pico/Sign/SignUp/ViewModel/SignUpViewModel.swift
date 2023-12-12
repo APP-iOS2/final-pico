@@ -55,7 +55,7 @@ final class SignUpViewModel {
         
         imagesSubject
             .flatMap { images -> Observable<[String]> in
-               
+                
                 return StorageService.shared.getUrlStrings(images: images, userId: self.id)
             }
             .subscribe(onNext: urlStringsSubject.onNext(_:))
@@ -78,13 +78,19 @@ final class SignUpViewModel {
         }
         progressStatus = endStatus
     }
-
+    
     func saveImage() {
         imagesSubject.onNext(imageArray)
     }
     
     func saveNewUser() {
-        FirestoreService().saveDocumentRx(collectionId: .users, documentId: newUser.id, data: newUser)
+        var documentId: String
+        if newUser.phoneNumber == Bundle.main.testPhoneNumber {
+            documentId = "test"
+        } else {
+            documentId = newUser.id
+        }
+        FirestoreService().saveDocumentRx(collectionId: .users, documentId: documentId, data: newUser)
             .subscribe(onNext: isSaveSuccess.onNext(_:))
             .disposed(by: disposeBag)
     }

@@ -28,12 +28,34 @@ extension Bundle {
         return key
     }
     
+    var testAuthNum: String {
+        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
+        
+        guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
+        
+        guard let key = resource["TEST_AUTH_NUM"] as? String else {
+            fatalError("KEY를 찾을수없음")
+        }
+        return key
+    }
+    
+    var testPhoneNumber: String {
+        guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
+        
+        guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
+        
+        guard let key = resource["TEST_PHONE_NUMBER"] as? String else {
+            fatalError("KEY를 찾을수없음")
+        }
+        return key
+    }
+    
     var senderPhoneNumber: String {
         guard let file = self.path(forResource: APIKey.SMSAuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
-        guard let key = resource["SENDERPHONENUMBER"] as? String else {
+        guard let key = resource["SENDER_PHONE_NUMBER"] as? String else {
             fatalError("KEY를 찾을수없음")
         }
         return key

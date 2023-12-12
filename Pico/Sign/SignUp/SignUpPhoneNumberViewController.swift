@@ -16,10 +16,12 @@ final class SignUpPhoneNumberViewController: UIViewController {
     let viewModel: SignUpViewModel
     private var cooldownTimer: Timer?
     private var cooldownSeconds = 180
+    
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
+    
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -228,6 +230,7 @@ extension SignUpPhoneNumberViewController {
         sender.tappedAnimation()
         configReset()
     }
+    
     @objc private func tappedAuthButton(_ sender: UIButton) {
         view.endEditing(true)
         sender.tappedAnimation()
@@ -236,6 +239,11 @@ extension SignUpPhoneNumberViewController {
         isTappedCheckButton = true
         
         guard let phoneNumber = self.phoneNumberTextField.text else { return }
+        guard phoneNumber != Bundle.main.testPhoneNumber else {
+            alertSendNumber(phoneNumber: phoneNumber, isRight: true)
+            return
+        }
+        
         checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlocked in
             guard let self = self else { return }
             
@@ -257,19 +265,22 @@ extension SignUpPhoneNumberViewController {
                     return
                 }
                 Loading.hideLoading()
-                
-                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                    guard let self = self else { return }
-                    
-                    cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
-                    RunLoop.main.add(cooldownTimer!, forMode: .common)
-                    
-                    updateViewState(num: phoneNumber)
-                    viewModel.isRightPhoneNumber = isRight
-                    smsAuthManager.sendVerificationCode(number: phoneNumber)
-                })
+                alertSendNumber(phoneNumber: phoneNumber, isRight: isRight)
             }
         }
+    }
+    
+    private func alertSendNumber(phoneNumber: String, isRight: Bool) {
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+            guard let self = self else { return }
+            
+            cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
+            RunLoop.main.add(cooldownTimer!, forMode: .common)
+            
+            updateViewState(num: phoneNumber)
+            viewModel.isRightPhoneNumber = isRight
+            smsAuthManager.sendVerificationCode(phoneNumber: phoneNumber)
+        })
     }
     
     @objc private func tappedNextButton(_ sender: UIButton) {
@@ -277,7 +288,7 @@ extension SignUpPhoneNumberViewController {
         sender.tappedAnimation()
         configAuthText()
         guard smsAuthManager.checkRightCode(code: authText) else {
-            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 확인해주세요.", confirmButtonText: "확인")
+            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
             return
         }
         showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
