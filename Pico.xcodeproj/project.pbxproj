@@ -151,6 +151,9 @@
 		B15F16172ADE847C002952B4 /* StoreModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F16162ADE847C002952B4 /* StoreModel.swift */; };
 		B15F16192ADE8587002952B4 /* Int+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F16182ADE8587002952B4 /* Int+Extensions.swift */; };
 		B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B161B8712AC414DD00257A9C /* PopupViewController.swift */; };
+		B1672E842B28431D00A404CB /* FirebaseAPIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = B1672E812B28431D00A404CB /* FirebaseAPIKeys.plist */; };
+		B1672E852B28431D00A404CB /* NaverAPIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = B1672E822B28431D00A404CB /* NaverAPIKeys.plist */; };
+		B1672E862B28431D00A404CB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B1672E832B28431D00A404CB /* GoogleService-Info.plist */; };
 		B1701F902AD033B70014850D /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F8F2AD033B70014850D /* Double+Extensions.swift */; };
 		B1701F922AD4351A0014850D /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1701F912AD4351A0014850D /* Array+Extensions.swift */; };
 		B17CC8152AE30DA3003D1873 /* MailSendViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17CC8142AE30DA3003D1873 /* MailSendViewModel.swift */; };
@@ -366,6 +369,9 @@
 		B15F16162ADE847C002952B4 /* StoreModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreModel.swift; sourceTree = "<group>"; };
 		B15F16182ADE8587002952B4 /* Int+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extensions.swift"; sourceTree = "<group>"; };
 		B161B8712AC414DD00257A9C /* PopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
+		B1672E812B28431D00A404CB /* FirebaseAPIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FirebaseAPIKeys.plist; sourceTree = "<group>"; };
+		B1672E822B28431D00A404CB /* NaverAPIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = NaverAPIKeys.plist; sourceTree = "<group>"; };
+		B1672E832B28431D00A404CB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B1701F8F2AD033B70014850D /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
 		B1701F912AD4351A0014850D /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		B17CC8142AE30DA3003D1873 /* MailSendViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailSendViewModel.swift; sourceTree = "<group>"; };
@@ -743,6 +749,9 @@
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
 				B14B58D42AC0A232009889DA /* LaunchScreen.storyboard */,
+				B1672E812B28431D00A404CB /* FirebaseAPIKeys.plist */,
+				B1672E832B28431D00A404CB /* GoogleService-Info.plist */,
+				B1672E822B28431D00A404CB /* NaverAPIKeys.plist */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -1298,9 +1307,12 @@
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
 				BCD6253B2AE5B5940079BD28 /* HomeEmptyLottie.json in Resources */,
+				B1672E862B28431D00A404CB /* GoogleService-Info.plist in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
+				B1672E842B28431D00A404CB /* FirebaseAPIKeys.plist in Resources */,
+				B1672E852B28431D00A404CB /* NaverAPIKeys.plist in Resources */,
 				B15383E42AE770810037DBBA /* worldcupAnimation.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
