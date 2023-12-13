@@ -115,10 +115,16 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         userImageView.kf.setImage(with: url)
         nameLabel.text = nameText
         mbtiLabel.setMbti(mbti: mbti)
-        messageButton.isHidden = isHiddenMessageButton
-        deleteButton.isHidden = isHiddenDeleteButton
-        likeButton.isHidden = isHiddenDeleteButton
         matchLabel.isHidden = isHiddenMatchLabel
+        if isHiddenMatchLabel {
+            messageButton.isHidden = isHiddenMessageButton
+            deleteButton.isHidden = isHiddenDeleteButton
+            likeButton.isHidden = isHiddenDeleteButton
+        } else {
+            deleteButton.isHidden = true
+            likeButton.isHidden = true
+            messageButton.isHidden = false
+        }
     }
     
     private func addViews() {

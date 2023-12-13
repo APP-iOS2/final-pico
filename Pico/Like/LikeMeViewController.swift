@@ -98,7 +98,30 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
                 })
             })
             .disposed(by: cell.disposeBag)
-        
+        cell.messageButtonTapObservable
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.likedUserId, dataType: User.self) { result in
+                    switch result {
+                    case .success(let data):
+                        guard data != nil else {
+                            viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                            return
+                        }
+                        viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭된 사용자에게 메일을 보냅니다.", confirmButtonText: "보내기", comfrimAction: {
+                            let mailSendView = MailSendViewController()
+                            mailSendView.configData(userId: item.likedUserId, atMessageView: false)
+                            mailSendView.modalPresentationStyle = .formSheet
+                            self.present(mailSendView, animated: true, completion: nil)
+                        })
+                    case .failure(let error):
+                        print(error)
+                        viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                        return
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
         return cell
         
     }
