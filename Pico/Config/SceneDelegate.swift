@@ -12,13 +12,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
-        let checkService = CheckService()
+
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         let curentUser = UserDefaultsManager.shared.getUserData()
         
         if UserDefaultsManager.shared.isLogin() {
+            let checkService = CheckService()
             checkService.checkUserId(userId: curentUser.userId) { isUser in
                 if isUser {
                     FirestoreService.shared.saveDocument(collectionId: .session, documentId: curentUser.phoneNumber)

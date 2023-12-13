@@ -25,28 +25,28 @@ enum Collections {
     
     var name: String {
         switch self {
-            case .users:
-                return "users"
-            case .likes:
-                return "likes"
-            case .notifications:
-                return "notifications"
-            case .mail:
-                return "mail"
-            case .payment:
-                return "payment"
-            case .tokens:
-                return "tokens"
-            case .unsubscribe:
-                return "unsubscribe"
-            case .report:
-                return "Report"
-            case .block:
-                return "Block"
-            case .adminReport:
-                return "reports"
-            case .session:
-                return "session"
+        case .users:
+            return "users"
+        case .likes:
+            return "likes"
+        case .notifications:
+            return "notifications"
+        case .mail:
+            return "mail"
+        case .payment:
+            return "payment"
+        case .tokens:
+            return "tokens"
+        case .unsubscribe:
+            return "unsubscribe"
+        case .report:
+            return "Report"
+        case .block:
+            return "Block"
+        case .adminReport:
+            return "reports"
+        case .session:
+            return "session"
         }
     }
 }
@@ -270,13 +270,13 @@ final class FirestoreService {
         return Observable.create { emitter in
             self.saveDocument(collectionId: collectionId, documentId: documentId, data: data) { result in
                 switch result {
-                    case .success(let bool):
-                        if bool {
-                            emitter.onNext(())
-                            emitter.onCompleted()
-                        }
-                    case .failure(let error):
-                        emitter.onError(error)
+                case .success(let bool):
+                    if bool {
+                        emitter.onNext(())
+                        emitter.onCompleted()
+                    }
+                case .failure(let error):
+                    emitter.onError(error)
                 }
             }
             return Disposables.create()
@@ -287,13 +287,13 @@ final class FirestoreService {
         return Observable.create { emitter in
             self.saveDocument(collectionId: collectionId, documentId: documentId, fieldId: fieldId, data: data) { result in
                 switch result {
-                    case .success(let bool):
-                        if bool {
-                            emitter.onNext(())
-                            emitter.onCompleted()
-                        }
-                    case .failure(let error):
-                        emitter.onError(error)
+                case .success(let bool):
+                    if bool {
+                        emitter.onNext(())
+                        emitter.onCompleted()
+                    }
+                case .failure(let error):
+                    emitter.onError(error)
                 }
             }
             return Disposables.create()
@@ -304,11 +304,11 @@ final class FirestoreService {
         return Observable.create { emitter in
             self.loadDocuments(collectionId: collectionId, dataType: dataType) { result in
                 switch result {
-                    case .success(let data):
-                        emitter.onNext(data)
-                        emitter.onCompleted()
-                    case .failure(let error):
-                        emitter.onError(error)
+                case .success(let data):
+                    emitter.onNext(data)
+                    emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
                 }
             }
             return Disposables.create()
@@ -319,11 +319,11 @@ final class FirestoreService {
         return Observable.create { emitter in
             self.loadDocuments(collectionId: collectionId, dataType: dataType, orderBy: orderBy, itemsPerPage: itemsPerPage, lastDocumentSnapshot: lastDocumentSnapshot) { result in
                 switch result {
-                    case .success(let data):
-                        emitter.onNext(data)
-                        emitter.onCompleted()
-                    case .failure(let error):
-                        emitter.onError(error)
+                case .success(let data):
+                    emitter.onNext(data)
+                    emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
                 }
             }
             return Disposables.create()
@@ -334,11 +334,11 @@ final class FirestoreService {
         return Observable.create { emitter in
             self.loadDocument(collectionId: collectionId, documentId: documentId, dataType: dataType) { result in
                 switch result {
-                    case .success(let data):
-                        emitter.onNext(data)
-                        emitter.onCompleted()
-                    case .failure(let error):
-                        emitter.onError(error)
+                case .success(let data):
+                    emitter.onNext(data)
+                    emitter.onCompleted()
+                case .failure(let error):
+                    emitter.onError(error)
                 }
             }
             return Disposables.create()
@@ -350,10 +350,10 @@ final class FirestoreService {
             guard let self = self else { return Disposables.create() }
             updateDocument(collectionId: collectionId, documentId: documentId, field: field, data: data) { result in
                 switch result {
-                    case .success(let data):
-                        emitter.onNext(data)
-                    case .failure(let error):
-                        emitter.onError(error)
+                case .success(let data):
+                    emitter.onNext(data)
+                case .failure(let error):
+                    emitter.onError(error)
                 }
             }
             return Disposables.create()
@@ -365,10 +365,10 @@ final class FirestoreService {
             guard let self = self else { return Disposables.create() }
             searchDocumentWithEqualField(collectionId: collectionId, field: field, compareWith: compareWith, dataType: dataType) { result in
                 switch result {
-                    case .success(let data):
-                        emitter.onNext(data)
-                    case .failure(let error):
-                        emitter.onError(error)
+                case .success(let data):
+                    emitter.onNext(data)
+                case .failure(let error):
+                    emitter.onError(error)
                 }
             }
             return Disposables.create()
@@ -380,10 +380,10 @@ final class FirestoreService {
             guard let self = self else { return Disposables.create() }
             removeDocument(collectionId: collectionId, documentId: documentId) { result in
                 switch result {
-                    case .success:
-                        emitter.onNext(())
-                    case .failure(let error):
-                        emitter.onError(error)
+                case .success:
+                    emitter.onNext(())
+                case .failure(let error):
+                    emitter.onError(error)
                 }
             }
             return Disposables.create()
