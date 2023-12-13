@@ -81,7 +81,7 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
         guard let item = viewModel.likeUList[safe: indexPath.row] else { return cell }
-        cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti)
+        cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: true, isHiddenMessageButton: false, mbti: item.mbti, isHiddenMatchLabel: !item.isMatch)
         cell.messageButtonTapObservable
             .withUnretained(self)
             .subscribe { viewController, _ in

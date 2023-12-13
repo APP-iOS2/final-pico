@@ -28,6 +28,9 @@ struct Like: Codable {
             return ageComponents.year ?? 0
         }
         let createdDate: Double
+        var isMatch: Bool {
+            return likeType == .matching
+        }
     }
 
     enum LikeType: String, Codable {
