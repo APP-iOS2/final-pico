@@ -10,6 +10,10 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+protocol MailSendDelegate: AnyObject {
+    func pushUserDetailViewController(user: User)
+}
+
 final class MailSendTableListController: BaseViewController {
     
     private let viewModel = MailSendViewModel()
@@ -30,6 +34,18 @@ final class MailSendTableListController: BaseViewController {
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         return tableView
     }()
+    
+    var mailViewController: MailViewController
+    
+    init(viewController: MailViewController) {
+        self.mailViewController = viewController
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     // MARK: - MailView +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,6 +106,7 @@ extension MailSendTableListController: UITableViewDataSource, UITableViewDelegat
         let item = viewModel.sendList[indexPath.row]
         let mailReceiveView = MailReceiveViewController()
         mailReceiveView.modalPresentationStyle = .formSheet
+        mailReceiveView.mailSendDelegate = self
         mailReceiveView.configData(mailSender: item)
         self.present(mailReceiveView, animated: true, completion: nil)
     }
@@ -159,5 +176,14 @@ extension MailSendTableListController: UIScrollViewDelegate {
                 self.mailListTableView.tableFooterView = nil
             }
         }
+    }
+}
+// MARK: - GoDetailView
+extension MailSendTableListController: MailSendDelegate {
+    func pushUserDetailViewController(user: User) {
+        print(user)
+        let viewController = UserDetailViewController()
+        viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
+        self.mailViewController.navigationController?.pushViewController(viewController, animated: true)
     }
 }
