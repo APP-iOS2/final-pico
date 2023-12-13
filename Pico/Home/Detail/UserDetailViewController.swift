@@ -141,6 +141,7 @@ final class UserDetailViewController: UIViewController {
                                                     likeMbtis: subInfo.favoriteMBTIs)
             // SubInfo가 없을시 뷰에 안보이도록 설정
         } else {
+            distance = viewModel.calculateDistance()
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
                                                       locationText: distance < 1000.0 ? "\(viewModel.user.location.address), 가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
