@@ -119,4 +119,19 @@ final class CheckService {
                 }
             }
     }
+    
+    func disConnectSession() {
+        let currentUser = UserDefaultsManager.shared.getUserData()
+        let phoneNumber = currentUser.phoneNumber
+        print(phoneNumber)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            FirestoreService.shared.dbRef.collection("session").document(phoneNumber).delete { err in
+                if let err = err {
+                    print("Error updating document: \(err)")
+                } else {
+                    print("Document successfully updated")
+                }
+            }
+        }
+    }
 }

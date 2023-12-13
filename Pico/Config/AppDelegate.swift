@@ -47,6 +47,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Messaging.messaging().apnsToken = deviceToken
     }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        let checkService = CheckService()
+        checkService.disConnectSession()
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {

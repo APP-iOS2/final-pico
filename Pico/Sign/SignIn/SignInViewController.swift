@@ -108,6 +108,7 @@ final class SignInViewController: UIViewController {
         super.viewWillAppear(animated)
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
+        configReset()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -227,7 +228,22 @@ extension SignInViewController {
                 if authManager.checkRightCode(code: authText) {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
-                        
+                        guard let number = phoneNumberTextField.text else { return }
+                        FirestoreService.shared.loadDocument(collectionId: .session, documentId: number, dataType: User.self) { [weak self] result in
+                            guard let self = self else { return }
+                            switch result {
+                            case .success(let user):
+                                if let user {
+                                    showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "이미 로그인을 하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                                        guard let self = self else { return }
+                                        navigationController?.popViewController(animated: true)
+                                    })
+                                    return
+                                }
+                            case .failure(let err):
+                                print(err)
+                            }
+                        }
                         if let user = viewModel.loginUser {
                             let viewController = LoginSuccessViewController(user: user)
                             self.navigationController?.pushViewController(viewController, animated: true)

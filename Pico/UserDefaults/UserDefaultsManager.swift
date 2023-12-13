@@ -9,7 +9,7 @@ import Foundation
 
 final class UserDefaultsManager {
     enum Key: String, CaseIterable {
-        case userId, nickName, mbti, imageURL, birth
+        case userId, nickName, mbti, imageURL, birth, phoneNumber
         case latitude, longitude
         case filterGender, filterMbti, filterDistance, filterAgeMin, filterAgeMax
         case chuCount
@@ -37,6 +37,8 @@ final class UserDefaultsManager {
         UserDefaults.standard.setValue(userData.location.longitude, forKey: Key.longitude.rawValue)
         
         UserDefaults.standard.setValue(userData.chuCount, forKey: Key.chuCount.rawValue)
+        UserDefaults.standard.setValue(userData.phoneNumber, forKey: Key.phoneNumber.rawValue)
+        
     }
     
     func isLogin() -> Bool {
@@ -51,7 +53,8 @@ final class UserDefaultsManager {
         let birth = UserDefaults.standard.string(forKey: Key.birth.rawValue) ?? "없음"
         let latitude = UserDefaults.standard.double(forKey: Key.latitude.rawValue)
         let longitude = UserDefaults.standard.double(forKey: Key.longitude.rawValue)
-        return CurrentUser(userId: userId, nickName: nickName, mbti: mbti, imageURL: imageURL, birth: birth, latitude: latitude, longitude: longitude)
+        let phoneNumber = UserDefaults.standard.string(forKey: Key.phoneNumber.rawValue) ?? ""
+        return CurrentUser(userId: userId, nickName: nickName, mbti: mbti, imageURL: imageURL, birth: birth, latitude: latitude, longitude: longitude, phoneNumber: phoneNumber)
     }
     
     func getChuCount() -> Int {
