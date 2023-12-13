@@ -111,7 +111,7 @@ final class UserDetailViewController: UIViewController {
     // Bind Code
     private func bind() {
         self.navigationItem.title = "\(viewModel.user.nickName),  \(viewModel.user.age)"
-        self.userImageViewController.config(images: viewModel.user.imageURLs)
+        self.userImageViewController.config(images: viewModel.user.imageURLs, compatibilityView: viewModel.compatibilityView)
         distance = viewModel.calculateDistance()
         // SubInfo 있을 시
         if let subInfo = viewModel.user.subInfo {
