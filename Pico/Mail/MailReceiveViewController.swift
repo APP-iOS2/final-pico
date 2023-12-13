@@ -17,6 +17,7 @@ final class MailReceiveViewController: UIViewController {
     private var mailUser: Mail.MailInfo = Mail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
     
     weak var mailReceiveDelegate: MailReceiveDelegate?
+    weak var mailSendDelegate: MailSendDelegate?
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
@@ -255,19 +256,26 @@ final class MailReceiveViewController: UIViewController {
         dismiss(animated: true)
         
         var userId: String
+        
         if self.mailUser.mailType == .receive {
             userId = self.mailUser.sendedUserId
         } else {
             userId = self.mailUser.receivedUserId
         }
-        
+    
         FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let user):
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
-                    mailReceiveDelegate?.pushUserDetailViewController(user: userData)
+                    if self.mailUser.mailType == .receive {
+                        print("im here")
+                        mailReceiveDelegate?.pushUserDetailViewController(user: userData)
+                    } else {
+                        print("here")
+                        mailSendDelegate?.pushUserDetailViewController(user: userData)
+                    }
                 }
             case .failure(let err):
                 print(err)
