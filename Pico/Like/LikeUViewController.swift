@@ -28,9 +28,7 @@ final class LikeUViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         cellTapped = false
-        if viewModel.likeUList.isEmpty {
-            refreshPublisher.onNext(())
-        }
+        refreshPublisher.onNext(())
         collectionView.reloadData()
         checkEmptyPublisher.onNext(())
     }

@@ -28,9 +28,7 @@ final class LikeMeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         cellTapped = false
-        if viewModel.likeMeList.isEmpty {
-            refreshPublisher.onNext(())
-        }
+        refreshPublisher.onNext(())
         collectionView.reloadData()
         checkEmptyPublisher.onNext(())
     }
