@@ -52,13 +52,13 @@ final class CheckService {
                     completion("서버에 문제가 있습니다.", false)
                     return
                 }
-
+                
                 guard documents.first != nil else {
                     completion("사용가능한 전화번호 입니다.", true)
                     return
                 }
                 completion("이미 회원가입을 하셨어요!!", false)
-        }
+            }
     }
     
     func checkNickName(name: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
@@ -73,18 +73,18 @@ final class CheckService {
                 self.dbRef
                     .collection("users").whereField("nickName", isEqualTo: name)
                     .getDocuments { snapShot, err in
-                    guard err == nil, let documents = snapShot?.documents else {
-
-                        print(err ?? "서버오류 비상비상")
-                        return
-                    }
+                        guard err == nil, let documents = snapShot?.documents else {
+                            
+                            print(err ?? "서버오류 비상비상")
+                            return
+                        }
                         
-                    guard documents.first != nil else {
-                        completion("사용가능한 닉네임이에요!", true)
-                        return
+                        guard documents.first != nil else {
+                            completion("사용가능한 닉네임이에요!", true)
+                            return
+                        }
+                        completion("이미 포함된 닉네임이네요..", false)
                     }
-                    completion("이미 포함된 닉네임이네요..", false)
-                }
             } else {
                 completion("연속된 자음 또는 모음이 포함되어 있어요! 제대로 지어주세요 😁", false)
                 return
@@ -124,13 +124,11 @@ final class CheckService {
         let currentUser = UserDefaultsManager.shared.getUserData()
         let phoneNumber = currentUser.phoneNumber
         print(phoneNumber)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            FirestoreService.shared.dbRef.collection("session").document(phoneNumber).delete { err in
-                if let err = err {
-                    print("Error updating document: \(err)")
-                } else {
-                    print("Document successfully updated")
-                }
+        FirestoreService.shared.dbRef.collection("session").document(phoneNumber).delete { err in
+            if let err = err {
+                print("Error updating document: \(err)")
+            } else {
+                print("Document successfully updated")
             }
         }
     }
