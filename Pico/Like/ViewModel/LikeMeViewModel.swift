@@ -121,7 +121,7 @@ final class LikeMeViewModel: ViewModelType {
                 }
                 
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType == .like }) {
+                    if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType != .dislike }) {
                         let sorted = datas.sorted {
                             return $0.createdDate > $1.createdDate
                         }
