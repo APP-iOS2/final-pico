@@ -27,7 +27,7 @@ final class TabBarController: UITabBarController {
         let mypageViewController = UINavigationController(rootViewController: MypageViewController())
         
         homeViewController.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house.fill"), tag: 0)
-        mailViewController.tabBarItem = UITabBarItem(title: "메일", image: UIImage(systemName: "envelope.fill"), tag: 1)
+        mailViewController.tabBarItem = UITabBarItem(title: "쪽지", image: UIImage(systemName: "envelope.fill"), tag: 1)
         likeViewController.tabBarItem = UITabBarItem(title: "좋아요", image: UIImage(systemName: "heart.fill"), tag: 2)
         entViewController.tabBarItem = UITabBarItem(title: "게임", image: UIImage(systemName: "gamecontroller.fill"), tag: 3)
         mypageViewController.tabBarItem = UITabBarItem(title: "마이", image: UIImage(systemName: "person.fill"), tag: 4)

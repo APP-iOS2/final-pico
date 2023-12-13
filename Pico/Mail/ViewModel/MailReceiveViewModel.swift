@@ -112,8 +112,8 @@ final class MailReceiveViewModel {
                             return
                         }
                         let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                        receiveList = currentPageDatas
-                        startIndex = currentPageDatas.count
+                        receiveList += currentPageDatas
+                        startIndex += currentPageDatas.count
                         
                         reloadMailTableViewPublisher.onNext(())
                     }
