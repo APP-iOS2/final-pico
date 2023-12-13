@@ -57,6 +57,7 @@ final class MailSendTableListController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        viewModel.startIndex = 0
         loadDataPublsher.onNext(())
         refreshPublisher.onNext(())
         checkSendEmptyPublisher.onNext(())
@@ -81,6 +82,7 @@ final class MailSendTableListController: BaseViewController {
         isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
+            viewModel.startIndex = 0
             refreshPublisher.onNext(())
             refresh.endRefreshing()
             isRefresh = false
