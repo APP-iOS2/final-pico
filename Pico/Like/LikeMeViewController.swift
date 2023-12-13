@@ -81,7 +81,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
         let item = viewModel.likeMeList[indexPath.row]
-        cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true, mbti: item.mbti)
+        cell.configData(userId: item.likedUserId, isHiddenDeleteButton: false, isHiddenMessageButton: true)
         
         cell.deleteButtonTapObservable
             .subscribe(onNext: { [weak self] in
