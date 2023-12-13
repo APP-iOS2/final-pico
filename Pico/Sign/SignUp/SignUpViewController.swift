@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxRelay
+import SafariServices
 
 final class SignUpViewController: UIViewController {
     let viewModel: SignUpViewModel = SignUpViewModel()
@@ -32,6 +33,13 @@ final class SignUpViewController: UIViewController {
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.picoTitleFont
         return label
+    }()
+    
+    private let mbtiButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
+        button.tintColor = .picoFontGray
+        return button
     }()
     
     private let buttonHorizontalStack: UIStackView = {
@@ -125,6 +133,12 @@ extension SignUpViewController: SignViewControllerDelegate {
         mbtiThirdButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         mbtiFourthButton.addTarget(self, action: #selector(tappedMbtiButton), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
+        mbtiButton.addTarget(self, action: #selector(didSelectItem), for: .touchUpInside)
+    }
+    
+   @objc private func didSelectItem() {
+       guard let url = URL(string: "https://www.16personalities.com/ko/%EB%AC%B4%EB%A3%8C-%EC%84%B1%EA%B2%A9-%EC%9C%A0%ED%98%95-%EA%B2%80%EC%82%AC") else {return}
+       present(SFSafariViewController(url: url), animated: false)
     }
     
     private func configMbtiModal(_ sender: UIButton) {
@@ -224,7 +238,7 @@ extension SignUpViewController {
             buttonHorizontalStack.addArrangedSubview(stackViewItem)
         }
         
-        for viewItem in [ progressView, notifyLabel, buttonHorizontalStack, nextButton] {
+        for viewItem in [ progressView, notifyLabel, mbtiButton, buttonHorizontalStack, nextButton] {
             view.addSubview(viewItem)
         }
     }
@@ -242,6 +256,11 @@ extension SignUpViewController {
         notifyLabel.snp.makeConstraints { make in
             make.top.equalTo(progressView.snp.bottom).offset(SignView.padding)
             make.leading.equalTo(SignView.padding)
+        }
+        
+        mbtiButton.snp.makeConstraints { make in
+            make.top.equalTo(progressView.snp.bottom).offset(SignView.padding)
+            make.leading.equalTo(notifyLabel.snp.trailing)
             make.trailing.equalTo(-SignView.padding)
         }
         
@@ -254,7 +273,7 @@ extension SignUpViewController {
         
         nextButton.snp.makeConstraints { make in
             make.leading.equalTo(notifyLabel.snp.leading)
-            make.trailing.equalTo(notifyLabel.snp.trailing)
+            make.trailing.equalTo(mbtiButton.snp.trailing)
             make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
             make.height.equalTo(CommonConstraints.buttonHeight)
         }

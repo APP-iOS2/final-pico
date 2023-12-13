@@ -52,13 +52,13 @@ final class CheckService {
                     completion("서버에 문제가 있습니다.", false)
                     return
                 }
-
+                
                 guard documents.first != nil else {
                     completion("사용가능한 전화번호 입니다.", true)
                     return
                 }
                 completion("이미 회원가입을 하셨어요!!", false)
-        }
+            }
     }
     
     func checkNickName(name: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
@@ -70,15 +70,13 @@ final class CheckService {
             Loading.showLoading()
             
             if matches.isEmpty {
-                self.dbRef
-                    .collection("users").whereField("nickName", isEqualTo: name)
-                    .getDocuments { snapShot, err in
+                self.dbRef.collection("users").whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
                     guard err == nil, let documents = snapShot?.documents else {
-
+                        
                         print(err ?? "서버오류 비상비상")
                         return
                     }
-                        
+                    
                     guard documents.first != nil else {
                         completion("사용가능한 닉네임이에요!", true)
                         return
@@ -118,5 +116,18 @@ final class CheckService {
                     completion(false) // 차단된 사용자가 아님
                 }
             }
+    }
+    
+    func disConnectSession() {
+        let currentUser = UserDefaultsManager.shared.getUserData()
+        let phoneNumber = currentUser.phoneNumber
+        print(phoneNumber)
+        FirestoreService.shared.dbRef.collection("session").document(phoneNumber).delete { err in
+            if let err = err {
+                print("Error updating document: \(err)")
+            } else {
+                print("Document successfully updated")
+            }
+        }
     }
 }
