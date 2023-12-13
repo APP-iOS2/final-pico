@@ -70,21 +70,19 @@ final class CheckService {
             Loading.showLoading()
             
             if matches.isEmpty {
-                self.dbRef
-                    .collection("users").whereField("nickName", isEqualTo: name)
-                    .getDocuments { snapShot, err in
-                        guard err == nil, let documents = snapShot?.documents else {
-                            
-                            print(err ?? "서버오류 비상비상")
-                            return
-                        }
+                self.dbRef.collection("users").whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
+                    guard err == nil, let documents = snapShot?.documents else {
                         
-                        guard documents.first != nil else {
-                            completion("사용가능한 닉네임이에요!", true)
-                            return
-                        }
-                        completion("이미 포함된 닉네임이네요..", false)
+                        print(err ?? "서버오류 비상비상")
+                        return
                     }
+                    
+                    guard documents.first != nil else {
+                        completion("사용가능한 닉네임이에요!", true)
+                        return
+                    }
+                    completion("이미 포함된 닉네임이네요..", false)
+                }
             } else {
                 completion("연속된 자음 또는 모음이 포함되어 있어요! 제대로 지어주세요 😁", false)
                 return

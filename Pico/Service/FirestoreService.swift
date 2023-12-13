@@ -86,7 +86,6 @@ final class FirestoreService {
     func saveDocument(collectionId: Collections, documentId: String) {
         DispatchQueue.global().async {
             self.dbRef.collection(collectionId.name).document(documentId).setData([:])
-            
             print("Success to save new document at \(collectionId.name) \(documentId)")
         }
     }
