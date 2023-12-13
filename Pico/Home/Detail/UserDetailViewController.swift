@@ -112,6 +112,7 @@ final class UserDetailViewController: UIViewController {
     private func bind() {
         self.navigationItem.title = "\(viewModel.user.nickName),  \(viewModel.user.age)"
         self.userImageViewController.config(images: viewModel.user.imageURLs)
+        distance = viewModel.calculateDistance()
         // SubInfo 있을 시
         if let subInfo = viewModel.user.subInfo {
             // Height가 없을시 nil 전달
@@ -121,7 +122,6 @@ final class UserDetailViewController: UIViewController {
                                                           locationText: "\(viewModel.user.location.address)",
                                                           heightText: nil)
             }
-            distance = viewModel.calculateDistance()
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
                                                       locationText: distance < 1000.0 ? "\(viewModel.user.location.address), 가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
@@ -141,7 +141,6 @@ final class UserDetailViewController: UIViewController {
                                                     likeMbtis: subInfo.favoriteMBTIs)
             // SubInfo가 없을시 뷰에 안보이도록 설정
         } else {
-            distance = viewModel.calculateDistance()
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
                                                       locationText: distance < 1000.0 ? "\(viewModel.user.location.address), 가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
