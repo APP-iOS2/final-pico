@@ -95,32 +95,15 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         nameLabel.text = ""
     }
     
-    func configData(userId: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool) {
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let user):
-                guard let user = user[safe: 0] else { return }
-                guard let imageUrl = user.imageURLs[safe: 0] else {
-                    print("이미지 URL 가져오기 실패")
-                    return
-                }
-                guard let url = URL(string: imageUrl) else {
-                    print("URL 변환 실패")
-                    return
-                }
-                userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-                userImageView.kf.setImage(with: url)
-                nameLabel.text = user.nickName
-                mbtiLabel.setMbti(mbti: user.mbti)
-                messageButton.isHidden = isHiddenMessageButton
-                deleteButton.isHidden = isHiddenDeleteButton
-                likeButton.isHidden = isHiddenDeleteButton
-
-            case .failure(let error):
-                print("유저 불러오기 실패: \(error)")
-            }
-        }
+    func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType) {
+            guard let url = URL(string: image) else { return }
+            userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+            userImageView.kf.setImage(with: url)
+            nameLabel.text = nameText
+            mbtiLabel.setMbti(mbti: mbti)
+            messageButton.isHidden = isHiddenMessageButton
+            deleteButton.isHidden = isHiddenDeleteButton
+            likeButton.isHidden = isHiddenDeleteButton
     }
     
     private func addViews() {
