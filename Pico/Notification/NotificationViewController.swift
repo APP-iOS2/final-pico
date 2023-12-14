@@ -30,6 +30,11 @@ final class NotificationViewController: UIViewController {
         checkEmptyPublisher.onNext(())
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.popViewController(animated: false)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tabBarController?.tabBar.isHidden = true
@@ -115,6 +120,10 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
                     }
                 } else {
                     if let tabBarController = self.tabBarController as? TabBarController {
+                        if tabBarController.selectedIndex == 1 {
+                            self.navigationController?.popViewController(animated: true)
+                            return
+                        }
                         tabBarController.selectedIndex = 1
                         let viewControllers = self.navigationController?.viewControllers
                         self.navigationController?.setViewControllers(viewControllers ?? [], animated: false)
