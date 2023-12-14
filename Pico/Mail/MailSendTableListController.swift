@@ -183,7 +183,6 @@ extension MailSendTableListController: UIScrollViewDelegate {
 // MARK: - GoDetailView
 extension MailSendTableListController: MailSendDelegate {
     func pushUserDetailViewController(user: User) {
-        print(user)
         let viewController = UserDetailViewController()
         viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
         self.mailViewController.navigationController?.pushViewController(viewController, animated: true)

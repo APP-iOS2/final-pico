@@ -270,10 +270,8 @@ final class MailReceiveViewController: UIViewController {
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
                     if self.mailUser.mailType == .receive {
-                        print("im here")
                         mailReceiveDelegate?.pushUserDetailViewController(user: userData)
                     } else {
-                        print("here")
                         mailSendDelegate?.pushUserDetailViewController(user: userData)
                     }
                 }
