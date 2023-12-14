@@ -233,7 +233,7 @@ extension SignInViewController {
                             guard let self = self else { return }
                             switch result {
                             case .success(let user):
-                                if let user {
+                                    if user != nil {
                                     showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "이미 로그인을 하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                                         guard let self = self else { return }
                                         navigationController?.popViewController(animated: true)

@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if UserDefaultsManager.shared.isLogin() {
             let checkService = CheckService()
-            let user: User = User(mbti: .enfj, phoneNumber: "", gender: .etc, birth: "", nickName: "", location: Location(address: "", latitude: 0.0, longitude: 0.0), imageURLs: ["", ""], createdDate: 0.0, chuCount: 0, isSubscribe: false)
+            let user: User = User.tempUser
             checkService.checkUserId(userId: curentUser.userId) { isUser in
                 if isUser {
                     FirestoreService.shared.saveDocument(collectionId: .session, documentId: curentUser.phoneNumber, data: user) { _ in }
