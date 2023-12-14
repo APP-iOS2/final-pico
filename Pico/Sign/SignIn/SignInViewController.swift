@@ -207,7 +207,6 @@ extension SignInViewController {
                         authManager.sendVerificationCode(phoneNumber: text)
                     })
                 }
-                
             })
             .disposed(by: disposeBag)
         
@@ -244,7 +243,7 @@ extension SignInViewController {
                         switch result {
                         case .success(let user):
                             guard user != nil else { return }
-                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "이미 로그인을 하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "다른기기에서 접속중입니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                                 guard let self = self else { return }
                                 navigationController?.popViewController(animated: true)
                             })
