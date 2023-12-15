@@ -171,27 +171,39 @@ extension SignInViewController {
                 view.endEditing(true)
                 authButton.tappedAnimation()
                 guard isFullPhoneNumber else { return }
-                guard let text = phoneNumberTextField.text else { return }
+                guard let phoneNumber = phoneNumberTextField.text else { return }
                 
                 guard cooldownTimer == nil else {
                     return
                 }
-                
-                viewModel.signIn(userNumber: text) { [weak self] _, message in
+          
+                viewModel.signIn(userNumber: phoneNumber) { [weak self] _, message in
                     guard let self = self else { return }
                     
                     guard viewModel.isRightUser else {
-                        checkService.checkBlockUser(userNumber: text) { [weak self] isBlock in
+                        
+                        checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlock in
                             guard let self = self else { return }
                             
                             if isBlock {
                                 Loading.hideLoading()
                                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴한 회원입니다.", confirmButtonText: "확인", comfrimAction: configReset)
+                                return
                             } else {
-                                
                                 Loading.hideLoading()
                                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: configReset)
+                                return
                             }
+                        }
+                        
+                        checkService.checkStopUser(userNumber: phoneNumber) { [weak self] isStop, during in
+                            guard let self = self else { return }
+                            if isStop {
+                                Loading.hideLoading()
+                                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "\(Int(during))일 정지된 대상입니다.", confirmButtonText: "확인", comfrimAction: configReset)
+                                return
+                            }
+                            
                         }
                         return
                     }
@@ -203,7 +215,7 @@ extension SignInViewController {
                         RunLoop.main.add(cooldownTimer!, forMode: .common)
                         
                         configTappedAuthButtonState()
-                        authManager.sendVerificationCode(phoneNumber: text)
+                        authManager.sendVerificationCode(phoneNumber: phoneNumber)
                     })
                 }
             })

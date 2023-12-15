@@ -48,7 +48,11 @@ final class SignInViewModel {
             }
         }
     }
-    
+    func convertStop(document: QueryDocumentSnapshot) -> Double {
+        let data = document.data()
+        let during = data["during"] as? Double ?? 0.0
+        return during
+    }
     func convertDocumentToUser(document: QueryDocumentSnapshot) -> User {
         let data = document.data()
         let id = document.documentID
