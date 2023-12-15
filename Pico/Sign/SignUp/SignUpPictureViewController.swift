@@ -8,7 +8,6 @@ import UIKit
 import SnapKit
 import PhotosUI
 import AVFoundation
-import Vision
 import Photos
 
 final class SignUpPictureViewController: UIViewController {
@@ -18,15 +17,15 @@ final class SignUpPictureViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
+    
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     private let pictureManager: PictureService = PictureService()
-    private var isDetectedImage: Bool? = false
-    private var objectDetectionRequest: VNCoreMLRequest?
     private var userImages: [UIImage] = []
+    
     private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoGray
