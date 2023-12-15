@@ -49,6 +49,27 @@ final class SignInViewModel {
         }
     }
     
+    func convertStop(document: QueryDocumentSnapshot) -> Stop {
+        let data = document.data()
+        let createdDate = data["createdDate"] as? Double ?? 0.0
+        let during = data["during"] as? Int ?? 0
+        let phoneNumber = data["phoneNumber"] as? String ?? ""
+        let userData = data["user"] as? [String: Any] ?? [:]
+        let mbti = MBTIType(rawValue: userData["mbti"] as? String ?? "") ?? .entp
+        let gender = GenderType(rawValue: userData["gender"] as? String ?? "") ?? .etc
+        let birth = userData["birth"] as? String ?? ""
+        let nickName = userData["nickName"] as? String ?? ""
+        let locationData = userData["location"] as? [String: Any] ?? [:]
+        let address = locationData["address"] as? String ?? ""
+        let latitude = locationData["latitude"] as? Double ?? 0.0
+        let longitude = locationData["longitude"] as? Double ?? 0.0
+        let imageURLs = userData["imageURLs"] as? [String] ?? []
+        let chuCount = userData["chuCount"] as? Int ?? 0
+        let isSubscribe = userData["isSubscribe"] as? Bool ?? false
+        let user = User(mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: Location(address: address, latitude: latitude, longitude: longitude), imageURLs: imageURLs, createdDate: createdDate, chuCount: chuCount, isSubscribe: isSubscribe)
+        return Stop(createdDate: createdDate, during: during, phoneNumber: phoneNumber, user: user)
+    }
+  
     func convertDocumentToUser(document: QueryDocumentSnapshot) -> User {
         let data = document.data()
         let id = document.documentID
