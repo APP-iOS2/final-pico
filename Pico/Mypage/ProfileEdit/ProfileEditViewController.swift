@@ -315,31 +315,27 @@ extension ProfileEditViewController: ProfileEditNicknameDelegate {
 
 extension ProfileEditViewController {
     func detectionYolo() {
-        let yoloManager: YoloService = YoloService()
-        yoloManager.loadYOLOv3Model()
-        
-        let detectionGroup = DispatchGroup()
+        let visionService = VisionService()
+        let dispatchGroup = DispatchGroup()
         
         Loading.showLoading(title: "사진 평가중이에요!\n잠시만 기다려주세요! (최대 1분 소요)")
         DispatchQueue.global().async {
             var allImagesDetected = true
             
             for image in self.userImages {
-                detectionGroup.enter()
+                dispatchGroup.enter()
                 
-                yoloManager.detectPeople(image: image) {
-                    detectionGroup.leave()
-                }
-                
-                if !(yoloManager.isDetectedImage ?? true) {
-                    allImagesDetected = false
+                visionService.detectFaces(image: image) { result in
+                    allImagesDetected = result
+                    dispatchGroup.leave()
                 }
             }
+            
             if allImagesDetected {
                 self.profileEditViewModel.userImages = self.userImages
                 self.profileEditViewModel.saveImage()
             }
-            detectionGroup.notify(queue: .main) {
+            dispatchGroup.notify(queue: .main) {
                 Loading.hideLoading()
                 if allImagesDetected {
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "사진이 등록되었습니다.", confirmButtonText: "확인")

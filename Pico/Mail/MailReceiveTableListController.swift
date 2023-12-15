@@ -57,6 +57,7 @@ final class MailReceiveTableListController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        viewModel.startIndex = 0
         refreshPublisher.onNext(())
         checkReceiveEmptyPublisher.onNext(())
         mailListTableView.reloadData()
@@ -79,6 +80,7 @@ final class MailReceiveTableListController: BaseViewController {
         isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
+            viewModel.startIndex = 0
             refreshPublisher.onNext(())
             refresh.endRefreshing()
             isRefresh = false
@@ -180,6 +182,7 @@ extension MailReceiveTableListController: UIScrollViewDelegate {
 // MARK: - GoDetailView
 extension MailReceiveTableListController: MailReceiveDelegate {
     func pushUserDetailViewController(user: User) {
+        print(user)
         let viewController = UserDetailViewController()
         viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
         self.mailViewController.navigationController?.pushViewController(viewController, animated: true)

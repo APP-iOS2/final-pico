@@ -47,12 +47,14 @@ final class UserImageViewController: UIViewController {
         scrollView.bounces = false
     }
     
-    func config(images: [String]) {
+    func config(images: [String], compatibilityView: CompatibilityView) {
+        var images = images
+        images.insert(images[0], at: 1)
         scrollView.contentSize = CGSize(width: Screen.width * CGFloat(images.count), height: scrollView.bounds.height)
         pageControl.numberOfPages = images.count
-        for index in images.indices {
+        for (index, image) in images.enumerated() {
             let imageView = UIImageView()
-            if let image = URL(string: images[index]) {
+            if let image = URL(string: image) {
                 imageView.kf.setImage(with: image)
             }
             imageView.contentMode = .scaleAspectFit
@@ -61,6 +63,12 @@ final class UserImageViewController: UIViewController {
                                      width: Screen.width,
                                      height: UserImageViewControllConstraint.height)
             scrollView.addSubview(imageView)
+            if index == 1 {
+                scrollView.addSubview(compatibilityView)
+                compatibilityView.snp.makeConstraints { make in
+                    make.edges.equalTo(imageView)
+                }
+            }
         }
     }
 }
