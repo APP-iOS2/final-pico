@@ -78,7 +78,7 @@ final class MailReceiveTableListController: BaseViewController {
     // MARK: - objc
     @objc private func refreshTable(refresh: UIRefreshControl) {
         isRefresh = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self = self else { return }
             viewModel.startIndex = 0
             refreshPublisher.onNext(())
@@ -173,7 +173,7 @@ extension MailReceiveTableListController: UIScrollViewDelegate {
             mailListTableView.tableFooterView = footerView
             loadDataPublsher.onNext(())
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
                 guard let self else { return }
                 
                 mailListTableView.reloadData()
