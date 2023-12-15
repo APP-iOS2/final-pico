@@ -59,7 +59,7 @@ final class HomeViewController: BaseViewController {
         bind()
         loadCards()
     }
-
+    
     private func bind() {
         viewModel.users
             .bind(to: users)
@@ -108,7 +108,7 @@ final class HomeViewController: BaseViewController {
                 return users.filter { user in
                     var maxAge: Int = HomeViewModel.filterAgeMax
                     var maxDistance: Int = HomeViewModel.filterDistance
-                    if HomeViewModel.filterAgeMax == 61 {
+                    if HomeViewModel.filterAgeMax >= 61 {
                         maxAge = 100
                     }
                     if HomeViewModel.filterDistance == 501 {
@@ -188,21 +188,33 @@ final class HomeViewController: BaseViewController {
     
     private func configButtons() {
         emptyView.reLoadButton.addTarget(self, action: #selector(reloadView), for: .touchUpInside)
+        emptyView.goToFilterView.addTarget(self, action: #selector(tappedFilterButton), for: .touchUpInside)
         emptyView.backUser.addTarget(self, action: #selector(tappedPickBackButton), for: .touchUpInside)
     }
     
     private func configNavigationBarItem() {
-        let filterImage = UIImage(systemName: "slider.horizontal.3")
-        let filterButton = UIBarButtonItem(image: filterImage, style: .plain, target: self, action: #selector(tappedFilterButton))
+        let filterButton = UIButton(type: .custom)
+        let filterImage = UIImage(systemName: "slider.horizontal.3")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 21))
+        filterButton.setImage(filterImage, for: .normal)
+        filterButton.frame.size = CGSize(width: 30, height: 30)
         filterButton.tintColor = .darkGray
+        filterButton.addTarget(self, action: #selector(tappedFilterButton), for: .touchUpInside)
         filterButton.accessibilityLabel = "필터"
-        let notificationImage = UIImage(systemName: "bell.fill")
-        let notificationButton = UIBarButtonItem(image: notificationImage, style: .plain, target: self, action: #selector(tappedNotificationButton))
+        
+        let notificationButton = UIButton(type: .custom)
+        let notificationImage = UIImage(systemName: "bell.fill")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 21))
+        notificationButton.setImage(notificationImage, for: .normal)
+        notificationButton.frame.size = CGSize(width: 30, height: 30)
         notificationButton.tintColor = .darkGray
+        notificationButton.addTarget(self, action: #selector(tappedNotificationButton), for: .touchUpInside)
         notificationButton.accessibilityLabel = "알림"
-        navigationItem.rightBarButtonItems = [filterButton, notificationButton]
+        
+        let filterBarButtonItem = UIBarButtonItem(customView: filterButton)
+        let notificationBarButtonItem = UIBarButtonItem(customView: notificationButton)
+        
+        navigationItem.rightBarButtonItems = [filterBarButtonItem, notificationBarButtonItem]
     }
-    
+
     @objc func tappedPickBackButton() {
         if let lastView = removedView.last {
             showCustomAlert(
@@ -231,7 +243,7 @@ final class HomeViewController: BaseViewController {
                 }
             )
         } else {
-            showCustomAlert(alertType: .onlyConfirm, titleText: "이전 친구가 없습니다.", messageText: "", confirmButtonText: "확인")
+            showCustomAlert(alertType: .onlyConfirm, titleText: "이전 친구를 찾을 수 없습니다.", messageText: "매칭된 상대는 되돌릴 수 없습니다.", confirmButtonText: "확인")
         }
     }
     
@@ -245,12 +257,14 @@ final class HomeViewController: BaseViewController {
     @objc func tappedFilterButton() {
         let viewController = HomeFilterViewController()
         viewController.homeViewController = self
+        viewController.hidesBottomBarWhenPushed = true
         addChild(viewController)
         navigationController?.pushViewController(viewController, animated: true)
     }
     
     @objc func tappedNotificationButton() {
         let viewController = NotificationViewController()
+        viewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(viewController, animated: true)
     }
 }
