@@ -176,6 +176,8 @@
 		B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = B1844F752AC0D78000ACFFED /* .swiftlint.yml */; };
 		B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F772AC0E3BF00ACFFED /* CommonButton.swift */; };
 		B18BD0512B2BBD7300729A10 /* VisionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18BD0502B2BBD7300729A10 /* VisionService.swift */; };
+		B18BD0632B2BE24000729A10 /* Stop.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18BD0622B2BE24000729A10 /* Stop.swift */; };
+		B18BD0652B2BE24900729A10 /* Unsubscribe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18BD0642B2BE24900729A10 /* Unsubscribe.swift */; };
 		B18C1DA22ACC95B200BBB207 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DA12ACC95B200BBB207 /* SnapKit */; };
 		B18C1DA42ACC95B200BBB207 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DA32ACC95B200BBB207 /* RxCocoa */; };
 		B18C1DA62ACC95B200BBB207 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DA52ACC95B200BBB207 /* RxRelay */; };
@@ -395,6 +397,8 @@
 		B1844F772AC0E3BF00ACFFED /* CommonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonButton.swift; sourceTree = "<group>"; };
 		B18BD0472B2B280000729A10 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		B18BD0502B2BBD7300729A10 /* VisionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionService.swift; sourceTree = "<group>"; };
+		B18BD0622B2BE24000729A10 /* Stop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stop.swift; sourceTree = "<group>"; };
+		B18BD0642B2BE24900729A10 /* Unsubscribe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Unsubscribe.swift; sourceTree = "<group>"; };
 		B19ED9F12AD71D670089D0A1 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B1A0C0042AE4A3910031AC65 /* UILabel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		B1A0C0092AE4ADEF0031AC65 /* randomBox.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = randomBox.json; sourceTree = "<group>"; };
@@ -898,6 +902,8 @@
 				B17D679C2AC0B06B006F91DC /* Mail */,
 				B17D679D2AC0B076006F91DC /* Payment */,
 				53FAD4F22AE0B38900957801 /* Token */,
+				B18BD0602B2BE1F800729A10 /* Unsubscribe */,
+				B18BD0612B2BE20200729A10 /* Stop */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1167,6 +1173,22 @@
 				B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */,
 			);
 			path = PicoTests;
+			sourceTree = "<group>";
+		};
+		B18BD0602B2BE1F800729A10 /* Unsubscribe */ = {
+			isa = PBXGroup;
+			children = (
+				B18BD0642B2BE24900729A10 /* Unsubscribe.swift */,
+			);
+			path = Unsubscribe;
+			sourceTree = "<group>";
+		};
+		B18BD0612B2BE20200729A10 /* Stop */ = {
+			isa = PBXGroup;
+			children = (
+				B18BD0622B2BE24000729A10 /* Stop.swift */,
+			);
+			path = Stop;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1456,6 +1478,7 @@
 				B146A3CE2AD45795003143DD /* UITableView+Extensions.swift in Sources */,
 				B17D679F2AC0B116006F91DC /* UserDefaultsManager.swift in Sources */,
 				B15ABE392AC31E0800529C29 /* UIButton+Extensions.swift in Sources */,
+				B18BD0652B2BE24900729A10 /* Unsubscribe.swift in Sources */,
 				B14B58CC2AC0A230009889DA /* SceneDelegate.swift in Sources */,
 				BCEACEF72AC3DF5F00C93699 /* MBTICollectionViewController.swift in Sources */,
 				BC0D29332ACF1FD70043554B /* HomeUserCardViewModel.swift in Sources */,
@@ -1489,6 +1512,7 @@
 				BC49271B2ADFD70D0073E882 /* UserService.swift in Sources */,
 				4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */,
 				B15F16192ADE8587002952B4 /* Int+Extensions.swift in Sources */,
+				B18BD0632B2BE24000729A10 /* Stop.swift in Sources */,
 				6A96D4352AE51AFD0068FA12 /* StoreTableBannerCell.swift in Sources */,
 				BC4927372AE162960073E882 /* HomeGuideView.swift in Sources */,
 				36F2BA012AC1682E00EF877A /* SignViewController.swift in Sources */,
