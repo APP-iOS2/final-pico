@@ -52,6 +52,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             checkService.checkBlockUser(userNumber: currentUser.phoneNumber) { isBlock in
                 if isBlock {
+                    UserDefaultsManager.shared.removeAll()
                     let rootViewController = UINavigationController(rootViewController: SignViewController())
                     self.window?.rootViewController = rootViewController
                 }
