@@ -13,6 +13,7 @@ struct Stop: Codable {
     let createdDate: Double
     /// 정지일 수
     let during: Int
+    let phoneNumber: String
     let user: User
 }
 
