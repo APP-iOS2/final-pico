@@ -61,22 +61,6 @@ final class CheckService {
             }
     }
     
-    func checkStopDate(isStop: Bool, stop: Stop) -> Bool {
-        guard isStop else { return false}
-        let currentDate = Date()
-        let stopDate = Date(timeIntervalSince1970: stop.createdDate)
-        let stopDuring = stop.during
-        if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
-            if currentDate > resumedDate {
-                return true
-            } else {
-                return false
-            }
-        } else {
-            return false
-        }
-    }
-    
     func checkNickName(name: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
         do {
             let pattern = "([ㄱ-ㅎㅏ-ㅣ]){1,8}"

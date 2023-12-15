@@ -68,7 +68,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     self.window?.rootViewController = rootViewController
                 }
             }
-            
         } else {
             let rootViewController = UINavigationController(rootViewController: SignViewController())
             window?.rootViewController = rootViewController
