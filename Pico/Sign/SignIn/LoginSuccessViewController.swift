@@ -67,7 +67,7 @@ extension LoginSuccessViewController {
                 guard let self = self else { return }
                 UserDefaultsManager.shared.setUserData(userData: user)
                 nextButton.tappedAnimation()
-                FirestoreService.shared.saveDocument(collectionId: .session, documentId: user.phoneNumber)
+                FirestoreService.shared.saveDocument(collectionId: .session, documentId: user.phoneNumber, data: User.tempUser) { _ in }
                 (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(TabBarController(), animated: true)
             })
             .disposed(by: disposeBag)

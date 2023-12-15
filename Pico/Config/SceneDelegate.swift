@@ -19,9 +19,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if UserDefaultsManager.shared.isLogin() {
             let checkService = CheckService()
+            let user: User = User.tempUser
             checkService.checkUserId(userId: curentUser.userId) { isUser in
                 if isUser {
-                    FirestoreService.shared.saveDocument(collectionId: .session, documentId: curentUser.phoneNumber)
+                    FirestoreService.shared.saveDocument(collectionId: .session, documentId: curentUser.phoneNumber, data: user) { _ in }
                     let rootViewController = TabBarController()
                     self.window?.rootViewController = rootViewController
                 } else {

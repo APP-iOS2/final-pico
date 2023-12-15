@@ -28,6 +28,8 @@ struct User: Codable, Hashable {
     let chuCount: Int
     let isSubscribe: Bool
     
+    static let tempUser = User(mbti: .enfj, phoneNumber: "", gender: .etc, birth: "", nickName: "", location: Location(address: "", latitude: 0.0, longitude: 0.0), imageURLs: ["", ""], createdDate: 0.0, chuCount: 0, isSubscribe: false)
+    
     var age: Int {
         let calendar = Calendar.current
         let currentDate = Date()
