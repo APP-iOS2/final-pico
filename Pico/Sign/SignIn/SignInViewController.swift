@@ -202,7 +202,6 @@ extension SignInViewController {
                         cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
                         RunLoop.main.add(cooldownTimer!, forMode: .common)
                         
-                        NotificationService.shared.saveToken()
                         configTappedAuthButtonState()
                         authManager.sendVerificationCode(phoneNumber: text)
                     })
