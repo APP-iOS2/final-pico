@@ -311,7 +311,17 @@ extension SignUpTermsOfServiceViewController {
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         // 위도 경도
-        
+        checkService.checkPhoneNumber(userNumber: viewModel.phoneNumber) { [weak self] _, isRight in
+            Loading.hideLoading()
+            guard let self = self else { return }
+            if !isRight {
+                showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "이미 가입된 번호가 있습니다.", confirmButtonText: "확인", comfrimAction: {
+                    if let navigationController = self.navigationController {
+                        navigationController.popToRootViewController(animated: true)
+                    }
+                })
+            }
+        }
         let space = locationManager.locationManager.location?.coordinate
         let lat = space?.latitude
         let long = space?.longitude
