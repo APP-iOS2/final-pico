@@ -22,7 +22,7 @@ final class SignUpAgeViewController: UIViewController {
 
     private let years: [Int] = {
         let currentYear = Calendar.current.component(.year, from: Date())
-        return Array(currentYear - 100...2023 - 19)
+        return Array(currentYear - 100...currentYear - 19)
     }()
 
     private let months = Array(1...12)
