@@ -138,23 +138,11 @@ final class CompatibilityView: UIView {
             make.edges.equalToSuperview()
         }
         
-        compatibilityLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(-20)
-        }
-        
-        starStackView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(compatibilityLabel.snp.bottom).offset(20)
-            make.width.equalTo(200)
-            make.height.equalTo(30)
-        }
-        
         myProfileView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(50)
             make.leading.equalToSuperview().offset(50)
             make.trailing.equalTo(safeAreaLayoutGuide.snp.centerX).offset(-10)
-            make.bottom.equalTo(safeAreaLayoutGuide.snp.centerY).offset(-60)
+            make.bottom.equalTo(myProfileView.snp.top).offset(180)
         }
         
         myImage.snp.makeConstraints { make in
@@ -175,7 +163,7 @@ final class CompatibilityView: UIView {
             make.top.equalToSuperview().offset(50)
             make.leading.equalTo(safeAreaLayoutGuide.snp.centerX).offset(10)
             make.trailing.equalToSuperview().offset(-50)
-            make.bottom.equalTo(safeAreaLayoutGuide.snp.centerY).offset(-60)
+            make.bottom.equalTo(userProfileView.snp.top).offset(180)
         }
         
         userImage.snp.makeConstraints { make in
@@ -190,6 +178,18 @@ final class CompatibilityView: UIView {
             make.leading.equalTo(userProfileView).offset(10)
             make.trailing.equalTo(userProfileView).offset(-10)
             make.bottom.equalTo(userProfileView).offset(-10)
+        }
+        
+        compatibilityLabel.snp.makeConstraints { make in
+            make.top.equalTo(myProfileView.snp.bottom).offset(40)
+            make.centerX.equalToSuperview()
+        }
+        
+        starStackView.snp.makeConstraints { make in
+            make.top.equalTo(compatibilityLabel.snp.bottom).offset(15)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(200)
+            make.height.equalTo(30)
         }
     }
 }

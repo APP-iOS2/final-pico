@@ -29,7 +29,8 @@ final class HomeEmptyView: UIView {
     private let finishLabel: UILabel = {
         let label = UILabel()
         let text = """
-                    더 이상 추천이 없어요.
+                    이번 추천이 완료되었어요.
+                    새 친구를 불러오거나
                     선호 설정을 조절해 보세요.
                     """
         let attributedText = NSMutableAttributedString(string: text)
@@ -47,7 +48,8 @@ final class HomeEmptyView: UIView {
     // 상위뷰에서 에드타겟
     let reLoadButton: UIButton = {
         let button = UIButton()
-        button.setTitle("새 친구 찾아보기", for: .normal)
+        button.setTitle("새 추천 불러오기", for: .normal)
+        button.titleLabel?.textAlignment = .center
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .picoButtonFont
         button.backgroundColor = .picoBlue
@@ -59,8 +61,20 @@ final class HomeEmptyView: UIView {
     let backUser: UIButton = {
         let button = UIButton()
         button.setTitle("이전 친구보기", for: .normal)
+        button.titleLabel?.textAlignment = .center
         button.setTitleColor(.picoBlue, for: .normal)
         button.titleLabel?.font = .picoButtonFont
+        button.layer.cornerRadius = 15
+        return button
+    }()
+    
+    let goToFilterView: UIButton = {
+        let button = UIButton()
+        button.setTitle("선호 설정 조절", for: .normal)
+        button.titleLabel?.textAlignment = .center
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .picoButtonFont
+        button.backgroundColor = .picoBlue
         button.layer.cornerRadius = 15
         return button
     }()
@@ -78,7 +92,7 @@ final class HomeEmptyView: UIView {
     }
     
     private func addViews() {
-        [animationView, chuImage, reLoadButton, finishLabel, backUser].forEach { item in
+        [animationView, chuImage, reLoadButton, finishLabel, goToFilterView, backUser].forEach { item in
             addSubview(item)
         }
     }
@@ -102,17 +116,24 @@ final class HomeEmptyView: UIView {
         }
         
         reLoadButton.snp.makeConstraints { make in
-            make.top.equalTo(finishLabel.snp.bottom).offset(20)
+            make.top.equalTo(finishLabel.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
             make.width.equalTo(140)
-            make.height.equalTo(35)
+            make.height.equalTo(30)
         }
         
-        backUser.snp.makeConstraints { make in
+        goToFilterView.snp.makeConstraints { make in
             make.top.equalTo(reLoadButton.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
             make.width.equalTo(140)
-            make.height.equalTo(35)
+            make.height.equalTo(30)
+        }
+        
+        backUser.snp.makeConstraints { make in
+            make.top.equalTo(goToFilterView.snp.bottom).offset(10)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(140)
+            make.height.equalTo(30)
         }
     }
 }

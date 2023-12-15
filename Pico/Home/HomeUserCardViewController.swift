@@ -337,14 +337,15 @@ final class HomeUserCardViewController: UIViewController {
                     HomeUserCardViewModel.cardCounting = -1
                     homeViewController?.addUserCards()
                 }
-
-                NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
-                guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
-                let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
-                FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+                if currentUser.userId.prefix(4) != "test" {
+                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
+                    NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
+                    guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+                    let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+                    FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+                }
 
                 UIView.animate(withDuration: 0.5) { [self] in
-                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                     homeViewController?.removedView.append(view)
                     view.center.x += 1000
                     homeViewController?.likeLabel.alpha = 0
@@ -355,7 +356,9 @@ final class HomeUserCardViewController: UIViewController {
                     HomeUserCardViewModel.cardCounting = -1
                     homeViewController?.addUserCards()
                 }
-                self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
+                if currentUser.userId.prefix(4) != "test" {
+                    self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
+                }
                 UIView.animate(withDuration: 0.5) { [self] in
                     homeViewController?.removedView.append(view)
                     view.center.x -= 1000
@@ -374,20 +377,26 @@ final class HomeUserCardViewController: UIViewController {
         }
     }
     @objc func tappedLikeButton() {
+        var matching = false
         self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.likeLabel.alpha = 1
-        self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
-        
         HomeUserCardViewModel.cardCounting += 1
         if HomeUserCardViewModel.cardCounting == 3 {
             HomeUserCardViewModel.cardCounting = -1
             homeViewController?.addUserCards()
         }
-
-        NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
-        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
-        let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
-        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+        if currentUser.userId.prefix(4) != "test" {
+            // 누르면 서버에서 나를 Like 했는지 조회하고 맞으면
+            if matching {
+                
+            } else {
+                self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
+                NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
+                guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+                let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+                FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+            }
+        }
 
         UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
@@ -399,12 +408,16 @@ final class HomeUserCardViewController: UIViewController {
     @objc func tappedDisLikeButton() {
         self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.passLabel.alpha = 1
-        self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
         HomeUserCardViewModel.cardCounting += 1
         if HomeUserCardViewModel.cardCounting == 3 {
             HomeUserCardViewModel.cardCounting = -1
             homeViewController?.addUserCards()
         }
+        
+        if currentUser.userId.prefix(4) != "test" {
+            self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
+        }
+        
         UIView.animate(withDuration: 0.5) {
             self.view.center.x -= 1000
         } completion: { _ in
@@ -425,7 +438,9 @@ final class HomeUserCardViewController: UIViewController {
                     let remainingChu = UserDefaultsManager.shared.getChuCount()
                     if remainingChu >= 10 {
                         viewModel.purchaseChu(currentChu: remainingChu, purchaseChu: 10)
-                        self.viewModel.deleteLikeData()
+                        if currentUser.userId.prefix(4) != "test" {
+                            self.viewModel.deleteLikeData()
+                        }
                         UIView.animate(withDuration: 0.3) {
                             lastView.center = self.view.center
                             lastView.transform = CGAffineTransform(rotationAngle: 0)
