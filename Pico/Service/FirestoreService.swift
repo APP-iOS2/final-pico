@@ -244,7 +244,26 @@ final class FirestoreService {
             }
         }
     }
-    
+    func removeDocument<T: Codable>(collectionId: Collections, field: String, isEqualto: T) {
+        dbRef.collection(collectionId.name).whereField(field, isEqualTo: isEqualto)
+            .getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    print("documents를 가져오는데 문제생김 \(error)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        let documentID = document.documentID
+                        self.dbRef.collection(collectionId.name)
+                            .document(documentID).delete { err in
+                                if let err = err {
+                                    print("document를 제거하다가 문제생김")
+                                } else {
+                                    print("document 제거 성공 ")
+                                }
+                            }
+                    }
+                }
+            }
+    }
     func removeDocument(collectionId: Collections, documentId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }

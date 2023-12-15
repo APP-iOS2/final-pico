@@ -196,17 +196,41 @@ extension SignInViewController {
                             }
                         }
                         
-                        checkService.checkStopUser(userNumber: phoneNumber) { [weak self] isStop, during in
+                        checkService.checkStopUser(userNumber: phoneNumber) { [weak self] isStop, stop in
                             guard let self = self else { return }
-                            if isStop {
-                                Loading.hideLoading()
-                                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "\(Int(during))일 정지된 대상입니다.", confirmButtonText: "확인", comfrimAction: configReset)
+                            guard isStop else { return }
+                            let currentDate = Date()
+                            let stopDate = Date(timeIntervalSince1970: stop.createdDate)
+                            let stopDuring = stop.during
+                            let stopUser = stop.user
+                          
+                            if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
+                                if currentDate > resumedDate {
+                                    Loading.hideLoading()
+                                    
+                                    FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { result in
+                                        switch result {
+                                        case .success(let isSuccess):
+                                            print("Document saved successfully: \(isSuccess)")
+                                        case .failure(let error):
+                                            print("Error saving document: \(error)")
+                                        }
+                                    }
+
+                                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "정지가 풀렸습니다. 열심히 살아주세요 ㅎㅎ", confirmButtonText: "확인", comfrimAction: configReset)
+                                    FirestoreService.shared.removeDocument(collectionId: .stop, field: "phoneNumber", isEqualto: phoneNumber)
+
+                                } else {
+                                    Loading.hideLoading()
+                                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "\(stop.during)일 정지된 대상입니다.", confirmButtonText: "확인", comfrimAction: configReset)
+                                }
+                            } else {
+                                print("날짜 계산 중에 오류가 발생했습니다.")
                                 return
                             }
-                            
                         }
-                        return
-                    }
+                    return
+                }
                     Loading.hideLoading()
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
