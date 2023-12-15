@@ -312,6 +312,20 @@ final class HomeUserCardViewController: UIViewController {
         return  currentUserLoc.distance(from: otherUserLoc)
     }
     
+    private func notificationServiceForPartner(_ pushType: PushNotiType, _ notiType: NotiType) {
+        NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: pushType)
+        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+        let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+    }
+    
+    private func notificationServiceForMe(_ pushType: PushNotiType, _ notiType: NotiType) {
+        NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: user.nickName, notiType: pushType)
+        guard let myMbti = MBTIType(rawValue: user.mbti.rawValue) else { return }
+        let noti = Noti(receiveId: currentUser.userId, sendId: user.id, name: user.nickName, birth: user.birth, imageUrl: user.imageURLs[safe: 0] ?? "", notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+    }
+    
     @objc func touchGesture(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: self.view)
         
@@ -337,16 +351,24 @@ final class HomeUserCardViewController: UIViewController {
                     HomeUserCardViewModel.cardCounting = -1
                     homeViewController?.addUserCards()
                 }
+                homeViewController?.removedView.append(view)
+                
                 if currentUser.userId.prefix(4) != "test" {
-                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
-                    NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
-                    guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
-                    let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
-                    FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+                    viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
+                        if result {
+                            viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
+                            viewModel.updateMatcingData(user.id)
+                            notificationServiceForPartner(.matching, .matching)
+                            notificationServiceForMe(.matching, .matching)
+                            homeViewController?.removedView.removeLast()
+                        } else {
+                            viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
+                            notificationServiceForPartner(.like, .like)
+                        }
+                    }
                 }
-
+                
                 UIView.animate(withDuration: 0.5) { [self] in
-                    homeViewController?.removedView.append(view)
                     view.center.x += 1000
                     homeViewController?.likeLabel.alpha = 0
                 }
@@ -377,7 +399,6 @@ final class HomeUserCardViewController: UIViewController {
         }
     }
     @objc func tappedLikeButton() {
-        var matching = false
         self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.likeLabel.alpha = 1
         HomeUserCardViewModel.cardCounting += 1
@@ -386,15 +407,17 @@ final class HomeUserCardViewController: UIViewController {
             homeViewController?.addUserCards()
         }
         if currentUser.userId.prefix(4) != "test" {
-            // 누르면 서버에서 나를 Like 했는지 조회하고 맞으면
-            if matching {
-                
-            } else {
-                self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
-                NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: .like)
-                guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
-                let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .like, mbti: myMbti, createDate: Date().timeIntervalSince1970)
-                FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+            viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
+                if result {
+                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
+                    viewModel.updateMatcingData(user.id)
+                    notificationServiceForPartner(.matching, .matching)
+                    notificationServiceForMe(.matching, .matching)
+                    homeViewController?.removedView.removeLast()
+                } else {
+                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
+                    notificationServiceForPartner(.like, .like)
+                }
             }
         }
 

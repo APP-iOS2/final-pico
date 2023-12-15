@@ -243,7 +243,7 @@ final class HomeViewController: BaseViewController {
                 }
             )
         } else {
-            showCustomAlert(alertType: .onlyConfirm, titleText: "이전 친구를 찾을 수 없습니다.", messageText: "", confirmButtonText: "확인")
+            showCustomAlert(alertType: .onlyConfirm, titleText: "이전 친구를 찾을 수 없습니다.", messageText: "매칭된 상대는 되돌릴 수 없습니다.", confirmButtonText: "확인")
         }
     }
     

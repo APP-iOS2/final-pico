@@ -23,13 +23,6 @@ final class HomeViewModel {
     static var filterDistance: Int = 501
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
-    private var age: Int {
-        let calendar = Calendar.current
-        let currentDate = Date()
-        let birthdate = UserDefaultsManager.shared.getUserData().birth.toDate()
-        let ageComponents = calendar.dateComponents([.year], from: birthdate, to: currentDate)
-        return ageComponents.year ?? 0
-    }
     init() {
         loadFilterDefault()
         loadMySendBlocks()
