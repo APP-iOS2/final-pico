@@ -176,8 +176,7 @@ extension SignInViewController {
                 guard cooldownTimer == nil else {
                     return
                 }
-                // MARK: - 이부분에서 신고 유저를 해야함
-
+                
                 viewModel.signIn(userNumber: text) { [weak self] _, message in
                     guard let self = self else { return }
                     
@@ -189,6 +188,7 @@ extension SignInViewController {
                                 Loading.hideLoading()
                                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴한 회원입니다.", confirmButtonText: "확인", comfrimAction: configReset)
                             } else {
+                                
                                 Loading.hideLoading()
                                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: configReset)
                             }
