@@ -118,29 +118,24 @@ final class SignUpPictureViewController: UIViewController {
     @objc private func tappedNextButton(_ sender: UIButton) {
         Loading.showLoading(title: "AI가 얼굴인식 중이에요!\n잠시만 기다려주세요! (최대 1분 소요)")
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
-            let yoloManager: YoloService = YoloService()
-            yoloManager.loadYOLOv3Model()
+            let visionService = VisionService()
+            let dispatchGroup = DispatchGroup()
             
-            let detectionGroup = DispatchGroup()
             DispatchQueue.global().async { [weak self] in
-                guard let self = self else { return }
-                
+                guard let self else { return }
                 var allImagesDetected = true
                 
                 for image in userImages {
-                    detectionGroup.enter()
+                    dispatchGroup.enter()
                     
-                    yoloManager.detectPeople(image: image) {
-                        detectionGroup.leave()
-                    }
-                    
-                    if !(yoloManager.isDetectedImage ?? true) {
-                        allImagesDetected = false
+                    visionService.detectFaces(image: image) { result in
+                        allImagesDetected = result
+                        dispatchGroup.leave()
                     }
                 }
                 
-                detectionGroup.notify(queue: .main) { [weak self] in
-                    guard let self = self else { return }
+                dispatchGroup.notify(queue: .main) { [weak self] in
+                    guard let self else { return }
                     
                     Loading.hideLoading()
                     if allImagesDetected {

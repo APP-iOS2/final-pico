@@ -16,7 +16,6 @@
 		3677DBC92AD4EC530026E089 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3677DBC82AD4EC530026E089 /* SignInViewModel.swift */; };
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
-		368D4DA12ADCC9DF00322D91 /* YoloService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D4DA02ADCC9DF00322D91 /* YoloService.swift */; };
 		368D4DA52ADCD9B000322D91 /* PictureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D4DA42ADCD9B000322D91 /* PictureService.swift */; };
 		368D4DA72ADCDBE800322D91 /* KeyboardService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368D4DA62ADCDBE800322D91 /* KeyboardService.swift */; };
 		369B25522ADB1FB4005C452D /* SMSAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369B25512ADB1FB4005C452D /* SMSAuthService.swift */; };
@@ -176,6 +175,7 @@
 		B1844F6B2AC0CDA500ACFFED /* PicoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F6A2AC0CDA500ACFFED /* PicoTests.swift */; };
 		B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = B1844F752AC0D78000ACFFED /* .swiftlint.yml */; };
 		B1844F782AC0E3BF00ACFFED /* CommonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1844F772AC0E3BF00ACFFED /* CommonButton.swift */; };
+		B18BD0512B2BBD7300729A10 /* VisionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18BD0502B2BBD7300729A10 /* VisionService.swift */; };
 		B18C1DA22ACC95B200BBB207 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DA12ACC95B200BBB207 /* SnapKit */; };
 		B18C1DA42ACC95B200BBB207 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DA32ACC95B200BBB207 /* RxCocoa */; };
 		B18C1DA62ACC95B200BBB207 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B18C1DA52ACC95B200BBB207 /* RxRelay */; };
@@ -233,7 +233,6 @@
 		3677DBC82AD4EC530026E089 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
-		368D4DA02ADCC9DF00322D91 /* YoloService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoloService.swift; sourceTree = "<group>"; };
 		368D4DA42ADCD9B000322D91 /* PictureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureService.swift; sourceTree = "<group>"; };
 		368D4DA62ADCDBE800322D91 /* KeyboardService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardService.swift; sourceTree = "<group>"; };
 		369B25512ADB1FB4005C452D /* SMSAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMSAuthService.swift; sourceTree = "<group>"; };
@@ -395,6 +394,7 @@
 		B1844F752AC0D78000ACFFED /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		B1844F772AC0E3BF00ACFFED /* CommonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonButton.swift; sourceTree = "<group>"; };
 		B18BD0472B2B280000729A10 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		B18BD0502B2BBD7300729A10 /* VisionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionService.swift; sourceTree = "<group>"; };
 		B19ED9F12AD71D670089D0A1 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B1A0C0042AE4A3910031AC65 /* UILabel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		B1A0C0092AE4ADEF0031AC65 /* randomBox.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = randomBox.json; sourceTree = "<group>"; };
@@ -684,7 +684,7 @@
 				36536FE82AE00E0E00ADD420 /* CheckService.swift */,
 				369B25512ADB1FB4005C452D /* SMSAuthService.swift */,
 				363CC4832ACF9CC500C86EDC /* LocationService.swift */,
-				368D4DA02ADCC9DF00322D91 /* YoloService.swift */,
+				B18BD0502B2BBD7300729A10 /* VisionService.swift */,
 				368D4DA42ADCD9B000322D91 /* PictureService.swift */,
 				368D4DA62ADCDBE800322D91 /* KeyboardService.swift */,
 			);
@@ -1405,6 +1405,7 @@
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
 				369B25522ADB1FB4005C452D /* SMSAuthService.swift in Sources */,
+				B18BD0512B2BBD7300729A10 /* VisionService.swift in Sources */,
 				6ADDE2F92AC3BABD00CE4482 /* ProfileEditIntroTabelCell.swift in Sources */,
 				53817BDC2ACE753800AEE9AE /* LikeUViewModel.swift in Sources */,
 				B14B58CA2AC0A230009889DA /* AppDelegate.swift in Sources */,
@@ -1449,7 +1450,6 @@
 				6AA931D42AE4026500A648E7 /* SettingLicenseView.swift in Sources */,
 				B17D678C2AC0AB80006F91DC /* Location.swift in Sources */,
 				B146A3CA2AD456D2003143DD /* MypageViewConstraints.swift in Sources */,
-				368D4DA12ADCC9DF00322D91 /* YoloService.swift in Sources */,
 				693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */,
 				B11D2B8C2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift in Sources */,
 				53DD41B82ADF65EF00C5FE39 /* NotificationService.swift in Sources */,
