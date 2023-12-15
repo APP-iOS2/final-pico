@@ -22,7 +22,7 @@ final class LikeMeViewModel: ViewModelType {
     private let currentUser: CurrentUser = UserDefaultsManager.shared.getUserData()
     
     private let dbRef = Firestore.firestore()
-    private let pageSize = 6
+    private let pageSize = 10
     var startIndex = 0
     
     struct Input {
