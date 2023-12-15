@@ -123,8 +123,11 @@ final class LikeUViewModel: ViewModelType {
                         }
                         let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
                         likeUList = currentPageDatas
+                        
+                        if startIndex == 0 {
+                            reloadCollectionViewPublisher.onNext(())
+                        }
                         startIndex = currentPageDatas.count
-                        reloadCollectionViewPublisher.onNext(())
                     }
                 } else {
                     print("문서를 찾을 수 없습니다.")

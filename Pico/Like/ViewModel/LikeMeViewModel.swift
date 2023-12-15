@@ -130,8 +130,11 @@ final class LikeMeViewModel: ViewModelType {
                         }
                         let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
                         likeMeList = currentPageDatas
+                        
+                        if startIndex == 0 {
+                            reloadTableViewPublisher.onNext(())
+                        }
                         startIndex = currentPageDatas.count
-                        reloadTableViewPublisher.onNext(())
                     }
                 } else {
                     print("문서를 찾을 수 없습니다.")

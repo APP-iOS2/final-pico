@@ -115,12 +115,15 @@ final class MailSendViewModel {
                         }
                         let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         sendList += currentPageDatas
-                        startIndex += currentPageDatas.count
                         
-                        reloadMailTableViewPublisher.onNext(())
-                    } else {
-                        print("보낸 문서를 찾을 수 없습니다.")
+                        if startIndex == 0 {
+                            reloadMailTableViewPublisher.onNext(())
+                        }
+                        
+                        startIndex += currentPageDatas.count
                     }
+                } else {
+                    print("보낸 문서를 찾을 수 없습니다.")
                 }
             }
         }

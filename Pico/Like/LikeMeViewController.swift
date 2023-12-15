@@ -165,11 +165,11 @@ extension LikeMeViewController: UIScrollViewDelegate {
             self.isLoading = true
             self.collectionView.reloadData()
             self.listLoadPublisher.onNext(())
-            DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
-                self.isLoading = false
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+                guard let self else { return }
+                collectionView.reloadData()
+                isLoading = false
             }
         }
     }
