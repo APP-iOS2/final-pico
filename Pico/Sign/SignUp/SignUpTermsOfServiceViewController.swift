@@ -22,7 +22,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    private let checkService = CheckService()
     private let locationManager = LocationService()
     private let disposeBag = DisposeBag()
     private var isLoading: Bool = false
@@ -311,6 +311,7 @@ extension SignUpTermsOfServiceViewController {
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         // 위도 경도
+        
         let space = locationManager.locationManager.location?.coordinate
         let lat = space?.latitude
         let long = space?.longitude
