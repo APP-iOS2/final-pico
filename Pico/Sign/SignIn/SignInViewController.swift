@@ -108,6 +108,7 @@ final class SignInViewController: UIViewController {
         super.viewWillAppear(animated)
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
+        configReset()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -175,9 +176,11 @@ extension SignInViewController {
                 guard cooldownTimer == nil else {
                     return
                 }
-                
+                // MARK: - 이부분에서 신고 유저를 해야함
+
                 viewModel.signIn(userNumber: text) { [weak self] _, message in
                     guard let self = self else { return }
+                    
                     guard viewModel.isRightUser else {
                         checkService.checkBlockUser(userNumber: text) { [weak self] isBlock in
                             guard let self = self else { return }
@@ -199,12 +202,10 @@ extension SignInViewController {
                         cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
                         RunLoop.main.add(cooldownTimer!, forMode: .common)
                         
-                        NotificationService.shared.saveToken()
                         configTappedAuthButtonState()
                         authManager.sendVerificationCode(phoneNumber: text)
                     })
                 }
-                
             })
             .disposed(by: disposeBag)
         
@@ -222,23 +223,41 @@ extension SignInViewController {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
+                
                 view.endEditing(true)
                 configAuthText()
-                if authManager.checkRightCode(code: authText) {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                        guard let self = self else { return }
-                        
-                        if let user = viewModel.loginUser {
-                            let viewController = LoginSuccessViewController(user: user)
-                            self.navigationController?.pushViewController(viewController, animated: true)
-                        } else {
-                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "로그인에 실패하셨습니다.", confirmButtonText: "확인")
-                        }
-                    })
-                } else {
+                
+                guard authManager.checkRightCode(code: authText) else {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
                     return
                 }
+                
+                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                    guard let self = self else { return }
+                    guard let number = phoneNumberTextField.text else { return }
+                    
+                    FirestoreService.shared.loadDocument(collectionId: .session, documentId: number, dataType: User.self) { [weak self] result in
+                        guard let self = self else { return }
+                        
+                        switch result {
+                        case .success(let user):
+                            guard user != nil else { return }
+                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "다른기기에서 접속중입니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                                guard let self = self else { return }
+                                navigationController?.popViewController(animated: true)
+                            })
+                        case .failure(let err):
+                            print("SingInVIewController 세션부분 에러입니다. error: \(err) ")
+                        }
+                    }
+                    
+                    guard let user = viewModel.loginUser else {
+                        showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "로그인에 실패하셨습니다.", confirmButtonText: "확인")
+                        return
+                    }
+                    let viewController = LoginSuccessViewController(user: user)
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                })
             })
             .disposed(by: disposeBag)
     }

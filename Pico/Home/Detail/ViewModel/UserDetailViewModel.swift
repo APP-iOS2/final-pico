@@ -14,6 +14,7 @@ import CoreLocation
 
 final class UserDetailViewModel {
     let user: User!
+    let compatibilityView: CompatibilityView
     private let disposeBag = DisposeBag()
     private let dbRef = Firestore.firestore().collection(Collections.users.name)
     private let loginUser = UserDefaultsManager.shared.getUserData()
@@ -26,7 +27,7 @@ final class UserDetailViewModel {
             user.imageURLs.remove(at: 1)
         }
         self.user = user
-        
+        compatibilityView = CompatibilityView(currentUser: loginUser, cardUser: user)
     }
     
     // 거리

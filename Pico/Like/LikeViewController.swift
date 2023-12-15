@@ -48,6 +48,11 @@ final class LikeViewController: BaseViewController {
         return pageController
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configBarItem()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addViews()
@@ -73,6 +78,7 @@ final class LikeViewController: BaseViewController {
     
     @objc private func tappedNotiButton(_ sender: UIBarButtonItem) {
         let notificationViewController = NotificationViewController()
+        notificationViewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(notificationViewController, animated: true)
     }
     

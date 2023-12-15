@@ -18,9 +18,11 @@ enum Collections {
     case payment
     case tokens
     case unsubscribe
+    case stop
     case report
     case block
     case adminReport
+    case session
     
     var name: String {
         switch self {
@@ -38,12 +40,16 @@ enum Collections {
             return "tokens"
         case .unsubscribe:
             return "unsubscribe"
+        case .stop:
+            return "stop"
         case .report:
             return "Report"
         case .block:
             return "Block"
         case .adminReport:
             return "reports"
+        case .session:
+            return "session"
         }
     }
 }
@@ -51,7 +57,7 @@ enum Collections {
 final class FirestoreService {
     static let shared: FirestoreService = FirestoreService()
     
-    private let dbRef = Firestore.firestore()
+    let dbRef = Firestore.firestore()
     
     func saveDocument<T: Codable>(collectionId: Collections, data: T) {
         DispatchQueue.global().async { [weak self] in
@@ -79,7 +85,7 @@ final class FirestoreService {
             }
         }
     }
-    
+   
     func saveDocument<T: Codable>(collectionId: Collections, documentId: String, fieldId: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.global().async {
             self.dbRef.collection(collectionId.name).document(documentId)

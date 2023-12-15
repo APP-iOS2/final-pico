@@ -22,7 +22,7 @@ final class LikeMeViewModel: ViewModelType {
     private let currentUser: CurrentUser = UserDefaultsManager.shared.getUserData()
     
     private let dbRef = Firestore.firestore()
-    private let pageSize = 6
+    private let pageSize = 10
     var startIndex = 0
     
     struct Input {
@@ -130,8 +130,11 @@ final class LikeMeViewModel: ViewModelType {
                         }
                         let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
                         likeMeList = currentPageDatas
+                        
+                        if startIndex == 0 {
+                            reloadTableViewPublisher.onNext(())
+                        }
                         startIndex = currentPageDatas.count
-                        reloadTableViewPublisher.onNext(())
                     }
                 } else {
                     print("문서를 찾을 수 없습니다.")

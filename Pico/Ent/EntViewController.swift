@@ -39,7 +39,7 @@ final class EntViewController: BaseViewController {
     
     private let contentLabel: UILabel = {
         let label = UILabel()
-        label.text = "마음에 드는 친구를 골라보세요!\n최종 선택 친구에게 채팅신청 시, 피코가 채팅 신청 비용의 50%를 부담해 드릴게요!"
+        label.text = "마음에 드는 친구를 골라보세요!\n최종 선택 친구에게 쪽지신청 시, 피코가 쪽지 신청 비용의 50%를 부담해 드릴게요!"
         label.numberOfLines = 0
         label.setLineSpacing(spacing: 10)
         label.textAlignment = .center

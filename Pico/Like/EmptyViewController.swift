@@ -45,7 +45,7 @@ final class EmptyViewController: UIViewController {
     
     private var messageSubLabel: UILabel = {
         let label = UILabel()
-        label.text = "서로 좋아요가 연결되는 순간 채팅 가능~"
+        label.text = "서로 좋아요가 연결되는 순간 쪽지 가능~"
         label.textColor = .picoFontGray
         return label
     }()
