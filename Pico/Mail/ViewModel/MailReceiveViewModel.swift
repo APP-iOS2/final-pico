@@ -27,7 +27,7 @@ final class MailReceiveViewModel {
     private let disposeBag = DisposeBag()
     
     private let dbRef = Firestore.firestore()
-    private var itemsPerPage: Int = Int(Screen.height * 1.5 / 90)
+    private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
     var startIndex = 0
     
     struct Input {
