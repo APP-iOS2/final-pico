@@ -41,7 +41,7 @@ final class LikeUViewModel: ViewModelType {
     private let disposeBag = DisposeBag()
     private let currentUser = UserDefaultsManager.shared.getUserData()
     private var currentChuCount = UserDefaultsManager.shared.getChuCount()
-    private let pageSize = 6
+    private let pageSize = 10
     var startIndex = 0
 
     func transform(input: Input) -> Output {
