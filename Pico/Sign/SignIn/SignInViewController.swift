@@ -181,7 +181,6 @@ extension SignInViewController {
                     guard let self = self else { return }
                     
                     guard viewModel.isRightUser else {
-                        
                         checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlock in
                             guard let self = self else { return }
                             
@@ -208,14 +207,7 @@ extension SignInViewController {
                                 if currentDate > resumedDate {
                                     Loading.hideLoading()
                                     
-                                    FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { result in
-                                        switch result {
-                                        case .success(let isSuccess):
-                                            print("Document saved successfully: \(isSuccess)")
-                                        case .failure(let error):
-                                            print("Error saving document: \(error)")
-                                        }
-                                    }
+                                    FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in }
 
                                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "정지가 풀렸습니다. 열심히 살아주세요 ㅎㅎ", confirmButtonText: "확인", comfrimAction: configReset)
                                     

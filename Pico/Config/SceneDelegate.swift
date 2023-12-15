@@ -31,18 +31,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
                     if currentDate > resumedDate {
-                        
                         Loading.hideLoading()
-                        FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { result in
-                            switch result {
-                            case .success(let isSuccess):
-                                print("Document saved successfully: \(isSuccess)")
-                            case .failure(let error):
-                                print("Error saving document: \(error)")
-                            }
-                        }
+                        FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in }
+                        
                         FirestoreService.shared.removeDocument(collectionId: .stop, field: "phoneNumber", isEqualto: currentUser.phoneNumber)
                     } else {
+                        Loading.hideLoading()
                         UserDefaultsManager.shared.removeAll()
                         let rootViewController = UINavigationController(rootViewController: SignViewController())
                         self.window?.rootViewController = rootViewController
