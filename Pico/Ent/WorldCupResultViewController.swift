@@ -118,6 +118,7 @@ final class WorldCupResultViewController: UIViewController {
         configResultUserCell()
         bind()
         configAnimationView()
+        resetGameTimer()
     }
     
     private func configAnimationView() {
@@ -219,6 +220,11 @@ final class WorldCupResultViewController: UIViewController {
             name: UIScreen.capturedDidChangeNotification,
             object: nil
         )
+    }
+    
+    private func resetGameTimer() {
+        let currentTime = Date()
+        UserDefaultsManager.shared.updateLastWorldCupTime(currentTime)
     }
     
     @objc private func captureAction() {
