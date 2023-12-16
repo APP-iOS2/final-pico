@@ -22,6 +22,7 @@ final class NotificationViewController: UIViewController {
     private let footerView = FooterView()
     private var isRefresh = false
     private var cellTapped: Bool = false
+    private var detailUser: User?
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -32,7 +33,13 @@ final class NotificationViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.popViewController(animated: false)
+        if let user = detailUser {
+            let viewController = UserDetailViewController()
+            viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
+            self.navigationController?.pushViewController(viewController, animated: true)
+        } else {
+            self.navigationController?.popViewController(animated: false)
+        }
     }
     
     override func viewDidLoad() {
@@ -106,13 +113,13 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
                 if cellTapped { return }
                 cellTapped = true
                 if item.notiType == .like {
-                    let viewController = UserDetailViewController()
-                    FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.sendId, dataType: User.self) { result in
+                    FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.sendId, dataType: User.self) { [weak self] result in
+                        guard let self = self else { return }
                         switch result {
                         case .success(let data):
                             guard let data = data else { return }
-                            viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
-                            self.navigationController?.pushViewController(viewController, animated: true)
+                            detailUser = data
+                            navigationController?.popViewController(animated: false)
                         case .failure(let error):
                             print(error)
                             return
