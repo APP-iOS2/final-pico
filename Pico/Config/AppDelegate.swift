@@ -22,11 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let compareResult = nowVersion.compare(latestVersion, options: .numeric)
             switch compareResult {
             case .orderedAscending:
-                VersionService.shared.isCheckVersion = true
+                VersionService.shared.isOldVersion = true
             case .orderedDescending:
-                VersionService.shared.isCheckVersion = false
+                VersionService.shared.isOldVersion = false
             case .orderedSame:
-                VersionService.shared.isCheckVersion = false
+                VersionService.shared.isOldVersion = false
             }
         }
         

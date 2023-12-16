@@ -17,6 +17,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         let currentUser = UserDefaultsManager.shared.getUserData()
         
+        if VersionService.shared.isOldVersion {
+            UserDefaultsManager.shared.removeAll()
+        }
+        
         if UserDefaultsManager.shared.isLogin() {
             let checkService = CheckService()
             let user: User = User.tempUser
