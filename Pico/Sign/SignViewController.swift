@@ -65,7 +65,7 @@ final class SignViewController: UIViewController {
         makeConstraints()
         configRx()
         locationManager.configLocation()
-        if VersionService.shared.isCheckVersion {
+        if !VersionService.shared.isCheckVersion {
             showVersionAlert()
         }
     }
@@ -81,6 +81,8 @@ extension SignViewController {
             self.dismiss(animated: true, completion: {
                 if let url = URL(string: appStoreOpenUrlString), UIApplication.shared.canOpenURL(url) {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                    sleep(3)
+                    exit(0)
                 }
             })
         })
