@@ -181,7 +181,7 @@ final class MailReceiveViewController: UIViewController {
                 
                 let mailSendView = MailSendViewController()
                 mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId, atMessageView: true)
-                mailSendView.modalPresentationStyle = .formSheet
+                mailSendView.modalPresentationStyle = .fullScreen
                 mailSendView.modalTransitionStyle = .flipHorizontal
                 present(mailSendView, animated: true, completion: nil)
             }

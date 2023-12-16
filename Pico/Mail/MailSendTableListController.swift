@@ -107,7 +107,7 @@ extension MailSendTableListController: UITableViewDataSource, UITableViewDelegat
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = viewModel.sendList[indexPath.row]
         let mailReceiveView = MailReceiveViewController()
-        mailReceiveView.modalPresentationStyle = .formSheet
+        mailReceiveView.modalPresentationStyle = .fullScreen
         mailReceiveView.mailSendDelegate = self
         mailReceiveView.configData(mailSender: item)
         self.present(mailReceiveView, animated: true, completion: nil)
