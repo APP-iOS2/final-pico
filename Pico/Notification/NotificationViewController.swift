@@ -19,6 +19,7 @@ final class NotificationViewController: UIViewController {
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkEmptyPublisher = PublishSubject<Void>()
+    private let deletePublisher = PublishSubject<String>()
     private let footerView = FooterView()
     private var isRefresh = false
     private var cellTapped: Bool = false
@@ -143,12 +144,21 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
             }
         }
     }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            guard let item = viewModel.notifications[safe: indexPath.row] else { return }
+            viewModel.notifications.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            deletePublisher.onNext(item.id)
+        }
+    }
 }
 
 // MARK: - Bind
 extension NotificationViewController {
     private func bind() {
-        let input = NotificationViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher)
+        let input = NotificationViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher, deleteNoti: deletePublisher)
         let output = viewModel.transform(input: input)
         
         output.notificationIsEmpty

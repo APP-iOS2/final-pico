@@ -235,6 +235,6 @@ final class MailSendViewModel {
         guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
         let receiverNoti = Noti(receiveId: receiveUser.id, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
         
-        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: receiverNoti.id, data: receiverNoti)
     }
 }
