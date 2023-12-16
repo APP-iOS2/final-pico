@@ -15,6 +15,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        VersionService.shared.loadAppStoreVersion { latestVersion in
+            guard let latestVersion else { return }
+            guard let nowVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else { return }
+            let compareResult = nowVersion.compare(latestVersion, options: .numeric)
+            switch compareResult {
+            case .orderedAscending:
+                VersionService.shared.isCheckVersion = true
+            case .orderedDescending:
+                VersionService.shared.isCheckVersion = false
+            case .orderedSame:
+                VersionService.shared.isCheckVersion = false
+            }
+        }
+        
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
