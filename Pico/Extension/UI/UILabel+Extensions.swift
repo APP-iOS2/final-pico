@@ -18,4 +18,13 @@ extension UILabel {
                                      range: NSRange(location: 0, length: attributeString.length))
         attributedText = attributeString
     }
+    
+    var rotation: Int {
+        get {
+            return 0
+        } set {
+            let radians = ((CGFloat.pi) * CGFloat(newValue) / CGFloat(180.0))
+            self.transform = CGAffineTransform(rotationAngle: radians)
+        }
+    }
 }

@@ -11,5 +11,6 @@ import Foundation
 struct Unsubscribe: Codable {
     /// 탈퇴된 날짜
     let createdDate: Double
+    let phoneNumber: String
     let user: User
 }

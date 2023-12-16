@@ -173,9 +173,11 @@ extension MailSendTableListController: UIScrollViewDelegate {
             mailListTableView.tableFooterView = footerView
             loadDataPublsher.onNext(())
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.mailListTableView.reloadData()
-                self.mailListTableView.tableFooterView = nil
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                guard let self else { return }
+                
+                mailListTableView.reloadData()
+                mailListTableView.tableFooterView = nil
             }
         }
     }

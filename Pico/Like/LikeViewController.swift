@@ -24,7 +24,7 @@ final class LikeViewController: BaseViewController {
         segment.setTitleTextAttributes([NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.picoFontBlack], for: .selected)
         return segment
     }()
-
+    
     private let underLineView: UIView = {
         let view = UIView()
         view.backgroundColor = .picoFontBlack
@@ -60,7 +60,7 @@ final class LikeViewController: BaseViewController {
         configTabBar()
         configBarItem()
     }
-
+    
     private func configTabBar() {
         tabSegmentedControl.addTarget(self, action: #selector(changeUnderLinePosition), for: .valueChanged)
         
@@ -84,7 +84,7 @@ final class LikeViewController: BaseViewController {
     
     @objc private func changeUnderLinePosition() {
         let segmentIndex = CGFloat(tabSegmentedControl.selectedSegmentIndex)
-
+        
         let segmentWidth = tabSegmentedControl.frame.width / CGFloat(tabSegmentedControl.numberOfSegments)
         let leadingDistance = segmentWidth * segmentIndex
         underLineView.snp.updateConstraints({ make in
@@ -93,7 +93,7 @@ final class LikeViewController: BaseViewController {
         UIView.animate(withDuration: 0.2, animations: { [weak self] in
             self?.view.layoutIfNeeded()
         })
-       pageViewController.setViewControllers([viewControllers[tabSegmentedControl.selectedSegmentIndex]], direction: segmentIndex == 1.0 ? .forward : .reverse, animated: true)
+        pageViewController.setViewControllers([viewControllers[tabSegmentedControl.selectedSegmentIndex]], direction: segmentIndex == 1.0 ? .forward : .reverse, animated: true)
         
     }
     
@@ -120,7 +120,7 @@ final class LikeViewController: BaseViewController {
             make.leading.trailing.equalTo(segmentView)
             make.bottom.equalTo(safeArea)
         }
-
+        
         underLineView.snp.makeConstraints { make in
             make.leading.bottom.equalTo(tabSegmentedControl)
             make.width.equalTo(tabSegmentedControl.snp.width).multipliedBy(1 / CGFloat(tabSegmentedControl.numberOfSegments))

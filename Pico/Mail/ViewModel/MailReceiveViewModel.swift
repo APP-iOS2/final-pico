@@ -27,7 +27,7 @@ final class MailReceiveViewModel {
     private let disposeBag = DisposeBag()
     
     private let dbRef = Firestore.firestore()
-    private var itemsPerPage: Int = Int(Screen.height * 1.5 / 90)
+    private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
     var startIndex = 0
     
     struct Input {
@@ -113,9 +113,12 @@ final class MailReceiveViewModel {
                         }
                         let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         receiveList += currentPageDatas
-                        startIndex += currentPageDatas.count
                         
-                        reloadMailTableViewPublisher.onNext(())
+                        if startIndex == 0 {
+                            reloadMailTableViewPublisher.onNext(())
+                        }
+                        
+                        startIndex += currentPageDatas.count
                     }
                 } else {
                     print("받은 문서를 찾을 수 없습니다.")

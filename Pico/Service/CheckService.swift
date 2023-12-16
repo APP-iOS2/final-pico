@@ -118,6 +118,36 @@ final class CheckService {
             }
     }
     
+    func checkStopUser(userNumber: String, completion: @escaping (Bool, Stop) -> Void) {
+        let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
+        let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        let tempStop = Stop(createdDate: 0, during: 0, phoneNumber: "", user: User.tempUser)
+        if !phoneNumberPredicate.evaluate(with: userNumber) {
+            completion(false, tempStop)
+            return
+        }
+        DispatchQueue.global().async {
+            self.dbRef.collection("stop")
+                .whereField("phoneNumber", isEqualTo: userNumber)
+                .getDocuments { snapshot, error in
+                    
+                    guard error == nil, let documents = snapshot?.documents else {
+                        completion(false, tempStop) // 에러 발생 또는 문서가 없음
+                        return
+                    }
+                    // 지금 user데이터를 가져오는거 자체가 안됨
+                    if !documents.isEmpty {
+                        if let document = documents.first {
+                            let stopUser = SignInViewModel().convertStop(document: document)
+                            completion(true, stopUser) // 차단된 사용자임
+                        }
+                    } else {
+                        completion(false, tempStop) // 차단된 사용자가 아님
+                    }
+                }
+        }
+    }
+    
     func disConnectSession() {
         let currentUser = UserDefaultsManager.shared.getUserData()
         let phoneNumber = currentUser.phoneNumber

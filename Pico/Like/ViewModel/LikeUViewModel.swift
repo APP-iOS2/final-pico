@@ -41,7 +41,7 @@ final class LikeUViewModel: ViewModelType {
     private let disposeBag = DisposeBag()
     private let currentUser = UserDefaultsManager.shared.getUserData()
     private var currentChuCount = UserDefaultsManager.shared.getChuCount()
-    private let pageSize = 6
+    private let pageSize = 10
     var startIndex = 0
 
     func transform(input: Input) -> Output {
@@ -114,7 +114,7 @@ final class LikeUViewModel: ViewModelType {
                 }
                 
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType == .like }) {
+                    if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType != .dislike }) {
                         let sorted = datas.sorted {
                             return $0.createdDate > $1.createdDate
                         }
@@ -123,8 +123,11 @@ final class LikeUViewModel: ViewModelType {
                         }
                         let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
                         likeUList = currentPageDatas
+                        
+                        if startIndex == 0 {
+                            reloadCollectionViewPublisher.onNext(())
+                        }
                         startIndex = currentPageDatas.count
-                        reloadCollectionViewPublisher.onNext(())
                     }
                 } else {
                     print("문서를 찾을 수 없습니다.")
