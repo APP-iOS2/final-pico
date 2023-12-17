@@ -30,7 +30,7 @@ final class MailReceiveViewController: UIViewController {
         return navigationItem
     }()
     
-    private let leftBarButton: UIBarButtonItem = {
+    private let backButton: UIBarButtonItem = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
         let barButtonItem = UIBarButtonItem()
         barButtonItem.image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
@@ -236,7 +236,7 @@ final class MailReceiveViewController: UIViewController {
     }
     
     private func configNavigationBarItem() {
-        navItem.leftBarButtonItem = leftBarButton
+        navItem.leftBarButtonItem = backButton
         navItem.rightBarButtonItem = rightBarButton
         navigationBar.shadowImage = UIImage()
         navigationBar.setItems([navItem], animated: true)
