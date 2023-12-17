@@ -57,7 +57,7 @@ final class EntViewController: BaseViewController {
         label.textAlignment = .center
         label.textColor = .picoFontGray
         label.font = .picoDescriptionFont
-        label.text = "30분에 한 번만 진행 가능합니다"
+        label.text = "15분에 한 번만 진행 가능합니다"
         return label
     }()
     
@@ -145,7 +145,7 @@ final class EntViewController: BaseViewController {
         if let lastStartedTime = UserDefaultsManager.shared.getLastWorldCupTime() {
             let currentTime = Date()
             let timeInterval = currentTime.timeIntervalSince(lastStartedTime)
-            let secondsForHalf: Double = 30 * 60
+            let secondsForHalf: Double = 30 * 30
 
             if timeInterval < secondsForHalf {
                 remainingTime = Int(secondsForHalf - timeInterval)
@@ -158,8 +158,6 @@ final class EntViewController: BaseViewController {
     }
     
     private func tappedGameStartButton() {
-        let currentTime = Date()
-        UserDefaultsManager.shared.updateLastWorldCupTime(currentTime)
         if let navigationController = self.navigationController {
             navigationController.pushViewController(WorldCupGameViewController(), animated: true)
             self.tabBarController?.tabBar.isHidden = true
@@ -190,7 +188,7 @@ final class EntViewController: BaseViewController {
                 self.gameStartButton.isEnabled = true
                 self.timer?.invalidate()
                 self.timer = nil
-                self.guideLabel.text = "30분에 한 번만 진행 가능합니다"
+                self.guideLabel.text = "15분에 한 번만 진행 가능합니다"
             }
         }
     }

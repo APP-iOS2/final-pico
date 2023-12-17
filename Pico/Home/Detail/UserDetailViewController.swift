@@ -263,6 +263,23 @@ final class UserDetailViewController: UIViewController {
             })
         }
     }
+    
+    private func detectCapture() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureAction),
+            name: UIScreen.capturedDidChangeNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func captureAction() {
+        if UIScreen.main.isCaptured {
+            view.secureMode(enable: true)
+        } else {
+            view.secureMode(enable: false)
+        }
+    }
 }
 
 // MARK: - UI Associated Code

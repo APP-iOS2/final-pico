@@ -118,6 +118,7 @@ final class WorldCupResultViewController: UIViewController {
         configResultUserCell()
         bind()
         configAnimationView()
+        resetGameTimer()
     }
     
     private func configAnimationView() {
@@ -209,6 +210,28 @@ final class WorldCupResultViewController: UIViewController {
                 userImage.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
                 userImage.kf.setImage(with: url)
             }
+        }
+    }
+    
+    private func detectCapture() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureAction),
+            name: UIScreen.capturedDidChangeNotification,
+            object: nil
+        )
+    }
+    
+    private func resetGameTimer() {
+        let currentTime = Date()
+        UserDefaultsManager.shared.updateLastWorldCupTime(currentTime)
+    }
+    
+    @objc private func captureAction() {
+        if UIScreen.main.isCaptured {
+            view.secureMode(enable: true)
+        } else {
+            view.secureMode(enable: false)
         }
     }
 }
