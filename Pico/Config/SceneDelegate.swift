@@ -25,6 +25,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let checkService = CheckService()
             let user: User = User.tempUser
             
+            FirestoreService.shared.loadDocument(collectionId: .session, documentId: currentUser.phoneNumber, dataType: User.self) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let user):
+                    guard user != nil else { return }
+                        UserDefaultsManager.shared.removeAll()
+                    let rootViewController = UINavigationController(rootViewController: SignViewController())
+                    window?.rootViewController = rootViewController
+                    return
+                case .failure(let err):
+                    print("SceneDelegate 세션부분 에러입니다. error: \(err) ")
+                }
+            }
             checkService.checkStopUser(userNumber: currentUser.phoneNumber) { [weak self] isStop, stop in
                 guard let self = self else { return }
                 guard isStop else { return }
@@ -119,7 +133,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
-        
         let userDefaultsManager = UserDefaultsManager()
         guard userDefaultsManager.isLogin() else { return }
         let checkService = CheckService()
