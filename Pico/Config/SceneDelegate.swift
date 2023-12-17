@@ -111,6 +111,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
         let userDefaultsManager = UserDefaultsManager()
+        guard userDefaultsManager.isLogin() else { return }
         FirestoreService.shared.saveDocument(collectionId: .session, documentId: userDefaultsManager.getUserData().phoneNumber, data: User.tempUser) { _ in }
     }
     
@@ -118,6 +119,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        
+        let userDefaultsManager = UserDefaultsManager()
+        guard userDefaultsManager.isLogin() else { return }
         let checkService = CheckService()
         checkService.disConnectSession()
         print("끊킴")
