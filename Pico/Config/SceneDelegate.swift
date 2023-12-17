@@ -15,7 +15,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        let currentUser = UserDefaultsManager.shared.getUserData()
         
         if VersionService.shared.isOldVersion {
             UserDefaultsManager.shared.removeAll()
@@ -24,7 +23,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if UserDefaultsManager.shared.isLogin() {
             let checkService = CheckService()
             let user: User = User.tempUser
-            
+            let currentUser = UserDefaultsManager.shared.getUserData()
+
             FirestoreService.shared.loadDocument(collectionId: .session, documentId: currentUser.phoneNumber, dataType: User.self) { [weak self] result in
                 guard let self = self else { return }
                 
@@ -39,6 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     print("SceneDelegate 세션부분 에러입니다. error: \(err) ")
                 }
             }
+            
             checkService.checkStopUser(userNumber: currentUser.phoneNumber) { [weak self] isStop, stop in
                 guard let self = self else { return }
                 guard isStop else { return }
