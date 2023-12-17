@@ -181,9 +181,9 @@ final class MailReceiveViewController: UIViewController {
                 
                 let mailSendView = MailSendViewController()
                 mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId, atMessageView: true)
-                mailSendView.modalPresentationStyle = .fullScreen
+                mailSendView.modalPresentationStyle = .formSheet
                 mailSendView.modalTransitionStyle = .flipHorizontal
-                present(mailSendView, animated: true, completion: nil)
+                self.present(mailSendView, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
     }

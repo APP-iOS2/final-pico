@@ -105,11 +105,10 @@ extension MailReceiveTableListController: UITableViewDataSource, UITableViewDele
         let item = viewModel.receiveList[indexPath.row]
         viewModel.updateNewData(data: item)
         let mailReceiveView = MailReceiveViewController()
-        mailReceiveView.modalPresentationStyle = .fullScreen
         mailReceiveView.mailReceiveDelegate = self
         mailReceiveView.configData(mailSender: item)
-        
-        self.present(mailReceiveView, animated: true, completion: nil)
+        mailReceiveView.modalPresentationStyle = .formSheet
+        mailViewController.present(mailReceiveView, animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
