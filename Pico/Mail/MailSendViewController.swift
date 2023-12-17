@@ -20,7 +20,7 @@ final class MailSendViewController: UIViewController {
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = .secondarySystemBackground
+        navigationBar.barTintColor = .white
         return navigationBar
     }()
     

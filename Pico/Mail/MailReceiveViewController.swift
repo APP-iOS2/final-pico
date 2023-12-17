@@ -21,7 +21,7 @@ final class MailReceiveViewController: UIViewController {
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = .secondarySystemBackground
+        navigationBar.barTintColor = .white
         return navigationBar
     }()
     
@@ -181,7 +181,7 @@ final class MailReceiveViewController: UIViewController {
                 
                 let mailSendView = MailSendViewController()
                 mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId, atMessageView: true)
-                mailSendView.modalPresentationStyle = .formSheet
+                mailSendView.modalPresentationStyle = .fullScreen
                 mailSendView.modalTransitionStyle = .flipHorizontal
                 present(mailSendView, animated: true, completion: nil)
             }

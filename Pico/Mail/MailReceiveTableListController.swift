@@ -105,7 +105,7 @@ extension MailReceiveTableListController: UITableViewDataSource, UITableViewDele
         let item = viewModel.receiveList[indexPath.row]
         viewModel.updateNewData(data: item)
         let mailReceiveView = MailReceiveViewController()
-        mailReceiveView.modalPresentationStyle = .formSheet
+        mailReceiveView.modalPresentationStyle = .fullScreen
         mailReceiveView.mailReceiveDelegate = self
         mailReceiveView.configData(mailSender: item)
         
