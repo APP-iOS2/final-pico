@@ -65,7 +65,7 @@ final class SignViewController: UIViewController {
         makeConstraints()
         configRx()
         locationManager.configLocation()
-        if !VersionService.shared.isOldVersion {
+        if VersionService.shared.isOldVersion {
             showVersionAlert()
         }
     }

@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         let currentUser = UserDefaultsManager.shared.getUserData()
         
-        if !VersionService.shared.isOldVersion {
+        if VersionService.shared.isOldVersion {
             UserDefaultsManager.shared.removeAll()
         }
         
@@ -67,7 +67,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 }
             }
         } else {
-            let rootViewController = UINavigationController(rootViewController: SignUpPictureViewController(viewModel: SignUpViewModel()))
+            let rootViewController = UINavigationController(rootViewController: SignViewController())
             window?.rootViewController = rootViewController
         }
         window?.makeKeyAndVisible()
@@ -110,11 +110,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        let userDefaultsManager = UserDefaultsManager()
+        FirestoreService.shared.saveDocument(collectionId: .session, documentId: userDefaultsManager.getUserData().phoneNumber, data: User.tempUser) { _ in }
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        let checkService = CheckService()
+        checkService.disConnectSession()
+        print("끊킴")
     }
 }
