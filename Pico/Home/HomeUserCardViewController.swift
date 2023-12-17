@@ -353,7 +353,7 @@ final class HomeUserCardViewController: UIViewController {
                 }
                 homeViewController?.removedView.append(view)
                 
-                if currentUser.userId.prefix(4) != "test" {
+                if currentUser.userId.prefix(4) != Bundle.main.testId {
                     viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
                         if result {
                             viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
@@ -378,7 +378,7 @@ final class HomeUserCardViewController: UIViewController {
                     HomeUserCardViewModel.cardCounting = -1
                     homeViewController?.addUserCards()
                 }
-                if currentUser.userId.prefix(4) != "test" {
+                if currentUser.userId.prefix(4) != Bundle.main.testId {
                     self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
                 }
                 UIView.animate(withDuration: 0.5) { [self] in
@@ -406,7 +406,7 @@ final class HomeUserCardViewController: UIViewController {
             HomeUserCardViewModel.cardCounting = -1
             homeViewController?.addUserCards()
         }
-        if currentUser.userId.prefix(4) != "test" {
+        if currentUser.userId.prefix(4) != Bundle.main.testId {
             viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
                 if result {
                     viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
@@ -437,7 +437,7 @@ final class HomeUserCardViewController: UIViewController {
             homeViewController?.addUserCards()
         }
         
-        if currentUser.userId.prefix(4) != "test" {
+        if currentUser.userId.prefix(4) != Bundle.main.testId {
             self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
         }
         
@@ -461,7 +461,7 @@ final class HomeUserCardViewController: UIViewController {
                     let remainingChu = UserDefaultsManager.shared.getChuCount()
                     if remainingChu >= 10 {
                         viewModel.purchaseChu(currentChu: remainingChu, purchaseChu: 10)
-                        if currentUser.userId.prefix(4) != "test" {
+                        if currentUser.userId.prefix(4) != Bundle.main.testId {
                             self.viewModel.deleteLikeData()
                         }
                         UIView.animate(withDuration: 0.3) {

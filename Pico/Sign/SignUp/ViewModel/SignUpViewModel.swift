@@ -85,7 +85,7 @@ final class SignUpViewModel {
     
     func saveNewUser() {
         if newUser.phoneNumber == Bundle.main.testPhoneNumber {
-            newUser.id = "test"
+            newUser.id = Bundle.main.testId
         }
         FirestoreService().saveDocumentRx(collectionId: .users, documentId: newUser.id, data: newUser)
             .subscribe(onNext: isSaveSuccess.onNext(_:))

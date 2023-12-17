@@ -88,7 +88,7 @@ final class HomeViewModel {
                     var users = [User]()
                     for document in querySnapshot!.documents {
                         if let userdata = try? document.data(as: User.self) {
-                            if userdata.id != self.loginUser.userId && userdata.id.prefix(4) != "test" {
+                            if userdata.id != self.loginUser.userId && userdata.id.prefix(4) != Bundle.main.testId {
                                 users.append(userdata)
                             }
                         } else {
