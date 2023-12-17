@@ -119,8 +119,6 @@
 		6ADDE2FF2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE2FE2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift */; };
 		6ADDE3012AC4210600CE4482 /* ProfileEditTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */; };
 		B11D2B8C2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B11D2B8B2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift */; };
-		B13789D02B2F0E910037E14D /* FirebaseAPIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = B13789CE2B2F0E910037E14D /* FirebaseAPIKeys.plist */; };
-		B13789D12B2F0E910037E14D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B13789CF2B2F0E910037E14D /* GoogleService-Info.plist */; };
 		B146A3BD2AD4399D003143DD /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3BC2AD4399D003143DD /* UIImage+Extensions.swift */; };
 		B146A3BF2AD44511003143DD /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3BE2AD44511003143DD /* UIImageView+Extensions.swift */; };
 		B146A3C32AD4566C003143DD /* SignViewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B146A3C22AD4566C003143DD /* SignViewConstraints.swift */; };
@@ -337,8 +335,6 @@
 		6ADDE2FE2AC3BCB400CE4482 /* ProfileEditCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditCollectionCell.swift; sourceTree = "<group>"; };
 		6ADDE3002AC4210600CE4482 /* ProfileEditTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditTableHeaderView.swift; sourceTree = "<group>"; };
 		B11D2B8B2AC63C43008D80A4 /* UITextFieldDelegate+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextFieldDelegate+Extensions.swift"; sourceTree = "<group>"; };
-		B13789CE2B2F0E910037E14D /* FirebaseAPIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FirebaseAPIKeys.plist; sourceTree = "<group>"; };
-		B13789CF2B2F0E910037E14D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B146A3BC2AD4399D003143DD /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
 		B146A3BE2AD44511003143DD /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
 		B146A3C22AD4566C003143DD /* SignViewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignViewConstraints.swift; sourceTree = "<group>"; };
@@ -753,8 +749,6 @@
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
-				B13789CE2B2F0E910037E14D /* FirebaseAPIKeys.plist */,
-				B13789CF2B2F0E910037E14D /* GoogleService-Info.plist */,
 				B14B58D42AC0A232009889DA /* LaunchScreen.storyboard */,
 			);
 			path = Config;
@@ -1332,11 +1326,9 @@
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
 				BCD6253B2AE5B5940079BD28 /* HomeEmptyLottie.json in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
-				B13789D12B2F0E910037E14D /* GoogleService-Info.plist in Resources */,
 				B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 				B15383E42AE770810037DBBA /* worldcupAnimation.json in Resources */,
-				B13789D02B2F0E910037E14D /* FirebaseAPIKeys.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
