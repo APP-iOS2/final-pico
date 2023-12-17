@@ -12,8 +12,11 @@ final class VersionService {
     
     var isOldVersion: Bool = false
     
+    private let appleID = "6473959557"
+    private let bundleID = "com.ojeomsun.pico.dev"
+    lazy var appStoreOpenUrlString = "itms-apps://itunes.apple.com/app/apple-store/\(appleID)"
+    
     func loadAppStoreVersion(completion: @escaping (String?) -> Void) {
-        let bundleID = "com.ojeomsun.pico.dev"
         let appStoreUrl = "http://itunes.apple.com/kr/lookup?bundleId=\(bundleID)"
         
         let task = URLSession.shared.dataTask(with: URL(string: appStoreUrl)!) { data, _, error in
@@ -35,5 +38,11 @@ final class VersionService {
             }
         }
         task.resume()
+    }
+    
+    func nowVersion() -> String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        
+        return version
     }
 }

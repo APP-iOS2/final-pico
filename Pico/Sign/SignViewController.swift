@@ -65,7 +65,7 @@ final class SignViewController: UIViewController {
         makeConstraints()
         configRx()
         locationManager.configLocation()
-        if VersionService.shared.isOldVersion {
+        if !VersionService.shared.isOldVersion {
             showVersionAlert()
         }
     }
@@ -74,12 +74,9 @@ final class SignViewController: UIViewController {
 extension SignViewController {
     
     private func showVersionAlert() {
-        let appleID = "6473959557"
-        let appStoreOpenUrlString = "itms-apps://itunes.apple.com/app/apple-store/\(appleID)"
-
         showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "업데이트 이후에 사용이 가능합니다.", confirmButtonText: "확인", comfrimAction: {
             self.dismiss(animated: true, completion: {
-                if let url = URL(string: appStoreOpenUrlString), UIApplication.shared.canOpenURL(url) {
+                if let url = URL(string: VersionService.shared.appStoreOpenUrlString), UIApplication.shared.canOpenURL(url) {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                     sleep(3)
                     exit(0)

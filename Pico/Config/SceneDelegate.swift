@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         let currentUser = UserDefaultsManager.shared.getUserData()
         
-        if VersionService.shared.isOldVersion {
+        if !VersionService.shared.isOldVersion {
             UserDefaultsManager.shared.removeAll()
         }
         
@@ -67,7 +67,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 }
             }
         } else {
-            let rootViewController = UINavigationController(rootViewController: SignViewController())
+            let rootViewController = UINavigationController(rootViewController: SignUpPictureViewController(viewModel: SignUpViewModel()))
             window?.rootViewController = rootViewController
         }
         window?.makeKeyAndVisible()

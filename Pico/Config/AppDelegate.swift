@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         VersionService.shared.loadAppStoreVersion { latestVersion in
             guard let latestVersion else { return }
-            guard let nowVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else { return }
+            let nowVersion = VersionService.shared.nowVersion()
             let compareResult = nowVersion.compare(latestVersion, options: .numeric)
             switch compareResult {
             case .orderedAscending:
