@@ -9,21 +9,22 @@ import UIKit
 import SnapKit
 
 final class RangeSliderView: UIView {
+    private let backgroundBar = UIView()
     private let sliderBar = UIView()
     private let rangeBar = UIView()
     private let leftBall = UIImageView()
     private let rightBall = UIImageView()
-    private let ballSize = 14
+    private let thumbSize = 18
     
     private var initialCenter = CGPoint()
-    private var leftPoint = Int()
-    private var rightPoint = Int()
+    private var minPoint = Int()
+    private var maxPoint = Int()
     private var valueLabel = UILabel()
     private var layoutIsCheck = false
     // 19 이상부터
     private var sliderMinValue = 19
-    // 62 미만까지
-    private var sliderMaxValue = 62
+    // 61 이하까지
+    private var sliderMaxValue = 61
     private var leftBallValue = HomeViewModel.filterAgeMin
     private var rightBallValue = HomeViewModel.filterAgeMax
     var titleLabel = UILabel()
@@ -44,22 +45,29 @@ final class RangeSliderView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         if layoutIsCheck == false {
-            leftPoint = calculatePointFromValue(leftBallValue)
-            rightPoint = calculatePointFromValue(rightBallValue)
+            minPoint = calculatePointFromValue(leftBallValue)
+            maxPoint = calculatePointFromValue(rightBallValue)
             updateRangeStick()
             layoutIsCheck = true
         }
     }
     
     private func addSubView() {
-        addSubview([sliderBar, rangeBar, leftBall, rightBall, valueLabel, titleLabel])
+        addSubview([backgroundBar, sliderBar, rangeBar, leftBall, rightBall, valueLabel, titleLabel])
     }
     
     private func makeConstraints() {
+        backgroundBar.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.equalToSuperview().offset(1)
+            make.trailing.equalToSuperview().inset(1)
+            make.height.equalTo(4)
+        }
+        
         sliderBar.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
+            make.leading.equalTo(backgroundBar).offset(thumbSize / 3)
+            make.trailing.equalTo(backgroundBar).inset(thumbSize / 3)
             make.height.equalTo(4)
         }
         
@@ -79,23 +87,23 @@ final class RangeSliderView: UIView {
         
         rangeBar.snp.updateConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(sliderBar.snp.leading).offset(leftPoint)
-            make.trailing.equalTo(sliderBar.snp.leading).offset(rightPoint)
+            make.leading.equalTo(sliderBar.snp.leading).offset(minPoint)
+            make.trailing.equalTo(sliderBar.snp.leading).offset(maxPoint)
             make.height.equalTo(4)
         }
         
         leftBall.snp.makeConstraints { make in
-            make.centerX.equalTo(sliderBar.snp.leading).offset(leftPoint)
+            make.centerX.equalTo(sliderBar.snp.leading).offset(minPoint)
             make.centerY.equalTo(sliderBar.snp.centerY)
-            make.width.equalTo(ballSize)
-            make.height.equalTo(ballSize)
+            make.width.equalTo(thumbSize)
+            make.height.equalTo(thumbSize)
         }
         
         rightBall.snp.makeConstraints { make in
-            make.centerX.equalTo(sliderBar.snp.leading).offset(rightPoint)
+            make.centerX.equalTo(sliderBar.snp.leading).offset(maxPoint)
             make.centerY.equalTo(sliderBar.snp.centerY)
-            make.width.equalTo(ballSize)
-            make.height.equalTo(ballSize)
+            make.width.equalTo(thumbSize)
+            make.height.equalTo(thumbSize)
         }
     }
     
@@ -103,7 +111,10 @@ final class RangeSliderView: UIView {
         titleLabel.text = "title"
         titleLabel.font = .picoSubTitleFont
         
-        sliderBar.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        backgroundBar.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        backgroundBar.layer.cornerRadius = 2
+        
+        sliderBar.backgroundColor = UIColor.clear
         sliderBar.layer.cornerRadius = 2
         
         rangeBar.backgroundColor = UIColor.picoBlue
@@ -133,6 +144,7 @@ final class RangeSliderView: UIView {
     }
     
     private func moveBall(gesture: UIPanGestureRecognizer, ball: UIImageView) {
+        var ball = ball
         let translation = gesture.translation(in: ball)
         let newCenterX = initialCenter.x + translation.x
         
@@ -141,17 +153,17 @@ final class RangeSliderView: UIView {
             initialCenter = ball.center
         case .changed:
             if ball == leftBall {
-                leftPoint = Int(newCenterX)
-                if leftPoint < 5 {
-                    leftPoint = 5
+                minPoint = Int(newCenterX)
+                if minPoint < 0 {
+                    minPoint = 0
                 }
-                if leftPoint > (rightPoint - ballSize + 5) {
-                    leftPoint = rightPoint - ballSize + 5
+                if minPoint >= maxPoint {
+                    minPoint = maxPoint
                 }
                 updateRangeStick()
-                leftBallValue = (leftPoint) * (sliderMaxValue - sliderMinValue) / Int(sliderBar.frame.width) + sliderMinValue
+                leftBallValue = (minPoint) * (sliderMaxValue - sliderMinValue) / Int(sliderBar.frame.width) + sliderMinValue
                 if leftBallValue >= rightBallValue {
-                    leftBallValue = rightBallValue - 1
+                    leftBallValue = rightBallValue
                 }
                 if rightBallValue > 60 {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
@@ -166,15 +178,18 @@ final class RangeSliderView: UIView {
                 }
             }
             if ball == rightBall {
-                rightPoint = Int(newCenterX)
-                if rightPoint > Int(sliderBar.frame.width) - 5 {
-                    rightPoint = Int(sliderBar.frame.width) - 5
+                maxPoint = Int(newCenterX)
+                if maxPoint > Int(sliderBar.frame.width) {
+                    maxPoint = Int(sliderBar.frame.width)
                 }
-                if rightPoint < (leftPoint + ballSize - 5) {
-                    rightPoint = leftPoint + ballSize - 5
+                if maxPoint <= minPoint {
+                    maxPoint = minPoint
                 }
                 updateRangeStick()
-                rightBallValue = (rightPoint) * (sliderMaxValue - sliderMinValue) / Int(sliderBar.frame.width) + sliderMinValue
+                rightBallValue = (maxPoint) * (sliderMaxValue - sliderMinValue) / Int(sliderBar.frame.width) + sliderMinValue
+                if leftBallValue >= rightBallValue {
+                    leftBallValue = rightBallValue
+                }
                 if rightBallValue > 60 {
                     valueLabel.text = ("\(String(leftBallValue))세 ~ 60세 +")
                     HomeViewModel.filterAgeMax = 61
@@ -202,36 +217,35 @@ final class RangeSliderView: UIView {
     }
     
     private func updateRangeStick() {
-        if leftPoint == 0 {
-            leftPoint = 5
-        }
         leftBall.snp.updateConstraints { make in
-            make.centerX.equalTo(sliderBar.snp.leading).offset(leftPoint)
+            make.centerX.equalTo(sliderBar.snp.leading).offset(minPoint)
             make.centerY.equalTo(sliderBar.snp.centerY)
-            make.width.equalTo(ballSize)
-            make.height.equalTo(ballSize)
+            make.width.equalTo(thumbSize)
+            make.height.equalTo(thumbSize)
         }
         
         rightBall.snp.updateConstraints { make in
-            make.centerX.equalTo(sliderBar.snp.leading).offset(rightPoint)
+            make.centerX.equalTo(sliderBar.snp.leading).offset(maxPoint)
             make.centerY.equalTo(sliderBar.snp.centerY)
-            make.width.equalTo(ballSize)
-            make.height.equalTo(ballSize)
+            make.width.equalTo(thumbSize)
+            make.height.equalTo(thumbSize)
         }
         
         rangeBar.snp.updateConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(sliderBar.snp.leading).offset(leftPoint)
-            make.trailing.equalTo(sliderBar.snp.leading).offset(rightPoint)
+            make.leading.equalTo(sliderBar.snp.leading).offset(minPoint)
+            make.trailing.equalTo(sliderBar.snp.leading).offset(maxPoint)
             make.height.equalTo(4)
         }
     }
     
     @objc func leftBallPan(_ gesture: UIPanGestureRecognizer) {
         moveBall(gesture: gesture, ball: leftBall)
+        bringSubviewToFront(leftBall)
     }
     
     @objc func rightBallPan(_ gesture: UIPanGestureRecognizer) {
         moveBall(gesture: gesture, ball: rightBall)
+        bringSubviewToFront(rightBall)
     }
 }
