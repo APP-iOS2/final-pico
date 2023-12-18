@@ -94,17 +94,13 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = viewModel.notifications[indexPath.row]
-        if item.notiType == .like {
-            let viewController = UserDetailViewController()
-            FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.sendId, dataType: User.self) { result in
-                switch result {
-                case .success(let data):
-                    guard let data = data else { return }
-                    viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
-                    self.navigationController?.pushViewController(viewController, animated: true)
-                case .failure(let error):
-                    print(error)
+        guard let item = viewModel.notifications[safe: indexPath.row] else { return }
+        FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.sendId, dataType: User.self) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                guard data != nil else {
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                     return
                 }
                 if cellTapped { return }
