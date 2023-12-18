@@ -8,7 +8,7 @@
 import Foundation
 
 struct Chatting: Codable {
-    let chatId: String
+    let userId: String
     var userChatting: [ChattingInfo]?
     
     struct ChattingInfo: Codable {
@@ -20,4 +20,9 @@ struct Chatting: Codable {
         let sendedDate: Double
         let isReading: Bool
     }
+}
+
+enum ChattingSendType: Codable {
+    case chatting
+    case matching
 }

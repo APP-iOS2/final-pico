@@ -26,7 +26,8 @@ final class ChattingViewModel {
     private let reloadChattingTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     
-    private let dbRef = Firestore.firestore()
+    private let dbRef = Firestore.firestore().collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId)
+                
     var lastDocumentSnapshot: DocumentSnapshot?
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
     var startIndex = 0
@@ -82,11 +83,13 @@ final class ChattingViewModel {
     }
     
     func loadNextChattingPage() {
-        let dbRef = Firestore.firestore().collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId)
         
         var query = dbRef.collection("room")
-            .whereField("sendUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
-            .order(by: "createDate", descending: true)
+            .whereFilter(Filter.orFilter([
+                            Filter.whereField("sendUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId),
+                            Filter.whereField("receiveUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
+                        ]))
+            .order(by: "sendedDate", descending: true)
             .limit(to: itemsPerPage)
         
         if let lastSnapshot = lastDocumentSnapshot {
@@ -131,12 +134,90 @@ final class ChattingViewModel {
         let updateData: Chatting.ChattingInfo = data
         
         DispatchQueue.global().async {
-            self.dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).collection("room").document(data.roomID).updateData([
-                "chattingInfo": FieldValue.arrayRemove([data.asDictionary()])
+            self.dbRef.collection("room").document(data.roomID).updateData([
+                "userChatting": FieldValue.arrayRemove([data.asDictionary()])
             ])
-            self.dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).collection("room").document(data.roomID).updateData([
-                "chattingInfo": FieldValue.arrayUnion([updateData.asDictionary()])
+            self.dbRef.collection("room").document(data.roomID).updateData([
+                "userChatting": FieldValue.arrayUnion([updateData.asDictionary()])
             ])
         }
+    }
+    
+    func saveChattingData(receiveUser: User, message: String, roomid: String, type: ChattingSendType) {
+        let senderUser = UserDefaultsManager.shared.getUserData()
+        
+        let receiveDBRef = Firestore.firestore().collection(Collections.chatting.name).document(receiveUser.id)
+        
+        let sendMessages: [String: Any] = [
+            "id": UUID().uuidString,
+            "roomID": roomid,
+            "sendUserId": senderUser.userId,
+            "receiveUserId": receiveUser.id,
+            "message": message,
+            "sendedDate": Date().timeIntervalSince1970,
+            "isReading": true
+        ]
+        
+        let receiveMessages: [String: Any] = [
+            "id": UUID().uuidString,
+            "sendUserId": senderUser.userId,
+            "receiveUserId": receiveUser.id,
+            "message": message,
+            "sendedDate": Date().timeIntervalSince1970,
+            "isReading": false
+        ]
+        
+        let matchingReceiveMessages: [String: Any] = [
+            "id": UUID().uuidString,
+            "sendUserId": receiveUser.id,
+            "receiveUserId": senderUser.userId,
+            "message": message,
+            "sendedDate": Date().timeIntervalSince1970,
+            "mailType": "receive",
+            "isReading": false
+        ]
+        
+        // 받는 사람
+        receiveDBRef.collection("room").document(roomid).setData(
+            [
+                "userId": receiveUser.id,
+                "userChatting": FieldValue.arrayUnion([receiveMessages])
+            ], merge: true) { error in
+                if let error = error {
+                    print("평가 업데이트 에러: \(error)")
+                }
+            }
+        
+        if type == .chatting { // 메시지를 보내는 경우
+            // 보내는 사람
+            dbRef.collection("room").document(roomid).setData(
+                [
+                    "userId": senderUser.userId,
+                    "userChatting": FieldValue.arrayUnion([sendMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("평가 업데이트 에러: \(error)")
+                    }
+                }
+            
+            NotificationService.shared.sendNotification(userId: receiveUser.id, sendUserName: senderUser.nickName, notiType: .message, messageContent: message)
+            
+        } else { // 매칭의 경우
+            dbRef.collection("room").document(roomid).setData(
+                [
+                    "userId": senderUser.userId,
+                    "userChatting": FieldValue.arrayUnion([matchingReceiveMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("평가 업데이트 에러: \(error)")
+                    }
+                }
+        }
+        
+        guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
+        
+        let receiverNoti = Noti(receiveId: receiveUser.id, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+        
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
     }
 }
