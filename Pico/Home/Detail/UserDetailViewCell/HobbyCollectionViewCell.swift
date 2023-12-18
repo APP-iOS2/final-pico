@@ -10,7 +10,6 @@ import UIKit
 final class HobbyCollectionViewCell: UICollectionViewCell {
     private let label: UILabel = {
         let label = UILabel()
-        label.text = "test"
         label.layer.masksToBounds = true
         label.layer.cornerRadius = 4
         label.font = .picoButtonFont

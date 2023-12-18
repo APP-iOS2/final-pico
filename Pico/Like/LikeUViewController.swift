@@ -24,6 +24,7 @@ final class LikeUViewController: UIViewController {
     private var isLoading = false
     private var isRefresh = false
     private var cellTapped: Bool = false
+    private var isMatching: Bool = false
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -39,6 +40,11 @@ final class LikeUViewController: UIViewController {
         configCollectionView()
         configRefresh()
         listLoadPublisher.onNext(())
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
     }
     
     private func configCollectionView() {

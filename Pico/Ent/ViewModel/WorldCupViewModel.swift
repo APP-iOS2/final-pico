@@ -39,11 +39,11 @@ final class WorldCupViewModel {
             .subscribe(onNext: { [weak self] data in
                 guard let self = self else { return }
                 
-                let filteredData = data.filter { $0.id != currentUserID }
+                let filteredData = data.filter { $0.id != currentUserID && $0.id != Bundle.main.testId }
                 let shuffledData = filteredData.shuffled()
                 let randomUsers = Array(shuffledData.prefix(8))
                 
-                self.users.accept(randomUsers)
+                users.accept(randomUsers)
             }, onError: { error in
                 print("오류: \(error)")
             })
