@@ -72,6 +72,17 @@ final class FirestoreService {
         }
     }
     
+    func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T) {
+        DispatchQueue.global().async {
+            do {
+                try self.dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
+                print("Success to save new document at \(collectionId.name) \(documentId)")
+            } catch {
+                print("Error to save new document at \(collectionId.name) \(documentId) \(error)")
+            }
+        }
+    }
+    
     func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.global().async {
             do {

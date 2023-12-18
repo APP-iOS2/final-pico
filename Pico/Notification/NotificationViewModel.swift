@@ -20,6 +20,7 @@ final class NotificationViewModel: ViewModelType {
             }
         }
     }
+    private let dbRef = Firestore.firestore()
     private let reloadTableViewPublisher = PublishSubject<Void>()
     private var isEmptyPublisher = PublishSubject<Bool>()
     private let disposeBag: DisposeBag = DisposeBag()
@@ -30,6 +31,7 @@ final class NotificationViewModel: ViewModelType {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
         let checkEmpty: Observable<Void>
+        let deleteNoti: Observable<String>
     }
     
     struct Output {
@@ -48,6 +50,12 @@ final class NotificationViewModel: ViewModelType {
             .withUnretained(self)
             .subscribe { viewModel, _ in
                 viewModel.loadNextPage()
+            }
+            .disposed(by: disposeBag)
+        input.deleteNoti
+            .withUnretained(self)
+            .subscribe { viewModel, notiId in
+                viewModel.deleteNoti(notiId: notiId)
             }
             .disposed(by: disposeBag)
         
@@ -77,8 +85,6 @@ final class NotificationViewModel: ViewModelType {
     }
     
     private func loadNextPage() {
-        let dbRef = Firestore.firestore()
-        
         var query = dbRef.collection(Collections.notifications.name)
             .whereField("receiveId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
             .order(by: "createDate", descending: true)
@@ -120,5 +126,16 @@ final class NotificationViewModel: ViewModelType {
         lastDocumentSnapshot = nil
         isEmptyPublisher = didSet
         loadNextPage()
+    }
+    
+    private func deleteNoti(notiId: String) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            dbRef.collection(Collections.notifications.name).document(notiId).delete { err in
+                if let err = err {
+                    print("Error updating document: \(err)")
+                }
+            }
+        }
     }
 }
