@@ -15,11 +15,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        let currentUser = UserDefaultsManager.shared.getUserData()
+        
+        if VersionService.shared.isOldVersion {
+            UserDefaultsManager.shared.removeAll()
+        }
         
         if UserDefaultsManager.shared.isLogin() {
             let checkService = CheckService()
             let user: User = User.tempUser
+            let currentUser = UserDefaultsManager.shared.getUserData()
+
+            FirestoreService.shared.loadDocument(collectionId: .session, documentId: currentUser.phoneNumber, dataType: User.self) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let user):
+                    guard user != nil else { return }
+                        UserDefaultsManager.shared.removeAll()
+                    let rootViewController = UINavigationController(rootViewController: SignViewController())
+                    window?.rootViewController = rootViewController
+                    return
+                case .failure(let err):
+                    print("SceneDelegate 세션부분 에러입니다. error: \(err) ")
+                }
+            }
             
             checkService.checkStopUser(userNumber: currentUser.phoneNumber) { [weak self] isStop, stop in
                 guard let self = self else { return }
@@ -106,11 +125,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        let userDefaultsManager = UserDefaultsManager()
+        guard userDefaultsManager.isLogin() else { return }
+        FirestoreService.shared.saveDocument(collectionId: .session, documentId: userDefaultsManager.getUserData().phoneNumber, data: User.tempUser) { _ in }
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        let userDefaultsManager = UserDefaultsManager()
+        guard userDefaultsManager.isLogin() else { return }
+        let checkService = CheckService()
+        checkService.disConnectSession()
+        print("끊킴")
     }
 }
