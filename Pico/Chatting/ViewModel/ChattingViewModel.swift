@@ -33,7 +33,6 @@ final class ChattingViewModel {
     
     struct Input {
         let listLoad: Observable<Void>
-        //let deleteUser: Observable<String>
         let refresh: Observable<Void>
         let isChattingEmptyChecked: Observable<Void>
     }
@@ -57,13 +56,6 @@ final class ChattingViewModel {
                 viewModel.loadNextChattingPage()
             }
             .disposed(by: disposeBag)
-        
-//        input.deleteUser
-//            .withUnretained(self)
-//            .subscribe { viewModel, chattingId in
-//                viewModel.deleteChatting(chattingId: chattingId)
-//            }
-//            .disposed(by: disposeBag)
         
         let didChattingeset = isChattingEmptyPublisher.asObservable()
             .map { result in
