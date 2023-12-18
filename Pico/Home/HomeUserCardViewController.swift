@@ -355,12 +355,16 @@ final class HomeUserCardViewController: UIViewController {
                 
                 if currentUser.userId.prefix(4) != Bundle.main.testId {
                     viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
-                        if result {
-                            viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
-                            viewModel.updateMatcingData(user.id)
-                            notificationServiceForPartner(.matching, .matching)
-                            notificationServiceForMe(.matching, .matching)
-                            homeViewController?.removedView.removeLast()
+                        if let likeInfo = result {
+                            if !likeInfo.isMatch {
+                                viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
+                                viewModel.updateMatcingData(user.id)
+                                notificationServiceForPartner(.matching, .matching)
+                                notificationServiceForMe(.matching, .matching)
+                                homeViewController?.removedView.removeLast()
+                            } else {
+                                print("이미 매칭되었습니다.")
+                            }
                         } else {
                             viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                             notificationServiceForPartner(.like, .like)
@@ -408,12 +412,16 @@ final class HomeUserCardViewController: UIViewController {
         }
         if currentUser.userId.prefix(4) != Bundle.main.testId {
             viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
-                if result {
-                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
-                    viewModel.updateMatcingData(user.id)
-                    notificationServiceForPartner(.matching, .matching)
-                    notificationServiceForMe(.matching, .matching)
-                    homeViewController?.removedView.removeLast()
+                if let likeInfo = result {
+                    if !likeInfo.isMatch {
+                        viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
+                        viewModel.updateMatcingData(user.id)
+                        notificationServiceForPartner(.matching, .matching)
+                        notificationServiceForMe(.matching, .matching)
+                        homeViewController?.removedView.removeLast()
+                    } else {
+                        print("이미 매칭 되었습니다.")
+                    }
                 } else {
                     viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
                     notificationServiceForPartner(.like, .like)

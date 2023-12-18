@@ -121,7 +121,7 @@ final class LikeMeViewModel: ViewModelType {
                 }
                 
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType != .dislike }) {
+                    if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType == .like }) {
                         let sorted = datas.sorted {
                             return $0.createdDate > $1.createdDate
                         }
@@ -213,15 +213,16 @@ final class LikeMeViewModel: ViewModelType {
         guard let likeData: Like.LikeInfo = likeMeList[safe: index] else { return }
         likeMeList.remove(at: index)
         reloadTableViewPublisher.onNext(())
-        
-        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL, createdDate: Date().timeIntervalSince1970)
-        
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
             "recivedlikes": FieldValue.arrayRemove([likeData.asDictionary()])
-        ])
-        dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
-            "recivedlikes": FieldValue.arrayUnion([updateData.asDictionary()])
-        ])
+        ]) { error in
+            if let error = error {
+                print("매칭 업데이트 실패(라이크 데이터 삭제 실패): \(error)")
+            }
+        }
+
+        let updateData: Like.LikeInfo = Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: .matching, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: likeData.imageURL, createdDate: Date().timeIntervalSince1970)
+        
         dbRef.collection(Collections.likes.name).document(currentUser.userId).updateData([
             "sendedlikes": FieldValue.arrayUnion([updateData.asDictionary()])
         ])
@@ -236,11 +237,11 @@ final class LikeMeViewModel: ViewModelType {
                 guard let tempLike = tempLike else {
                     return
                 }
-                let sendedlikes = tempLike.sendedlikes
-                if let sendIndex = sendedlikes?.firstIndex(where: {
+                guard let sendedlikes = tempLike.sendedlikes else { return }
+                if let sendIndex = sendedlikes.firstIndex(where: {
                     $0.likedUserId == self.currentUser.userId
                 }) {
-                    guard let tempSendLike = sendedlikes?[safe: sendIndex] else { return }
+                    guard let tempSendLike = sendedlikes[safe: sendIndex] else { return }
                     updateSendLike = Like.LikeInfo(likedUserId: tempSendLike.likedUserId, likeType: .matching, birth: tempSendLike.birth, nickName: tempSendLike.nickName, mbti: tempSendLike.mbti, imageURL: tempSendLike.imageURL, createdDate: Date().timeIntervalSince1970)
                     dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
                         "sendedlikes": FieldValue.arrayRemove([tempSendLike.asDictionary()])
@@ -253,9 +254,6 @@ final class LikeMeViewModel: ViewModelType {
                 dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
                     "sendedlikes": FieldValue.arrayUnion([updateSendLike.asDictionary()])
                 ])
-                dbRef.collection(Collections.likes.name).document(likeData.likedUserId).updateData([
-                    "recivedlikes": FieldValue.arrayUnion([updateSendLike.asDictionary()])
-                ])
                 
                 let myNoti = Noti(receiveId: currentUser.userId, sendId: likeData.likedUserId, name: likeData.nickName, birth: likeData.birth, imageUrl: likeData.imageURL, notiType: .matching, mbti: likeData.mbti, createDate: Date().timeIntervalSince1970)
                 
@@ -263,6 +261,7 @@ final class LikeMeViewModel: ViewModelType {
                 let yourNoti = Noti(receiveId: likeData.likedUserId, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: myNoti)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, data: yourNoti)
+                
                 let mailModel = MailSendViewModel()
                 let receiverUser = User(id: likeData.likedUserId, mbti: likeData.mbti, phoneNumber: "", gender: .etc, birth: likeData.birth, nickName: likeData.nickName, location: Location(address: "서울시 강남구", latitude: 10, longitude: 10), imageURLs: [likeData.imageURL], createdDate: 10, subInfo: nil, reports: nil, blocks: nil, chuCount: 0, isSubscribe: false)
                 mailModel.saveMailData(receiveUser: receiverUser, message: "서로 매칭되었습니다.", type: .matching)
