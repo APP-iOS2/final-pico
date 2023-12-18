@@ -7,6 +7,6 @@
 
 import Foundation
 
-class ChattingDetailViewController: BaseViewController {
+class ChattingDetailViewController: UIViewController {
     
 }

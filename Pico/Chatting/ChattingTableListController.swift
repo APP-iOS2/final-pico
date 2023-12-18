@@ -114,7 +114,7 @@ extension ChattingTableListController: UITableViewDataSource, UITableViewDelegat
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingListTableViewCell.self)
         guard let item = viewModel.chattingList[safe: indexPath.row] else { return UITableViewCell() }
-        cell.config(receiveUser: item)
+        cell.config(receiveUser: item.userChatting![indexPath.row])
         cell.selectionStyle = .none
         return cell
     }

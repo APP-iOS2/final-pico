@@ -103,7 +103,7 @@ final class ChattingListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(receiveUser: Chatting.ChattingInfo ) {
+    func config(receiveUser: Chatting.ChattingInfo) {
         
         var userId: String
         

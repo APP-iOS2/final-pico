@@ -12,7 +12,7 @@ import FirebaseFirestore
 
 final class ChattingViewModel {
     
-    private(set) var chattingList: [Chatting.ChattingInfo] = [] {
+    private(set) var chattingList: [Chatting] = [] {
         didSet {
             if chattingList.isEmpty {
                 isChattingEmptyPublisher.onNext(true)
@@ -85,11 +85,12 @@ final class ChattingViewModel {
     func loadNextChattingPage() {
         
         var query = dbRef.collection("room")
+        // 상대편과의 마지막 대화를 가져오도록 필터링 해야 함
             .whereFilter(Filter.orFilter([
                             Filter.whereField("sendUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId),
                             Filter.whereField("receiveUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
                         ]))
-            .order(by: "sendedDate", descending: true)
+            //.order(by: "sendedDate", descending: true)
             .limit(to: itemsPerPage)
         
         if let lastSnapshot = lastDocumentSnapshot {
@@ -112,7 +113,8 @@ final class ChattingViewModel {
                 lastDocumentSnapshot = documents.last
                 
                 for document in documents {
-                    if let data = try? document.data(as: Chatting.ChattingInfo.self) {
+                    print(document)
+                    if let data = try? document.data(as: Chatting.self) {
                         chattingList.append(data)
                     }
                 }
