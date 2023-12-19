@@ -42,9 +42,6 @@ final class ChattingTableListController: BaseViewController {
     // MARK: - MailView +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        addViews()
-        makeConstraints()
-        makeExample()
         bind()
         configRefresh()
         configTableView()
@@ -60,27 +57,6 @@ final class ChattingTableListController: BaseViewController {
     }
     // MARK: - config
     
-    private func addViews() {
-        view.addSubview([chattingLabel, chattingListTableView])
-    }
-    
-    private func makeConstraints() {
-        let safeArea = view.safeAreaLayoutGuide
-        
-        chattingLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeArea).offset(10)
-            make.leading.equalTo(safeArea).offset(20)
-        }
-        
-        chattingListTableView.snp.makeConstraints { make in
-            make.top.equalTo(chattingLabel.snp.bottom).offset(10)
-            make.leading.trailing.bottom.equalTo(safeArea)
-        }
-    }
-    private func makeExample() {
-        viewModel.saveChattingData(receiveUser: User.tempUser, message: "하이루", roomid: "12345678", type: .chatting)
-    }
-    
     private func configTableView() {
         footerView.frame = CGRect(x: 0, y: 0, width: chattingListTableView.bounds.size.width, height: 80)
         chattingListTableView.dataSource = self
@@ -91,7 +67,6 @@ final class ChattingTableListController: BaseViewController {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
         chattingListTableView.refreshControl = refreshControl
-        
     }
     // MARK: - objc
     @objc private func refreshTable(refresh: UIRefreshControl) {
@@ -108,26 +83,25 @@ final class ChattingTableListController: BaseViewController {
 // MARK: - UIMailTableView
 extension ChattingTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.chattingList.count
+        print("갯수 :  \(viewModel.roomList.count)")
+        return viewModel.roomList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingListTableViewCell.self)
-        guard let item = viewModel.chattingList[safe: indexPath.row] else { return UITableViewCell() }
-        cell.config(receiveUser: item.userChatting![indexPath.row])
+        guard let item = viewModel.roomList[safe: indexPath.row] else { return UITableViewCell() }
+        cell.config(receiveUser: item)
+        print("item: \(item)")
         cell.selectionStyle = .none
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let item = viewModel.chattingList[indexPath.row]
-//        viewModel.updateNewData(data: item)
-//        let mailReceiveView = MailReceiveViewController()
-//        mailReceiveView.modalPresentationStyle = .formSheet
-//        mailReceiveView.chattingDelegate = self
-//        mailReceiveView.configData(chattingSender: item)
-        
-   //     self.present(mailReceiveView, animated: true, completion: nil)
+        let chattingDetailView = ChattingDetailViewController()
+        chattingDetailView.modalPresentationStyle = .fullScreen
+        //chattingDetailView.opponentUid = viewModel.chattingList.roomID
+       
+        self.present(chattingDetailView, animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -143,20 +117,35 @@ extension ChattingTableListController {
             isChattingEmptyChecked: checkChattingEmptyPublisher)
         let output = viewModel.transform(input: input)
         
+        let safeArea = view.safeAreaLayoutGuide
+        
         output.chattingIsEmpty
             .withUnretained(self)
             .subscribe(onNext: { viewController, isEmpty in
+                
                 if isEmpty {
                     viewController.addChild(viewController.emptyView)
-                    viewController.view.addSubview(viewController.emptyView.view ?? UIView())
+                    viewController.view.addSubview([self.chattingLabel, viewController.emptyView.view ?? UIView()])
+                    viewController.chattingLabel.snp.makeConstraints { make in
+                        make.top.equalTo(safeArea)
+                        make.trailing.leading.equalTo(safeArea).offset(20)
+                        make.height.equalTo(50)
+                    }
                     viewController.emptyView.didMove(toParent: self)
                     viewController.emptyView.view.snp.makeConstraints { make in
-                        make.edges.equalToSuperview()
+                        make.top.equalTo(self.chattingLabel.snp.bottom).offset(20)
+                        make.leading.trailing.bottom.equalToSuperview()
                     }
                 } else {
-                    viewController.view.addSubview(viewController.chattingListTableView)
+                    viewController.view.addSubview([self.chattingLabel, viewController.chattingListTableView])
+                    viewController.chattingLabel.snp.makeConstraints { make in
+                        make.top.equalTo(safeArea)
+                        make.trailing.leading.equalTo(safeArea).offset(20)
+                        make.height.equalTo(50)
+                    }
                     viewController.chattingListTableView.snp.makeConstraints { make in
-                        make.edges.equalToSuperview()
+                        make.top.equalTo(self.chattingLabel.snp.bottom).offset(10)
+                        make.leading.trailing.bottom.equalToSuperview()
                     }
                 }
             })

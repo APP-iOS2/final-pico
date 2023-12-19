@@ -103,15 +103,10 @@ final class ChattingListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(receiveUser: Chatting.ChattingInfo) {
+    func config(receiveUser: Room.RoomInfo) {
         
-        var userId: String
+        var userId: String = receiveUser.opponentId
         
-        if currentUserID != receiveUser.receiveUserId {
-            userId = receiveUser.receiveUserId
-        } else {
-            userId = receiveUser.sendUserId
-        }
         FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -137,18 +132,10 @@ final class ChattingListTableViewCell: UITableViewCell {
         }
         
         nameLabel.sizeToFit()
-        self.messageLabel.text = receiveUser.message
+        self.messageLabel.text = receiveUser.lastMessage
         
         let date = receiveUser.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
-         
-        if currentUserID == receiveUser.receiveUserId {
-            if !receiveUser.isReading {
-                self.newLabel.text = "1"
-            } else {
-                self.newLabel.text = ""
-            }
-        }
     }
     
     private func addViews() {

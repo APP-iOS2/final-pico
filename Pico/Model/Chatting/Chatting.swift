@@ -7,13 +7,25 @@
 
 import Foundation
 
+struct Room: Codable {
+    var userId: String
+    var room: [RoomInfo]?
+    
+    struct RoomInfo: Codable {
+        var roomId: String
+        let opponentId: String
+        let lastMessage: String
+        let sendedDate: Double
+    }
+}
+
 struct Chatting: Codable {
-    let userId: String
+    var roomId: String
     var userChatting: [ChattingInfo]?
     
     struct ChattingInfo: Codable {
         var id: String = UUID().uuidString
-        let roomID: String
+        let roomId: String
         let sendUserId: String
         let receiveUserId: String
         let message: String
