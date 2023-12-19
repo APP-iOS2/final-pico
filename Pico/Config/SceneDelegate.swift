@@ -122,7 +122,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let userDefaultsManager = UserDefaultsManager()
         guard userDefaultsManager.isLogin() else { return }
         let checkService = CheckService()
-        checkService.disConnectSession() { }
-        print("끊킴")
+        checkService.disConnectSession {
+            print("끊킴")
+        }
     }
 }
