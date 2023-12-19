@@ -61,10 +61,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
+        print("앱꺼짐 ")
         let checkService = CheckService()
-        checkService.disConnectSession()
-        sleep(3)
+        checkService.disConnectSession {
+            exit(0) // 앱 종료
+        }
     }
+
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
