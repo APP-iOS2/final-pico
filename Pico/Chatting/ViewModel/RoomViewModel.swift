@@ -1,8 +1,8 @@
 //
-//  ChattingViewModel.swift
+//  RoomViewModel.swift
 //  Pico
 //
-//  Created by 양성혜 on 2023/12/16.
+//  Created by 양성혜 on 2023/12/20.
 //
 
 import UIKit
@@ -10,20 +10,20 @@ import RxSwift
 import RxRelay
 import FirebaseFirestore
 
-final class ChattingViewModel {
+final class RoomViewModel {
     
-    private(set) var chattingList: [Chatting.ChattingInfo] = [] {
+    private(set) var roomList: [Room.RoomInfo] = [] {
         didSet {
-            if chattingList.isEmpty {
-                isChattingEmptyPublisher.onNext(true)
+            if roomList.isEmpty {
+                isRoomEmptyPublisher.onNext(true)
             } else {
-                isChattingEmptyPublisher.onNext(false)
+                isRoomEmptyPublisher.onNext(false)
             }
         }
     }
     
-    private var isChattingEmptyPublisher = PublishSubject<Bool>()
-    private let reloadChattingTableViewPublisher = PublishSubject<Void>()
+    private var isRoomEmptyPublisher = PublishSubject<Bool>()
+    private let reloadRoomTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     
     private let dbRef = Firestore.firestore()
@@ -35,12 +35,12 @@ final class ChattingViewModel {
     struct Input {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
-        let isChattingEmptyChecked: Observable<Void>
+        let isRoomEmptyChecked: Observable<Void>
     }
     
     struct Output {
-        let chattingIsEmpty: Observable<Bool>
-        let reloadChattingTableView: Observable<Void>
+        let roomIsEmpty: Observable<Bool>
+        let reloadRoomTableView: Observable<Void>
     }
     
     func transform(input: Input) -> Output {
@@ -54,24 +54,24 @@ final class ChattingViewModel {
         input.listLoad
             .withUnretained(self)
             .subscribe { viewModel, _ in
-                viewModel.loadNextChattingPage()
+                viewModel.loadNextRoomPage()
             }
             .disposed(by: disposeBag)
         
-        let didChattingeset = isChattingEmptyPublisher.asObservable()
+        let didRoomset = isRoomEmptyPublisher.asObservable()
             .map { result in
                 return result
             }
-        let chattingCheck = input.isChattingEmptyChecked
+        let roomCheck = input.isRoomEmptyChecked
             .withUnretained(self)
             .map { viewModel, _ -> Bool in
-                if viewModel.chattingList.isEmpty {
+                if viewModel.roomList.isEmpty {
                     return true
                 } else {
                     return false
                 }
             }
-        let isChattingEmpty = Observable.of(didChattingeset, chattingCheck).merge()
+        let isRoomEmpty = Observable.of(didRoomset, roomCheck).merge()
             .flatMapLatest { bool -> Observable<Bool> in
                 return Observable.create { emitter in
                     emitter.onNext(bool)
@@ -79,7 +79,45 @@ final class ChattingViewModel {
                 }
             }
         
-        return Output(chattingIsEmpty: isChattingEmpty, reloadChattingTableView: reloadChattingTableViewPublisher.asObservable())
+        return Output(roomIsEmpty: isRoomEmpty, reloadRoomTableView: reloadRoomTableViewPublisher.asObservable())
+    }
+    
+    func loadNextRoomPage() {
+        
+        var query = Firestore.firestore().collection(Collections.chatting.name)
+            .whereField("userId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
+            .limit(to: itemsPerPage)
+        
+        if let lastSnapshot = lastDocumentSnapshot {
+            query = query.start(afterDocument: lastSnapshot) as! CollectionReference
+        }
+        
+        DispatchQueue.global().async {
+            query.getDocuments { [weak self] snapshot, error in
+                guard let self = self else { return }
+                if let error = error {
+                    print(error)
+                    return
+                }
+                guard let documents = snapshot?.documents else { return }
+                
+                if documents.isEmpty {
+                    return
+                }
+                
+                lastDocumentSnapshot = documents.last
+                
+                for document in documents {
+                    print(document.data())
+                     if let data = try? document.data(as: Room.RoomInfo.self) {
+                        roomList.append(data)
+                         print("roomList----------- \(roomList)")
+                    }
+                    
+                }
+                reloadRoomTableViewPublisher.onNext(())
+            }
+        }
     }
     
     func loadNextChattingPage() {
@@ -114,22 +152,22 @@ final class ChattingViewModel {
                 
                 for document in documents {
                     print(document)
-                    if let data = try? document.data(as: Chatting.ChattingInfo.self) {
-                        chattingList.append(data)
+                    if let data = try? document.data(as: Room.RoomInfo.self) {
+                        roomList.append(data)
                     }
                 }
-                reloadChattingTableViewPublisher.onNext(())
+                reloadRoomTableViewPublisher.onNext(())
             }
         }
     }
     
     private func refresh() {
-        let didSet = isChattingEmptyPublisher
-        isChattingEmptyPublisher = PublishSubject<Bool>()
-        chattingList = []
+        let didSet = isRoomEmptyPublisher
+        isRoomEmptyPublisher = PublishSubject<Bool>()
+        roomList = []
         startIndex = 0
-        isChattingEmptyPublisher = didSet
-        loadNextChattingPage()
+        isRoomEmptyPublisher = didSet
+        loadNextRoomPage()
     }
     
     func updateNewData(roomData: Room.RoomInfo, chatData: Chatting.ChattingInfo) {
@@ -139,6 +177,7 @@ final class ChattingViewModel {
         let ref = dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId)
         
         DispatchQueue.global().async {
+            
             ref.updateData([
                 "room": FieldValue.arrayRemove([roomData.asDictionary()])
             ])
@@ -205,19 +244,9 @@ final class ChattingViewModel {
         ]
         
         // room 업데이트
-        senderDBRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).setData(
+        self.dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).setData(
             [
                 "userId": UserDefaultsManager.shared.getUserData().userId,
-                "room": FieldValue.arrayUnion([roomMessages])
-            ], merge: true) { error in
-                if let error = error {
-                    print("평가 업데이트 에러: \(error)")
-                }
-            }
-        
-        receiveDBRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).setData(
-            [
-                "userId": receiveUser.id,
                 "room": FieldValue.arrayUnion([roomMessages])
             ], merge: true) { error in
                 if let error = error {
@@ -238,7 +267,7 @@ final class ChattingViewModel {
         
         if type == .chatting { // 메시지를 보내는 경우
             // 보내는 사람
-            senderDBRef.collection("room").document(roomId).setData(
+            dbRef.collection("room").document(roomId).setData(
                 [
                     "userId": senderUser.userId,
                     "userChatting": FieldValue.arrayUnion([sendMessages])
@@ -251,7 +280,7 @@ final class ChattingViewModel {
             NotificationService.shared.sendNotification(userId: receiveUser.id, sendUserName: senderUser.nickName, notiType: .message, messageContent: message)
             
         } else { // 매칭의 경우
-            senderDBRef.collection("room").document(roomId).setData(
+            dbRef.collection("room").document(roomId).setData(
                 [
                     "userId": senderUser.userId,
                     "userChatting": FieldValue.arrayUnion([matchingReceiveMessages])

@@ -10,16 +10,15 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class ChattingTableListController: BaseViewController {
+final class RoomTableListController: BaseViewController {
     
-    private let viewModel = ChattingViewModel()
+    private let viewModel = RoomViewModel()
     private let disposeBag = DisposeBag()
     private let emptyView: EmptyViewController = EmptyViewController(type: .message)
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
-    private let checkChattingEmptyPublisher = PublishSubject<Void>()
-    private let deleteChattingPublisher = PublishSubject<String>()
+    private let checkRoomEmptyPublisher = PublishSubject<Void>()
     private let footerView = FooterView()
     private var isRefresh = false
     
@@ -30,7 +29,7 @@ final class ChattingTableListController: BaseViewController {
         return label
     }()
     
-    private let chattingListTableView: UITableView = {
+    private let roomListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(cell: MailListTableViewCell.self)
         tableView.showsVerticalScrollIndicator = false
@@ -52,21 +51,21 @@ final class ChattingTableListController: BaseViewController {
         super.viewWillAppear(animated)
         viewModel.startIndex = 0
         refreshPublisher.onNext(())
-        checkChattingEmptyPublisher.onNext(())
-        chattingListTableView.reloadData()
+        checkRoomEmptyPublisher.onNext(())
+        roomListTableView.reloadData()
     }
     // MARK: - config
     
     private func configTableView() {
-        footerView.frame = CGRect(x: 0, y: 0, width: chattingListTableView.bounds.size.width, height: 80)
-        chattingListTableView.dataSource = self
-        chattingListTableView.delegate = self
+        footerView.frame = CGRect(x: 0, y: 0, width: roomListTableView.bounds.size.width, height: 80)
+        roomListTableView.dataSource = self
+        roomListTableView.delegate = self
     }
     
     private func configRefresh() {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
-        chattingListTableView.refreshControl = refreshControl
+        roomListTableView.refreshControl = refreshControl
     }
     // MARK: - objc
     @objc private func refreshTable(refresh: UIRefreshControl) {
@@ -81,7 +80,7 @@ final class ChattingTableListController: BaseViewController {
     }
 }
 // MARK: - UIMailTableView
-extension ChattingTableListController: UITableViewDataSource, UITableViewDelegate {
+extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print("갯수 :  \(viewModel.roomList.count)")
         return viewModel.roomList.count
@@ -109,17 +108,17 @@ extension ChattingTableListController: UITableViewDataSource, UITableViewDelegat
     }
 }
 // MARK: - bind
-extension ChattingTableListController {
+extension RoomTableListController {
     private func bind() {
-        let input = ChattingViewModel.Input(
+        let input = RoomViewModel.Input(
             listLoad: loadDataPublsher,
             refresh: refreshPublisher,
-            isChattingEmptyChecked: checkChattingEmptyPublisher)
+            isRoomEmptyChecked: checkRoomEmptyPublisher)
         let output = viewModel.transform(input: input)
         
         let safeArea = view.safeAreaLayoutGuide
         
-        output.chattingIsEmpty
+        output.roomIsEmpty
             .withUnretained(self)
             .subscribe(onNext: { viewController, isEmpty in
                 
@@ -137,13 +136,13 @@ extension ChattingTableListController {
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 } else {
-                    viewController.view.addSubview([self.chattingLabel, viewController.chattingListTableView])
+                    viewController.view.addSubview([self.chattingLabel, viewController.roomListTableView])
                     viewController.chattingLabel.snp.makeConstraints { make in
                         make.top.equalTo(safeArea)
                         make.trailing.leading.equalTo(safeArea).offset(20)
                         make.height.equalTo(50)
                     }
-                    viewController.chattingListTableView.snp.makeConstraints { make in
+                    viewController.roomListTableView.snp.makeConstraints { make in
                         make.top.equalTo(self.chattingLabel.snp.bottom).offset(10)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
@@ -151,30 +150,30 @@ extension ChattingTableListController {
             })
             .disposed(by: disposeBag)
         
-        output.reloadChattingTableView
+        output.reloadRoomTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.chattingListTableView.reloadData()
-                viewController.checkChattingEmptyPublisher.onNext(())
+                viewController.roomListTableView.reloadData()
+                viewController.checkRoomEmptyPublisher.onNext(())
             }
             .disposed(by: disposeBag)
     }
 }
 // MARK: - Paging
-extension ChattingTableListController: UIScrollViewDelegate {
+extension RoomTableListController: UIScrollViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let contentOffsetY = scrollView.contentOffset.y
-        let tableViewContentSizeY = chattingListTableView.contentSize.height
+        let tableViewContentSizeY = roomListTableView.contentSize.height
         
         if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
-            chattingListTableView.tableFooterView = footerView
+            roomListTableView.tableFooterView = footerView
             loadDataPublsher.onNext(())
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
                 guard let self else { return }
                 
-                chattingListTableView.reloadData()
-                chattingListTableView.tableFooterView = nil
+                roomListTableView.reloadData()
+                roomListTableView.tableFooterView = nil
             }
         }
     }

@@ -21,7 +21,7 @@ final class TabBarController: UITabBarController {
     
     private func configureTabBar() {
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
-        let chattingViewController = UINavigationController(rootViewController: ChattingTableListController())
+        let chattingViewController = UINavigationController(rootViewController: RoomTableListController())
         let likeViewController = UINavigationController(rootViewController: LikeViewController())
         let entViewController = UINavigationController(rootViewController: EntViewController())
         let mypageViewController = UINavigationController(rootViewController: MypageViewController())
