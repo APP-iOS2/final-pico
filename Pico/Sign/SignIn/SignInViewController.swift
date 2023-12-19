@@ -211,7 +211,7 @@ extension SignInViewController {
 
                                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "정지가 풀렸습니다. 열심히 살아주세요 ㅎㅎ", confirmButtonText: "확인", comfrimAction: configReset)
                                     
-                                    FirestoreService.shared.removeDocument(collectionId: .stop, field: "phoneNumber", isEqualto: phoneNumber)
+                                    FirestoreService.shared.deleteDocument(collectionId: .stop, field: "phoneNumber", isEqualto: phoneNumber)
 
                                 } else {
                                     Loading.hideLoading()

@@ -31,7 +31,7 @@ final class NotificationViewModel: ViewModelType {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
         let checkEmpty: Observable<Void>
-        let deleteNoti: Observable<String>
+        let deleteNoti: Observable<Noti>
     }
     
     struct Output {
@@ -54,8 +54,8 @@ final class NotificationViewModel: ViewModelType {
             .disposed(by: disposeBag)
         input.deleteNoti
             .withUnretained(self)
-            .subscribe { viewModel, notiId in
-                viewModel.deleteNoti(notiId: notiId)
+            .subscribe { viewModel, noti in
+                viewModel.deleteNoti(noti: noti)
             }
             .disposed(by: disposeBag)
         
@@ -128,14 +128,13 @@ final class NotificationViewModel: ViewModelType {
         loadNextPage()
     }
     
-    private func deleteNoti(notiId: String) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            dbRef.collection(Collections.notifications.name).document(notiId).delete { err in
-                if let err = err {
-                    print("Error updating document: \(err)")
-                }
+    private func deleteNoti(noti: Noti) {
+        if let notiId = noti.id {
+            FirestoreService.shared.deleteDocument(collectionId: .notifications, documentId: notiId) { _ in
+                print("삭제완료")
             }
+        } else {
+            FirestoreService.shared.deleteDocument(collectionId: .notifications, field: "createDate", isEqualto: noti.createDate, receiveId: noti.receiveId, sendId: noti.sendId)
         }
     }
 }

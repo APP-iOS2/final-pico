@@ -19,7 +19,7 @@ final class NotificationViewController: UIViewController {
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkEmptyPublisher = PublishSubject<Void>()
-    private let deletePublisher = PublishSubject<String>()
+    private let deletePublisher = PublishSubject<Noti>()
     private let footerView = FooterView()
     private var isRefresh = false
     private var cellTapped: Bool = false
@@ -150,7 +150,7 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
             guard let item = viewModel.notifications[safe: indexPath.row] else { return }
             viewModel.notifications.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            deletePublisher.onNext(item.id)
+            deletePublisher.onNext(item)
         }
     }
 }

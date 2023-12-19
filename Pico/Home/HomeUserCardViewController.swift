@@ -316,14 +316,14 @@ final class HomeUserCardViewController: UIViewController {
         NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: pushType)
         guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
         let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
-        FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: noti.id, data: noti)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: noti.id ?? UUID().uuidString, data: noti)
     }
     
     private func notificationServiceForMe(_ pushType: PushNotiType, _ notiType: NotiType) {
         NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: user.nickName, notiType: pushType)
         guard let myMbti = MBTIType(rawValue: user.mbti.rawValue) else { return }
         let noti = Noti(receiveId: currentUser.userId, sendId: user.id, name: user.nickName, birth: user.birth, imageUrl: user.imageURLs[safe: 0] ?? "", notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
-        FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: noti.id, data: noti)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: noti.id ?? UUID().uuidString, data: noti)
     }
     
     @objc func touchGesture(_ gesture: UIPanGestureRecognizer) {
