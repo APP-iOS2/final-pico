@@ -28,7 +28,6 @@ final class RoomViewModel {
     
     private let dbRef = Firestore.firestore()
                 
-    var lastDocumentSnapshot: DocumentSnapshot?
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
     var startIndex = 0
     
@@ -83,80 +82,41 @@ final class RoomViewModel {
     }
     
     func loadNextRoomPage() {
+        let ref = dbRef.collection(Collections.chatting.name)
+            .document(UserDefaultsManager.shared.getUserData().userId)
         
-        var query = Firestore.firestore().collection(Collections.chatting.name)
-            .whereField("userId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
-            .limit(to: itemsPerPage)
-        
-        if let lastSnapshot = lastDocumentSnapshot {
-            query = query.start(afterDocument: lastSnapshot) as! CollectionReference
-        }
+        let endIndex = startIndex + itemsPerPage
         
         DispatchQueue.global().async {
-            query.getDocuments { [weak self] snapshot, error in
+            ref.getDocument { [weak self] document, error in
                 guard let self = self else { return }
                 if let error = error {
                     print(error)
                     return
                 }
-                guard let documents = snapshot?.documents else { return }
                 
-                if documents.isEmpty {
-                    return
-                }
-                
-                lastDocumentSnapshot = documents.last
-                
-                for document in documents {
-                    print(document.data())
-                     if let data = try? document.data(as: Room.RoomInfo.self) {
-                        roomList.append(data)
-                         print("roomList----------- \(roomList)")
+                if let document = document, document.exists {
+                    if let datas = try? document.data(as: Room.self)
+                        .room {
+                        print(datas)
+                        let sorted = datas.sorted {
+                            return $0.sendedDate > $1.sendedDate
+                        }
+                        if startIndex > sorted.count - 1 {
+                            return
+                        }
+                        let currentPageDatas: [Room.RoomInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        roomList += currentPageDatas
+                        
+                        if startIndex == 0 {
+                            reloadRoomTableViewPublisher.onNext(())
+                        }
+                        
+                        startIndex += currentPageDatas.count
                     }
-                    
+                } else {
+                    print("받은 문서를 찾을 수 없습니다.")
                 }
-                reloadRoomTableViewPublisher.onNext(())
-            }
-        }
-    }
-    
-    func loadNextChattingPage() {
-        var query = dbRef.collection("room")
-        // 상대편과의 마지막 대화를 가져오도록 필터링 해야 함
-        // 굳이 다 받아와야해? 다 따로 받아오면 되잖아? 받아와서 넣어
-        
-            .whereFilter(Filter.orFilter([
-                            Filter.whereField("sendUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId),
-                            Filter.whereField("receiveUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
-                        ]))
-            .limit(to: itemsPerPage)
-        
-        if let lastSnapshot = lastDocumentSnapshot {
-            query = query.start(afterDocument: lastSnapshot)
-        }
-        
-        DispatchQueue.global().async {
-            query.getDocuments { [weak self] snapshot, error in
-                guard let self = self else { return }
-                if let error = error {
-                    print(error)
-                    return
-                }
-                guard let documents = snapshot?.documents else { return }
-                
-                if documents.isEmpty {
-                    return
-                }
-                
-                lastDocumentSnapshot = documents.last
-                
-                for document in documents {
-                    print(document)
-                    if let data = try? document.data(as: Room.RoomInfo.self) {
-                        roomList.append(data)
-                    }
-                }
-                reloadRoomTableViewPublisher.onNext(())
             }
         }
     }
@@ -168,133 +128,5 @@ final class RoomViewModel {
         startIndex = 0
         isRoomEmptyPublisher = didSet
         loadNextRoomPage()
-    }
-    
-    func updateNewData(roomData: Room.RoomInfo, chatData: Chatting.ChattingInfo) {
-        let updateRoomData = roomData
-        let updateChatData = chatData
-        
-        let ref = dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId)
-        
-        DispatchQueue.global().async {
-            
-            ref.updateData([
-                "room": FieldValue.arrayRemove([roomData.asDictionary()])
-            ])
-            
-            ref.updateData([
-                "room": FieldValue.arrayUnion([updateRoomData.asDictionary()])
-            ])
-            
-            ref.collection("room").document(chatData.roomId).updateData([
-                "userChatting": FieldValue.arrayRemove([chatData.asDictionary()])
-            ])
-            ref.collection("room").document(chatData.roomId).updateData([
-                "userChatting": FieldValue.arrayUnion([updateChatData.asDictionary()])
-            ])
-        }
-    }
-    
-    func saveChattingData(receiveUser: User, message: String, type: ChattingSendType) {
-        
-        let senderUser = UserDefaultsManager.shared.getUserData()
-        
-        let roomId = UUID().uuidString
-        
-        let senderDBRef = dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId)
-        
-        let receiveDBRef = dbRef.collection(Collections.chatting.name).document(receiveUser.id)
-        
-        let sendMessages: [String: Any] = [
-            "id": UUID().uuidString,
-            "roomId": roomId,
-            "sendUserId": senderUser.userId,
-            "receiveUserId": receiveUser.id,
-            "message": message,
-            "sendedDate": Date().timeIntervalSince1970,
-            "isReading": true
-        ]
-        
-        let receiveMessages: [String: Any] = [
-            "id": UUID().uuidString,
-            "roomId": roomId,
-            "sendUserId": senderUser.userId,
-            "receiveUserId": receiveUser.id,
-            "message": message,
-            "sendedDate": Date().timeIntervalSince1970,
-            "isReading": false
-        ]
-        
-        let matchingReceiveMessages: [String: Any] = [
-            "id": UUID().uuidString,
-            "roomId": roomId,
-            "sendUserId": receiveUser.id,
-            "receiveUserId": senderUser.userId,
-            "message": message,
-            "sendedDate": Date().timeIntervalSince1970,
-            "mailType": "receive",
-            "isReading": false
-        ]
-        
-        let roomMessages: [String: Any] = [
-            "roomId": roomId,
-            "opponentId": receiveUser.id,
-            "lastMessage": message,
-            "sendedDate": Date().timeIntervalSince1970
-        ]
-        
-        // room 업데이트
-        self.dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).setData(
-            [
-                "userId": UserDefaultsManager.shared.getUserData().userId,
-                "room": FieldValue.arrayUnion([roomMessages])
-            ], merge: true) { error in
-                if let error = error {
-                    print("평가 업데이트 에러: \(error)")
-                }
-            }
-        
-        // 받는 사람
-        receiveDBRef.collection("room").document(roomId).setData(
-            [
-                "userId": receiveUser.id,
-                "userChatting": FieldValue.arrayUnion([receiveMessages])
-            ], merge: true) { error in
-                if let error = error {
-                    print("평가 업데이트 에러: \(error)")
-                }
-            }
-        
-        if type == .chatting { // 메시지를 보내는 경우
-            // 보내는 사람
-            dbRef.collection("room").document(roomId).setData(
-                [
-                    "userId": senderUser.userId,
-                    "userChatting": FieldValue.arrayUnion([sendMessages])
-                ], merge: true) { error in
-                    if let error = error {
-                        print("평가 업데이트 에러: \(error)")
-                    }
-                }
-            
-            NotificationService.shared.sendNotification(userId: receiveUser.id, sendUserName: senderUser.nickName, notiType: .message, messageContent: message)
-            
-        } else { // 매칭의 경우
-            dbRef.collection("room").document(roomId).setData(
-                [
-                    "userId": senderUser.userId,
-                    "userChatting": FieldValue.arrayUnion([matchingReceiveMessages])
-                ], merge: true) { error in
-                    if let error = error {
-                        print("평가 업데이트 에러: \(error)")
-                    }
-                }
-        }
-        
-        guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
-        
-        let receiverNoti = Noti(receiveId: receiveUser.id, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
-        
-        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
     }
 }

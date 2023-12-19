@@ -31,7 +31,7 @@ final class RoomTableListController: BaseViewController {
     
     private let roomListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(cell: MailListTableViewCell.self)
+        tableView.register(cell: RoomListTableViewCell.self)
         tableView.showsVerticalScrollIndicator = false
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         return tableView
@@ -82,15 +82,13 @@ final class RoomTableListController: BaseViewController {
 // MARK: - UIMailTableView
 extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("갯수 :  \(viewModel.roomList.count)")
         return viewModel.roomList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingListTableViewCell.self)
+        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
         guard let item = viewModel.roomList[safe: indexPath.row] else { return UITableViewCell() }
         cell.config(receiveUser: item)
-        print("item: \(item)")
         cell.selectionStyle = .none
         return cell
     }
@@ -143,7 +141,7 @@ extension RoomTableListController {
                         make.height.equalTo(50)
                     }
                     viewController.roomListTableView.snp.makeConstraints { make in
-                        make.top.equalTo(self.chattingLabel.snp.bottom).offset(10)
+                        make.top.equalTo(self.chattingLabel.snp.bottom)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 }
