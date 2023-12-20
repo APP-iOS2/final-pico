@@ -12,7 +12,6 @@ import RxSwift
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardService()
     private let smsAuthManager: SMSAuthService = SMSAuthService()
-    private let checkService = CheckService()
     let viewModel: SignUpViewModel
     private var cooldownTimer: Timer?
     private var cooldownSeconds = 180
@@ -244,7 +243,7 @@ extension SignUpPhoneNumberViewController {
             return
         }
         
-        checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlocked in
+        CheckService.shared.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlocked in
             guard let self = self else { return }
             
             guard !isBlocked else {
@@ -252,7 +251,7 @@ extension SignUpPhoneNumberViewController {
                 return
             }
             
-            checkService.checkPhoneNumber(userNumber: phoneNumber) { [weak self] message, isRight in
+            CheckService.shared.checkPhoneNumber(userNumber: phoneNumber) { [weak self] message, isRight in
                 guard let self = self else { return }
                 
                 guard isRight else {

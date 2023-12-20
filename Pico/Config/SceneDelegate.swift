@@ -10,7 +10,6 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    private let checkService = CheckService()
     private let user: User = User.tempUser
     private let currentUser = UserDefaultsManager.shared.getUserData()
     
@@ -32,8 +31,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     
                     if UserDefaultsManager.shared.isOnUser {
                         // 빌드할 때 왜 앱 종료로 인식 안 하는지 모르겠어요 그래서 임시로 세션이 있다면 세션을 삭제시켰어요 배포할 떄는 삭제해야 해요.
-                        let checkService = CheckService()
-                        checkService.disConnectSession {
+                        
+                        CheckService.shared.deleteSession {
                             print("배포할떄는 삭제해야해요")
                         }
                         // --------------------
@@ -55,7 +54,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func continueToNextCheckService(windoww: UIWindow?) {
-        checkService.checkStopUser(userNumber: currentUser.phoneNumber) { [weak self] isStop, stop in
+        CheckService.shared.checkStopUser(userNumber: currentUser.phoneNumber) { [weak self] isStop, stop in
             guard let self = self else { return }
             guard isStop else { return }
             let currentDate = Date()
@@ -67,8 +66,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 if currentDate > resumedDate {
                     Loading.hideLoading()
                     FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in }
-                    
                     FirestoreService.shared.deleteDocument(collectionId: .stop, field: "phoneNumber", isEqualto: currentUser.phoneNumber)
+                    
                 } else {
                     Loading.hideLoading()
                     UserDefaultsManager.shared.removeAll()
@@ -78,7 +77,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         
-        checkService.checkBlockUser(userNumber: currentUser.phoneNumber) { isBlock in
+        CheckService.shared.checkBlockUser(userNumber: currentUser.phoneNumber) { isBlock in
             if isBlock {
                 UserDefaultsManager.shared.removeAll()
                 let rootViewController = UINavigationController(rootViewController: SignViewController())
@@ -86,7 +85,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         
-        checkService.checkUserId(userId: currentUser.userId) { isUser in
+        CheckService.shared.checkUserId(userId: currentUser.userId) { isUser in
             if isUser {
                 UserDefaultsManager.shared.isQuitUser = false
                 FirestoreService.shared.saveDocument(collectionId: .session, documentId: self.currentUser.phoneNumber, data: self.user) { _ in }
@@ -147,8 +146,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
         let userDefaultsManager = UserDefaultsManager()
         guard userDefaultsManager.isLogin() else { return }
-        let checkService = CheckService()
-        checkService.disConnectSession {
+        
+        CheckService.shared.deleteSession {
             print("백그라운드로 이동하셨습니다.\(UserDefaultsManager.shared.getUserData().phoneNumber) 번호의 세션이 삭제되었습니다.")
         }
     }

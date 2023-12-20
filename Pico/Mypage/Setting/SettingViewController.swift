@@ -151,8 +151,8 @@ final class SettingViewController: UIViewController {
          print("Error signing out: %@", signOutError)
          }
          */
-        let checkService = CheckService()
-        checkService.disConnectSession { }
+        
+        CheckService.shared.deleteSession { }
         NotificationService.shared.fcmTokenDelete()
         UserDefaultsManager.shared.removeAll()
         let signViewController = UINavigationController(rootViewController: SignViewController())

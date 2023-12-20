@@ -13,7 +13,6 @@ import RxCocoa
 final class SignInViewController: UIViewController {
     private let authManager = SMSAuthService()
     private let keyboardManager = KeyboardService()
-    private let checkService = CheckService()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
     private var cooldownTimer: Timer?
@@ -181,7 +180,7 @@ extension SignInViewController {
                     guard let self = self else { return }
                     
                     guard viewModel.isRightUser else {
-                        checkService.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlock in
+                        CheckService.shared.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlock in
                             guard let self = self else { return }
                             
                             if isBlock {
@@ -195,7 +194,7 @@ extension SignInViewController {
                             }
                         }
                         
-                        checkService.checkStopUser(userNumber: phoneNumber) { [weak self] isStop, stop in
+                        CheckService.shared.checkStopUser(userNumber: phoneNumber) { [weak self] isStop, stop in
                             guard let self = self else { return }
                             guard isStop else { return }
                             let currentDate = Date()

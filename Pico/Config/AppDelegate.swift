@@ -61,10 +61,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        let checkService = CheckService()
         guard UserDefaultsManager.shared.isLogin() else { return }
         UserDefaultsManager.shared.isQuitUser = true
-        checkService.disConnectSession {
+        CheckService.shared.deleteSession {
             sleep(3)
             exit(0)
         }

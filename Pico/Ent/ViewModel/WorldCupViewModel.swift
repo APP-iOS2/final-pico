@@ -57,7 +57,8 @@ final class WorldCupViewModel {
             cell.userImage.kf.setImage(with: imageURL) { [weak self] result in
                 if case .success = result {
                     cell.mbtiLabel.setMbti(mbti: user.mbti)
-                    cell.userNickname.text = String(user.nickName)
+//                    cell.userNickname.text = String(user.nickName)
+                    cell.userNickname.text = "받은 문서를 찾을 수 없습니다.받은 문서를 찾을 수 없습니다.받은 문서를 찾을 수 없습니다.받은 문서를 찾을 수 없습니다.받은 문서를 찾을 수 없습니다."
                     cell.userAge.text = "\(user.age)세"
                     cell.userInfoStackView.setDataLabelTexts(self?.addDataLabels(user) ?? [])
                     

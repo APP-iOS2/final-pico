@@ -30,7 +30,7 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.picoSubTitleFont
-        label.numberOfLines = 0
+        label.numberOfLines = 1
         return label
     }()
     
@@ -88,6 +88,8 @@ final class WorldCupCollectionViewCell: UICollectionViewCell {
         userNickname.snp.makeConstraints { make in
             make.top.equalTo(userImage.snp.bottom).offset(padding * half)
             make.centerX.equalTo(contentView.snp.centerX)
+            make.leading.equalTo(mbtiLabel.snp.leading)
+            make.trailing.equalTo(mbtiLabel.snp.trailing)
         }
         
         userAge.snp.makeConstraints { make in

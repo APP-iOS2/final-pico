@@ -12,6 +12,8 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 final class CheckService {
+    static let shared: CheckService = CheckService()
+    
     private let dbRef = Firestore.firestore()
     
     func checkUserId(userId: String, completion: @escaping (_ isRight: Bool) -> ()) {
@@ -148,7 +150,7 @@ final class CheckService {
         }
     }
     
-    func disConnectSession(completion: @escaping () -> Void) {
+    func deleteSession(completion: @escaping () -> Void) {
         let currentUser = UserDefaultsManager.shared.getUserData()
         let phoneNumber = currentUser.phoneNumber
         print(phoneNumber)

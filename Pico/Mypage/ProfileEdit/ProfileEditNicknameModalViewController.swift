@@ -75,7 +75,7 @@ final class ProfileEditNicknameModalViewController: UIViewController {
     private let consumeChuCountPublish = PublishSubject<Void>()
     let profileEditViewModel: ProfileEditViewModel
     private let disposeBag = DisposeBag()
-    let checkService = CheckService()
+    
     init(profileEditViewModel: ProfileEditViewModel) {
         self.profileEditViewModel = profileEditViewModel
         super.init(nibName: nil, bundle: nil)
@@ -141,7 +141,7 @@ final class ProfileEditNicknameModalViewController: UIViewController {
         nickNameCheckButton.rx.tap
             .bind { [weak self] _ in
                 guard let self else { return }
-                self.checkService.checkNickName(name: self.textField.text?.trimmed() ?? "") { [weak self] message, isRight in
+                CheckService.shared.checkNickName(name: self.textField.text?.trimmed() ?? "") { [weak self] message, isRight in
                     guard let self = self else { return }
                     Loading.hideLoading()
                     guard isRight else {
@@ -150,8 +150,8 @@ final class ProfileEditNicknameModalViewController: UIViewController {
                         })
                         return
                     }
-                    self.view.endEditing(true)
-                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: {
+                    view.endEditing(true)
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: {
                         self.completeButton.isEnabled = true
                         self.completeButton.backgroundColor = .picoBlue
                     })
