@@ -68,7 +68,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     Loading.hideLoading()
                     FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in }
                     
-                    FirestoreService.shared.removeDocument(collectionId: .stop, field: "phoneNumber", isEqualto: currentUser.phoneNumber)
+                    FirestoreService.shared.deleteDocument(collectionId: .stop, field: "phoneNumber", isEqualto: currentUser.phoneNumber)
                 } else {
                     Loading.hideLoading()
                     UserDefaultsManager.shared.removeAll()
