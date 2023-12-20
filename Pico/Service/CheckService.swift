@@ -148,7 +148,7 @@ final class CheckService {
         }
     }
     
-    func disConnectSession() {
+    func disConnectSession(completion: @escaping () -> Void) {
         let currentUser = UserDefaultsManager.shared.getUserData()
         let phoneNumber = currentUser.phoneNumber
         print(phoneNumber)
@@ -158,6 +158,8 @@ final class CheckService {
             } else {
                 print("Document successfully updated")
             }
+            completion() // 비동기 작업 완료 후 호출
         }
     }
+
 }

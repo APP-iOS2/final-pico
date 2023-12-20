@@ -152,7 +152,7 @@ final class SettingViewController: UIViewController {
          }
          */
         let checkService = CheckService()
-        checkService.disConnectSession()
+        checkService.disConnectSession { }
         NotificationService.shared.fcmTokenDelete()
         UserDefaultsManager.shared.removeAll()
         let signViewController = UINavigationController(rootViewController: SignViewController())

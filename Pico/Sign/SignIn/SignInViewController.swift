@@ -108,13 +108,13 @@ final class SignInViewController: UIViewController {
         super.viewWillAppear(animated)
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
-        configReset()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         view.endEditing(true)
         keyboardManager.unregisterKeyboard()
+        configReset()
     }
 }
 // MARK: - Config
