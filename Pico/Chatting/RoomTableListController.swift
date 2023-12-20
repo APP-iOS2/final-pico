@@ -114,6 +114,8 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
 // MARK: - bind
 extension RoomTableListController {
     private func bind() {
+        
+        
         let input = RoomViewModel.Input(
             listLoad: loadDataPublsher,
             refresh: refreshPublisher,

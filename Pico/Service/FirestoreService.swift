@@ -24,6 +24,7 @@ enum Collections {
     case adminReport
     case session
     case chatting
+    case room
     
     var name: String {
         switch self {
@@ -53,6 +54,8 @@ enum Collections {
             return "session"
         case .chatting:
             return "chatting"
+        case .room:
+            return "room"
         }
     }
 }

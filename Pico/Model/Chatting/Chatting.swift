@@ -21,7 +21,8 @@ struct Room: Codable {
 
 struct Chatting: Codable {
     var userId: String
-    var userChatting: [ChattingInfo]?
+    var senderChatting: [ChattingInfo]?
+    var receiverChatting: [ChattingInfo]?
     
     struct ChattingInfo: Codable {
         var id: String = UUID().uuidString
@@ -31,16 +32,11 @@ struct Chatting: Codable {
         let message: String
         let sendedDate: Double
         let isReading: Bool
+        let messageTye: ChattingType
     }
 }
 
-enum ChattingSendType: Codable {
-    case chatting
-    case matching
-    
-}
-
-enum ChattingDetail: Codable {
+enum ChattingType: Codable {
     case send
     case receive
     

@@ -92,7 +92,7 @@ final class RoomViewModel {
     }
     
     func loadNextRoomPage() {
-        let ref = dbRef.collection(Collections.chatting.name)
+        let ref = dbRef.collection(Collections.room.name)
             .document(UserDefaultsManager.shared.getUserData().userId)
         
         let endIndex = startIndex + itemsPerPage

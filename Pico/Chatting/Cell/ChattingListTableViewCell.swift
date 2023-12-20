@@ -114,7 +114,7 @@ final class ChattingListTableViewCell: UITableViewCell {
                     guard let url = URL(string: imageURL) else { return }
                     userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
                     userImageView.kf.setImage(with: url)
-                    backgroundImageView.image = UIImage(systemName: ChattingDetail.receive.imageStyle)
+                    backgroundImageView.image = UIImage(systemName: ChattingType.receive.imageStyle)
                 } else {
                     userImageView.image = UIImage(named: "AppIcon_gray")
                     nameLabel.text = "탈퇴된 회원"
@@ -128,7 +128,7 @@ final class ChattingListTableViewCell: UITableViewCell {
             guard let self else { return }
             switch result {
             case .success(let user):
-                    backgroundImageView.image = UIImage(systemName: ChattingDetail.send.imageStyle)
+                    backgroundImageView.image = UIImage(systemName: ChattingType.send.imageStyle)
             case .failure(let err):
                 print(err)
             }

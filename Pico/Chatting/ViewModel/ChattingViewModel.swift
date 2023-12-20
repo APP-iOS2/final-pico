@@ -12,15 +12,9 @@ import FirebaseFirestore
 
 final class ChattingViewModel {
     
-    private(set) var chattingList: [Chatting.ChattingInfo] = [] {
-        didSet {
-            if chattingList.isEmpty {
-                isChattingEmptyPublisher.onNext(true)
-            } else {
-                isChattingEmptyPublisher.onNext(false)
-            }
-        }
-    }
+    private(set) var sendChattingList: [Chatting.ChattingInfo] = []
+    
+    private(set) var receiveChattingList: [Chatting.ChattingInfo] = []
     
     private var isChattingEmptyPublisher = PublishSubject<Bool>()
     private let reloadChattingTableViewPublisher = PublishSubject<Void>()
@@ -36,11 +30,9 @@ final class ChattingViewModel {
     struct Input {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
-        let isChattingEmptyChecked: Observable<Void>
     }
     
     struct Output {
-        let chattingIsEmpty: Observable<Bool>
         let reloadChattingTableView: Observable<Void>
     }
     
@@ -63,28 +55,12 @@ final class ChattingViewModel {
             .map { result in
                 return result
             }
-        let chattingCheck = input.isChattingEmptyChecked
-            .withUnretained(self)
-            .map { viewModel, _ -> Bool in
-                if viewModel.chattingList.isEmpty {
-                    return true
-                } else {
-                    return false
-                }
-            }
-        let isChattingEmpty = Observable.of(didChattingeset, chattingCheck).merge()
-            .flatMapLatest { bool -> Observable<Bool> in
-                return Observable.create { emitter in
-                    emitter.onNext(bool)
-                    return Disposables.create()
-                }
-            }
         
-        return Output(chattingIsEmpty: isChattingEmpty, reloadChattingTableView: reloadChattingTableViewPublisher.asObservable())
+        return Output(reloadChattingTableView: reloadChattingTableViewPublisher.asObservable())
     }
     
     func loadNextChattingPage() {
-        let ref = dbRef.collection("room").document(roomId ?? "")
+        let ref = dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId)
         
         let endIndex = startIndex + itemsPerPage
         
@@ -95,9 +71,8 @@ final class ChattingViewModel {
                     print(error)
                     return
                 }
-                
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Chatting.self).userChatting {
+                    if let datas = try? document.data(as: Chatting.self).senderChatting?.filter({ $0.roomId == self.roomId }) {
                         let sorted = datas.sorted {
                             return $0.sendedDate > $1.sendedDate
                         }
@@ -105,7 +80,7 @@ final class ChattingViewModel {
                             return
                         }
                         let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                        chattingList += currentPageDatas
+                        sendChattingList += currentPageDatas
                         
                         if startIndex == 0 {
                             reloadChattingTableViewPublisher.onNext(())
@@ -114,7 +89,28 @@ final class ChattingViewModel {
                         startIndex += currentPageDatas.count
                     }
                 } else {
-                    print("받은 문서를 찾을 수 없습니다.")
+                    print("보낸 문서를 찾을 수 없습니다.")
+                }
+                
+                if let document = document, document.exists {
+                    if let datas = try? document.data(as: Chatting.self).receiverChatting?.filter({ $0.roomId == self.roomId }) {
+                        let sorted = datas.sorted {
+                            return $0.sendedDate < $1.sendedDate
+                        }
+                        if startIndex > sorted.count - 1 {
+                            return
+                        }
+                        let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        receiveChattingList += currentPageDatas
+                        
+                        if startIndex == 0 {
+                            reloadChattingTableViewPublisher.onNext(())
+                        }
+                        
+                        startIndex += currentPageDatas.count
+                    }
+                } else {
+                    print("보낸 문서를 찾을 수 없습니다.")
                 }
             }
         }
@@ -123,21 +119,50 @@ final class ChattingViewModel {
     private func refresh() {
         let didSet = isChattingEmptyPublisher
         isChattingEmptyPublisher = PublishSubject<Bool>()
-        chattingList = []
+        receiveChattingList = []
+        sendChattingList = []
         startIndex = 0
         isChattingEmptyPublisher = didSet
         loadNextChattingPage()
     }
-    
 }
 // MARK: - saveChatting
 extension ChattingViewModel {
-    func saveChattingData(receiveUserId: String, message: String, type: ChattingSendType) {
+    
+    func updateRoomData(data: Chatting.ChattingInfo) {
+        let senderRoomData = Room.RoomInfo(roomId: data.roomId, opponentId: data.receiveUserId, lastMessage: data.message, sendedDate: data.sendedDate)
+        
+        let receiverRoomData = Room.RoomInfo(roomId: data.roomId, opponentId: UserDefaultsManager.shared.getUserData().userId, lastMessage: data.message, sendedDate: data.sendedDate)
+        
+        let receiverData = Chatting.ChattingInfo(roomId: data.roomId, sendUserId: data.sendUserId, receiveUserId: data.receiveUserId, message: data.message, sendedDate: data.sendedDate, isReading: false)
+        
+        DispatchQueue.global().async {
+            // sender
+            self.dbRef.collection(Collections.room.name).document(UserDefaultsManager.shared.getUserData().userId).updateData([
+                "room": FieldValue.arrayUnion([senderRoomData.asDictionary()])
+            ])
+            
+            self.dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).updateData([
+                "senderChatting": FieldValue.arrayUnion([data.asDictionary()])
+            ])
+            
+            // receiver
+            self.dbRef.collection(Collections.chatting.name).document(data.receiveUserId).updateData([
+                "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
+            ])
+            
+            self.dbRef.collection(Collections.chatting.name).document(data.receiveUserId).updateData([
+                "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
+            ])
+        }
+    }
+    
+    func saveChattingData(receiveUserId: String, message: String) {
         
         let senderUser = UserDefaultsManager.shared.getUserData()
         let roomId = UUID().uuidString
         
-        saveSender(roomId: roomId, receiveUserId: receiveUserId, message: message, type: type)
+        saveSender(roomId: roomId, receiveUserId: receiveUserId, message: message)
         saveReceiver(roomId: roomId, receiveUserId: receiveUserId, message: message)
         
         guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
@@ -149,22 +174,10 @@ extension ChattingViewModel {
         print("매칭 데이터 업데이트 완료")
     }
     
-    private func saveSender(roomId: String, receiveUserId: String, message: String, type: ChattingSendType) {
+    private func saveSender(roomId: String, receiveUserId: String, message: String) {
         let senderUser = UserDefaultsManager.shared.getUserData()
-        let senderDBRef = dbRef.collection(Collections.chatting.name).document(senderUser.userId)
-        
-        let sendMessages: [String: Any] = [
-            "id": UUID().uuidString,
-            "roomId": roomId,
-            "sendUserId": senderUser.userId,
-            "receiveUserId": receiveUserId,
-            "message": message,
-            "sendedDate": Date().timeIntervalSince1970,
-            "isReading": true
-        ]
-        
+      
         let matchingReceiveMessages: [String: Any] = [
-            "id": UUID().uuidString,
             "roomId": roomId,
             "sendUserId": receiveUserId,
             "receiveUserId": senderUser.userId,
@@ -182,7 +195,7 @@ extension ChattingViewModel {
         
         DispatchQueue.global().async {
             
-            senderDBRef.setData(
+            self.dbRef.collection(Collections.room.name).document(senderUser.userId).setData(
                 [
                     "userId": senderUser.userId,
                     "room": FieldValue.arrayUnion([sendRoomMessages])
@@ -192,31 +205,15 @@ extension ChattingViewModel {
                     }
                 }
             
-            if type == .chatting { // 메시지를 보내는 경우
-                // 보내는 사람
-                senderDBRef.collection("room").document(roomId).setData(
+            self.dbRef.collection(Collections.chatting.name).document(senderUser.userId).setData(
                     [
                         "userId": senderUser.userId,
-                        "userChatting": FieldValue.arrayUnion([sendMessages])
-                    ], merge: true) { error in
-                        if let error = error {
-                            print("매칭 채팅 업데이트 에러: \(error)")
-                        }
-                    }
-                
-                NotificationService.shared.sendNotification(userId: receiveUserId, sendUserName: senderUser.nickName, notiType: .message, messageContent: message)
-                
-            } else { // 매칭의 경우
-                senderDBRef.collection("room").document(roomId).setData(
-                    [
-                        "userId": senderUser.userId,
-                        "userChatting": FieldValue.arrayUnion([matchingReceiveMessages])
+                        "senderChatting": FieldValue.arrayUnion([matchingReceiveMessages])
                     ], merge: true) { error in
                         if let error = error {
                             print("평가 업데이트 에러: \(error)")
                         }
                     }
-            }
         }
     }
     
@@ -243,7 +240,7 @@ extension ChattingViewModel {
         
         DispatchQueue.global().async {
             
-            receiveDBRef.setData(
+            self.dbRef.collection(Collections.room.name).document(receiveUserId).setData(
                 [
                     "userId": receiveUserId,
                     "room": FieldValue.arrayUnion([receiveRoomMessages])
@@ -254,10 +251,10 @@ extension ChattingViewModel {
                 }
             
             // 받는 사람
-            receiveDBRef.collection("room").document(roomId).setData(
+            self.dbRef.collection(Collections.chatting.name).document(receiveUserId).setData(
                 [
                     "userId": receiveUserId,
-                    "userChatting": FieldValue.arrayUnion([receiveMessages])
+                    "receiverChatting": FieldValue.arrayUnion([receiveMessages])
                 ], merge: true) { error in
                     if let error = error {
                         print("받은사람 보내기 업데이트 에러: \(error)")

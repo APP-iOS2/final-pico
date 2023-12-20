@@ -18,6 +18,12 @@ final class ChattingDetailViewController: UIViewController {
     
     private let viewModel = ChattingViewModel()
     private let disposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
+    private let refreshPublisher = PublishSubject<Void>()
+    private let loadDataPublsher = PublishSubject<Void>()
+    private let checkReceiveEmptyPublisher = PublishSubject<Void>()
+    private let footerView = FooterView()
+    private var isRefresh = false
     
     private let chattingView: UITableView = {
         let uiTableView = UITableView()
@@ -55,6 +61,10 @@ final class ChattingDetailViewController: UIViewController {
         addViews()
         makeConstraints()
         configViewController()
+        configTableView()
+        configRefresh()
+        bind()
+        loadDataPublsher.onNext(())
     }
     
     private func addViews() {
@@ -95,8 +105,71 @@ final class ChattingDetailViewController: UIViewController {
                 self.sendButton.tappedAnimation()
                 if let text = self.chatTextField.text {
                     // sender: 로그인한 사람, recevie 받는 사람
-                    self.viewModel.saveChattingData(receiveUserId: opponentId, message: text, type: .chatting)
+                    print(text)
+                    self.viewModel.updateRoomData(data: Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true))
+                    print("눌려짐")
+                    chatTextField.text = ""
                 }
+            }
+            .disposed(by: disposeBag)
+    }
+    
+    private func configTableView() {
+        chattingView.register(cell: NotificationTableViewCell.self)
+        footerView.frame = CGRect(x: 0, y: 0, width: chattingView.bounds.size.width, height: 80)
+        if #available(iOS 15.0, *) {
+            chattingView.tableHeaderView = UIView()
+        }
+        chattingView.rowHeight = 90
+        chattingView.dataSource = self
+        chattingView.delegate = self
+    }
+    
+    private func configRefresh() {
+        refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
+        refreshControl.tintColor = .picoBlue
+        chattingView.refreshControl = refreshControl
+    }
+    
+    @objc func refreshTable(refresh: UIRefreshControl) {
+        isRefresh = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            refreshPublisher.onNext(())
+            refresh.endRefreshing()
+            isRefresh = false
+        }
+    }
+}
+// MARK: - TableView
+extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let sender = viewModel.sendChattingList.count
+        let receive = viewModel.receiveChattingList.count
+        return sender + receive
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        var chattingArray = viewModel.sendChattingList + viewModel.receiveChattingList
+        chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
+        
+        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingListTableViewCell.self)
+        guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
+        cell.config(chatting: item)
+        return cell
+    }
+}
+// MARK: - Bind
+extension ChattingDetailViewController {
+    private func bind() {
+        let input = ChattingViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
+        let output = viewModel.transform(input: input)
+        
+        output.reloadChattingTableView
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                viewController.chattingView.reloadData()
             }
             .disposed(by: disposeBag)
     }
