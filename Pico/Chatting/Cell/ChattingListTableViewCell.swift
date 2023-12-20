@@ -11,31 +11,16 @@ import RxSwift
 
 final class ChattingListTableViewCell: UITableViewCell {
     
-    private let disposeBag = DisposeBag()
-    
-    private var chatInfo: Chatting.ChattingInfo?
-    private var currentUserID = UserDefaultsManager.shared.getUserData().userId
-    
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "AppIcon")
-        imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 30
         return imageView
     }()
     
-    private let userStackView: UIStackView = {
+    private let textStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.alignment = .leading
-        stackView.spacing = 10
-        return stackView
-    }()
-    
-    private let nameStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
         stackView.spacing = 10
         return stackView
     }()
@@ -54,7 +39,7 @@ final class ChattingListTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let mbtiLabelView: MBTILabelView = MBTILabelView(mbti: nil, scale: .small)
+    private let backgroundImageView: UIImageView = UIImageView()
     
     private let dateStackView: UIStackView = {
         let stackView = UIStackView()
@@ -92,58 +77,74 @@ final class ChattingListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        userImageView.layer.cornerRadius = userImageView.frame.width / 2.0
+        userImageView.clipsToBounds = true
+        self.setNeedsUpdateConstraints()
+    }
+    
     override func prepareForReuse() {
         userImageView.image = UIImage(named: "AppIcon")
-        mbtiLabelView.setMbti(mbti: nil)
-        mbtiLabelView.isHidden = true
         nameLabel.text = ""
         messageLabel.text = ""
+        backgroundImageView.image = UIImage()
         dateLabel.text = ""
         newLabel.text = ""
     }
     
     // MARK: - MailCell +UI
-    func config(receiveUser: Room.RoomInfo) {
+    func config(chatting: Chatting.ChattingInfo) {
+        let myId: String = UserDefaultsManager.shared.getUserData().userId
+        var yourId: String {
+            if chatting.sendUserId != UserDefaultsManager.shared.getUserData().userId {
+                return chatting.sendUserId
+            }
+            return ""
+        }
         
-        let userId: String = receiveUser.opponentId
-        
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: yourId, dataType: User.self) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let user):
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
                     nameLabel.text = userData.nickName
-                    mbtiLabelView.isHidden = false
-                    mbtiLabelView.setMbti(mbti: userData.mbti)
-                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
+                   guard let imageURL = userData.imageURLs[safe: 0] else { return }
                     guard let url = URL(string: imageURL) else { return }
                     userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
                     userImageView.kf.setImage(with: url)
+                    backgroundImageView.image = UIImage(systemName: ChattingDetail.receive.imageStyle)
                 } else {
                     userImageView.image = UIImage(named: "AppIcon_gray")
                     nameLabel.text = "탈퇴된 회원"
-                    mbtiLabelView.isHidden = true
-                    mbtiLabelView.setMbti(mbti: nil)
                 }
             case .failure(let err):
                 print(err)
             }
         }
         
-        nameLabel.sizeToFit()
-        self.messageLabel.text = receiveUser.lastMessage
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: myId, dataType: User.self) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                    backgroundImageView.image = UIImage(systemName: ChattingDetail.send.imageStyle)
+            case .failure(let err):
+                print(err)
+            }
+        }
         
-        let date = receiveUser.sendedDate.timeAgoSinceDate()
+        nameLabel.sizeToFit()
+        self.messageLabel.text = chatting.message
+        
+        let date = chatting.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
     }
     
     private func addViews() {
-        nameStackView.addArrangedSubview([nameLabel, mbtiLabelView])
-        userStackView.addArrangedSubview([nameStackView, messageLabel])
+        textStack.addArrangedSubview([nameLabel, messageLabel, backgroundImageView])
         dateStackView.addArrangedSubview([dateLabel, newLabel])
-        
-        contentView.addSubview([userImageView, userStackView, dateStackView])
+        contentView.addSubview([userImageView, textStack, dateStackView])
     }
     
     private func makeConstraints() {
@@ -153,27 +154,18 @@ final class ChattingListTableViewCell: UITableViewCell {
             make.width.height.equalTo(60)
         }
         
-        nameStackView.snp.makeConstraints { make in
-            make.top.equalTo(userStackView)
+        backgroundImageView.snp.makeConstraints { make in
+            make.edges.equalTo((textLabel?.snp.edges)!)
+        }
+        
+        textStack.snp.makeConstraints { make in
             make.leading.equalTo(userImageView.snp.trailing).offset(10)
-        }
-        
-        mbtiLabelView.snp.makeConstraints { make in
-            make.centerY.equalTo(nameLabel)
-            make.height.equalTo(mbtiLabelView.frame.size.height)
-            make.width.equalTo(mbtiLabelView.frame.size.width)
-        }
-        
-        userStackView.snp.makeConstraints { make in
-            make.top.equalTo(userImageView).offset(5)
-            make.leading.equalTo(nameStackView)
-            make.trailing.equalTo(contentView).offset(-70)
-            make.bottom.equalTo(userImageView).offset(-10)
+            make.height.equalTo(80)
         }
         
         dateStackView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(userStackView)
             make.trailing.equalTo(contentView.snp.trailing).offset(-30)
+            make.bottom.equalTo(textStack)
             make.width.equalTo(60)
         }
     }

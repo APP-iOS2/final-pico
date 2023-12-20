@@ -27,9 +27,10 @@ final class RoomViewModel {
     private let disposeBag = DisposeBag()
     
     private let dbRef = Firestore.firestore()
-                
+    
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
     var startIndex = 0
+    var opponentName = ""
     
     struct Input {
         let listLoad: Observable<Void>
@@ -105,9 +106,7 @@ final class RoomViewModel {
                 }
                 
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Room.self)
-                        .room {
-                        print(datas)
+                    if let datas = try? document.data(as: Room.self).room {
                         let sorted = datas.sorted {
                             return $0.sendedDate > $1.sendedDate
                         }
@@ -128,24 +127,5 @@ final class RoomViewModel {
                 }
             }
         }
-    }
-    
-    func findName(id: String) -> String {
-        var name = ""
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: id, dataType: User.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let user):
-                if !user.isEmpty {
-                    guard let userData = user[safe: 0] else { break }
-                    name = userData.nickName
-                } else {
-                    name = "없음"
-                }
-            case .failure(let err):
-                print(err)
-            }
-        }
-        return name
     }
 }

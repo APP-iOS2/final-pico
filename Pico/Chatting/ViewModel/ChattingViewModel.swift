@@ -27,10 +27,11 @@ final class ChattingViewModel {
     private let disposeBag = DisposeBag()
     
     private let dbRef = Firestore.firestore()
-                
-    var lastDocumentSnapshot: DocumentSnapshot?
+    
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
+    var lastDocumentSnapshot: DocumentSnapshot?
     var startIndex = 0
+    var roomId: String?
     
     struct Input {
         let listLoad: Observable<Void>
@@ -83,40 +84,38 @@ final class ChattingViewModel {
     }
     
     func loadNextChattingPage() {
-        var query = dbRef.collection("room")
+        let ref = dbRef.collection("room").document(roomId ?? "")
         
-            .whereFilter(Filter.orFilter([
-                            Filter.whereField("sendUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId),
-                            Filter.whereField("receiveUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
-                        ]))
-            .limit(to: itemsPerPage)
-        
-        if let lastSnapshot = lastDocumentSnapshot {
-            query = query.start(afterDocument: lastSnapshot)
-        }
+        let endIndex = startIndex + itemsPerPage
         
         DispatchQueue.global().async {
-            query.getDocuments { [weak self] snapshot, error in
+            ref.getDocument { [weak self] document, error in
                 guard let self = self else { return }
                 if let error = error {
                     print(error)
                     return
                 }
-                guard let documents = snapshot?.documents else { return }
                 
-                if documents.isEmpty {
-                    return
-                }
-                
-                lastDocumentSnapshot = documents.last
-                
-                for document in documents {
-                    print(document)
-                    if let data = try? document.data(as: Chatting.ChattingInfo.self) {
-                        chattingList.append(data)
+                if let document = document, document.exists {
+                    if let datas = try? document.data(as: Chatting.self).userChatting {
+                        let sorted = datas.sorted {
+                            return $0.sendedDate > $1.sendedDate
+                        }
+                        if startIndex > sorted.count - 1 {
+                            return
+                        }
+                        let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        chattingList += currentPageDatas
+                        
+                        if startIndex == 0 {
+                            reloadChattingTableViewPublisher.onNext(())
+                        }
+                        
+                        startIndex += currentPageDatas.count
                     }
+                } else {
+                    print("받은 문서를 찾을 수 없습니다.")
                 }
-                reloadChattingTableViewPublisher.onNext(())
             }
         }
     }
@@ -130,40 +129,29 @@ final class ChattingViewModel {
         loadNextChattingPage()
     }
     
-    func updateNewData(roomData: Room.RoomInfo, chatData: Chatting.ChattingInfo) {
-        let updateRoomData = roomData
-        let updateChatData = chatData
+}
+// MARK: - saveChatting
+extension ChattingViewModel {
+    func saveChattingData(receiveUserId: String, message: String, type: ChattingSendType) {
         
-        let ref = dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId)
+        let senderUser = UserDefaultsManager.shared.getUserData()
+        let roomId = UUID().uuidString
         
-        DispatchQueue.global().async {
-            ref.updateData([
-                "room": FieldValue.arrayRemove([roomData.asDictionary()])
-            ])
-            
-            ref.updateData([
-                "room": FieldValue.arrayUnion([updateRoomData.asDictionary()])
-            ])
-            
-            ref.collection("room").document(chatData.roomId).updateData([
-                "userChatting": FieldValue.arrayRemove([chatData.asDictionary()])
-            ])
-            ref.collection("room").document(chatData.roomId).updateData([
-                "userChatting": FieldValue.arrayUnion([updateChatData.asDictionary()])
-            ])
-        }
+        saveSender(roomId: roomId, receiveUserId: receiveUserId, message: message, type: type)
+        saveReceiver(roomId: roomId, receiveUserId: receiveUserId, message: message)
+        
+        guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
+        
+        let receiverNoti = Noti(receiveId: receiveUserId, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+        
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
+        
+        print("매칭 데이터 업데이트 완료")
     }
     
-    func saveChattingData(receiveUserId: String, message: String, type: ChattingSendType) {
-        NSLog("불려짐")
+    private func saveSender(roomId: String, receiveUserId: String, message: String, type: ChattingSendType) {
         let senderUser = UserDefaultsManager.shared.getUserData()
-        
-        let roomId = UUID().uuidString
-        print("roomId : \(roomId)")
-        
         let senderDBRef = dbRef.collection(Collections.chatting.name).document(senderUser.userId)
-        
-        let receiveDBRef = dbRef.collection(Collections.chatting.name).document(receiveUserId)
         
         let sendMessages: [String: Any] = [
             "id": UUID().uuidString,
@@ -173,16 +161,6 @@ final class ChattingViewModel {
             "message": message,
             "sendedDate": Date().timeIntervalSince1970,
             "isReading": true
-        ]
-        
-        let receiveMessages: [String: Any] = [
-            "id": UUID().uuidString,
-            "roomId": roomId,
-            "sendUserId": senderUser.userId,
-            "receiveUserId": receiveUserId,
-            "message": message,
-            "sendedDate": Date().timeIntervalSince1970,
-            "isReading": false
         ]
         
         let matchingReceiveMessages: [String: Any] = [
@@ -202,15 +180,8 @@ final class ChattingViewModel {
             "sendedDate": Date().timeIntervalSince1970
         ]
         
-        let receiveRoomMessages: [String: Any] = [
-            "roomId": roomId,
-            "opponentId": senderUser.userId,
-            "lastMessage": message,
-            "sendedDate": Date().timeIntervalSince1970
-        ]
-        
         DispatchQueue.global().async {
-            // room 업데이트
+            
             senderDBRef.setData(
                 [
                     "userId": senderUser.userId,
@@ -218,27 +189,6 @@ final class ChattingViewModel {
                 ], merge: true) { error in
                     if let error = error {
                         print("룸 데이터 업데이트 에러: \(error)")
-                    }
-                }
-            
-            receiveDBRef.setData(
-                [
-                    "userId": receiveUserId,
-                    "room": FieldValue.arrayUnion([receiveRoomMessages])
-                ], merge: true) { error in
-                    if let error = error {
-                        print("보내기 업데이트 에러: \(error)")
-                    }
-                }
-            
-            // 받는 사람
-            receiveDBRef.collection("room").document(roomId).setData(
-                [
-                    "userId": receiveUserId,
-                    "userChatting": FieldValue.arrayUnion([receiveMessages])
-                ], merge: true) { error in
-                    if let error = error {
-                        print("받은사람 보내기 업데이트 에러: \(error)")
                     }
                 }
             
@@ -268,13 +218,51 @@ final class ChattingViewModel {
                     }
             }
         }
+    }
+    
+    private func saveReceiver(roomId: String, receiveUserId: String, message: String) {
+        let senderUser = UserDefaultsManager.shared.getUserData()
+        let receiveDBRef = dbRef.collection(Collections.chatting.name).document(receiveUserId)
         
-        guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
+        let receiveMessages: [String: Any] = [
+            "id": UUID().uuidString,
+            "roomId": roomId,
+            "sendUserId": senderUser.userId,
+            "receiveUserId": receiveUserId,
+            "message": message,
+            "sendedDate": Date().timeIntervalSince1970,
+            "isReading": false
+        ]
         
-        let receiverNoti = Noti(receiveId: receiveUserId, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+        let receiveRoomMessages: [String: Any] = [
+            "roomId": roomId,
+            "opponentId": senderUser.userId,
+            "lastMessage": message,
+            "sendedDate": Date().timeIntervalSince1970
+        ]
         
-        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
-        
-        print("매칭 데이터 업데이트 완료")
+        DispatchQueue.global().async {
+            
+            receiveDBRef.setData(
+                [
+                    "userId": receiveUserId,
+                    "room": FieldValue.arrayUnion([receiveRoomMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("보내기 업데이트 에러: \(error)")
+                    }
+                }
+            
+            // 받는 사람
+            receiveDBRef.collection("room").document(roomId).setData(
+                [
+                    "userId": receiveUserId,
+                    "userChatting": FieldValue.arrayUnion([receiveMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("받은사람 보내기 업데이트 에러: \(error)")
+                    }
+                }
+        }
     }
 }

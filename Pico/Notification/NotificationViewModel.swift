@@ -97,7 +97,7 @@ final class NotificationViewModel: ViewModelType {
                 }
                 guard let documents = snapshot?.documents else { return }
                 
-                if documents.isEmpty {1
+                if documents.isEmpty {
                     return
                 }
                 

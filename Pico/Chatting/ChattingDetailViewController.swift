@@ -19,9 +19,9 @@ final class ChattingDetailViewController: UIViewController {
     private let viewModel = ChattingViewModel()
     private let disposeBag = DisposeBag()
     
-    private let chattingView: UIView = {
-        let uiView = UIView()
-        return uiView
+    private let chattingView: UITableView = {
+        let uiTableView = UITableView()
+        return uiTableView
     }()
     private let sendStack: UIStackView = {
         let stackView = UIStackView()
@@ -58,8 +58,8 @@ final class ChattingDetailViewController: UIViewController {
     }
     
     private func addViews() {
-        sendStack.addArrangedSubview([chatTextField,sendButton])
-        view.addSubview([chattingView,sendStack])
+        sendStack.addArrangedSubview([chatTextField, sendButton])
+        view.addSubview([chattingView, sendStack])
     }
     
     private func makeConstraints() {
@@ -84,6 +84,7 @@ final class ChattingDetailViewController: UIViewController {
     private func configViewController() {
         view.configBackgroundColor()
         navigationItem.title = opponentName
+        navigationItem.titleView?.tintColor = .picoAlphaBlue
         tabBarController?.tabBar.isHidden = true
     }
     

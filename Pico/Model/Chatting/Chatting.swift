@@ -37,4 +37,19 @@ struct Chatting: Codable {
 enum ChattingSendType: Codable {
     case chatting
     case matching
+    
+}
+
+enum ChattingDetail: Codable {
+    case send
+    case receive
+    
+    var imageStyle: String {
+        switch self {
+        case .send:
+            return "myChat"
+        case .receive:
+            return "yourChat"
+        }
+    }
 }

@@ -12,9 +12,7 @@ import RxSwift
 final class RoomListTableViewCell: UITableViewCell {
     
     private let disposeBag = DisposeBag()
-    
-    private var chatInfo: Chatting.ChattingInfo?
-    private var currentUserID = UserDefaultsManager.shared.getUserData().userId
+    private let viewModel = RoomViewModel()
     
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
@@ -114,6 +112,7 @@ final class RoomListTableViewCell: UITableViewCell {
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
                     nameLabel.text = userData.nickName
+                    viewModel.opponentName = userData.nickName
                     mbtiLabelView.isHidden = false
                     mbtiLabelView.setMbti(mbti: userData.mbti)
                     guard let imageURL = userData.imageURLs[safe: 0] else { return }
