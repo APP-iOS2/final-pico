@@ -134,7 +134,7 @@ extension ChattingViewModel {
         
         let receiverRoomData = Room.RoomInfo(roomId: data.roomId, opponentId: UserDefaultsManager.shared.getUserData().userId, lastMessage: data.message, sendedDate: data.sendedDate)
         
-        let receiverData = Chatting.ChattingInfo(roomId: data.roomId, sendUserId: data.sendUserId, receiveUserId: data.receiveUserId, message: data.message, sendedDate: data.sendedDate, isReading: false)
+        let receiverData = Chatting.ChattingInfo(roomId: data.roomId, sendUserId: data.sendUserId, receiveUserId: data.receiveUserId, message: data.message, sendedDate: data.sendedDate, isReading: false, messageTye: .receive)
         
         DispatchQueue.global().async {
             // sender

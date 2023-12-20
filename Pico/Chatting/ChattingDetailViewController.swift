@@ -1,5 +1,5 @@
 //
-//  ChattingViewController.swift
+//  ChattingDetailViewController.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/16.
@@ -106,7 +106,7 @@ final class ChattingDetailViewController: UIViewController {
                 if let text = self.chatTextField.text {
                     // sender: 로그인한 사람, recevie 받는 사람
                     print(text)
-                    self.viewModel.updateRoomData(data: Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true))
+                    self.viewModel.updateRoomData(data: Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageTye: .send))
                     print("눌려짐")
                     chatTextField.text = ""
                 }
@@ -154,10 +154,18 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
         var chattingArray = viewModel.sendChattingList + viewModel.receiveChattingList
         chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
         
-        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingListTableViewCell.self)
         guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
-        cell.config(chatting: item)
-        return cell
+        
+        switch item.messageTye {
+        case .receive:
+            let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
+            receiveCell.config(chatting: item)
+            return receiveCell
+        case .send:
+            let sendCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingSendListTableViewCell.self)
+            sendCell.config(chatting: item)
+            return sendCell
+        }
     }
 }
 // MARK: - Bind

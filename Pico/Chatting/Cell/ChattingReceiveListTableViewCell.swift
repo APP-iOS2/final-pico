@@ -1,5 +1,5 @@
 //
-//  ChattingListTableViewCell.swift
+//  ChattingReceiveListTableViewCell.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/16.
@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 
-final class ChattingListTableViewCell: UITableViewCell {
+final class ChattingReceiveListTableViewCell: UITableViewCell {
     
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
@@ -41,14 +41,6 @@ final class ChattingListTableViewCell: UITableViewCell {
     
     private let backgroundImageView: UIImageView = UIImageView()
     
-    private let dateStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.distribution = .fillEqually
-        stackView.spacing = 10
-        return stackView
-    }()
-    
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
@@ -56,15 +48,6 @@ final class ChattingListTableViewCell: UITableViewCell {
         label.textAlignment = .right
         return label
     }()
-    
-    private let newLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.picoDescriptionFont2
-        label.textColor = .systemRed
-        label.textAlignment = .right
-        return label
-    }()
-    
     // MARK: - MailCell +LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -90,20 +73,12 @@ final class ChattingListTableViewCell: UITableViewCell {
         messageLabel.text = ""
         backgroundImageView.image = UIImage()
         dateLabel.text = ""
-        newLabel.text = ""
     }
     
     // MARK: - MailCell +UI
     func config(chatting: Chatting.ChattingInfo) {
-        let myId: String = UserDefaultsManager.shared.getUserData().userId
-        var yourId: String {
-            if chatting.sendUserId != UserDefaultsManager.shared.getUserData().userId {
-                return chatting.sendUserId
-            }
-            return ""
-        }
         
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: yourId, dataType: User.self) { [weak self] result in
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: chatting.sendUserId, dataType: User.self) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let user):
@@ -124,16 +99,6 @@ final class ChattingListTableViewCell: UITableViewCell {
             }
         }
         
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: myId, dataType: User.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let user):
-                    backgroundImageView.image = UIImage(systemName: ChattingType.send.imageStyle)
-            case .failure(let err):
-                print(err)
-            }
-        }
-        
         nameLabel.sizeToFit()
         self.messageLabel.text = chatting.message
         
@@ -143,8 +108,7 @@ final class ChattingListTableViewCell: UITableViewCell {
     
     private func addViews() {
         textStack.addArrangedSubview([nameLabel, messageLabel, backgroundImageView])
-        dateStackView.addArrangedSubview([dateLabel, newLabel])
-        contentView.addSubview([userImageView, textStack, dateStackView])
+        contentView.addSubview([userImageView, textStack, dateLabel])
     }
     
     private func makeConstraints() {
@@ -160,12 +124,12 @@ final class ChattingListTableViewCell: UITableViewCell {
         
         textStack.snp.makeConstraints { make in
             make.leading.equalTo(userImageView.snp.trailing).offset(10)
-            make.height.equalTo(80)
+            make.height.equalTo(70)
         }
         
-        dateStackView.snp.makeConstraints { make in
+        dateLabel.snp.makeConstraints { make in
             make.trailing.equalTo(contentView.snp.trailing).offset(-30)
-            make.bottom.equalTo(textStack)
+            make.bottom.equalTo(backgroundImageView)
             make.width.equalTo(60)
         }
     }
