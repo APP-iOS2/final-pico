@@ -111,8 +111,8 @@ final class LikeMeViewModel: ViewModelType {
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
         let endIndex = startIndex + pageSize
         
-        FirestoreService.shared.loadDocuments(collectionId: .unsubscribe, dataType: User.self) { result in
-            var unsubscribe = [User]()
+        FirestoreService.shared.loadDocuments(collectionId: .unsubscribe, dataType: Unsubscribe.self) { result in
+            var unsubscribe = [Unsubscribe]()
             switch result {
             case .success(let data):
                 unsubscribe = data
@@ -138,7 +138,7 @@ final class LikeMeViewModel: ViewModelType {
                                 if id == "test" {
                                     return false
                                 }
-                                for user in unsubscribe where user.id == id {
+                                for unsubscribeUser in unsubscribe where unsubscribeUser.user.id == id {
                                     return false
                                 }
                                 return true
