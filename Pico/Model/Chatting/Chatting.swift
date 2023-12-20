@@ -20,7 +20,7 @@ struct Room: Codable {
 }
 
 struct Chatting: Codable {
-    var roomId: String
+    var userId: String
     var userChatting: [ChattingInfo]?
     
     struct ChattingInfo: Codable {

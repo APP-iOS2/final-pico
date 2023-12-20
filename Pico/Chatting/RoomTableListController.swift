@@ -37,7 +37,6 @@ final class RoomTableListController: BaseViewController {
         return tableView
     }()
     
-    
     // MARK: - MailView +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,10 +94,14 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let chattingDetailView = ChattingDetailViewController()
-        chattingDetailView.modalPresentationStyle = .fullScreen
-        //chattingDetailView.opponentUid = viewModel.chattingList.roomID
-       
-        self.present(chattingDetailView, animated: true, completion: nil)
+        let room = viewModel.roomList[safe: indexPath.row]
+        if let room = room {
+            chattingDetailView.opponentId = room.opponentId
+            chattingDetailView.opponentName = viewModel.findName(id: room.opponentId)
+            chattingDetailView.roomId = room.roomId
+        }
+        chattingDetailView.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(chattingDetailView, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

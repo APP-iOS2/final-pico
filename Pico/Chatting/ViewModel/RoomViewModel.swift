@@ -42,6 +42,15 @@ final class RoomViewModel {
         let reloadRoomTableView: Observable<Void>
     }
     
+    private func refresh() {
+        let didSet = isRoomEmptyPublisher
+        isRoomEmptyPublisher = PublishSubject<Bool>()
+        roomList = []
+        startIndex = 0
+        isRoomEmptyPublisher = didSet
+        loadNextRoomPage()
+    }
+    
     func transform(input: Input) -> Output {
         input.refresh
             .withUnretained(self)
@@ -121,12 +130,22 @@ final class RoomViewModel {
         }
     }
     
-    private func refresh() {
-        let didSet = isRoomEmptyPublisher
-        isRoomEmptyPublisher = PublishSubject<Bool>()
-        roomList = []
-        startIndex = 0
-        isRoomEmptyPublisher = didSet
-        loadNextRoomPage()
+    func findName(id: String) -> String {
+        var name = ""
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: id, dataType: User.self) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    name = userData.nickName
+                } else {
+                    name = "없음"
+                }
+            case .failure(let err):
+                print(err)
+            }
+        }
+        return name
     }
 }

@@ -105,7 +105,7 @@ final class ChattingListTableViewCell: UITableViewCell {
     // MARK: - MailCell +UI
     func config(receiveUser: Room.RoomInfo) {
         
-        var userId: String = receiveUser.opponentId
+        let userId: String = receiveUser.opponentId
         
         FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }

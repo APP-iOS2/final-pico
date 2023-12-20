@@ -84,8 +84,6 @@ final class ChattingViewModel {
     
     func loadNextChattingPage() {
         var query = dbRef.collection("room")
-        // 상대편과의 마지막 대화를 가져오도록 필터링 해야 함
-        // 굳이 다 받아와야해? 다 따로 받아오면 되잖아? 받아와서 넣어
         
             .whereFilter(Filter.orFilter([
                             Filter.whereField("sendUserId", isEqualTo: UserDefaultsManager.shared.getUserData().userId),
@@ -156,21 +154,22 @@ final class ChattingViewModel {
         }
     }
     
-    func saveChattingData(receiveUser: User, message: String, type: ChattingSendType) {
-        
+    func saveChattingData(receiveUserId: String, message: String, type: ChattingSendType) {
+        NSLog("불려짐")
         let senderUser = UserDefaultsManager.shared.getUserData()
         
         let roomId = UUID().uuidString
+        print("roomId : \(roomId)")
         
-        let senderDBRef = dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId)
+        let senderDBRef = dbRef.collection(Collections.chatting.name).document(senderUser.userId)
         
-        let receiveDBRef = dbRef.collection(Collections.chatting.name).document(receiveUser.id)
+        let receiveDBRef = dbRef.collection(Collections.chatting.name).document(receiveUserId)
         
         let sendMessages: [String: Any] = [
             "id": UUID().uuidString,
             "roomId": roomId,
             "sendUserId": senderUser.userId,
-            "receiveUserId": receiveUser.id,
+            "receiveUserId": receiveUserId,
             "message": message,
             "sendedDate": Date().timeIntervalSince1970,
             "isReading": true
@@ -180,7 +179,7 @@ final class ChattingViewModel {
             "id": UUID().uuidString,
             "roomId": roomId,
             "sendUserId": senderUser.userId,
-            "receiveUserId": receiveUser.id,
+            "receiveUserId": receiveUserId,
             "message": message,
             "sendedDate": Date().timeIntervalSince1970,
             "isReading": false
@@ -189,83 +188,93 @@ final class ChattingViewModel {
         let matchingReceiveMessages: [String: Any] = [
             "id": UUID().uuidString,
             "roomId": roomId,
-            "sendUserId": receiveUser.id,
+            "sendUserId": receiveUserId,
             "receiveUserId": senderUser.userId,
             "message": message,
             "sendedDate": Date().timeIntervalSince1970,
-            "mailType": "receive",
             "isReading": false
         ]
         
-        let roomMessages: [String: Any] = [
+        let sendRoomMessages: [String: Any] = [
             "roomId": roomId,
-            "opponentId": receiveUser.id,
+            "opponentId": receiveUserId,
             "lastMessage": message,
             "sendedDate": Date().timeIntervalSince1970
         ]
         
-        // room 업데이트
-        senderDBRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).setData(
-            [
-                "userId": UserDefaultsManager.shared.getUserData().userId,
-                "room": FieldValue.arrayUnion([roomMessages])
-            ], merge: true) { error in
-                if let error = error {
-                    print("평가 업데이트 에러: \(error)")
-                }
-            }
+        let receiveRoomMessages: [String: Any] = [
+            "roomId": roomId,
+            "opponentId": senderUser.userId,
+            "lastMessage": message,
+            "sendedDate": Date().timeIntervalSince1970
+        ]
         
-        receiveDBRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).setData(
-            [
-                "userId": receiveUser.id,
-                "room": FieldValue.arrayUnion([roomMessages])
-            ], merge: true) { error in
-                if let error = error {
-                    print("평가 업데이트 에러: \(error)")
-                }
-            }
-        
-        // 받는 사람
-        receiveDBRef.collection("room").document(roomId).setData(
-            [
-                "userId": receiveUser.id,
-                "userChatting": FieldValue.arrayUnion([receiveMessages])
-            ], merge: true) { error in
-                if let error = error {
-                    print("평가 업데이트 에러: \(error)")
-                }
-            }
-        
-        if type == .chatting { // 메시지를 보내는 경우
-            // 보내는 사람
-            senderDBRef.collection("room").document(roomId).setData(
+        DispatchQueue.global().async {
+            // room 업데이트
+            senderDBRef.setData(
                 [
                     "userId": senderUser.userId,
-                    "userChatting": FieldValue.arrayUnion([sendMessages])
+                    "room": FieldValue.arrayUnion([sendRoomMessages])
                 ], merge: true) { error in
                     if let error = error {
-                        print("평가 업데이트 에러: \(error)")
+                        print("룸 데이터 업데이트 에러: \(error)")
                     }
                 }
             
-            NotificationService.shared.sendNotification(userId: receiveUser.id, sendUserName: senderUser.nickName, notiType: .message, messageContent: message)
-            
-        } else { // 매칭의 경우
-            senderDBRef.collection("room").document(roomId).setData(
+            receiveDBRef.setData(
                 [
-                    "userId": senderUser.userId,
-                    "userChatting": FieldValue.arrayUnion([matchingReceiveMessages])
+                    "userId": receiveUserId,
+                    "room": FieldValue.arrayUnion([receiveRoomMessages])
                 ], merge: true) { error in
                     if let error = error {
-                        print("평가 업데이트 에러: \(error)")
+                        print("보내기 업데이트 에러: \(error)")
                     }
                 }
+            
+            // 받는 사람
+            receiveDBRef.collection("room").document(roomId).setData(
+                [
+                    "userId": receiveUserId,
+                    "userChatting": FieldValue.arrayUnion([receiveMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("받은사람 보내기 업데이트 에러: \(error)")
+                    }
+                }
+            
+            if type == .chatting { // 메시지를 보내는 경우
+                // 보내는 사람
+                senderDBRef.collection("room").document(roomId).setData(
+                    [
+                        "userId": senderUser.userId,
+                        "userChatting": FieldValue.arrayUnion([sendMessages])
+                    ], merge: true) { error in
+                        if let error = error {
+                            print("매칭 채팅 업데이트 에러: \(error)")
+                        }
+                    }
+                
+                NotificationService.shared.sendNotification(userId: receiveUserId, sendUserName: senderUser.nickName, notiType: .message, messageContent: message)
+                
+            } else { // 매칭의 경우
+                senderDBRef.collection("room").document(roomId).setData(
+                    [
+                        "userId": senderUser.userId,
+                        "userChatting": FieldValue.arrayUnion([matchingReceiveMessages])
+                    ], merge: true) { error in
+                        if let error = error {
+                            print("평가 업데이트 에러: \(error)")
+                        }
+                    }
+            }
         }
         
         guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
         
-        let receiverNoti = Noti(receiveId: receiveUser.id, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+        let receiverNoti = Noti(receiveId: receiveUserId, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
         
         FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
+        
+        print("매칭 데이터 업데이트 완료")
     }
 }
