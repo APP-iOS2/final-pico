@@ -92,6 +92,7 @@ final class InputCustomPopupViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.tappedDismissKeyboard()
         configView()
         addViews()
         makeConstraints()
