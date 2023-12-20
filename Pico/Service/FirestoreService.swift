@@ -105,7 +105,7 @@ final class FirestoreService {
         DispatchQueue.global().async {
             self.dbRef.collection(collectionId.name).document(documentId).getDocument { (snapshot, error) in
                 if let error = error {
-                    print("Error to load new document at \(collectionId.name) \(documentId) \(error)")
+//                    print("Error to load new document at \(collectionId.name) \(documentId) \(error)")
                     completion(.failure(error))
                     return
                 }
@@ -113,10 +113,10 @@ final class FirestoreService {
                 if let snapshot = snapshot, snapshot.exists {
                     do {
                         let documentData = try snapshot.data(as: dataType)
-                        print("Success to load new document at \(collectionId.name) \(documentId)")
+//                        print("Success to load new document at \(collectionId.name) \(documentId)")
                         completion(.success(documentData))
                     } catch {
-                        print("Error to decode document data: \(error)")
+//                        print("Error to decode document data: \(error)")
                         completion(.failure(error))
                     }
                 } else {

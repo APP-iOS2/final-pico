@@ -10,9 +10,12 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
+    private let checkService = CheckService()
+    private let user: User = User.tempUser
+    private let currentUser = UserDefaultsManager.shared.getUserData()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
+
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
@@ -21,49 +24,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         if UserDefaultsManager.shared.isLogin() {
-            let checkService = CheckService()
-            let user: User = User.tempUser
-            let currentUser = UserDefaultsManager.shared.getUserData()
-            
-            checkService.checkStopUser(userNumber: currentUser.phoneNumber) { [weak self] isStop, stop in
-                guard let self = self else { return }
-                guard isStop else { return }
-                let currentDate = Date()
-                let stopDate = Date(timeIntervalSince1970: stop.createdDate)
-                let stopDuring = stop.during
-                let stopUser = stop.user
-                
-                if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
-                    if currentDate > resumedDate {
-                        Loading.hideLoading()
-                        FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in }
-                        
-                        FirestoreService.shared.removeDocument(collectionId: .stop, field: "phoneNumber", isEqualto: currentUser.phoneNumber)
-                    } else {
-                        Loading.hideLoading()
+            FirestoreService.shared.loadDocument(collectionId: .session, documentId: currentUser.phoneNumber, dataType: User.self) { result in
+                switch result {
+                case .success(let user):
+                    UserDefaultsManager.shared.isOnUser = (user != nil)
+//                    print(" 🐶 if UserDefaultsManager.shared.isOnUser부분입니다.🐶 \(UserDefaultsManager.shared.isOnUser)")
+                    
+                    if UserDefaultsManager.shared.isOnUser {
                         UserDefaultsManager.shared.removeAll()
                         let rootViewController = UINavigationController(rootViewController: SignViewController())
                         self.window?.rootViewController = rootViewController
+                    } else {
+                        self.continueToNextCheckService(windoww: self.window)
                     }
-                }
-            }
-            
-            checkService.checkBlockUser(userNumber: currentUser.phoneNumber) { isBlock in
-                if isBlock {
-                    UserDefaultsManager.shared.removeAll()
-                    let rootViewController = UINavigationController(rootViewController: SignViewController())
-                    self.window?.rootViewController = rootViewController
-                }
-            }
-            
-            checkService.checkUserId(userId: currentUser.userId) { isUser in
-                if isUser {
-                    FirestoreService.shared.saveDocument(collectionId: .session, documentId: currentUser.phoneNumber, data: user) { _ in }
-                    let rootViewController = TabBarController()
-                    self.window?.rootViewController = rootViewController
-                } else {
-                    let rootViewController = UINavigationController(rootViewController: SignViewController())
-                    self.window?.rootViewController = rootViewController
+                case .failure(let err):
+                    print(err)
                 }
             }
         } else {
@@ -73,6 +48,50 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
     }
     
+    func continueToNextCheckService(windoww: UIWindow?) {
+        checkService.checkStopUser(userNumber: currentUser.phoneNumber) { [weak self] isStop, stop in
+            guard let self = self else { return }
+            guard isStop else { return }
+            let currentDate = Date()
+            let stopDate = Date(timeIntervalSince1970: stop.createdDate)
+            let stopDuring = stop.during
+            let stopUser = stop.user
+            
+            if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
+                if currentDate > resumedDate {
+                    Loading.hideLoading()
+                    FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in }
+                    
+                    FirestoreService.shared.removeDocument(collectionId: .stop, field: "phoneNumber", isEqualto: currentUser.phoneNumber)
+                } else {
+                    Loading.hideLoading()
+                    UserDefaultsManager.shared.removeAll()
+                    let rootViewController = UINavigationController(rootViewController: SignViewController())
+                    windoww?.rootViewController = rootViewController
+                }
+            }
+        }
+        
+        checkService.checkBlockUser(userNumber: currentUser.phoneNumber) { isBlock in
+            if isBlock {
+                UserDefaultsManager.shared.removeAll()
+                let rootViewController = UINavigationController(rootViewController: SignViewController())
+                windoww?.rootViewController = rootViewController
+            }
+        }
+        
+        checkService.checkUserId(userId: currentUser.userId) { isUser in
+            if isUser {
+                UserDefaultsManager.shared.isQuitUser = false
+                FirestoreService.shared.saveDocument(collectionId: .session, documentId: self.currentUser.phoneNumber, data: self.user) { _ in }
+                let rootViewController = TabBarController()
+                windoww?.rootViewController = rootViewController
+            } else {
+                let rootViewController = UINavigationController(rootViewController: SignViewController())
+                windoww?.rootViewController = rootViewController
+            }
+        }
+    }
     // 사용법 :
     // (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(UIViewController(), animated: true)
     /// 루트뷰 변경
@@ -110,9 +129,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
-        let userDefaultsManager = UserDefaultsManager()
-        guard userDefaultsManager.isLogin() else { return }
-        FirestoreService.shared.saveDocument(collectionId: .session, documentId: userDefaultsManager.getUserData().phoneNumber, data: User.tempUser) { _ in }
+        guard UserDefaultsManager.shared.isLogin() && !UserDefaultsManager.shared.isQuitUser else { return }
+        FirestoreService.shared.saveDocument(collectionId: .session, documentId: UserDefaultsManager.shared.getUserData().phoneNumber, data: User.tempUser) { _ in }
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
