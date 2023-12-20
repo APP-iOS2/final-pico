@@ -31,6 +31,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //                    print(" 🐶 if UserDefaultsManager.shared.isOnUser부분입니다.🐶 \(UserDefaultsManager.shared.isOnUser)")
                     
                     if UserDefaultsManager.shared.isOnUser {
+                        // 빌드할 때 왜 앱 종료로 인식 안 하는지 모르겠어요 그래서 임시로 세션이 있다면 세션을 삭제시켰어요 배포할 떄는 삭제해야 해요.
+                        let checkService = CheckService()
+                        checkService.disConnectSession {
+                            print("배포할떄는 삭제해야해요")
+                        }
+                        // --------------------
                         UserDefaultsManager.shared.removeAll()
                         let rootViewController = UINavigationController(rootViewController: SignViewController())
                         self.window?.rootViewController = rootViewController
@@ -48,7 +54,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
     }
     
-    func continueToNextCheckService(windoww: UIWindow?) {
+    private func continueToNextCheckService(windoww: UIWindow?) {
         checkService.checkStopUser(userNumber: currentUser.phoneNumber) { [weak self] isStop, stop in
             guard let self = self else { return }
             guard isStop else { return }
@@ -132,6 +138,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard !UserDefaultsManager.shared.isQuitUser else { return }
         guard UserDefaultsManager.shared.isLogin() else { return }
         FirestoreService.shared.saveDocument(collectionId: .session, documentId: UserDefaultsManager.shared.getUserData().phoneNumber, data: User.tempUser) { _ in }
+        print("포그라운드로 이동하셨습니다. \(UserDefaultsManager.shared.getUserData().phoneNumber) 번호의 세션이 다시 추가되었습니다.")
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -142,7 +149,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard userDefaultsManager.isLogin() else { return }
         let checkService = CheckService()
         checkService.disConnectSession {
-            print("끊킴")
+            print("백그라운드로 이동하셨습니다.\(UserDefaultsManager.shared.getUserData().phoneNumber) 번호의 세션이 삭제되었습니다.")
         }
     }
 }

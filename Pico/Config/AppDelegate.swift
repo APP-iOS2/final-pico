@@ -61,18 +61,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        
         let checkService = CheckService()
         guard UserDefaultsManager.shared.isLogin() else { return }
         UserDefaultsManager.shared.isQuitUser = true
-        print(UserDefaultsManager.shared.isQuitUser)
         checkService.disConnectSession {
-            print("앱꺼짐 ")
             sleep(3)
             exit(0)
         }
     }
-
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
