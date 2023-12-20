@@ -72,6 +72,17 @@ final class FirestoreService {
         }
     }
     
+    func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T) {
+        DispatchQueue.global().async {
+            do {
+                try self.dbRef.collection(collectionId.name).document(documentId).setData(from: data.self)
+                print("Success to save new document at \(collectionId.name) \(documentId)")
+            } catch {
+                print("Error to save new document at \(collectionId.name) \(documentId) \(error)")
+            }
+        }
+    }
+    
     func saveDocument<T: Codable>(collectionId: Collections, documentId: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.global().async {
             do {
@@ -85,7 +96,7 @@ final class FirestoreService {
             }
         }
     }
-   
+    
     func saveDocument<T: Codable>(collectionId: Collections, documentId: String, fieldId: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.global().async {
             self.dbRef.collection(collectionId.name).document(documentId)
@@ -245,7 +256,7 @@ final class FirestoreService {
         }
     }
     
-    func removeDocument<T: Codable>(collectionId: Collections, field: String, isEqualto: T) {
+    func deleteDocument<T: Codable>(collectionId: Collections, field: String, isEqualto: T) {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             dbRef.collection(collectionId.name).whereField(field, isEqualTo: isEqualto)
@@ -269,7 +280,37 @@ final class FirestoreService {
         }
     }
     
-    func removeDocument(collectionId: Collections, documentId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func deleteDocument<T: Codable>(collectionId: Collections, field: String, isEqualto: T, receiveId: String, sendId: String) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            dbRef.collection(collectionId.name)
+                .whereField(field, isEqualTo: isEqualto)
+                .getDocuments { (querySnapshot, error) in
+                    if let error = error {
+                        print("documents를 가져오는데 문제생김 \(error)")
+                    } else {
+                        guard let querySnapshot else { return }
+                        
+                        for document in querySnapshot.documents {
+                            if let temp = try? document.data(as: Noti.self) {
+                                if temp.sendId == sendId && temp.receiveId == receiveId {
+                                    let documentID = document.documentID
+                                    self.dbRef.collection(collectionId.name).document(documentID).delete { err in
+                                        if err != nil {
+                                            print("document를 제거하다가 문제생김")
+                                        } else {
+                                            print("document 제거 성공 ")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+    }
+    
+    func deleteDocument(collectionId: Collections, documentId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             dbRef.collection(collectionId.name).document(documentId).delete { err in
@@ -394,10 +435,10 @@ final class FirestoreService {
         }
     }
     
-    func removeDocumentRx(collectionId: Collections, documentId: String) -> Observable<Void> {
+    func deleteDocumentRx(collectionId: Collections, documentId: String) -> Observable<Void> {
         return Observable.create { [weak self] emitter in
             guard let self = self else { return Disposables.create() }
-            removeDocument(collectionId: collectionId, documentId: documentId) { result in
+            deleteDocument(collectionId: collectionId, documentId: documentId) { result in
                 switch result {
                 case .success:
                     emitter.onNext(())

@@ -48,7 +48,8 @@ final class HomeGuideView: UIView {
         let text = """
                     사진을 탭하여 상대의 사진을 확인 할 수 있습니다.
                     화면을 드래그해서 빠르게 친구를 찾아보세요.
-                    뒤로가기 버튼으로 지나간 친구를 다시 불러옵니다.
+                    되돌리기 버튼으로 지나간 친구를 다시 불러옵니다.
+                    💡 매칭 된 친구는 되돌리기를 사용할 수 없어요.
                     마이페이지 프로필을 완성해서 매칭 확률을 높여보세요!
                     """
         let attributedText = NSMutableAttributedString(string: text)
@@ -122,7 +123,7 @@ final class HomeGuideView: UIView {
         }
         
         guideTitle.snp.makeConstraints { make in
-            make.top.equalTo(guideTabImageView.snp.bottom).offset(40)
+            make.top.equalTo(guideTabImageView.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
             make.width.equalTo(200)
             make.height.equalTo(50)
@@ -132,7 +133,7 @@ final class HomeGuideView: UIView {
             make.top.equalTo(guideTitle.snp.bottom)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().offset(-20)
-            make.height.equalTo(100)
+            make.height.equalTo(140)
         }
         
         closeAgainButton.snp.makeConstraints { make in

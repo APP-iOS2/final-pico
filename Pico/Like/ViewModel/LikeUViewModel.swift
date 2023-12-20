@@ -35,7 +35,7 @@ final class LikeUViewModel: ViewModelType {
             }
         }
     }
-
+    
     private var isEmptyPublisher = PublishSubject<Bool>()
     private let reloadCollectionViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
@@ -43,7 +43,7 @@ final class LikeUViewModel: ViewModelType {
     private var currentChuCount = UserDefaultsManager.shared.getChuCount()
     private let pageSize = 10
     var startIndex = 0
-
+    
     func transform(input: Input) -> Output {
         input.refresh
             .withUnretained(self)
@@ -96,10 +96,10 @@ final class LikeUViewModel: ViewModelType {
             .map { viewModel, _ in
                 UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
             }
-            
+        
         return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadCollectionViewPublisher.asObservable(), resultMessage: resultMessage)
     }
-
+    
     private func loadNextPage() {
         let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
@@ -114,9 +114,13 @@ final class LikeUViewModel: ViewModelType {
                 }
                 
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType == .like }) {
+                    if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType != .dislike }) {
                         let sorted = datas.sorted {
-                            return $0.createdDate > $1.createdDate
+                            if $0.isMatch != $1.isMatch {
+                                return !$0.isMatch
+                            } else {
+                                return $0.createdDate > $1.createdDate
+                            }
                         }
                         if startIndex > sorted.count - 1 {
                             return

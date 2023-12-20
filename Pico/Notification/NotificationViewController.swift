@@ -19,9 +19,11 @@ final class NotificationViewController: UIViewController {
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkEmptyPublisher = PublishSubject<Void>()
+    private let deletePublisher = PublishSubject<Noti>()
     private let footerView = FooterView()
     private var isRefresh = false
     private var cellTapped: Bool = false
+    private var detailUser: User?
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -32,7 +34,13 @@ final class NotificationViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.popViewController(animated: false)
+        if let user = detailUser {
+            let viewController = UserDetailViewController()
+            viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
+            self.navigationController?.pushViewController(viewController, animated: true)
+        } else {
+            self.navigationController?.popViewController(animated: false)
+        }
     }
     
     override func viewDidLoad() {
@@ -106,13 +114,13 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
                 if cellTapped { return }
                 cellTapped = true
                 if item.notiType == .like {
-                    let viewController = UserDetailViewController()
-                    FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.sendId, dataType: User.self) { result in
+                    FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.sendId, dataType: User.self) { [weak self] result in
+                        guard let self = self else { return }
                         switch result {
                         case .success(let data):
                             guard let data = data else { return }
-                            viewController.viewModel = UserDetailViewModel(user: data, isHome: false)
-                            self.navigationController?.pushViewController(viewController, animated: true)
+                            detailUser = data
+                            navigationController?.popViewController(animated: false)
                         case .failure(let error):
                             print(error)
                             return
@@ -136,12 +144,21 @@ extension NotificationViewController: UITableViewDataSource, UITableViewDelegate
             }
         }
     }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            guard let item = viewModel.notifications[safe: indexPath.row] else { return }
+            viewModel.notifications.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            deletePublisher.onNext(item)
+        }
+    }
 }
 
 // MARK: - Bind
 extension NotificationViewController {
     private func bind() {
-        let input = NotificationViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher)
+        let input = NotificationViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher, checkEmpty: checkEmptyPublisher, deleteNoti: deletePublisher)
         let output = viewModel.transform(input: input)
         
         output.notificationIsEmpty

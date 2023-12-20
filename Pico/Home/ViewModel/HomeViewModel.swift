@@ -18,12 +18,11 @@ final class HomeViewModel {
     var blocks = BehaviorRelay<[Block.BlockInfo]>(value: [])
     static var filterGender: [GenderType] = GenderType.allCases
     static var filterMbti: [MBTIType] = MBTIType.allCases
-    static var filterAgeMin: Int = 24
-    static var filterAgeMax: Int = 34
+    static var filterAgeMin: Int = calculateAge(type: "min")
+    static var filterAgeMax: Int = calculateAge(type: "max")
     static var filterDistance: Int = 501
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
-    
     init() {
         loadFilterDefault()
         loadMySendBlocks()
@@ -31,6 +30,23 @@ final class HomeViewModel {
         loadUsersCodable()
     }
     
+    private static func calculateAge(type: String?) -> Int {
+        let calendar = Calendar.current
+        let currentDate = Date()
+        let birthdate = UserDefaultsManager.shared.getUserData().birth.toDate()
+        let ageComponents = calendar.dateComponents([.year], from: birthdate, to: currentDate)
+        var age: Int
+        if type == "min" {
+            age = Int(ageComponents.year ?? 24) - 5
+            if age >= 60 { age = 59 }
+            age = max(age, 19)
+        } else {
+            age = Int(ageComponents.year ?? 34) + 5
+            age = min(age, 60)
+        }
+        return age
+    }
+
     func calculateDistance(user: User) -> CLLocationDistance {
         let currentUserLoc = CLLocation(latitude: loginUser.latitude, longitude: loginUser.longitude)
         let otherUserLoc = CLLocation(latitude: user.location.latitude, longitude: user.location.longitude)
@@ -72,7 +88,7 @@ final class HomeViewModel {
                     var users = [User]()
                     for document in querySnapshot!.documents {
                         if let userdata = try? document.data(as: User.self) {
-                            if userdata.id != self.loginUser.userId {
+                            if userdata.id != self.loginUser.userId && userdata.id.prefix(4) != Bundle.main.testId {
                                 users.append(userdata)
                             }
                         } else {

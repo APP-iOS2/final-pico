@@ -117,11 +117,10 @@ final class HomeFilterViewController: UIViewController {
         distanceSlider.value = Float(HomeViewModel.filterDistance)
         distanceSlider.addTarget(self, action: #selector(distanceSliderValueChanged), for: .valueChanged)
         if let thumbImage = UIImage(systemName: "circle.fill")?.withTintColor(.picoBlue) {
-            let thumbSize = CGSize(width: 14, height: 14)
+            let thumbSize = CGSize(width: 18, height: 18)
             let resizedThumbImage = thumbImage.resized(toSize: thumbSize)
             distanceSlider.setThumbImage(resizedThumbImage, for: .normal)
         }
-        
         ageSlider.titleLabel.text = "나이"
         if HomeViewModel.filterDistance > 500 {
             distanceValueLabel.text = "0km ~ 500km +"
@@ -251,5 +250,6 @@ final class HomeFilterViewController: UIViewController {
         } else {
             distanceValueLabel.text = "0km ~ \(selectedValue)km"
         }
+        HomeFilterViewController.filterChangeState = true
     }
 }

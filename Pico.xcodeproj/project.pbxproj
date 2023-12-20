@@ -32,6 +32,7 @@
 		4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */; };
 		4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */; };
 		4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */; };
+		4B6745E12B2BF2F70020714E /* TrickTextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B6745E02B2BF2F70020714E /* TrickTextField+Extensions.swift */; };
 		4B89E12D2AD528E500BFBAA3 /* WorldCupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */; };
 		5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */; };
 		531C4ED82AC26BA300ADC614 /* CustomTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */; };
@@ -252,6 +253,7 @@
 		4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupUserInfoStackView.swift; sourceTree = "<group>"; };
 		4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewController.swift; sourceTree = "<group>"; };
 		4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewModel.swift; sourceTree = "<group>"; };
+		4B6745E02B2BF2F70020714E /* TrickTextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrickTextField+Extensions.swift"; sourceTree = "<group>"; };
 		4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupViewModel.swift; sourceTree = "<group>"; };
 		5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransitionAnimator.swift; sourceTree = "<group>"; };
@@ -1118,6 +1120,7 @@
 				5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */,
 				6915C84C2ADA8F7200994F55 /* UIStackView+Extensions.swift */,
 				B1A0C0042AE4A3910031AC65 /* UILabel+Extensions.swift */,
+				4B6745E02B2BF2F70020714E /* TrickTextField+Extensions.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1428,6 +1431,7 @@
 				36CD4CFC2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
+				4B6745E12B2BF2F70020714E /* TrickTextField+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
 				369B25522ADB1FB4005C452D /* SMSAuthService.swift in Sources */,
 				B18BD0512B2BBD7300729A10 /* VisionService.swift in Sources */,
@@ -1775,7 +1779,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pico/Pico.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = C39BYRTABZ;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pico/Config/Info.plist;

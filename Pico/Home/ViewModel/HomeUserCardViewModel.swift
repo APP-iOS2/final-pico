@@ -15,6 +15,7 @@ final class HomeUserCardViewModel {
     private let sendedlikesUpdateFiled = "sendedlikes"
     private let recivedlikesUpdateFiled = "recivedlikes"
     private let docRef = Firestore.firestore().collection(Collections.likes.name)
+    private var partnerSendedLikeData: Like.LikeInfo = Like.LikeInfo(likedUserId: "", likeType: .dislike, birth: "", nickName: "", mbti: .enfj, imageURL: "", createdDate: 0)
     static var passedMyData: [[String: Any]] = []
     static var passedUserData: [[String: Any]] = []
     static var cardCounting: Int = 0
@@ -27,7 +28,7 @@ final class HomeUserCardViewModel {
                                                       mbti: receiveUserInfo.mbti,
                                                       imageURL: receiveUserInfo.imageURLs[0],
                                                       createdDate: Date().timeIntervalSince1970)
-            
+        
         let myLikeUserDic = myLikeUser.asDictionary()
         let myInfo: Like.LikeInfo = Like.LikeInfo(likedUserId: currentUser.userId,
                                                   likeType: likeType,
@@ -49,15 +50,27 @@ final class HomeUserCardViewModel {
                     print("평가 업데이트 에러: \(error)")
                 }
             }
-        docRef.document(receiveUserInfo.id).setData(
-            [
-                "userId": receiveUserInfo.id,
-                recivedlikesUpdateFiled: FieldValue.arrayUnion([myInfoDic])
-            ], merge: true) { error in
-                if let error = error {
-                    print("평가 업데이트 에러: \(error)")
+        if likeType == .matching {
+            docRef.document(receiveUserInfo.id).setData(
+                [
+                    "userId": receiveUserInfo.id,
+                    sendedlikesUpdateFiled: FieldValue.arrayUnion([myInfoDic])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("평가 업데이트 에러: \(error)")
+                    }
                 }
-            }
+        } else {
+            docRef.document(receiveUserInfo.id).setData(
+                [
+                    "userId": receiveUserInfo.id,
+                    recivedlikesUpdateFiled: FieldValue.arrayUnion([myInfoDic])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("평가 업데이트 에러: \(error)")
+                    }
+                }
+        }
     }
     
     func deleteLikeData() {
@@ -90,6 +103,42 @@ final class HomeUserCardViewModel {
         }
     }
     
+    func updateMatcingData(_ userId: String) {
+        docRef.document(userId).updateData(
+            [
+                sendedlikesUpdateFiled: FieldValue.arrayRemove([partnerSendedLikeData.asDictionary()])
+            ]) { error in
+                if let error = error {
+                    print("삭제 my 에러: \(error)")
+                }
+            }
+        
+        DispatchQueue.global().async { [self] in
+            docRef.document(currentUser.userId).getDocument { [self] (document, error) in
+                if let error = error {
+                    print("에러 : \(error)")
+                } else if let document = document, document.exists {
+                    if let data = try? document.data(as: Like.self), var recivedlikes = data.recivedlikes {
+                        recivedlikes.removeAll { $0.likedUserId == userId }
+                        let recivedlikesDictArray = recivedlikes.map { $0.asDictionary() }
+                        docRef.document(currentUser.userId).updateData(
+                            [
+                                "recivedlikes": recivedlikesDictArray
+                            ]) { error in
+                                if let error = error {
+                                    print("에러 : \(error)")
+                                } else {
+                                    print("매칭 문서 업데이트 오류")
+                                }
+                            }
+                    }
+                } else {
+                    print("해당 문서가 존재하지 않습니다.")
+                }
+            }
+        }
+    }
+    
     func purchaseChu(currentChu: Int, purchaseChu: Int) {
         FirestoreService.shared.updateDocument(collectionId: .users, documentId: currentUser.userId, field: "chuCount", data: currentChu - purchaseChu, completion: { _ in
             UserDefaultsManager.shared.updateChuCount(currentChu - purchaseChu)
@@ -99,4 +148,31 @@ final class HomeUserCardViewModel {
             }
         })
     }
+    
+    func checkYouLikeMe(_ partnerId: String, _ myId: String, completion: @escaping (Like.LikeInfo?) -> Void) {
+        var result: Like.LikeInfo?
+        let dbRef = Firestore.firestore().collection("likes")
+        
+        DispatchQueue.global().async {
+            dbRef.document(partnerId).getDocument { [self] (document, error) in
+                if let error = error {
+                    print("Error getting document: \(error)")
+                    completion(nil)
+                } else if let document = document, document.exists {
+                    if let data = try? document.data(as: Like.self), let sendedLikes = data.sendedlikes {
+                        var sendedLikesData: [Like.LikeInfo] = sendedLikes
+                        for data in sendedLikesData where data.likedUserId == myId {
+                            partnerSendedLikeData = data
+                            result = partnerSendedLikeData
+                        }
+                    }
+                    completion(result)
+                } else {
+                    print("해당 문서가 존재하지 않습니다.")
+                    completion(nil)
+                }
+            }
+        }
+    }
+    
 }
