@@ -19,7 +19,7 @@ final class UserDefaultsManager {
     static let shared: UserDefaultsManager = UserDefaultsManager()
     
     var isOnUser = false
-    var isQuitUser = false
+    var isQuitUser = true
     func removeAll() {
         Key.allCases.forEach {
             UserDefaults.standard.removeObject(forKey: $0.rawValue)

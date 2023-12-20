@@ -129,7 +129,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
-        guard UserDefaultsManager.shared.isLogin() && !UserDefaultsManager.shared.isQuitUser else { return }
+        guard !UserDefaultsManager.shared.isQuitUser else { return }
+        guard UserDefaultsManager.shared.isLogin() else { return }
         FirestoreService.shared.saveDocument(collectionId: .session, documentId: UserDefaultsManager.shared.getUserData().phoneNumber, data: User.tempUser) { _ in }
     }
     
