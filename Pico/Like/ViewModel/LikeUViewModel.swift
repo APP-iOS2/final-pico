@@ -104,37 +104,55 @@ final class LikeUViewModel: ViewModelType {
         let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
         let endIndex = startIndex + pageSize
-        
-        DispatchQueue.global().async {
-            ref.getDocument { [weak self] document, error in
-                guard let self = self else { return }
-                if let error = error {
-                    print(error)
-                    return
-                }
-                
-                if let document = document, document.exists {
-                    if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType != .dislike }) {
-                        let sorted = datas.sorted {
-                            if $0.isMatch != $1.isMatch {
-                                return !$0.isMatch
-                            } else {
-                                return $0.createdDate > $1.createdDate
-                            }
-                        }
-                        if startIndex > sorted.count - 1 {
-                            return
-                        }
-                        let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
-                        likeUList = currentPageDatas
-                        
-                        if startIndex == 0 {
-                            reloadCollectionViewPublisher.onNext(())
-                        }
-                        startIndex = currentPageDatas.count
+        FirestoreService.shared.loadDocuments(collectionId: .unsubscribe, dataType: User.self) { result in
+            var unsubscribe = [User]()
+            switch result {
+            case .success(let data):
+                unsubscribe = data
+            case .failure(let error):
+                print("탈퇴 회원 불러오기 실패: \(error)")
+            }
+            DispatchQueue.global().async {
+                ref.getDocument { [weak self] document, error in
+                    guard let self = self else { return }
+                    if let error = error {
+                        print(error)
+                        return
                     }
-                } else {
-                    print("문서를 찾을 수 없습니다.")
+                    
+                    if let document = document, document.exists {
+                        if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType != .dislike }) {
+                            var sorted = datas.sorted {
+                                if $0.isMatch != $1.isMatch {
+                                    return !$0.isMatch
+                                } else {
+                                    return $0.createdDate > $1.createdDate
+                                }
+                            }
+                            sorted = sorted.filter { likeInfo in
+                                let id = likeInfo.likedUserId
+                                if id == "test" {
+                                    return false
+                                }
+                                for user in unsubscribe where user.id == id {
+                                    return false
+                                }
+                                return true
+                            }
+                            if startIndex > sorted.count - 1 {
+                                return
+                            }
+                            let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
+                            likeUList = currentPageDatas
+                            
+                            if startIndex == 0 {
+                                reloadCollectionViewPublisher.onNext(())
+                            }
+                            startIndex = currentPageDatas.count
+                        }
+                    } else {
+                        print("문서를 찾을 수 없습니다.")
+                    }
                 }
             }
         }

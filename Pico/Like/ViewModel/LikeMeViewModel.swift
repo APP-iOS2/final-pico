@@ -18,7 +18,7 @@ final class LikeMeViewModel: ViewModelType {
     private var isEmptyPublisher = PublishSubject<Bool>()
     private let reloadTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
-    
+
     private let currentUser: CurrentUser = UserDefaultsManager.shared.getUserData()
     
     private let dbRef = Firestore.firestore()
@@ -106,38 +106,57 @@ final class LikeMeViewModel: ViewModelType {
             failLike: resultLike
         )
     }
-    
+
     private func loadNextPage() {
-        let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
         let endIndex = startIndex + pageSize
         
-        DispatchQueue.global().async {
-            ref.getDocument { [weak self] document, error in
-                guard let self = self else { return }
-                if let error = error {
-                    print(error)
-                    return
-                }
-                
-                if let document = document, document.exists {
-                    if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType == .like }) {
-                        let sorted = datas.sorted {
-                            return $0.createdDate > $1.createdDate
-                        }
-                        if startIndex > sorted.count - 1 {
-                            return
-                        }
-                        let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
-                        likeMeList = currentPageDatas
-                        
-                        if startIndex == 0 {
-                            reloadTableViewPublisher.onNext(())
-                        }
-                        startIndex = currentPageDatas.count
+        FirestoreService.shared.loadDocuments(collectionId: .unsubscribe, dataType: User.self) { result in
+            var unsubscribe = [User]()
+            switch result {
+            case .success(let data):
+                unsubscribe = data
+            case .failure(let error):
+                print("탈퇴 회원 불러오기 실패: \(error)")
+            }
+            
+            DispatchQueue.global().async {
+                ref.getDocument { [weak self] document, error in
+                    guard let self = self else { return }
+                    if let error = error {
+                        print(error)
+                        return
                     }
-                } else {
-                    print("문서를 찾을 수 없습니다.")
+                    
+                    if let document = document, document.exists {
+                        if let datas = try? document.data(as: Like.self).recivedlikes?.filter({ $0.likeType == .like }) {
+                            var sorted = datas.sorted {
+                                return $0.createdDate > $1.createdDate
+                            }
+                            sorted = sorted.filter { likeInfo in
+                                let id = likeInfo.likedUserId
+                                if id == "test" {
+                                    return false
+                                }
+                                for user in unsubscribe where user.id == id {
+                                    return false
+                                }
+                                return true
+                            }
+                            if startIndex > sorted.count - 1 {
+                                return
+                            }
+                            let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
+                            likeMeList = currentPageDatas
+                            
+                            if startIndex == 0 {
+                                reloadTableViewPublisher.onNext(())
+                            }
+                            startIndex = currentPageDatas.count
+                        }
+                    } else {
+                        print("문서를 찾을 수 없습니다.")
+                    }
                 }
             }
         }
