@@ -42,7 +42,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                 
                             } else {
                                 UserDefaultsManager.shared.removeAll()
-                                rootViewController = UINavigationController(rootViewController: SignViewController())
+                                rootViewController = UINavigationController(rootViewController: SignViewController(signType: .stop(during: stop.during, endDate: resumedDate.timeIntervalSince1970.toString(dateSeparator: .dot))))
                                 window?.rootViewController = rootViewController
                                 window?.makeKeyAndVisible()
                                 Loading.hideLoading()
@@ -55,7 +55,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             guard let self else { return }
                             if isBlock {
                                 UserDefaultsManager.shared.removeAll()
-                                rootViewController = UINavigationController(rootViewController: SignViewController())
+                                rootViewController = UINavigationController(rootViewController: SignViewController(signType: .block))
                                 window?.rootViewController = rootViewController
                                 window?.makeKeyAndVisible()
                                 Loading.hideLoading()
@@ -142,7 +142,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         print("sceneDidBecomeActive")
-        Loading.showLoading(backgroundColor: .white)
         NotificationService.shared.displayResetBadge()
         
         FirestoreService.shared.loadDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Token.self) { result in
@@ -167,7 +166,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             } else {
                                 print("================= sceneDidBecomeActive 다른폰222222222")
                                 UserDefaultsManager.shared.removeAll()
-                                changeRootView(UINavigationController(rootViewController: SignViewController()), animated: true)
+                                changeRootView(UINavigationController(rootViewController: SignViewController(signType: .other)), animated: true)
                             }
                         } else {
                             print("================= sceneDidBecomeActive 토큰 없음")

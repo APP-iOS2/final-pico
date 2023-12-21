@@ -11,11 +11,31 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class SignViewController: UIViewController {
-    private let disposeBag = DisposeBag()
-    private let pictureManager = PictureService()
-    private let locationManager = LocationService()
+enum SignType: CaseIterable, Equatable {
+    case none
+    case stop(during: Int, endDate: String)
+    case block
+    case other
     
+    var textString: String {
+        switch self {
+        case .none:
+            return ""
+        case .stop(let during, let endDate):
+            return "해당 계정은 \(during)일 정지로 \(endDate)일까지 로그인이 제한됩니다."
+        case .block:
+            return "해당 계정은 탈퇴되었습니다.\n복구를 원하시면 고객센터에 문의하세요."
+        case .other:
+            return "해당 계정은 다른 기기에서 접속 중입니다."
+        }
+    }
+    
+    static var allCases: [SignType] {
+        return [.none, .stop(during: 0, endDate: ""), .block, .other]
+    }
+}
+
+final class SignViewController: UIViewController {
     private lazy var backgroundView: UIView = {
         let view = UIView()
         let gradient: CAGradientLayer = CAGradientLayer()
@@ -56,6 +76,22 @@ final class SignViewController: UIViewController {
         return button
     }()
     
+    private let disposeBag = DisposeBag()
+    private let pictureManager = PictureService()
+    private let locationManager = LocationService()
+    
+    private let signType: SignType
+    
+    init(signType: SignType = .none) {
+        self.signType = signType
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,9 +105,23 @@ final class SignViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        if isShowSignTypeAlert() {
+            showSignTypeAlert()
+        }
+        
         if VersionService.shared.isOldVersion {
             showVersionAlert()
         }
+    }
+    
+    private func isShowSignTypeAlert() -> Bool {
+        return signType != .none ? true : false
+    }
+    
+    private func showSignTypeAlert() {
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: signType.textString, confirmButtonText: "확인", comfrimAction: {
+            
+        })
     }
     
     private func showVersionAlert() {

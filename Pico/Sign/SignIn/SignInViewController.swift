@@ -277,7 +277,7 @@ extension SignInViewController {
                             let viewController = LoginSuccessViewController(user: user)
                             self.navigationController?.pushViewController(viewController, animated: true)
                         } else {
-                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "다른 기기에서 접속중입니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "다른 기기에서 접속 중입니다", confirmButtonText: "확인", comfrimAction: { [weak self] in
                                 guard let self = self else { return }
                                 navigationController?.popViewController(animated: true)
                             })
