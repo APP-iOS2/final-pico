@@ -18,90 +18,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        let user = UserDefaultsManager.shared.getUserData()
-        
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             
             if UserDefaultsManager.shared.isLogin() && !VersionService.shared.isOldVersion {
-                CheckService.shared.checkStopUser(userNumber: user.phoneNumber) { [weak self] isStop, stop in
-                    guard let self else { return }
-                    if isStop {
-                        guard let stop else { return }
-                        
-                        let currentDate = Date()
-                        let stopDate = Date(timeIntervalSince1970: stop.createdDate)
-                        let stopDuring = stop.during
-                        let stopUser = stop.user
-                        
-                        if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
-                            if currentDate > resumedDate {
-                                FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in
-                                    FirestoreService.shared.deleteDocument(collectionId: .stop, field: "phoneNumber", isEqualto: user.phoneNumber)
-                                }
-                                
-                            } else {
-                                UserDefaultsManager.shared.removeAll()
-                                rootViewController = UINavigationController(rootViewController: SignViewController(signType: .stop(during: stop.during, endDate: resumedDate.timeIntervalSince1970.toString(dateSeparator: .dot))))
-                                window?.rootViewController = rootViewController
-                                window?.makeKeyAndVisible()
-                                Loading.hideLoading()
-                                return
-                            }
-                        }
-                        
-                    } else {
-                        CheckService.shared.checkBlockUser(userNumber: user.phoneNumber) { [weak self] isBlock in
-                            guard let self else { return }
-                            if isBlock {
-                                UserDefaultsManager.shared.removeAll()
-                                rootViewController = UINavigationController(rootViewController: SignViewController(signType: .block))
-                                window?.rootViewController = rootViewController
-                                window?.makeKeyAndVisible()
-                                Loading.hideLoading()
-                                return
-                                
-                            } else {
-                                print("check")
-                                CheckService.shared.checkOnline(userId: user.userId) { [weak self] result in
-                                    guard let self else { return }
-                                    if result {
-                                        print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
-                                        if UserDefaultsManager.shared.isLogin() {
-                                            print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
-                                            // 자동로그인 상태에서 로그인이 되어있을 때
-                                            rootViewController = TabBarController()
-                                            window?.rootViewController = rootViewController
-                                            window?.makeKeyAndVisible()
-                                            Loading.hideLoading()
-                                            return
-                                        } else {
-                                            print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
-                                        }
-                                    } else {
-                                        print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
-                                        CheckService.shared.updateOnline(userId: user.userId, isOnline: true) { [weak self] in
-                                            guard let self else { return }
-                                            // 자동로그인 상태에서 로그인 가능할때
-                                            rootViewController = TabBarController()
-                                            window?.rootViewController = rootViewController
-                                            window?.makeKeyAndVisible()
-                                            Loading.hideLoading()
-                                            return
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                checkLoginUser()
                 
             } else {
                 UserDefaultsManager.shared.removeAll()
                 rootViewController = UINavigationController(rootViewController: SignViewController())
-                window?.rootViewController = rootViewController
-                window?.makeKeyAndVisible()
-                Loading.hideLoading()
+                configRootViewController(rootViewController ?? UIViewController())
                 return
             }
         }
@@ -206,5 +132,102 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 print("백그라운드로 이동하셨습니다.\(UserDefaultsManager.shared.getUserData().phoneNumber) 번호의 세션이 삭제되었습니다.")
             }
         }
+    }
+    
+    private func checkLoginUser() {
+        let user = UserDefaultsManager.shared.getUserData()
+        
+        CheckService.shared.checkStopUser(userNumber: user.phoneNumber) { [weak self] isStop, stop in
+            guard let self else { return }
+            if isStop {
+                guard let stop else { return }
+                
+                let currentDate = Date()
+                let stopDate = Date(timeIntervalSince1970: stop.createdDate)
+                let stopDuring = stop.during
+                let stopUser = stop.user
+                
+                if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
+                    if currentDate > resumedDate {
+                        FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { [weak self] result in
+                            guard let self else { return }
+                            
+                            switch result {
+                            case .success(let res):
+                                if res {
+                                    checkLoginUserFromOnline(userId: user.userId) { [weak self] result in
+                                        guard let self else { return }
+                                        if result {
+                                            FirestoreService.shared.deleteDocument(collectionId: .stop, field: "phoneNumber", isEqualto: user.phoneNumber)
+                                            configRootViewController(TabBarController())
+                                        }
+                                    }
+                                }
+                            case .failure(let err):
+                                print("checkLoginUser : \(err)")
+                            }
+                        }
+                        
+                    } else {
+                        UserDefaultsManager.shared.removeAll()
+                        rootViewController = UINavigationController(rootViewController: SignViewController(signType: .stop(during: stop.during, endDate: resumedDate.timeIntervalSince1970.toString(dateSeparator: .dot))))
+                        configRootViewController(rootViewController ?? UIViewController())
+                        return
+                    }
+                }
+                
+            } else {
+                CheckService.shared.checkBlockUser(userNumber: user.phoneNumber) { [weak self] isBlock in
+                    guard let self else { return }
+                    if isBlock {
+                        UserDefaultsManager.shared.removeAll()
+                        rootViewController = UINavigationController(rootViewController: SignViewController(signType: .block))
+                        configRootViewController(rootViewController ?? UIViewController())
+                        return
+                        
+                    } else {
+                        print("check")
+                        checkLoginUserFromOnline(userId: user.userId) { [weak self] result in
+                            guard let self else { return }
+                            if result {
+                                configRootViewController(TabBarController())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func checkLoginUserFromOnline(userId: String, completion: @escaping (Bool) -> ()) {
+        CheckService.shared.checkOnline(userId: userId) { [weak self] result in
+            guard let self else { return }
+            
+            if result {
+                print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
+                if UserDefaultsManager.shared.isLogin() {
+                    print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
+                    // 자동로그인 상태에서 로그인이 되어있을 때
+                    completion(true)
+                    return
+                } else {
+                    print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
+                }
+            } else {
+                print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
+                CheckService.shared.updateOnline(userId: userId, isOnline: true) {
+                    // 자동로그인 상태에서 로그인 가능할때
+                    completion(true)
+                    return
+                }
+            }
+        }
+    }
+    
+    private func configRootViewController(_ viewController: UIViewController) {
+        rootViewController = viewController
+        window?.rootViewController = rootViewController
+        window?.makeKeyAndVisible()
+        Loading.hideLoading()
     }
 }

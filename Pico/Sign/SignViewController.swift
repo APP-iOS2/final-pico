@@ -16,6 +16,7 @@ enum SignType: CaseIterable, Equatable {
     case stop(during: Int, endDate: String)
     case block
     case other
+    case reuser
     
     var textString: String {
         switch self {
@@ -26,12 +27,14 @@ enum SignType: CaseIterable, Equatable {
         case .block:
             return "해당 계정은 탈퇴되었습니다.\n복구를 원하시면 고객센터에 문의하세요."
         case .other:
-            return "해당 계정은 다른 기기에서 접속 중입니다."
+            return "해당 계정은 다른 기기에서 로그인하여 강제 로그아웃이 되었습니다."
+        case .reuser:
+            return "해당 계정은 복구되었습니다."
         }
     }
     
     static var allCases: [SignType] {
-        return [.none, .stop(during: 0, endDate: ""), .block, .other]
+        return [.none, .stop(during: 0, endDate: ""), .block, .other, .reuser]
     }
 }
 

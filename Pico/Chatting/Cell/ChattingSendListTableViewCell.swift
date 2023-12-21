@@ -54,8 +54,8 @@ final class ChattingSendListTableViewCell: UITableViewCell {
             switch result {
             case .success(let user):
                 if !user.isEmpty {
-                    guard let userData = user[safe: 0] else { break }
-                   backgroundImageView.image = UIImage(systemName: ChattingType.receive.imageStyle)
+                    guard user[safe: 0] != nil else { break }
+                    backgroundImageView.image = UIImage(systemName: ChattingType.receive.imageStyle)
                 }
             case .failure(let err):
                 print(err)
@@ -69,7 +69,7 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     }
     
     private func addViews() {
-       contentView.addSubview([messageLabel, backgroundImageView, dateLabel])
+        contentView.addSubview([messageLabel, backgroundImageView, dateLabel])
     }
     
     private func makeConstraints() {
@@ -84,7 +84,7 @@ final class ChattingSendListTableViewCell: UITableViewCell {
         backgroundImageView.snp.makeConstraints { make in
             make.edges.equalTo(messageLabel.snp.edges)
         }
-       
+        
         dateLabel.snp.makeConstraints { make in
             make.trailing.equalTo(contentView.snp.trailing).offset(-30)
             make.bottom.equalTo(backgroundImageView)

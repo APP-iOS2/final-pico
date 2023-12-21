@@ -51,7 +51,7 @@ final class ChattingViewModel {
             }
             .disposed(by: disposeBag)
         
-        let didChattingeset = isChattingEmptyPublisher.asObservable()
+        _ = isChattingEmptyPublisher.asObservable()
             .map { result in
                 return result
             }
@@ -176,7 +176,7 @@ extension ChattingViewModel {
     
     private func saveSender(roomId: String, receiveUserId: String, message: String) {
         let senderUser = UserDefaultsManager.shared.getUserData()
-      
+        
         let matchingReceiveMessages: [String: Any] = [
             "roomId": roomId,
             "sendUserId": receiveUserId,
@@ -206,20 +206,20 @@ extension ChattingViewModel {
                 }
             
             self.dbRef.collection(Collections.chatting.name).document(senderUser.userId).setData(
-                    [
-                        "userId": senderUser.userId,
-                        "senderChatting": FieldValue.arrayUnion([matchingReceiveMessages])
-                    ], merge: true) { error in
-                        if let error = error {
-                            print("평가 업데이트 에러: \(error)")
-                        }
+                [
+                    "userId": senderUser.userId,
+                    "senderChatting": FieldValue.arrayUnion([matchingReceiveMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("평가 업데이트 에러: \(error)")
                     }
+                }
         }
     }
     
     private func saveReceiver(roomId: String, receiveUserId: String, message: String) {
         let senderUser = UserDefaultsManager.shared.getUserData()
-        let receiveDBRef = dbRef.collection(Collections.chatting.name).document(receiveUserId)
+        _ = dbRef.collection(Collections.chatting.name).document(receiveUserId)
         
         let receiveMessages: [String: Any] = [
             "id": UUID().uuidString,
