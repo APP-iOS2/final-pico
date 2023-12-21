@@ -80,8 +80,6 @@
 		6937783E2AC2742400762165 /* MailSendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783D2AC2742400762165 /* MailSendViewController.swift */; };
 		693778402AC2745C00762165 /* MailReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937783F2AC2745C00762165 /* MailReceiveViewController.swift */; };
 		698521F42AD841510051A29A /* MailListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 698521F32AD841510051A29A /* MailListTableViewCell.swift */; };
-		69A5ABA62B34420000DC4112 /* FirebaseAPIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 69A5ABA42B34420000DC4112 /* FirebaseAPIKeys.plist */; };
-		69A5ABA72B34420000DC4112 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 69A5ABA52B34420000DC4112 /* GoogleService-Info.plist */; };
 		69CE47AA2B33A06D0077B2C7 /* ChattingSendListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CE47A92B33A06D0077B2C7 /* ChattingSendListTableViewCell.swift */; };
 		69E20A9E2B32518D00BFD297 /* RoomViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E20A9D2B32518D00BFD297 /* RoomViewModel.swift */; };
 		69E20AA02B3251A700BFD297 /* RoomListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E20A9F2B3251A700BFD297 /* RoomListTableViewCell.swift */; };
@@ -308,8 +306,6 @@
 		6937783D2AC2742400762165 /* MailSendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailSendViewController.swift; sourceTree = "<group>"; };
 		6937783F2AC2745C00762165 /* MailReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailReceiveViewController.swift; sourceTree = "<group>"; };
 		698521F32AD841510051A29A /* MailListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailListTableViewCell.swift; sourceTree = "<group>"; };
-		69A5ABA42B34420000DC4112 /* FirebaseAPIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = FirebaseAPIKeys.plist; path = "../../../key file/개발파일/FirebaseAPIKeys.plist"; sourceTree = "<group>"; };
-		69A5ABA52B34420000DC4112 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../key file/개발파일/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		69CE47A92B33A06D0077B2C7 /* ChattingSendListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingSendListTableViewCell.swift; sourceTree = "<group>"; };
 		69E20A9D2B32518D00BFD297 /* RoomViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomViewModel.swift; sourceTree = "<group>"; };
 		69E20A9F2B3251A700BFD297 /* RoomListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomListTableViewCell.swift; sourceTree = "<group>"; };
@@ -811,8 +807,6 @@
 			isa = PBXGroup;
 			children = (
 				B15F16022ADCFA5C002952B4 /* Info.plist */,
-				69A5ABA42B34420000DC4112 /* FirebaseAPIKeys.plist */,
-				69A5ABA52B34420000DC4112 /* GoogleService-Info.plist */,
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
@@ -1392,12 +1386,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				69A5ABA72B34420000DC4112 /* GoogleService-Info.plist in Resources */,
 				BCD6253B2AE5B5940079BD28 /* HomeEmptyLottie.json in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
-				69A5ABA62B34420000DC4112 /* FirebaseAPIKeys.plist in Resources */,
 				B15383E42AE770810037DBBA /* worldcupAnimation.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
