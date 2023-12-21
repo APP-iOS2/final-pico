@@ -115,6 +115,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         userImageView.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(10)
             make.leading.equalTo(contentView).offset(20)
+            make.trailing.equalTo(self)
             make.width.height.equalTo(60)
         }
         

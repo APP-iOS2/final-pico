@@ -24,7 +24,7 @@ final class ChattingSendListTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .gray
-        label.textAlignment = .right
+        label.textAlignment = .left
         return label
     }()
     
@@ -76,6 +76,7 @@ final class ChattingSendListTableViewCell: UITableViewCell {
         
         messageLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(10)
+            make.leading.equalTo(self)
             make.trailing.equalTo(contentView).offset(-20)
             make.height.equalTo(70)
         }
