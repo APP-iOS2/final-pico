@@ -276,10 +276,10 @@ final class LikeMeViewModel: ViewModelType {
                 
                 let myNoti = Noti(receiveId: currentUser.userId, sendId: likeData.likedUserId, name: likeData.nickName, birth: likeData.birth, imageUrl: likeData.imageURL, notiType: .matching, mbti: likeData.mbti, createDate: Date().timeIntervalSince1970)
                 
-                guard let yourMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+                let yourMbti = MBTIType(rawValue: currentUser.mbti) ?? .enfj
                 let yourNoti = Noti(receiveId: likeData.likedUserId, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: .matching, mbti: yourMbti, createDate: Date().timeIntervalSince1970)  
                 let chatModel = ChattingViewModel()
-                chatModel.saveChattingData(receiveUserId: likeData.likedUserId, message: "서로 매칭되었습니다")
+                chatModel.saveChattingData(receiveUserId: yourNoti.id ?? UUID().uuidString, message: "서로 매칭되었습니다")
                
                 FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: myNoti.id ?? UUID().uuidString, data: myNoti)
                 FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: yourNoti.id ?? UUID().uuidString, data: yourNoti)

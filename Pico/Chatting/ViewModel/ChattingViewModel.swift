@@ -161,22 +161,23 @@ extension ChattingViewModel {
         
         let senderUser = UserDefaultsManager.shared.getUserData()
         let roomId = UUID().uuidString
-        
-        saveSender(roomId: roomId, receiveUserId: receiveUserId, message: message)
-        saveReceiver(roomId: roomId, receiveUserId: receiveUserId, message: message)
-        
-        guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
-        
-        let receiverNoti = Noti(receiveId: receiveUserId, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
-        
-        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
-        
+        print("이 코드 부름")
+        DispatchQueue.global().async {
+            self.saveSender(roomId: roomId, receiveUserId: receiveUserId, message: message)
+            self.saveReceiver(roomId: roomId, receiveUserId: receiveUserId, message: message)
+            
+            guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
+            
+            let receiverNoti = Noti(receiveId: receiveUserId, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+            
+            FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
+        }
         print("매칭 데이터 업데이트 완료")
     }
     
     private func saveSender(roomId: String, receiveUserId: String, message: String) {
         let senderUser = UserDefaultsManager.shared.getUserData()
-      
+        
         let matchingReceiveMessages: [String: Any] = [
             "roomId": roomId,
             "sendUserId": receiveUserId,
@@ -206,14 +207,14 @@ extension ChattingViewModel {
                 }
             
             self.dbRef.collection(Collections.chatting.name).document(senderUser.userId).setData(
-                    [
-                        "userId": senderUser.userId,
-                        "senderChatting": FieldValue.arrayUnion([matchingReceiveMessages])
-                    ], merge: true) { error in
-                        if let error = error {
-                            print("평가 업데이트 에러: \(error)")
-                        }
+                [
+                    "userId": senderUser.userId,
+                    "senderChatting": FieldValue.arrayUnion([matchingReceiveMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("평가 업데이트 에러: \(error)")
                     }
+                }
         }
     }
     
