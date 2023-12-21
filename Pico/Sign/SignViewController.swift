@@ -21,10 +21,10 @@ final class SignViewController: UIViewController {
         let gradient: CAGradientLayer = CAGradientLayer()
         gradient.colors = [UIColor.picoGradientMedium2.cgColor, UIColor.picoGradientMedium.cgColor, UIColor.picoBlue.cgColor]
         gradient.locations = [0.0, 0.3, 1.0]
-
+        
         gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
         gradient.endPoint = CGPoint(x: 0.5, y: 1.0)
-
+        
         view.frame = self.view.bounds
         gradient.frame = view.bounds
         view.layer.addSublayer(gradient)
@@ -65,6 +65,23 @@ final class SignViewController: UIViewController {
         makeConstraints()
         configRx()
         locationManager.configLocation()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if VersionService.shared.isOldVersion {
+            showVersionAlert()
+        }
+    }
+    
+    private func showVersionAlert() {
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "업데이트 이후에 사용이 가능합니다.", confirmButtonText: "확인", comfrimAction: {
+            self.dismiss(animated: true, completion: {
+                if let url = URL(string: VersionService.shared.appStoreOpenUrlString), UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            })
+        })
     }
 }
 

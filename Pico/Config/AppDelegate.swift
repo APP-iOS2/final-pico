@@ -15,12 +15,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        VersionService.shared.loadAppStoreVersion { latestVersion in
+            guard let latestVersion else { return }
+            
+            let nowVersion = VersionService.shared.nowVersion()
+            let compareResult = nowVersion.compare(latestVersion, options: .numeric)
+            
+            switch compareResult {
+            case .orderedAscending:
+                VersionService.shared.isOldVersion = true
+            case .orderedDescending:
+                VersionService.shared.isOldVersion = false
+            case .orderedSame:
+                VersionService.shared.isOldVersion = false
+            }
+        }
+        
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
         UIApplication.shared.registerForRemoteNotifications()
-        if launchOptions != nil {
-            let userInfo = launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification]
+        
+        if let launchOptions {
+            let userInfo = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification]
             if userInfo != nil {
                 moveNotificationView()
             }
@@ -43,12 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Messaging.messaging().apnsToken = deviceToken
-    }
-    
-    func applicationWillTerminate(_ application: UIApplication) {
-        let checkService = CheckService()
-        checkService.disConnectSession()
-        sleep(3)
     }
 }
 
@@ -95,6 +107,5 @@ extension AppDelegate: MessagingDelegate {
         print("FCM등록 토큰 : \(token)")
         let dataDict: [String: String] = ["token": token]
         NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
-        NotificationService.shared.saveToken()
     }
 }

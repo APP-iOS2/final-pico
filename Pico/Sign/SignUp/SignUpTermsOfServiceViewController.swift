@@ -22,7 +22,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    private let checkService = CheckService()
+    
     private let locationManager = LocationService()
     private let disposeBag = DisposeBag()
     private var isLoading: Bool = false
@@ -311,7 +311,7 @@ extension SignUpTermsOfServiceViewController {
     
     @objc private func tappedNextButton(_ sender: UIButton) {
         // 위도 경도
-        checkService.checkPhoneNumber(userNumber: viewModel.phoneNumber) { [weak self] _, isRight in
+        CheckService.shared.checkPhoneNumber(userNumber: viewModel.phoneNumber) { [weak self] _, isRight in
             Loading.hideLoading()
             guard let self = self else { return }
             if !isRight {

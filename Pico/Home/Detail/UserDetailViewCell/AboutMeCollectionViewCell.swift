@@ -54,13 +54,20 @@ class AboutMeCollectionViewCell: UICollectionViewCell {
     }
     
     private func makeConstraints() {
+        
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
         imageView.snp.makeConstraints { make in
+//            make.leading.equalToSuperview()
             make.width.height.equalTo(20)
         }
+//        
+//        titleLabel.snp.makeConstraints { make in
+//            make.top.equalTo(imageView)
+//            make.leading.equalTo(imageView.snp.trailing).offset(10)
+//        }
     }
     
     @available(*, unavailable)

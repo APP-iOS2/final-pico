@@ -20,6 +20,7 @@ final class NotificationViewModel: ViewModelType {
             }
         }
     }
+    private let dbRef = Firestore.firestore()
     private let reloadTableViewPublisher = PublishSubject<Void>()
     private var isEmptyPublisher = PublishSubject<Bool>()
     private let disposeBag: DisposeBag = DisposeBag()
@@ -30,6 +31,7 @@ final class NotificationViewModel: ViewModelType {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
         let checkEmpty: Observable<Void>
+        let deleteNoti: Observable<Noti>
     }
     
     struct Output {
@@ -48,6 +50,12 @@ final class NotificationViewModel: ViewModelType {
             .withUnretained(self)
             .subscribe { viewModel, _ in
                 viewModel.loadNextPage()
+            }
+            .disposed(by: disposeBag)
+        input.deleteNoti
+            .withUnretained(self)
+            .subscribe { viewModel, noti in
+                viewModel.deleteNoti(noti: noti)
             }
             .disposed(by: disposeBag)
         
@@ -77,8 +85,6 @@ final class NotificationViewModel: ViewModelType {
     }
     
     private func loadNextPage() {
-        let dbRef = Firestore.firestore()
-        
         var query = dbRef.collection(Collections.notifications.name)
             .whereField("receiveId", isEqualTo: UserDefaultsManager.shared.getUserData().userId)
             .order(by: "createDate", descending: true)
@@ -120,5 +126,15 @@ final class NotificationViewModel: ViewModelType {
         lastDocumentSnapshot = nil
         isEmptyPublisher = didSet
         loadNextPage()
+    }
+    
+    private func deleteNoti(noti: Noti) {
+        if let notiId = noti.id {
+            FirestoreService.shared.deleteDocument(collectionId: .notifications, documentId: notiId) { _ in
+                print("삭제완료")
+            }
+        } else {
+            FirestoreService.shared.deleteDocument(collectionId: .notifications, field: "createDate", isEqualto: noti.createDate, receiveId: noti.receiveId, sendId: noti.sendId)
+        }
     }
 }

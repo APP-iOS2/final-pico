@@ -121,7 +121,7 @@ extension BasicInformationViewContoller {
             make.top.equalTo(nameAgeLabel.snp.bottom).offset(15)
             make.width.height.equalTo(20)
         }
-
+        
         heightImageView.snp.makeConstraints { make in
             make.width.height.equalTo(20)
         }

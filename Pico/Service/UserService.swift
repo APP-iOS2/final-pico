@@ -53,7 +53,8 @@ final class UserService {
                            let longitude = locationData["longitude"] as? Double,
                            let imageURLs = document["imageURLs"] as? [String],
                            let createdDate = document["createdDate"] as? Double {
-                            let user = User(id: id, mbti: mbtiType, phoneNumber: phoneNumber, gender: genderType, birth: birth, nickName: nickName, location: Location(address: address, latitude: latitude, longitude: longitude), imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfos, reports: [reports], blocks: [blocks], chuCount: 0, isSubscribe: false)
+                            let isOnline = document["isOnline"] as? Bool
+                            let user = User(id: id, mbti: mbtiType, phoneNumber: phoneNumber, gender: genderType, birth: birth, nickName: nickName, location: Location(address: address, latitude: latitude, longitude: longitude), imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfos, reports: [reports], blocks: [blocks], chuCount: 0, isSubscribe: false, isOnline: isOnline)
                             users.append(user)
                         }
                     }

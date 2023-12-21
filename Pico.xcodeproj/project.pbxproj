@@ -13,6 +13,7 @@
 		362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */; };
 		363CC4842ACF9CC500C86EDC /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363CC4832ACF9CC500C86EDC /* LocationService.swift */; };
 		36536FE92AE00E0E00ADD420 /* CheckService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36536FE82AE00E0E00ADD420 /* CheckService.swift */; };
+		3665D1912B2E3693005C8FFD /* VersionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3665D1902B2E3693005C8FFD /* VersionService.swift */; };
 		3677DBC92AD4EC530026E089 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3677DBC82AD4EC530026E089 /* SignInViewModel.swift */; };
 		367A920F2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */; };
 		367A92112AC2CA120056C809 /* SignUpGenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */; };
@@ -31,6 +32,7 @@
 		4B2665392AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */; };
 		4B26653D2AC3E3350074D4E2 /* RandomBoxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */; };
 		4B26653F2AC3E33D0074D4E2 /* RandomBoxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */; };
+		4B6745E12B2BF2F70020714E /* TrickTextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B6745E02B2BF2F70020714E /* TrickTextField+Extensions.swift */; };
 		4B89E12D2AD528E500BFBAA3 /* WorldCupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */; };
 		5307500D2AD4793D000FE4CB /* UICollectionView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */; };
 		531C4ED82AC26BA300ADC614 /* CustomTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */; };
@@ -57,6 +59,7 @@
 		53DD41B82ADF65EF00C5FE39 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */; };
 		53DD41BE2ADF672B00C5FE39 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 53DD41BD2ADF672B00C5FE39 /* FirebaseMessaging */; };
 		53DD41C02ADF675F00C5FE39 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53DD41BF2ADF675F00C5FE39 /* Token.swift */; };
+		5417DABA2B2C67A4003C9DA4 /* InputPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5417DAB92B2C67A4003C9DA4 /* InputPopupViewController.swift */; };
 		547C4C212AD8381F00028AFB /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */; };
 		548AD17B2AE1E2C100B1513C /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD17A2AE1E2C100B1513C /* PaddingLabel.swift */; };
 		548AD18A2AE32C8900B1513C /* BasicInformationViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548AD1852AE32C8800B1513C /* BasicInformationViewContoller.swift */; };
@@ -242,6 +245,7 @@
 		362418BA2AC3E2C400DAE818 /* SignUpNickNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpNickNameViewController.swift; sourceTree = "<group>"; };
 		363CC4832ACF9CC500C86EDC /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		36536FE82AE00E0E00ADD420 /* CheckService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckService.swift; sourceTree = "<group>"; };
+		3665D1902B2E3693005C8FFD /* VersionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionService.swift; sourceTree = "<group>"; };
 		3677DBC82AD4EC530026E089 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
 		367A920E2AC2BFB60056C809 /* SignUpPhoneNumberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPhoneNumberViewController.swift; sourceTree = "<group>"; };
 		367A92102AC2CA120056C809 /* SignUpGenderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpGenderViewController.swift; sourceTree = "<group>"; };
@@ -260,6 +264,7 @@
 		4B2665382AC3E3170074D4E2 /* WorldCupUserInfoStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupUserInfoStackView.swift; sourceTree = "<group>"; };
 		4B26653C2AC3E3350074D4E2 /* RandomBoxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewController.swift; sourceTree = "<group>"; };
 		4B26653E2AC3E33D0074D4E2 /* RandomBoxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomBoxViewModel.swift; sourceTree = "<group>"; };
+		4B6745E02B2BF2F70020714E /* TrickTextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TrickTextField+Extensions.swift"; sourceTree = "<group>"; };
 		4B89E12C2AD528E500BFBAA3 /* WorldCupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorldCupViewModel.swift; sourceTree = "<group>"; };
 		5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Extensions.swift"; sourceTree = "<group>"; };
 		531C4ED72AC26BA300ADC614 /* CustomTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTransitionAnimator.swift; sourceTree = "<group>"; };
@@ -282,6 +287,7 @@
 		53DD41B62ADF652100C5FE39 /* Pico.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pico.entitlements; sourceTree = "<group>"; };
 		53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		53DD41BF2ADF675F00C5FE39 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		5417DAB92B2C67A4003C9DA4 /* InputPopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputPopupViewController.swift; sourceTree = "<group>"; };
 		547C4C1D2AD8369D00028AFB /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
 		548AD17A2AE1E2C100B1513C /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		548AD1852AE32C8800B1513C /* BasicInformationViewContoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicInformationViewContoller.swift; sourceTree = "<group>"; };
@@ -724,6 +730,7 @@
 				B1844F772AC0E3BF00ACFFED /* CommonButton.swift */,
 				6A2060492ACD2CF600435723 /* SwitchButton.swift */,
 				B15ABE2C2AC2B22100529C29 /* CommonTextField.swift */,
+				5417DAB92B2C67A4003C9DA4 /* InputPopupViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -749,6 +756,7 @@
 				B18BD0502B2BBD7300729A10 /* VisionService.swift */,
 				368D4DA42ADCD9B000322D91 /* PictureService.swift */,
 				368D4DA62ADCDBE800322D91 /* KeyboardService.swift */,
+				3665D1902B2E3693005C8FFD /* VersionService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -1177,6 +1185,7 @@
 				5307500C2AD4793D000FE4CB /* UICollectionView+Extensions.swift */,
 				6915C84C2ADA8F7200994F55 /* UIStackView+Extensions.swift */,
 				B1A0C0042AE4A3910031AC65 /* UILabel+Extensions.swift */,
+				4B6745E02B2BF2F70020714E /* TrickTextField+Extensions.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1492,6 +1501,7 @@
 				36CD4CFC2ADBA61200FC317B /* SignUpPictureEditCollectionCell.swift in Sources */,
 				B17D678A2AC0AB6A006F91DC /* SubInfo.swift in Sources */,
 				B17D67A82AC0B5F7006F91DC /* UIColor+Extensions.swift in Sources */,
+				4B6745E12B2BF2F70020714E /* TrickTextField+Extensions.swift in Sources */,
 				BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */,
 				369B25522ADB1FB4005C452D /* SMSAuthService.swift in Sources */,
 				B18BD0512B2BBD7300729A10 /* VisionService.swift in Sources */,
@@ -1572,6 +1582,7 @@
 				698521F42AD841510051A29A /* MailListTableViewCell.swift in Sources */,
 				368D4DA52ADCD9B000322D91 /* PictureService.swift in Sources */,
 				6ADDE2FD2AC3BB0900CE4482 /* ProfileEditTextTabelCell.swift in Sources */,
+				5417DABA2B2C67A4003C9DA4 /* InputPopupViewController.swift in Sources */,
 				360854F12AD04C7900F28168 /* StorageService.swift in Sources */,
 				B14B590A2AC0A644009889DA /* MailViewController.swift in Sources */,
 				6A65EDCA2AE16FE30048778D /* PremiumViewController.swift in Sources */,
@@ -1591,6 +1602,7 @@
 				6915C84D2ADA8F7200994F55 /* UIStackView+Extensions.swift in Sources */,
 				B161B8722AC414DD00257A9C /* PopupViewController.swift in Sources */,
 				6A9F73552AD8E596002F13AC /* ProfileEditModalCollectionCell.swift in Sources */,
+				3665D1912B2E3693005C8FFD /* VersionService.swift in Sources */,
 				B15383E22AE770740037DBBA /* WorldCupResultViewModel.swift in Sources */,
 				B15ABE372AC31DD200529C29 /* UIViewController+Extensions.swift in Sources */,
 				B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */,
@@ -1812,7 +1824,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치 인증을 위해 위치 접근 권한이 필요합니다.\n";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "프로필 사진 등록 및 수정을 위해 앨범 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -1821,7 +1833,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ojeomsun.pico.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1852,7 +1864,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치 인증을 위해 위치 접근 권한이 필요합니다.\n";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "프로필 사진 등록 및 수정을 위해 앨범 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -1861,7 +1873,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ojeomsun.pico.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";

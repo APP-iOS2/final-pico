@@ -92,6 +92,7 @@ final class SignUpPictureViewController: UIViewController {
         makeConstraints()
         configButton()
         configCollectionView()
+        notiAlert()
         pictureManager.requestPhotoLibraryAccess(in: self)
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -113,8 +114,12 @@ final class SignUpPictureViewController: UIViewController {
         nextButton.backgroundColor = isEnabled ? .picoBlue : .picoGray
     }
     
+    private func notiAlert() {
+        showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "사진을 도용시 형사처벌 대상이 될 수 있습니다.", confirmButtonText: "인지하였습니다.")
+    }
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
+        
         Loading.showLoading(title: "AI가 얼굴인식 중이에요!\n잠시만 기다려주세요! (최대 1분 소요)")
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
             let visionService = VisionService()

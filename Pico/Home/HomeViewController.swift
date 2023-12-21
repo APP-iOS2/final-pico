@@ -126,8 +126,8 @@ final class HomeViewController: BaseViewController {
                 print("필터후 유저: \(filteredUsers.count)명")
                 userCards = filteredUsers
                 view.subviews.forEach { subView in
-                  subView.removeFromSuperview()
-               }
+                    subView.removeFromSuperview()
+                }
                 addLoadingView()
                 addUserCards()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
@@ -214,7 +214,16 @@ final class HomeViewController: BaseViewController {
         
         navigationItem.rightBarButtonItems = [filterBarButtonItem, notificationBarButtonItem]
     }
-
+    
+    private func detectCapture() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureAction),
+            name: UIScreen.capturedDidChangeNotification,
+            object: nil
+        )
+    }
+  
     @objc func tappedPickBackButton() {
         if let lastView = removedView.last {
             showCustomAlert(
@@ -266,5 +275,13 @@ final class HomeViewController: BaseViewController {
         let viewController = NotificationViewController()
         viewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    @objc private func captureAction() {
+        if UIScreen.main.isCaptured {
+            view.secureMode(enable: true)
+        } else {
+            view.secureMode(enable: false)
+        }
     }
 }
