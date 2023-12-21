@@ -23,8 +23,8 @@
 1. 아래 파일은 필수 파일이므로 다음 이메일로 파일을 요청해주세요. (rlaalsrl1227@gmail.com)  
 ```
 - GoogleService-Info.plist
-- APIKeys.plist
-- YOLOv3.mlmodel
+- FirebaseAPIKeys.plist
+- NaverAPIKeys.plist
 ```
 2. Pico.xcodeproj 파일 실행을 해주세요.
 3. Config 폴더에 필수파일을 추가한 뒤 빌드해주세요.
@@ -95,7 +95,7 @@
 #### 기술스택
 - UIkit
 - SwiftLint, RxSwift, SnapKit, Kingfisher, Lottie
-- YoLoV3
+- Vision
 - FiresStore, Firebase Storage
 - FCM, Naver Cloud SMS API
 - DarkMode, VoiceOver
