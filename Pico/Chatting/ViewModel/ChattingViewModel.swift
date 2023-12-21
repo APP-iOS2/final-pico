@@ -209,7 +209,7 @@ extension ChattingViewModel {
             self.dbRef.collection(Collections.chatting.name).document(senderUser.userId).setData(
                 [
                     "userId": senderUser.userId,
-                    "senderChatting": FieldValue.arrayUnion([matchingReceiveMessages])
+                    "receiverChatting": FieldValue.arrayUnion([matchingReceiveMessages])
                 ], merge: true) { error in
                     if let error = error {
                         print("평가 업데이트 에러: \(error)")
