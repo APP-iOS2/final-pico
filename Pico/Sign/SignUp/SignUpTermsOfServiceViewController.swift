@@ -204,6 +204,7 @@ final class SignUpTermsOfServiceViewController: UIViewController {
         addSubViews()
         makeConstraints()
         configButton()
+       
         viewModel.isSaveSuccess
             .observe(on: MainScheduler.instance)
             .bind { [weak self] _ in
@@ -230,21 +231,27 @@ extension SignUpTermsOfServiceViewController {
     // MARK: - Config
     private func configButton() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
-
+        let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
+        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(tappedLabel))
+        
+        firstTermsAgreementLabel.addGestureRecognizer(tapGesture)
+        
+        secondTermsAgreementLabel.addGestureRecognizer(tapGesture1)
+        
+        thirdTermsAgreementLabel.addGestureRecognizer(tapGesture2)
         nextButton.addTarget(self, action: #selector(tappedNextButton), for: .touchUpInside)
         
         firstCheckBoxButton.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
-        firstTermsAgreementLabel.addGestureRecognizer(tapGesture)
+
         firstTermsOfServiceButton.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
 
         secondTermsOfServiceButton.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
-        secondTermsAgreementLabel.addGestureRecognizer(tapGesture)
         secondCheckBoxButton.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
 
         thirdTermsOfServiceButton.addTarget(self, action: #selector(tappedTermsOfServiceButton), for: .touchUpInside)
-        thirdTermsAgreementLabel.addGestureRecognizer(tapGesture)
         thirdCheckBoxButton.addTarget(self, action: #selector(tappedCheckBoxButton), for: .touchUpInside)
     }
+    
     // MARK: - @objc
     
     @objc private func tappedLabel(_ sender: UITapGestureRecognizer) {

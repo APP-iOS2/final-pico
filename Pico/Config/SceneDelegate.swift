@@ -10,20 +10,19 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    let checkService = CheckService()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        
-        var userId: String {
-            let curentUser = UserDefaultsManager.shared.getUserData()
-            return curentUser.userId
-        }
+        let curentUser = UserDefaultsManager.shared.getUserData()
         
         if UserDefaultsManager.shared.isLogin() {
-            checkService.checkUserId(userId: userId) { isUser in
+            let checkService = CheckService()
+            let user: User = User.tempUser
+            checkService.checkUserId(userId: curentUser.userId) { isUser in
                 if isUser {
+                    FirestoreService.shared.saveDocument(collectionId: .session, documentId: curentUser.phoneNumber, data: user) { _ in }
                     let rootViewController = TabBarController()
                     self.window?.rootViewController = rootViewController
                 } else {
@@ -35,10 +34,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let rootViewController = UINavigationController(rootViewController: SignViewController())
             window?.rootViewController = rootViewController
         }
-       
-//        let rootViewController = UINavigationController(rootViewController: AdminViewController())
-//        window?.rootViewController = rootViewController
- 
         window?.makeKeyAndVisible()
     }
     

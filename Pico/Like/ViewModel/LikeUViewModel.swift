@@ -35,12 +35,13 @@ final class LikeUViewModel: ViewModelType {
             }
         }
     }
+
     private var isEmptyPublisher = PublishSubject<Bool>()
-    private let reloadTableViewPublisher = PublishSubject<Void>()
+    private let reloadCollectionViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     private let currentUser = UserDefaultsManager.shared.getUserData()
     private var currentChuCount = UserDefaultsManager.shared.getChuCount()
-    private let pageSize = 6
+    private let pageSize = 10
     var startIndex = 0
 
     func transform(input: Input) -> Output {
@@ -96,9 +97,9 @@ final class LikeUViewModel: ViewModelType {
                 UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
             }
             
-        return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadTableViewPublisher.asObservable(), resultMessage: resultMessage)
+        return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadCollectionViewPublisher.asObservable(), resultMessage: resultMessage)
     }
-    
+
     private func loadNextPage() {
         let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
@@ -122,8 +123,11 @@ final class LikeUViewModel: ViewModelType {
                         }
                         let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
                         likeUList = currentPageDatas
+                        
+                        if startIndex == 0 {
+                            reloadCollectionViewPublisher.onNext(())
+                        }
                         startIndex = currentPageDatas.count
-                        reloadTableViewPublisher.onNext(())
                     }
                 } else {
                     print("문서를 찾을 수 없습니다.")

@@ -10,7 +10,6 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import CoreLocation
-//
 
 final class UserDetailViewController: UIViewController {
     // 이전 뷰에서 실행이 필요 해 Defalut로 작성
@@ -112,7 +111,8 @@ final class UserDetailViewController: UIViewController {
     // Bind Code
     private func bind() {
         self.navigationItem.title = "\(viewModel.user.nickName),  \(viewModel.user.age)"
-        self.userImageViewController.config(images: viewModel.user.imageURLs)
+        self.userImageViewController.config(images: viewModel.user.imageURLs, compatibilityView: viewModel.compatibilityView)
+        distance = viewModel.calculateDistance()
         // SubInfo 있을 시
         if let subInfo = viewModel.user.subInfo {
             // Height가 없을시 nil 전달
@@ -122,7 +122,6 @@ final class UserDetailViewController: UIViewController {
                                                           locationText: "\(viewModel.user.location.address)",
                                                           heightText: nil)
             }
-            distance = viewModel.calculateDistance()
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
                                                       locationText: distance < 1000.0 ? "\(viewModel.user.location.address), 가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
@@ -247,7 +246,6 @@ final class UserDetailViewController: UIViewController {
                 let reportInfo = AdminReport(
                     reportUserId: UserDefaultsManager.shared.getUserData().userId,
                     reportNickname: UserDefaultsManager.shared.getUserData().nickName,
-                    
                     reportedUserId: viewModel.user.id,
                     reportedNickname: viewModel.user.nickName,
                     reason: reason, birth: viewModel.user.birth,
@@ -272,7 +270,6 @@ extension UserDetailViewController {
     // subInfo가 있을 시 뷰에 추가
     private func addChilds() {
         [userImageViewController, basicInformationViewContoller, introViewController, aboutMeViewController, subInfomationViewController].forEach {
-            // 이거 왜 쓰는 거지..
             addChild($0)
             $0.didMove(toParent: self)
         }

@@ -23,7 +23,6 @@ final class SignInViewController: UIViewController {
     private var isTappedAuthButton: Bool = false
     private var authTextFields: [UITextField] = []
     private var authText: String = ""
-    private var isAdmin: Bool = false
     
     private let notifyLabel: UILabel = {
         let label = UILabel()
@@ -109,6 +108,7 @@ final class SignInViewController: UIViewController {
         super.viewWillAppear(animated)
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
+        configReset()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -173,16 +173,14 @@ extension SignInViewController {
                 guard isFullPhoneNumber else { return }
                 guard let text = phoneNumberTextField.text else { return }
                 
-                guard !isAdmin else {
-                    goAdmin()
-                    return
-                }
                 guard cooldownTimer == nil else {
                     return
                 }
-                
+                // MARK: - 이부분에서 신고 유저를 해야함
+
                 viewModel.signIn(userNumber: text) { [weak self] _, message in
                     guard let self = self else { return }
+                    
                     guard viewModel.isRightUser else {
                         checkService.checkBlockUser(userNumber: text) { [weak self] isBlock in
                             guard let self = self else { return }
@@ -199,17 +197,15 @@ extension SignInViewController {
                     }
                     Loading.hideLoading()
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                            guard let self = self else { return }
-                            
-                            cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
-                            RunLoop.main.add(cooldownTimer!, forMode: .common)
-                            
-                            NotificationService.shared.saveToken()
-                            configTappedAuthButtonState()
-                            authManager.sendVerificationCode(number: text)
+                        guard let self = self else { return }
+                        
+                        cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
+                        RunLoop.main.add(cooldownTimer!, forMode: .common)
+                        
+                        configTappedAuthButtonState()
+                        authManager.sendVerificationCode(phoneNumber: text)
                     })
                 }
-                
             })
             .disposed(by: disposeBag)
         
@@ -227,23 +223,41 @@ extension SignInViewController {
         nextButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
+                
                 view.endEditing(true)
                 configAuthText()
-                if authManager.checkRightCode(code: authText) {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                        guard let self = self else { return }
-                        
-                        if let user = viewModel.loginUser {
-                            let viewController = LoginSuccessViewController(user: user)
-                            self.navigationController?.pushViewController(viewController, animated: true)
-                        } else {
-                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "로그인에 실패하셨습니다.", confirmButtonText: "확인")
-                        }
-                    })
-                } else {
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 틀렸습니다.", confirmButtonText: "확인")
+                
+                guard authManager.checkRightCode(code: authText) else {
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
                     return
                 }
+                
+                showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                    guard let self = self else { return }
+                    guard let number = phoneNumberTextField.text else { return }
+                    
+                    FirestoreService.shared.loadDocument(collectionId: .session, documentId: number, dataType: User.self) { [weak self] result in
+                        guard let self = self else { return }
+                        
+                        switch result {
+                        case .success(let user):
+                            guard user != nil else { return }
+                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "다른기기에서 접속중입니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                                guard let self = self else { return }
+                                navigationController?.popViewController(animated: true)
+                            })
+                        case .failure(let err):
+                            print("SingInVIewController 세션부분 에러입니다. error: \(err) ")
+                        }
+                    }
+                    
+                    guard let user = viewModel.loginUser else {
+                        showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "로그인에 실패하셨습니다.", confirmButtonText: "확인")
+                        return
+                    }
+                    let viewController = LoginSuccessViewController(user: user)
+                    self.navigationController?.pushViewController(viewController, animated: true)
+                })
             })
             .disposed(by: disposeBag)
     }
@@ -252,7 +266,7 @@ extension SignInViewController {
         phoneNumberTextField.isEnabled = !isFull
         phoneNumberTextField.textColor = isFull ? .picoBlue : .gray
     }
-
+    
     private func updateCancelButton(isHidden: Bool) {
         cancelButton.isHidden = isHidden
     }
@@ -286,11 +300,8 @@ extension SignInViewController {
             authButton.setTitle("\(cooldownSeconds)초", for: .normal)
         }
     }
-    private func goAdmin() {
-        let viewController = AdminViewController()
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
 }
+
 extension SignInViewController: UIGestureRecognizerDelegate {
     func tappedDismissKeyboard(without buttons: [UIButton]) {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard(_:)))
@@ -298,11 +309,11 @@ extension SignInViewController: UIGestureRecognizerDelegate {
         tapGesture.delegate = self
         self.view.addGestureRecognizer(tapGesture)
     }
-
+    
     @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         self.view.endEditing(true)
     }
-
+    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         if touch.view is UIButton {
             return false
@@ -310,18 +321,12 @@ extension SignInViewController: UIGestureRecognizerDelegate {
         return true
     }
 }
+
 // MARK: - 텍스트필드 관련
 extension SignInViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard isTappedAuthButton else {
-            let text = textField.text
-            if text?.replacingOccurrences(of: "-", with: "") == "486" {
-                isAdmin = true
-                updateAuthButton(isEnable: true, isHidden: false)
-                return false
-            }
-            
             let isChangeValue = changePhoneNumDigits(textField, shouldChangeCharactersIn: range, replacementString: string) { isEnable in
                 let isHidden = !isEnable
                 updateAuthButton(isEnable: isEnable, isHidden: isHidden)
@@ -412,6 +417,5 @@ extension SignInViewController {
             make.bottom.equalTo(safeArea).offset(SignView.bottomPadding)
             make.height.equalTo(CommonConstraints.buttonHeight)
         }
-        
     }
 }

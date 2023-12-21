@@ -91,19 +91,19 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         likeMeViewModel = nil
         likeUViewModel = nil
         user = nil
-        userImageView.image = UIImage(named: "chu")
+        userImageView.image = nil
         nameLabel.text = ""
     }
     
     func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType) {
-        guard let url = URL(string: image) else { return }
-        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-        userImageView.kf.setImage(with: url)
-        nameLabel.text = nameText
-        mbtiLabel.setMbti(mbti: mbti)
-        messageButton.isHidden = isHiddenMessageButton
-        deleteButton.isHidden = isHiddenDeleteButton
-        likeButton.isHidden = isHiddenDeleteButton
+            guard let url = URL(string: image) else { return }
+            userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+            userImageView.kf.setImage(with: url)
+            nameLabel.text = nameText
+            mbtiLabel.setMbti(mbti: mbti)
+            messageButton.isHidden = isHiddenMessageButton
+            deleteButton.isHidden = isHiddenDeleteButton
+            likeButton.isHidden = isHiddenDeleteButton
     }
     
     private func addViews() {

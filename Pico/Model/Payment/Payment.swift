@@ -10,6 +10,7 @@ import Foundation
 enum PaymentType: String, Codable {
     case purchase
     case randombox
+    case randomboxObtain
     case worldCup
     case mail
     case changeNickname
@@ -25,6 +26,8 @@ enum PaymentType: String, Codable {
             return "결제"
         case .randombox:
             return "랜덤박스"
+        case .randomboxObtain:
+            return "랜덤박스에서 획득"
         case .worldCup:
             return "월드컵"
         case .mail:

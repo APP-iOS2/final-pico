@@ -25,6 +25,22 @@ final class RandomBoxViewController: UIViewController {
         return imageView
     }()
     
+    private let naviView = UIView()
+    
+    private let chuImageView: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage(named: "chu")
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+    
+    private let chuCountLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .left
+        label.font = .picoDescriptionFont
+        return label
+    }()
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -108,10 +124,35 @@ final class RandomBoxViewController: UIViewController {
         super.viewDidLoad()
         view.configBackgroundColor()
         configNavigationBackButton()
+        configNavigationItem()
         addViews()
         makeConstraints()
         bind()
         configureEmitter()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        chuCountLabel.text = "\(UserDefaultsManager.shared.getChuCount())"
+    }
+    
+    private func configNavigationItem() {
+        naviView.addSubview([chuImageView, chuCountLabel])
+        
+        chuImageView.snp.makeConstraints { make in
+            make.top.leading.bottom.equalToSuperview()
+            make.trailing.equalTo(chuCountLabel.snp.leading)
+            make.width.height.equalTo(25)
+            
+        }
+        
+        chuCountLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-6)
+        }
+        
+        let rightItem = UIBarButtonItem(customView: naviView)
+        navigationItem.rightBarButtonItem = rightItem
     }
     
     private func addViews() {
@@ -246,10 +287,12 @@ final class RandomBoxViewController: UIViewController {
     
     private func showAlert(with message: Int) {
         let messageSting: String = "\(message)"
-        showCustomAlert(alertType: .onlyConfirm, titleText: "뽑기 결과", messageText: "\(messageSting)츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: {
-            self.dismiss(animated: true, completion: nil)
-            self.randomBoxImage.stop()
-            self.countLabel.text = "1"
+        showCustomAlert(alertType: .onlyConfirm, titleText: "뽑기 결과", messageText: "\(messageSting)츄를 획득하셨습니다!", confirmButtonText: "닫기", comfrimAction: { [weak self] in
+            guard let self else { return }
+            dismiss(animated: true, completion: nil)
+            randomBoxImage.stop()
+            countLabel.text = "1"
+            chuCountLabel.text = "\(UserDefaultsManager.shared.getChuCount())"
             DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
                 self?.emitterLayer.removeFromSuperlayer()
             }
@@ -282,20 +325,26 @@ final class RandomBoxViewController: UIViewController {
 
 extension RandomBoxViewController {
     private func bind() {
-        let input = RandomBoxViewModel.Input(requestNormalPayment: normalPaymentPublisher, requestAdvancedPayment: advancedPaymentPublisher, obtainChu: obtainChuPublisher)
+        let input = RandomBoxViewModel.Input(
+            requestNormalPayment: normalPaymentPublisher,
+            requestAdvancedPayment: advancedPaymentPublisher,
+            obtainChu: obtainChuPublisher
+        )
         let output = randomBoxViewModel.transform(input: input)
         
         output.resultNormal
             .withUnretained(self)
-            .subscribe { viewController, _ in
+            .subscribe { viewController, chuCount in
                 viewController.tappedNormalBox(count: Int(viewController.countLabel.text ?? "0") ?? 0)
+                viewController.chuCountLabel.text = "\(chuCount)"
             }
             .disposed(by: disposeBag)
         
         output.resultAdvanced
             .withUnretained(self)
-            .subscribe { viewController, _ in
+            .subscribe { viewController, chuCount in
                 viewController.tappedAdvancedBox(count: Int(viewController.countLabel.text ?? "0") ?? 0)
+                viewController.chuCountLabel.text = "\(chuCount)"
             }
             .disposed(by: disposeBag)
         

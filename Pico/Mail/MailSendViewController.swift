@@ -226,7 +226,6 @@ final class MailSendViewController: UIViewController {
                         self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
                     } else {
                         dismiss(animated: true)
-                        
                     }
                 }
             }

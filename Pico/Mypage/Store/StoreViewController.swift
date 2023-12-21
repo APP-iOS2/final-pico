@@ -74,6 +74,7 @@ final class StoreViewController: UIViewController {
         super.viewWillAppear(animated)
         chuCountLabel.text = "\(UserDefaultsManager.shared.getChuCount())"
     }
+    
     private func configView() {
         title = "Store"
         view.configBackgroundColor()
