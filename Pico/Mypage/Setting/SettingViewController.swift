@@ -44,6 +44,7 @@ final class SettingViewController: UIViewController {
                 return "계정관리"
             }
         }
+        
         var urlString: String {
             switch self {
             case .termsOfService:
@@ -69,6 +70,7 @@ final class SettingViewController: UIViewController {
         view.separatorStyle = .none
         return view
     }()
+    
     private var notiState = false
     private var notiMarketinState = false
     
@@ -94,7 +96,7 @@ final class SettingViewController: UIViewController {
                 self.notiState = false
                 self.notiMarketinState = false
             case .provisional:
-              break
+                break
             @unknown default:
                 break
             }
@@ -128,7 +130,6 @@ final class SettingViewController: UIViewController {
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .automatic
         present(safariViewController, animated: true)
-        
     }
     
     private func presentView(viewController: UIViewController) {

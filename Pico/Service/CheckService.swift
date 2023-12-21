@@ -20,7 +20,7 @@ final class CheckService {
         Loading.showLoading(backgroundColor: .systemBackground.withAlphaComponent(0.8))
         DispatchQueue.global().async {
             self.dbRef.collection("users").whereField("id", isEqualTo: userId).getDocuments { snapShot, err in
-                guard let err, let documents = snapShot?.documents else { return }
+                guard err != nil, let documents = snapShot?.documents else { return }
                 
                 if let document = documents.first {
                     if let user = try? document.data(as: User.self) {
@@ -48,17 +48,17 @@ final class CheckService {
         Loading.showLoading()
         
         self.dbRef.collection(Collections.users.name).whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
-                guard let err = err, let documents = snapShot?.documents else {
-                    completion("서버에 문제가 있습니다.", false)
-                    return
-                }
-                
-                guard let first = documents.first else {
-                    completion("사용가능한 전화번호 입니다.", true)
-                    return
-                }
-                completion("이미 회원가입을 하셨어요!!", false)
+            guard err != nil, let documents = snapShot?.documents else {
+                completion("서버에 문제가 있습니다.", false)
+                return
             }
+            
+            guard documents.first != nil else {
+                completion("사용가능한 전화번호 입니다.", true)
+                return
+            }
+            completion("이미 회원가입을 하셨어요!!", false)
+        }
     }
     
     func checkNickName(name: String, completion: @escaping (_ message: String, _ isRight: Bool) -> ()) {
@@ -71,12 +71,12 @@ final class CheckService {
             
             if matches.isEmpty {
                 self.dbRef.collection(Collections.users.name).whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
-                    guard let err, let documents = snapShot?.documents else {
+                    guard err != nil, let documents = snapShot?.documents else {
                         print("checkNickName: \(String(describing: err))")
                         return
                     }
                     
-                    guard let first = documents.first else {
+                    guard documents.first != nil else {
                         completion("사용가능한 닉네임이에요!", true)
                         return
                     }

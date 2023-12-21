@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let launchOptions {
             let userInfo = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification]
-            if let userInfo {
+            if userInfo != nil {
                 moveNotificationView()
             }
         }

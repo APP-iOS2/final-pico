@@ -59,7 +59,7 @@ final class WorldCupResultViewController: UIViewController {
     }()
     
     private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: .esfj, scale: .small)
-
+    
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -166,13 +166,13 @@ final class WorldCupResultViewController: UIViewController {
             make.trailing.equalToSuperview().offset(-padding)
             make.height.equalTo(mbtiLabel.frame.size.height + 10)
         }
-
+        
         userImage.snp.makeConstraints { make in
             make.top.equalTo(mbtiLabel.snp.bottom).offset(padding * half)
             make.leading.trailing.equalTo(mbtiLabel)
             make.height.equalTo(userImage.snp.width)
         }
-
+        
         userTitle.snp.makeConstraints { make in
             make.top.equalTo(userImage.snp.bottom).offset(padding * half)
             make.leading.trailing.equalTo(userImage)

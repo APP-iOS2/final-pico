@@ -131,7 +131,7 @@ final class LikeUViewModel: ViewModelType {
                             }
                             sorted = sorted.filter { likeInfo in
                                 let id = likeInfo.likedUserId
-                                if id == "test" {
+                                if id == Bundle.main.testId {
                                     return false
                                 }
                                 for unsubscribeUser in unsubscribe where unsubscribeUser.user.id == id {
