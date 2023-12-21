@@ -164,7 +164,7 @@ final class HomeViewController: BaseViewController {
 
     func goToFilterAlert() {
         guard isHomeVisible else { return }
-        showCustomAlert(
+        viewModel.showHomeCustomAlert(
             alertType: .canCancel,
             titleText: "선호 설정으로 이동할까요?",
             messageText: "현재 설정으로 더 이상 찾을 수 있는 친구가 없어요.",
@@ -177,7 +177,8 @@ final class HomeViewController: BaseViewController {
                 viewController.hidesBottomBarWhenPushed = true
                 addChild(viewController)
                 navigationController?.pushViewController(viewController, animated: true)
-            }
+            },
+            viewController: self
         )
     }
     
