@@ -13,7 +13,7 @@ import Lottie
 
 final class WorldCupResultViewController: UIViewController {
     
-    var selectedItem: User? = User(mbti: .enfj, phoneNumber: "010-1111-1111", gender: .female, birth: "1999-01-01", nickName: "sdaaf", location: Location(address: "sss", latitude: 13, longitude: 31), imageURLs: ["https://thumb.mtstarnews.com/06/2023/06/2023062215005684112_1.jpg/dims/optimize"], createdDate: 1, chuCount: 0, isSubscribe: false)
+    var selectedItem: User?
     private let disposeBag = DisposeBag()
     private let viewModel = WorldCupResultViewModel()
     private let requestMessagePublisher = PublishSubject<User>()

@@ -18,8 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         VersionService.shared.loadAppStoreVersion { latestVersion in
             guard let latestVersion else { return }
+            
             let nowVersion = VersionService.shared.nowVersion()
             let compareResult = nowVersion.compare(latestVersion, options: .numeric)
+            
             switch compareResult {
             case .orderedAscending:
                 VersionService.shared.isOldVersion = true
@@ -34,9 +36,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
         UIApplication.shared.registerForRemoteNotifications()
-        if launchOptions != nil {
-            let userInfo = launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification]
-            if userInfo != nil {
+        
+        if let launchOptions {
+            let userInfo = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification]
+            if let userInfo {
                 moveNotificationView()
             }
         }
@@ -58,15 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Messaging.messaging().apnsToken = deviceToken
-    }
-    
-    func applicationWillTerminate(_ application: UIApplication) {
-        guard UserDefaultsManager.shared.isLogin() else { return }
-        UserDefaultsManager.shared.isQuitUser = true
-        CheckService.shared.deleteSession {
-            sleep(3)
-            exit(0)
-        }
     }
 }
 
@@ -113,6 +107,5 @@ extension AppDelegate: MessagingDelegate {
         print("FCM등록 토큰 : \(token)")
         let dataDict: [String: String] = ["token": token]
         NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
-        NotificationService.shared.saveToken()
     }
 }

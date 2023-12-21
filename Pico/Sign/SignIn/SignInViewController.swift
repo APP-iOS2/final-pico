@@ -197,6 +197,8 @@ extension SignInViewController {
                         CheckService.shared.checkStopUser(userNumber: phoneNumber) { [weak self] isStop, stop in
                             guard let self = self else { return }
                             guard isStop else { return }
+                            guard let stop else { return }
+                            
                             let currentDate = Date()
                             let stopDate = Date(timeIntervalSince1970: stop.createdDate)
                             let stopDuring = stop.during
@@ -263,28 +265,24 @@ extension SignInViewController {
                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                     guard let self = self else { return }
                     guard let number = phoneNumberTextField.text else { return }
-                    
-                    FirestoreService.shared.loadDocument(collectionId: .session, documentId: number, dataType: User.self) { [weak self] result in
-                        guard let self = self else { return }
-                        
-                        switch result {
-                        case .success(let user):
-                            guard user != nil else { return }
-                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "다른기기에서 접속중입니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                                guard let self = self else { return }
-                                navigationController?.popViewController(animated: true)
-                            })
-                        case .failure(let err):
-                            print("SingInVIewController 세션부분 에러입니다. error: \(err) ")
-                        }
-                    }
-                    
                     guard let user = viewModel.loginUser else {
                         showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "로그인에 실패하셨습니다.", confirmButtonText: "확인")
                         return
                     }
-                    let viewController = LoginSuccessViewController(user: user)
-                    self.navigationController?.pushViewController(viewController, animated: true)
+                    
+                    CheckService.shared.checkOnline(userId: user.id) { [weak self] result in
+                        guard let self else { return }
+                        
+                        if !result {
+                            let viewController = LoginSuccessViewController(user: user)
+                            self.navigationController?.pushViewController(viewController, animated: true)
+                        } else {
+                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "다른 기기에서 접속중입니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                                guard let self = self else { return }
+                                navigationController?.popViewController(animated: true)
+                            })
+                        }
+                    }
                 })
             })
             .disposed(by: disposeBag)

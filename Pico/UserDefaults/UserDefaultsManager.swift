@@ -18,8 +18,6 @@ final class UserDefaultsManager {
     
     static let shared: UserDefaultsManager = UserDefaultsManager()
     
-    var isOnUser = false
-    var isQuitUser = true
     func removeAll() {
         Key.allCases.forEach {
             UserDefaults.standard.removeObject(forKey: $0.rawValue)
@@ -40,12 +38,11 @@ final class UserDefaultsManager {
         
         UserDefaults.standard.setValue(userData.chuCount, forKey: Key.chuCount.rawValue)
         UserDefaults.standard.setValue(userData.phoneNumber, forKey: Key.phoneNumber.rawValue)
-        
     }
     
     func isLogin() -> Bool {
-           UserDefaults.standard.string(forKey: Key.userId.rawValue) != nil ? true : false
-       }
+        UserDefaults.standard.string(forKey: Key.userId.rawValue) == nil ? false : true
+    }
     
     func getUserData() -> CurrentUser {
         let userId = UserDefaults.standard.string(forKey: Key.userId.rawValue) ?? "없음"

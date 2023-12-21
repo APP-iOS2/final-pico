@@ -143,20 +143,12 @@ final class SettingViewController: UIViewController {
     }
     
     private func logout() {
-        /*
-         let firebaseAuth = Auth.auth()
-         do {
-         try firebaseAuth.signOut()
-         } catch let signOutError as NSError {
-         print("Error signing out: %@", signOutError)
-         }
-         */
-        
-        CheckService.shared.deleteSession { }
-        NotificationService.shared.fcmTokenDelete()
-        UserDefaultsManager.shared.removeAll()
-        let signViewController = UINavigationController(rootViewController: SignViewController())
-        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(signViewController, animated: true)
+        CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: false) {
+            NotificationService.shared.fcmTokenDelete()
+            UserDefaultsManager.shared.removeAll()
+            let signViewController = UINavigationController(rootViewController: SignViewController())
+            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(signViewController, animated: true)
+        }
     }
 }
 

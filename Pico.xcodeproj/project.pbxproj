@@ -1752,7 +1752,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치 인증을 위해 위치 접근 권한이 필요합니다.\n";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "프로필 사진 등록 및 수정을 위해 앨범 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -1792,7 +1792,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치 인증을 위해 위치 접근 권한이 필요합니다.\n";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "프로필 사진 등록 및 수정을 위해 앨범 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;

@@ -151,22 +151,24 @@ final class HomeUserCardViewModel {
     
     func checkYouLikeMe(_ partnerId: String, _ myId: String, completion: @escaping (Like.LikeInfo?) -> Void) {
         var result: Like.LikeInfo?
-        let dbRef = Firestore.firestore().collection("likes")
+        let dbRef = Firestore.firestore().collection(Collections.likes.name)
         
         DispatchQueue.global().async {
             dbRef.document(partnerId).getDocument { [self] (document, error) in
                 if let error = error {
                     print("Error getting document: \(error)")
                     completion(nil)
+                    
                 } else if let document = document, document.exists {
                     if let data = try? document.data(as: Like.self), let sendedLikes = data.sendedlikes {
-                        var sendedLikesData: [Like.LikeInfo] = sendedLikes
+                        let sendedLikesData: [Like.LikeInfo] = sendedLikes
                         for data in sendedLikesData where data.likedUserId == myId {
                             partnerSendedLikeData = data
                             result = partnerSendedLikeData
                         }
                     }
                     completion(result)
+                    
                 } else {
                     print("해당 문서가 존재하지 않습니다.")
                     completion(nil)
@@ -174,5 +176,4 @@ final class HomeUserCardViewModel {
             }
         }
     }
-    
 }

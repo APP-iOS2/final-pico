@@ -6,97 +6,32 @@
 //
 
 import UIKit
+import FirebaseMessaging
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    private let user: User = User.tempUser
-    private let currentUser = UserDefaultsManager.shared.getUserData()
+    var rootViewController: UIViewController?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-
+        
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         
-        if VersionService.shared.isOldVersion {
+        print("SceneDelegate UserDefaultsManager ===== \(UserDefaultsManager.shared.isLogin())")
+        print("SceneDelegate VersionService.shared.isOldVersion ===== \(VersionService.shared.isOldVersion)")
+        if UserDefaultsManager.shared.isLogin() && !VersionService.shared.isOldVersion {
+            checkSuccessLogin()
+            
+        } else {
             UserDefaultsManager.shared.removeAll()
+            rootViewController = UINavigationController(rootViewController: SignViewController())
         }
         
-        if UserDefaultsManager.shared.isLogin() {
-            FirestoreService.shared.loadDocument(collectionId: .session, documentId: currentUser.phoneNumber, dataType: User.self) { result in
-                switch result {
-                case .success(let user):
-                    UserDefaultsManager.shared.isOnUser = (user != nil)
-//                    print(" 🐶 if UserDefaultsManager.shared.isOnUser부분입니다.🐶 \(UserDefaultsManager.shared.isOnUser)")
-                    
-                    if UserDefaultsManager.shared.isOnUser {
-                        // 빌드할 때 왜 앱 종료로 인식 안 하는지 모르겠어요 그래서 임시로 세션이 있다면 세션을 삭제시켰어요 배포할 떄는 삭제해야 해요.
-                        
-                        CheckService.shared.deleteSession {
-                            print("배포할떄는 삭제해야해요")
-                        }
-                        // --------------------
-                        UserDefaultsManager.shared.removeAll()
-                        let rootViewController = UINavigationController(rootViewController: SignViewController())
-                        self.window?.rootViewController = rootViewController
-                    } else {
-                        self.continueToNextCheckService(windoww: self.window)
-                    }
-                case .failure(let err):
-                    print(err)
-                }
-            }
-        } else {
-            let rootViewController = UINavigationController(rootViewController: SignViewController())
-            window?.rootViewController = rootViewController
-        }
+        window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()
     }
     
-    private func continueToNextCheckService(windoww: UIWindow?) {
-        CheckService.shared.checkStopUser(userNumber: currentUser.phoneNumber) { [weak self] isStop, stop in
-            guard let self = self else { return }
-            guard isStop else { return }
-            let currentDate = Date()
-            let stopDate = Date(timeIntervalSince1970: stop.createdDate)
-            let stopDuring = stop.during
-            let stopUser = stop.user
-            
-            if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
-                if currentDate > resumedDate {
-                    Loading.hideLoading()
-                    FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in }
-                    FirestoreService.shared.deleteDocument(collectionId: .stop, field: "phoneNumber", isEqualto: currentUser.phoneNumber)
-                    
-                } else {
-                    Loading.hideLoading()
-                    UserDefaultsManager.shared.removeAll()
-                    let rootViewController = UINavigationController(rootViewController: SignViewController())
-                    windoww?.rootViewController = rootViewController
-                }
-            }
-        }
-        
-        CheckService.shared.checkBlockUser(userNumber: currentUser.phoneNumber) { isBlock in
-            if isBlock {
-                UserDefaultsManager.shared.removeAll()
-                let rootViewController = UINavigationController(rootViewController: SignViewController())
-                windoww?.rootViewController = rootViewController
-            }
-        }
-        
-        CheckService.shared.checkUserId(userId: currentUser.userId) { isUser in
-            if isUser {
-                UserDefaultsManager.shared.isQuitUser = false
-                FirestoreService.shared.saveDocument(collectionId: .session, documentId: self.currentUser.phoneNumber, data: self.user) { _ in }
-                let rootViewController = TabBarController()
-                windoww?.rootViewController = rootViewController
-            } else {
-                let rootViewController = UINavigationController(rootViewController: SignViewController())
-                windoww?.rootViewController = rootViewController
-            }
-        }
-    }
     // 사용법 :
     // (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(UIViewController(), animated: true)
     /// 루트뷰 변경
@@ -118,12 +53,58 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
         // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
+        
+        CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: false) {
+            sleep(3)
+            print("sceneDidDisconnect \(UserDefaultsManager.shared.getUserData().phoneNumber) 번호의 세션이 삭제되었습니다.")
+        }
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         NotificationService.shared.displayResetBadge()
+        
+        CheckService.shared.checkOnline(userId: UserDefaultsManager.shared.getUserData().userId) { result in
+            if result {
+                print("================= sceneDidBecomeActive")
+                UserDefaultsManager.shared.removeAll()
+                let signViewController = UINavigationController(rootViewController: SignViewController())
+                (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(signViewController, animated: true)
+                
+            } else {
+                DispatchQueue.main.async {
+                    Messaging.messaging().token { token, error in
+                        if let error = error {
+                            print("================= sceneDidBecomeActive 토큰 가져오기 실패 : \(error)")
+                            return
+                        } else if let token {
+                            FirestoreService.shared.loadDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: Token.self) { [weak self] result in
+                                guard let self else { return }
+                                
+                                switch result {
+                                case .success(let data):
+                                    if let data {
+                                        if data.fcmToken == token {
+                                            CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: true, completion: nil)
+                                        } else {
+                                            UserDefaultsManager.shared.removeAll()
+                                            let signViewController = UINavigationController(rootViewController: SignViewController())
+                                            if rootViewController != signViewController {
+                                                (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(signViewController, animated: true)
+                                            }
+                                        }
+                                    }
+                                    
+                                case .failure(let err):
+                                    print("================= sceneDidBecomeActive: \(err)")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     func sceneWillResignActive(_ scene: UIScene) {
@@ -134,21 +115,72 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
-        guard !UserDefaultsManager.shared.isQuitUser else { return }
-        guard UserDefaultsManager.shared.isLogin() else { return }
-        FirestoreService.shared.saveDocument(collectionId: .session, documentId: UserDefaultsManager.shared.getUserData().phoneNumber, data: User.tempUser) { _ in }
-        print("포그라운드로 이동하셨습니다. \(UserDefaultsManager.shared.getUserData().phoneNumber) 번호의 세션이 다시 추가되었습니다.")
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
-        let userDefaultsManager = UserDefaultsManager()
-        guard userDefaultsManager.isLogin() else { return }
         
-        CheckService.shared.deleteSession {
+        CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: false) {
+            sleep(3)
             print("백그라운드로 이동하셨습니다.\(UserDefaultsManager.shared.getUserData().phoneNumber) 번호의 세션이 삭제되었습니다.")
+        }
+    }
+    
+    private func checkSuccessLogin() {
+        let user = UserDefaultsManager.shared.getUserData()
+        
+        DispatchQueue.main.async {
+            CheckService.shared.checkStopUser(userNumber: user.phoneNumber) { [weak self] isStop, stop in
+                guard let self else { return }
+                if isStop {
+                    guard let stop else { return }
+                    
+                    let currentDate = Date()
+                    let stopDate = Date(timeIntervalSince1970: stop.createdDate)
+                    let stopDuring = stop.during
+                    let stopUser = stop.user
+                    
+                    if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
+                        Loading.hideLoading()
+                        if currentDate > resumedDate {
+                            FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in
+                                FirestoreService.shared.deleteDocument(collectionId: .stop, field: "phoneNumber", isEqualto: user.phoneNumber)
+                            }
+                            
+                        } else {
+                            rootViewController = UINavigationController(rootViewController: SignViewController())
+                        }
+                    }
+                    
+                } else {
+                    CheckService.shared.checkBlockUser(userNumber: user.phoneNumber) { [weak self] isBlock in
+                        guard let self else { return }
+                        if isBlock {
+                            rootViewController = UINavigationController(rootViewController: SignViewController())
+                            
+                        } else {
+                            CheckService.shared.checkOnline(userId: user.userId) { [weak self] result in
+                                guard let self else { return }
+                                if result {
+                                    Loading.hideLoading()
+                                    if UserDefaultsManager.shared.isLogin() {
+                                        // 자동로그인 상태에서 로그인이 되어있을 때
+                                        rootViewController = UINavigationController(rootViewController: TabBarController())
+                                    }
+                                } else {
+                                    CheckService.shared.updateOnline(userId: user.userId, isOnline: true) { [weak self] in
+                                        guard let self else { return }
+                                        // 자동로그인 상태에서 로그인 가능할때
+                                        rootViewController = UINavigationController(rootViewController: TabBarController())
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

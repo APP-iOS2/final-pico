@@ -21,10 +21,10 @@ final class SignViewController: UIViewController {
         let gradient: CAGradientLayer = CAGradientLayer()
         gradient.colors = [UIColor.picoGradientMedium2.cgColor, UIColor.picoGradientMedium.cgColor, UIColor.picoBlue.cgColor]
         gradient.locations = [0.0, 0.3, 1.0]
-
+        
         gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
         gradient.endPoint = CGPoint(x: 0.5, y: 1.0)
-
+        
         view.frame = self.view.bounds
         gradient.frame = view.bounds
         view.layer.addSublayer(gradient)
@@ -69,9 +69,6 @@ final class SignViewController: UIViewController {
             showVersionAlert()
         }
     }
-}
-
-extension SignViewController {
     
     private func showVersionAlert() {
         showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "업데이트 이후에 사용이 가능합니다.", confirmButtonText: "확인", comfrimAction: {
@@ -84,7 +81,9 @@ extension SignViewController {
             })
         })
     }
+}
 
+extension SignViewController {
     private func configRx() {
         signInButton.rx.tap
             .subscribe(onNext: { [weak self] in
