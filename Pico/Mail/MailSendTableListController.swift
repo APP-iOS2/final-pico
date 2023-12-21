@@ -10,6 +10,10 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+protocol MailSendDelegate: AnyObject {
+    func pushUserDetailViewController(user: User)
+}
+
 final class MailSendTableListController: BaseViewController {
     
     private let viewModel = MailSendViewModel()
@@ -30,6 +34,18 @@ final class MailSendTableListController: BaseViewController {
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         return tableView
     }()
+    
+    var mailViewController: MailViewController
+    
+    init(viewController: MailViewController) {
+        self.mailViewController = viewController
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     // MARK: - MailView +LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +57,7 @@ final class MailSendTableListController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        viewModel.startIndex = 0
         loadDataPublsher.onNext(())
         refreshPublisher.onNext(())
         checkSendEmptyPublisher.onNext(())
@@ -65,6 +82,7 @@ final class MailSendTableListController: BaseViewController {
         isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
+            viewModel.startIndex = 0
             refreshPublisher.onNext(())
             refresh.endRefreshing()
             isRefresh = false
@@ -89,9 +107,10 @@ extension MailSendTableListController: UITableViewDataSource, UITableViewDelegat
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = viewModel.sendList[indexPath.row]
         let mailReceiveView = MailReceiveViewController()
-        mailReceiveView.modalPresentationStyle = .formSheet
+        mailReceiveView.mailSendDelegate = self
         mailReceiveView.configData(mailSender: item)
-        self.present(mailReceiveView, animated: true, completion: nil)
+        mailReceiveView.modalPresentationStyle = .formSheet
+        mailViewController.present(mailReceiveView, animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -154,10 +173,20 @@ extension MailSendTableListController: UIScrollViewDelegate {
             mailListTableView.tableFooterView = footerView
             loadDataPublsher.onNext(())
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.mailListTableView.reloadData()
-                self.mailListTableView.tableFooterView = nil
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                guard let self else { return }
+                
+                mailListTableView.reloadData()
+                mailListTableView.tableFooterView = nil
             }
         }
+    }
+}
+// MARK: - GoDetailView
+extension MailSendTableListController: MailSendDelegate {
+    func pushUserDetailViewController(user: User) {
+        let viewController = UserDetailViewController()
+        viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
+        self.mailViewController.navigationController?.pushViewController(viewController, animated: true)
     }
 }

@@ -252,7 +252,16 @@ final class HomeViewController: BaseViewController {
         
         navigationItem.rightBarButtonItems = [filterBarButtonItem, notificationBarButtonItem]
     }
-
+    
+    private func detectCapture() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureAction),
+            name: UIScreen.capturedDidChangeNotification,
+            object: nil
+        )
+    }
+  
     @objc func tappedPickBackButton() {
         if let lastView = removedView.last {
             showCustomAlert(
@@ -304,5 +313,13 @@ final class HomeViewController: BaseViewController {
         let viewController = NotificationViewController()
         viewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    @objc private func captureAction() {
+        if UIScreen.main.isCaptured {
+            view.secureMode(enable: true)
+        } else {
+            view.secureMode(enable: false)
+        }
     }
 }

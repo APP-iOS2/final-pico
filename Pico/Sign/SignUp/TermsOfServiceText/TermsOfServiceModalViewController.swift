@@ -30,7 +30,7 @@ final class TermsOfServiceModalViewController: UIViewController {
         textView.text = termsOfServiceTexts[tag]
         textView.font = UIFont.systemFont(ofSize: 16)
         textView.textColor = .picoFontBlack
-        textView.backgroundColor = .white
+        textView.backgroundColor = .picoAlphaWhite
         textView.showsVerticalScrollIndicator = false
         return textView
     }()

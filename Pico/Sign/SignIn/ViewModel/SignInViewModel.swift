@@ -26,68 +26,33 @@ final class SignInViewModel {
         self.isRightUser = false
         
         DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            self.dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
+            guard let self else { return }
+            
+            dbRef.collection("users").whereField("phoneNumber", isEqualTo: userNumber).getDocuments {  [weak self] snapShot, err in
+                guard let self else { return }
+                
                 guard err == nil, let documents = snapShot?.documents else {
                     print(err ?? "서버오류 비상비상")
-                    self.isRightUser = false
+                    isRightUser = false
                     return
                 }
                 
                 guard let document = documents.first else {
-                    self.isRightUser = false
+                    isRightUser = false
                     completion(nil, "일치하는 번호가 없습니다.")
                     return
                 }
-                let retrievedUser = self.convertDocumentToUser(document: document)
                 
-                self.isRightUser = true
+                guard let retrievedUser = try? document.data(as: User.self) else {
+                    isRightUser = false
+                    completion(nil, "데이터 형식이 다름.")
+                    return
+                }
                 
-                self.loginUser = retrievedUser
+                isRightUser = true
+                loginUser = retrievedUser
                 completion(retrievedUser, "인증번호를 입력해주세요!")
             }
         }
-    }
-    
-    func convertDocumentToUser(document: QueryDocumentSnapshot) -> User {
-        let data = document.data()
-        let id = document.documentID
-        let mbti = MBTIType(rawValue: data["mbti"] as? String ?? "") ?? .entp
-        let phoneNumber = data["phoneNumber"] as? String ?? ""
-        let gender = GenderType(rawValue: data["gender"] as? String ?? "") ?? .etc
-        let birth = data["birth"] as? String ?? ""
-        let nickName = data["nickName"] as? String ?? ""
-        let locationData = data["location"] as? [String: Any] ?? [:]
-        let address = locationData["address"] as? String ?? ""
-        let latitude = locationData["latitude"] as? Double ?? 0.0
-        let longitude = locationData["longitude"] as? Double ?? 0.0
-        let imageURLs = data["imageURLs"] as? [String] ?? []
-        let createdDate = data["createdDate"] as? Double ?? 0.0
-        
-        let subInfoData = data["subInfo"] as? [String: Any] ?? [:]
-        let intro = subInfoData["intro"] as? String ?? ""
-        let height = subInfoData["height"] as? Int ?? 0
-        let drinkStatus = FrequencyType(rawValue: subInfoData["drinkStatus"] as? String ?? "") ?? .never
-        let smokeStatus = FrequencyType(rawValue: subInfoData["smokeStatus"] as? String ?? "") ?? .never
-        let religion = ReligionType(rawValue: subInfoData["religion"] as? String ?? "") ?? .etc
-        let education = EducationType(rawValue: subInfoData["education"] as? String ?? "") ?? .middle
-        let job = subInfoData["job"] as? String ?? ""
-        let hobbies = subInfoData["hobbies"] as? [String] ?? []
-        let personalities = subInfoData["personalities"] as? [String] ?? []
-        let favoriteMBTIs = subInfoData["favoriteMBTIs"] as? [String] ?? []
-        var mbtiArr: [MBTIType] = []
-        favoriteMBTIs.forEach { mbti in
-            mbtiArr.append(MBTIType(rawValue: mbti) ?? .enfp)
-        }
-        
-        let subInfo = SubInfo(intro: intro, height: height, drinkStatus: drinkStatus, smokeStatus: smokeStatus, religion: religion, education: education, job: job, hobbies: hobbies, personalities: personalities, favoriteMBTIs: mbtiArr)
-
-        let reports = data["reports"] as? Report ?? Report(userId: "")
-        let blocks = data["blocks"] as? Block ?? Block(userId: "")
-        let chuCount = data["chuCount"] as? Int ?? 0
-        let isSubscribe = data["isSubscribe"] as? Bool ?? false
-        
-        let retrievedUser = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: Location(address: address, latitude: latitude, longitude: longitude), imageURLs: imageURLs, createdDate: createdDate, subInfo: subInfo, reports: [reports], blocks: [blocks], chuCount: chuCount, isSubscribe: isSubscribe)
-        return retrievedUser
     }
 }

@@ -35,14 +35,15 @@ final class LikeUViewModel: ViewModelType {
             }
         }
     }
+    
     private var isEmptyPublisher = PublishSubject<Bool>()
-    private let reloadTableViewPublisher = PublishSubject<Void>()
+    private let reloadCollectionViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     private let currentUser = UserDefaultsManager.shared.getUserData()
     private var currentChuCount = UserDefaultsManager.shared.getChuCount()
-    private let pageSize = 6
+    private let pageSize = 10
     var startIndex = 0
-
+    
     func transform(input: Input) -> Output {
         input.refresh
             .withUnretained(self)
@@ -95,38 +96,63 @@ final class LikeUViewModel: ViewModelType {
             .map { viewModel, _ in
                 UserDefaultsManager.shared.updateChuCount(viewModel.currentChuCount)
             }
-            
-        return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadTableViewPublisher.asObservable(), resultMessage: resultMessage)
+        
+        return Output(likeUIsEmpty: isEmpty, reloadCollectionView: reloadCollectionViewPublisher.asObservable(), resultMessage: resultMessage)
     }
     
     private func loadNextPage() {
         let dbRef = Firestore.firestore()
         let ref = dbRef.collection(Collections.likes.name).document(currentUser.userId)
         let endIndex = startIndex + pageSize
-        
-        DispatchQueue.global().async {
-            ref.getDocument { [weak self] document, error in
-                guard let self = self else { return }
-                if let error = error {
-                    print(error)
-                    return
-                }
-                
-                if let document = document, document.exists {
-                    if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType == .like }) {
-                        let sorted = datas.sorted {
-                            return $0.createdDate > $1.createdDate
-                        }
-                        if startIndex > sorted.count - 1 {
-                            return
-                        }
-                        let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
-                        likeUList = currentPageDatas
-                        startIndex = currentPageDatas.count
-                        reloadTableViewPublisher.onNext(())
+        FirestoreService.shared.loadDocuments(collectionId: .unsubscribe, dataType: Unsubscribe.self) { result in
+            var unsubscribe = [Unsubscribe]()
+            switch result {
+            case .success(let data):
+                unsubscribe = data
+            case .failure(let error):
+                print("탈퇴 회원 불러오기 실패: \(error)")
+            }
+            DispatchQueue.global().async {
+                ref.getDocument { [weak self] document, error in
+                    guard let self = self else { return }
+                    if let error = error {
+                        print(error)
+                        return
                     }
-                } else {
-                    print("문서를 찾을 수 없습니다.")
+                    
+                    if let document = document, document.exists {
+                        if let datas = try? document.data(as: Like.self).sendedlikes?.filter({ $0.likeType != .dislike }) {
+                            var sorted = datas.sorted {
+                                if $0.isMatch != $1.isMatch {
+                                    return !$0.isMatch
+                                } else {
+                                    return $0.createdDate > $1.createdDate
+                                }
+                            }
+                            sorted = sorted.filter { likeInfo in
+                                let id = likeInfo.likedUserId
+                                if id == Bundle.main.testId {
+                                    return false
+                                }
+                                for unsubscribeUser in unsubscribe where unsubscribeUser.user.id == id {
+                                    return false
+                                }
+                                return true
+                            }
+                            if startIndex > sorted.count - 1 {
+                                return
+                            }
+                            let currentPageDatas: [Like.LikeInfo] = Array(sorted[0..<min(endIndex, sorted.count)])
+                            likeUList = currentPageDatas
+                            
+                            if startIndex == 0 {
+                                reloadCollectionViewPublisher.onNext(())
+                            }
+                            startIndex = currentPageDatas.count
+                        }
+                    } else {
+                        print("문서를 찾을 수 없습니다.")
+                    }
                 }
             }
         }

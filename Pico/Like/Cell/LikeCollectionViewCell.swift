@@ -74,6 +74,20 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    var matchLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Match"
+        label.font = .boldSystemFont(ofSize: 30)
+        label.textColor = .systemRed
+        label.textAlignment = .center
+        label.layer.borderWidth = 4
+        label.layer.borderColor = UIColor.systemRed.cgColor
+        label.layer.cornerRadius = 5
+        label.rotation = -30
+        
+        return label
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
@@ -91,28 +105,41 @@ final class LikeCollectionViewCell: UICollectionViewCell {
         likeMeViewModel = nil
         likeUViewModel = nil
         user = nil
-        userImageView.image = UIImage(named: "chu")
+        userImageView.image = nil
         nameLabel.text = ""
     }
     
-    func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType) {
+    func configData(image: String, nameText: String, isHiddenDeleteButton: Bool, isHiddenMessageButton: Bool, mbti: MBTIType, isHiddenMatchLabel: Bool) {
         guard let url = URL(string: image) else { return }
         userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
         userImageView.kf.setImage(with: url)
         nameLabel.text = nameText
         mbtiLabel.setMbti(mbti: mbti)
-        messageButton.isHidden = isHiddenMessageButton
-        deleteButton.isHidden = isHiddenDeleteButton
-        likeButton.isHidden = isHiddenDeleteButton
+        matchLabel.isHidden = isHiddenMatchLabel
+        if isHiddenMatchLabel {
+            messageButton.isHidden = isHiddenMessageButton
+            deleteButton.isHidden = isHiddenDeleteButton
+            likeButton.isHidden = isHiddenDeleteButton
+        } else {
+            deleteButton.isHidden = true
+            likeButton.isHidden = true
+            messageButton.isHidden = false
+        }
     }
     
     private func addViews() {
-        addSubview([userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton])
+        addSubview([userImageView, nameLabel, mbtiLabel, deleteButton, messageButton, likeButton, matchLabel])
     }
     
     private func makeConstraints() {
         userImageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+        
+        matchLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.6)
         }
         
         nameLabel.snp.makeConstraints { make in

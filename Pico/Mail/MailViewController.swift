@@ -43,7 +43,7 @@ final class MailViewController: BaseViewController {
         return button
     }()
     
-    private lazy var tableViewController = [MailSendTableListController(), MailReceiveTableListController(viewController: self)]
+    private lazy var tableViewController = [MailSendTableListController(viewController: self), MailReceiveTableListController(viewController: self)]
     
     private let contentsView: UIView = UIView()
     
@@ -100,6 +100,16 @@ final class MailViewController: BaseViewController {
     private func configPageView() {
         pageViewController.setViewControllers([tableViewController[1]], direction: .reverse, animated: true)
     }
+    
+    private func detectCapture() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureAction),
+            name: UIScreen.capturedDidChangeNotification,
+            object: nil
+        )
+    }
+    
     // MARK: - objc
     @objc func tappedMailTypeButton(_ sender: UIButton) {
         for button in mailTypeButtons {
@@ -119,6 +129,14 @@ final class MailViewController: BaseViewController {
                 button.backgroundColor = .picoGray
                 button.titleLabel?.font = .picoDescriptionFont
             }
+        }
+    }
+    
+    @objc private func captureAction() {
+        if UIScreen.main.isCaptured {
+            view.secureMode(enable: true)
+        } else {
+            view.secureMode(enable: false)
         }
     }
 }
