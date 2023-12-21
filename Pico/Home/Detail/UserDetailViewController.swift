@@ -14,6 +14,9 @@ import CoreLocation
 final class UserDetailViewController: UIViewController {
     // 이전 뷰에서 실행이 필요 해 Defalut로 작성
     var viewModel: UserDetailViewModel!
+    var onDisLike: (() -> Void)?
+    var onLike: (() -> Void)?
+    private let currentUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
     private var distance = CLLocationDistance()
     // SubViews
@@ -92,18 +95,41 @@ final class UserDetailViewController: UIViewController {
         likeButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .like)
-                let viewController = HomeViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
+                if viewModel.isHome {
+                    onLike?()
+                    navigationController?.popViewController(animated: false)
+                } else {
+                    if currentUser.userId.prefix(4) != "test" {
+                        viewModel.checkYouLikeMe(viewModel.user.id, currentUser.userId) { result in
+                            if result {
+                                self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .matching)
+                                self.viewModel.updateMatcingData(self.viewModel.user.id)
+                                self.viewModel.notificationServiceForPartner(.matching, .matching, user: self.viewModel.user, currentUser: self.currentUser)
+                                self.viewModel.notificationServiceForMe(.matching, .matching, user: self.viewModel.user, currentUser: self.currentUser)
+                            } else {
+                                self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .like)
+                                self.viewModel.notificationServiceForPartner(.like, .like, user: self.viewModel.user, currentUser: self.currentUser)
+                            }
+                        }
+                    }
+                    self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .like)
+                    let viewController = HomeViewController()
+                    navigationController?.pushViewController(viewController, animated: true)
+                }
             })
             .disposed(by: disposeBag)
         
         disLikeButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                viewModel.saveLikeData(receiveUserInfo: viewModel.user, likeType: .dislike)
-                let viewController = HomeViewController()
-                navigationController?.pushViewController(viewController, animated: true)
+                if viewModel.isHome {
+                    onDisLike?()
+                    navigationController?.popViewController(animated: false)
+                } else {
+                    viewModel.saveLikeData(receiveUserInfo: viewModel.user, likeType: .dislike)
+                    let viewController = HomeViewController()
+                    navigationController?.pushViewController(viewController, animated: true)
+                }
             })
             .disposed(by: disposeBag)
     }

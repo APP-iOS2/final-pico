@@ -39,4 +39,6 @@ struct Like: Codable {
             return self.rawValue.uppercased()
         }
     }
+    
+    static let likeInfoSample = Like.LikeInfo(likedUserId: "", likeType: .dislike, birth: "", nickName: "", mbti: .enfj, imageURL: "", createdDate: 0)
 }
