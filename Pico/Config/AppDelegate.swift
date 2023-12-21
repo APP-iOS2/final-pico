@@ -12,32 +12,47 @@ import UserNotifications
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        VersionService.shared.loadAppStoreVersion { latestVersion in
+            guard let latestVersion else { return }
+            
+            let nowVersion = VersionService.shared.nowVersion()
+            let compareResult = nowVersion.compare(latestVersion, options: .numeric)
+            
+            switch compareResult {
+            case .orderedAscending:
+                VersionService.shared.isOldVersion = true
+            case .orderedDescending:
+                VersionService.shared.isOldVersion = false
+            case .orderedSame:
+                VersionService.shared.isOldVersion = false
+            }
+        }
+        
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
         UIApplication.shared.registerForRemoteNotifications()
-        if launchOptions != nil {
-            let userInfo = launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification]
+        
+        if let launchOptions {
+            let userInfo = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification]
             if userInfo != nil {
                 moveNotificationView()
             }
         }
-
         return true
     }
-
+    
     // MARK: UISceneSession Lifecycle
-
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         // Called when a new scene session is being created.
         // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
-
+    
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
         // Called when the user discards a scene session.
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
@@ -92,6 +107,5 @@ extension AppDelegate: MessagingDelegate {
         print("FCM등록 토큰 : \(token)")
         let dataDict: [String: String] = ["token": token]
         NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
-        NotificationService.shared.saveToken()
     }
 }

@@ -17,10 +17,11 @@ final class MailReceiveViewController: UIViewController {
     private var mailUser: Mail.MailInfo = Mail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
     
     weak var mailReceiveDelegate: MailReceiveDelegate?
+    weak var mailSendDelegate: MailSendDelegate?
     
     private let navigationBar: UINavigationBar = {
         let navigationBar = UINavigationBar()
-        navigationBar.barTintColor = .secondarySystemBackground
+        navigationBar.barTintColor = .white
         return navigationBar
     }()
     
@@ -29,7 +30,7 @@ final class MailReceiveViewController: UIViewController {
         return navigationItem
     }()
     
-    private let leftBarButton: UIBarButtonItem = {
+    private let backButton: UIBarButtonItem = {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
         let barButtonItem = UIBarButtonItem()
         barButtonItem.image = UIImage(systemName: "chevron.left", withConfiguration: imageConfig)
@@ -182,7 +183,7 @@ final class MailReceiveViewController: UIViewController {
                 mailSendView.configData(userId: mailUser.mailType == .receive ? mailUser.sendedUserId : mailUser.receivedUserId, atMessageView: true)
                 mailSendView.modalPresentationStyle = .formSheet
                 mailSendView.modalTransitionStyle = .flipHorizontal
-                present(mailSendView, animated: true, completion: nil)
+                self.present(mailSendView, animated: true, completion: nil)
             }
             .disposed(by: disposeBag)
     }
@@ -235,7 +236,7 @@ final class MailReceiveViewController: UIViewController {
     }
     
     private func configNavigationBarItem() {
-        navItem.leftBarButtonItem = leftBarButton
+        navItem.leftBarButtonItem = backButton
         navItem.rightBarButtonItem = rightBarButton
         navigationBar.shadowImage = UIImage()
         navigationBar.setItems([navItem], animated: true)
@@ -255,19 +256,24 @@ final class MailReceiveViewController: UIViewController {
         dismiss(animated: true)
         
         var userId: String
+        
         if self.mailUser.mailType == .receive {
             userId = self.mailUser.sendedUserId
         } else {
             userId = self.mailUser.receivedUserId
         }
-        
+    
         FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let user):
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
-                    mailReceiveDelegate?.pushUserDetailViewController(user: userData)
+                    if self.mailUser.mailType == .receive {
+                        mailReceiveDelegate?.pushUserDetailViewController(user: userData)
+                    } else {
+                        mailSendDelegate?.pushUserDetailViewController(user: userData)
+                    }
                 }
             case .failure(let err):
                 print(err)

@@ -28,6 +28,17 @@ extension Bundle {
         return key
     }
     
+    var testId: String {
+        guard let file = self.path(forResource: APIKey.FirebaseAPIKeys.name, ofType: "plist") else { return "" }
+        
+        guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
+        
+        guard let key = resource["TEST_ID"] as? String else {
+            fatalError("KEY를 찾을수없음")
+        }
+        return key
+    }
+    
     var testAuthNum: String {
         guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
         

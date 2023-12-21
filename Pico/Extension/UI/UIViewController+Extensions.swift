@@ -92,5 +92,28 @@ extension UIViewController {
         customAlertViewController.confirmAction = comfrimAction
         customAlertViewController.cancelAction = cancelAction
         self.present(customAlertViewController, animated: true, completion: nil)
+    }  
+    
+    func showInputCustomAlert(
+        alertType: AlertType,
+        titleText: String,
+        messageText: String,
+        cancelButtonText: String? = "취소",
+        confirmButtonText: String,
+        comfrimAction: ((String) -> Void)? = nil,
+        cancelAction: (() -> Void)? = nil
+    ) {
+        let customAlertViewController = InputCustomPopupViewController()
+        
+        customAlertViewController.modalPresentationStyle = .overFullScreen
+        customAlertViewController.modalTransitionStyle = .crossDissolve
+        customAlertViewController.alertType = alertType
+        customAlertViewController.titleText = titleText
+        customAlertViewController.messageText = messageText
+        customAlertViewController.cancelButtonText = cancelButtonText ?? "취소"
+        customAlertViewController.confirmButtonText = confirmButtonText
+        customAlertViewController.confirmAction = comfrimAction
+        customAlertViewController.cancelAction = cancelAction
+        self.present(customAlertViewController, animated: true, completion: nil)
     }
 }

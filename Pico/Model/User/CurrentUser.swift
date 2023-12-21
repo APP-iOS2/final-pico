@@ -15,4 +15,5 @@ struct CurrentUser {
     let birth: String
     let latitude: Double
     let longitude: Double
+    let phoneNumber: String
 }

@@ -13,7 +13,7 @@ import Lottie
 
 final class WorldCupResultViewController: UIViewController {
     
-    var selectedItem: User? = User(mbti: .enfj, phoneNumber: "010-1111-1111", gender: .female, birth: "1999-01-01", nickName: "sdaaf", location: Location(address: "sss", latitude: 13, longitude: 31), imageURLs: ["https://thumb.mtstarnews.com/06/2023/06/2023062215005684112_1.jpg/dims/optimize"], createdDate: 1, chuCount: 0, isSubscribe: false)
+    var selectedItem: User?
     private let disposeBag = DisposeBag()
     private let viewModel = WorldCupResultViewModel()
     private let requestMessagePublisher = PublishSubject<User>()
@@ -59,7 +59,7 @@ final class WorldCupResultViewController: UIViewController {
     }()
     
     private let mbtiLabel: MBTILabelView = MBTILabelView(mbti: .esfj, scale: .small)
-
+    
     private let userImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -118,6 +118,7 @@ final class WorldCupResultViewController: UIViewController {
         configResultUserCell()
         bind()
         configAnimationView()
+        resetGameTimer()
     }
     
     private func configAnimationView() {
@@ -165,13 +166,13 @@ final class WorldCupResultViewController: UIViewController {
             make.trailing.equalToSuperview().offset(-padding)
             make.height.equalTo(mbtiLabel.frame.size.height + 10)
         }
-
+        
         userImage.snp.makeConstraints { make in
             make.top.equalTo(mbtiLabel.snp.bottom).offset(padding * half)
             make.leading.trailing.equalTo(mbtiLabel)
             make.height.equalTo(userImage.snp.width)
         }
-
+        
         userTitle.snp.makeConstraints { make in
             make.top.equalTo(userImage.snp.bottom).offset(padding * half)
             make.leading.trailing.equalTo(userImage)
@@ -209,6 +210,28 @@ final class WorldCupResultViewController: UIViewController {
                 userImage.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
                 userImage.kf.setImage(with: url)
             }
+        }
+    }
+    
+    private func detectCapture() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureAction),
+            name: UIScreen.capturedDidChangeNotification,
+            object: nil
+        )
+    }
+    
+    private func resetGameTimer() {
+        let currentTime = Date()
+        UserDefaultsManager.shared.updateLastWorldCupTime(currentTime)
+    }
+    
+    @objc private func captureAction() {
+        if UIScreen.main.isCaptured {
+            view.secureMode(enable: true)
+        } else {
+            view.secureMode(enable: false)
         }
     }
 }

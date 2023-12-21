@@ -45,7 +45,7 @@ final class SettingSecessionViewModel: ViewModelType {
     }
     
     private func deleteData() -> Observable<Void> {
-        return FirestoreService.shared.removeDocumentRx(collectionId: .users, documentId: userId)
+        return FirestoreService.shared.deleteDocumentRx(collectionId: .users, documentId: userId)
             .asObservable()
     }
 }

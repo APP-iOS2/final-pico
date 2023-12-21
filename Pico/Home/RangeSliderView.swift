@@ -144,7 +144,7 @@ final class RangeSliderView: UIView {
     }
     
     private func moveBall(gesture: UIPanGestureRecognizer, ball: UIImageView) {
-        var ball = ball
+        let ball = ball
         let translation = gesture.translation(in: ball)
         let newCenterX = initialCenter.x + translation.x
         

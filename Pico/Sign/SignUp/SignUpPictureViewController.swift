@@ -8,7 +8,6 @@ import UIKit
 import SnapKit
 import PhotosUI
 import AVFoundation
-import Vision
 import Photos
 
 final class SignUpPictureViewController: UIViewController {
@@ -18,15 +17,15 @@ final class SignUpPictureViewController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
+    
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     private let pictureManager: PictureService = PictureService()
-    private var isDetectedImage: Bool? = false
-    private var objectDetectionRequest: VNCoreMLRequest?
     private var userImages: [UIImage] = []
+    
     private lazy var progressView: UIProgressView = {
         let view = UIProgressView()
         view.trackTintColor = .picoGray
@@ -93,6 +92,7 @@ final class SignUpPictureViewController: UIViewController {
         makeConstraints()
         configButton()
         configCollectionView()
+        notiAlert()
         pictureManager.requestPhotoLibraryAccess(in: self)
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -114,33 +114,32 @@ final class SignUpPictureViewController: UIViewController {
         nextButton.backgroundColor = isEnabled ? .picoBlue : .picoGray
     }
     
+    private func notiAlert() {
+        showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "사진을 도용시 형사처벌 대상이 될 수 있습니다.", confirmButtonText: "인지하였습니다.")
+    }
     // MARK: - Tapped
     @objc private func tappedNextButton(_ sender: UIButton) {
+        
         Loading.showLoading(title: "AI가 얼굴인식 중이에요!\n잠시만 기다려주세요! (최대 1분 소요)")
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
-            let yoloManager: YoloService = YoloService()
-            yoloManager.loadYOLOv3Model()
+            let visionService = VisionService()
+            let dispatchGroup = DispatchGroup()
             
-            let detectionGroup = DispatchGroup()
             DispatchQueue.global().async { [weak self] in
-                guard let self = self else { return }
-                
+                guard let self else { return }
                 var allImagesDetected = true
                 
                 for image in userImages {
-                    detectionGroup.enter()
+                    dispatchGroup.enter()
                     
-                    yoloManager.detectPeople(image: image) {
-                        detectionGroup.leave()
-                    }
-                    
-                    if !(yoloManager.isDetectedImage ?? true) {
-                        allImagesDetected = false
+                    visionService.detectFaces(image: image) { result in
+                        allImagesDetected = result
+                        dispatchGroup.leave()
                     }
                 }
                 
-                detectionGroup.notify(queue: .main) { [weak self] in
-                    guard let self = self else { return }
+                dispatchGroup.notify(queue: .main) { [weak self] in
+                    guard let self else { return }
                     
                     Loading.hideLoading()
                     if allImagesDetected {

@@ -12,25 +12,27 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 final class CheckService {
+    static let shared: CheckService = CheckService()
+    
     private let dbRef = Firestore.firestore()
     
     func checkUserId(userId: String, completion: @escaping (_ isRight: Bool) -> ()) {
         Loading.showLoading(backgroundColor: .systemBackground.withAlphaComponent(0.8))
         DispatchQueue.global().async {
-            self.dbRef.collection("users")
-                .whereField("id", isEqualTo: userId)
-                .getDocuments { snapShot, err in
-                    guard err == nil, let documents = snapShot?.documents else {
-                        return
-                    }
-                    
-                    if let document = documents.first {
-                        let user = SignInViewModel().convertDocumentToUser(document: document)
+            self.dbRef.collection("users").whereField("id", isEqualTo: userId).getDocuments { snapShot, err in
+                guard err != nil, let documents = snapShot?.documents else { return }
+                
+                if let document = documents.first {
+                    if let user = try? document.data(as: User.self) {
                         UserDefaultsManager.shared.setUserData(userData: user)
+                        completion(true)
+                    } else {
+                        completion(false)
                     }
-                    
-                    completion(documents.first != nil)
+                } else {
+                    completion(false)
                 }
+            }
         }
     }
     
@@ -45,19 +47,17 @@ final class CheckService {
         
         Loading.showLoading()
         
-        self.dbRef.collection("users")
-            .whereField("phoneNumber", isEqualTo: userNumber)
-            .getDocuments { snapShot, err in
-                guard err == nil, let documents = snapShot?.documents else {
-                    completion("서버에 문제가 있습니다.", false)
-                    return
-                }
-
-                guard documents.first != nil else {
-                    completion("사용가능한 전화번호 입니다.", true)
-                    return
-                }
-                completion("이미 회원가입을 하셨어요!!", false)
+        self.dbRef.collection(Collections.users.name).whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
+            guard err != nil, let documents = snapShot?.documents else {
+                completion("서버에 문제가 있습니다.", false)
+                return
+            }
+            
+            guard documents.first != nil else {
+                completion("사용가능한 전화번호 입니다.", true)
+                return
+            }
+            completion("이미 회원가입을 하셨어요!!", false)
         }
     }
     
@@ -70,15 +70,12 @@ final class CheckService {
             Loading.showLoading()
             
             if matches.isEmpty {
-                self.dbRef
-                    .collection("users").whereField("nickName", isEqualTo: name)
-                    .getDocuments { snapShot, err in
-                    guard err == nil, let documents = snapShot?.documents else {
-
-                        print(err ?? "서버오류 비상비상")
+                self.dbRef.collection(Collections.users.name).whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
+                    guard err != nil, let documents = snapShot?.documents else {
+                        print("checkNickName: \(String(describing: err))")
                         return
                     }
-                        
+                    
                     guard documents.first != nil else {
                         completion("사용가능한 닉네임이에요!", true)
                         return
@@ -104,19 +101,66 @@ final class CheckService {
             return
         }
         
-        self.dbRef.collection("unsubscribe")
-            .whereField("phoneNumber", isEqualTo: userNumber)
-            .getDocuments { snapshot, error in
-                guard error == nil, let documents = snapshot?.documents else {
-                    completion(false) // 에러 발생 또는 문서가 없음
-                    return
+        self.dbRef.collection(Collections.unsubscribe.name).whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapshot, error in
+            guard error == nil, let documents = snapshot?.documents else {
+                completion(false) // 에러 발생 또는 문서가 없음
+                return
+            }
+            
+            if !documents.isEmpty {
+                completion(true) // 차단된 사용자임
+            } else {
+                completion(false) // 차단된 사용자가 아님
+            }
+        }
+    }
+    
+    func checkStopUser(userNumber: String, completion: @escaping (Bool, Stop?) -> Void) {
+        let regex = "^01[0-9]{1}-?[0-9]{3,4}-?[0-9]{4}$"
+        let phoneNumberPredicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        let tempStop = Stop(createdDate: 0, during: 0, phoneNumber: "", user: User.tempUser)
+        if !phoneNumberPredicate.evaluate(with: userNumber) {
+            completion(false, tempStop)
+            return
+        }
+        
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .stop, field: "phoneNumber", compareWith: userNumber, dataType: Stop.self) { result in
+            switch result {
+            case .success(let data):
+                if data.isEmpty {
+                    completion(false, nil)
+                } else {
+                    completion(true, data.first)
                 }
                 
-                if !documents.isEmpty {
-                    completion(true) // 차단된 사용자임
-                } else {
-                    completion(false) // 차단된 사용자가 아님
-                }
+            case .failure(let err):
+                print("checkStopUser: \(err)")
+                completion(false, nil)
             }
+        }
+    }
+    
+    func checkOnline(userId: String, completion: @escaping (Bool) -> ()) {
+        FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { result in
+            switch result {
+            case .success(let user):
+                completion(user?.isOnline ?? false)
+                
+            case .failure(let err):
+                print("checkOnline: \(err)")
+            }
+        }
+    }
+    
+    func updateOnline(userId: String, isOnline: Bool, completion: (() -> Void)? = nil) {
+        FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: "isOnline", data: isOnline) { result in
+            switch result {
+            case .success:
+                completion?()
+                
+            case .failure(let err):
+                print("updateOnline: \(err)")
+            }
+        }
     }
 }
