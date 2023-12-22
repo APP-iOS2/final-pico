@@ -21,13 +21,15 @@ final class TabBarController: UITabBarController {
     
     private func configureTabBar() {
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
-        let chattingViewController = UINavigationController(rootViewController: RoomTableListController())
+        let chattingViewController = UINavigationController(rootViewController: MailViewController())
+//        let chattingViewController = UINavigationController(rootViewController: RoomTableListController())
         let likeViewController = UINavigationController(rootViewController: LikeViewController())
         let entViewController = UINavigationController(rootViewController: EntViewController())
         let mypageViewController = UINavigationController(rootViewController: MypageViewController())
         
         homeViewController.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house.fill"), tag: 0)
-        chattingViewController.tabBarItem = UITabBarItem(title: "채팅", image: UIImage(systemName: "envelope.fill"), tag: 1)
+        chattingViewController.tabBarItem = UITabBarItem(title: "쪽지", image: UIImage(systemName: "envelope.fill"), tag: 1)
+//        chattingViewController.tabBarItem = UITabBarItem(title: "채팅", image: UIImage(systemName: "envelope.fill"), tag: 1)
         likeViewController.tabBarItem = UITabBarItem(title: "좋아요", image: UIImage(systemName: "heart.fill"), tag: 2)
         entViewController.tabBarItem = UITabBarItem(title: "게임", image: UIImage(systemName: "gamecontroller.fill"), tag: 3)
         mypageViewController.tabBarItem = UITabBarItem(title: "마이", image: UIImage(systemName: "person.fill"), tag: 4)

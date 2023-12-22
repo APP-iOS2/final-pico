@@ -83,7 +83,7 @@ final class SignViewController: UIViewController {
     private let pictureManager = PictureService()
     private let locationManager = LocationService()
     
-    private let signType: SignType
+    private var signType: SignType
     
     init(signType: SignType = .none) {
         self.signType = signType
@@ -104,10 +104,15 @@ final class SignViewController: UIViewController {
         makeConstraints()
         configRx()
         locationManager.configLocation()
+        configLoad()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        signType = .none
+    }
+    
+    private func configLoad() {
         if isShowSignTypeAlert() {
             showSignTypeAlert()
         }
@@ -122,8 +127,9 @@ final class SignViewController: UIViewController {
     }
     
     private func showSignTypeAlert() {
-        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: signType.textString, confirmButtonText: "확인", comfrimAction: {
-            
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: signType.textString, confirmButtonText: "확인", comfrimAction: { [weak self] in
+            guard let self else { return }
+            dismiss(animated: true)
         })
     }
     
