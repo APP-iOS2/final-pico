@@ -21,11 +21,12 @@ final class ChattingViewModel {
     private let disposeBag = DisposeBag()
     
     private let dbRef = Firestore.firestore()
-    
+    private let user = UserDefaultsManager.shared.getUserData()
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
     var lastDocumentSnapshot: DocumentSnapshot?
     var startIndex = 0
-    var roomId: String?
+    var roomId = UserDefaults.standard.string(forKey: UserDefaultsManager.Key.roomId.rawValue) ?? ""
+    var opponentName = ""
     
     struct Input {
         let listLoad: Observable<Void>
@@ -51,16 +52,11 @@ final class ChattingViewModel {
             }
             .disposed(by: disposeBag)
         
-        let didChattingeset = isChattingEmptyPublisher.asObservable()
-            .map { result in
-                return result
-            }
-        
         return Output(reloadChattingTableView: reloadChattingTableViewPublisher.asObservable())
     }
     
     func loadNextChattingPage() {
-        let ref = dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId)
+        let ref = dbRef.collection(Collections.chatting.name).document(user.userId)
         
         let endIndex = startIndex + itemsPerPage
         
@@ -71,8 +67,11 @@ final class ChattingViewModel {
                     print(error)
                     return
                 }
+                
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Chatting.self).senderChatting?.filter({ $0.roomId == self.roomId }) {
+                    if let datas = try? document.data(as: Chatting.self).senderChatting?
+                        .filter({ $0.messageType == .send })
+                        .filter({ $0.roomId == self.roomId}) {
                         let sorted = datas.sorted {
                             return $0.sendedDate > $1.sendedDate
                         }
@@ -80,12 +79,12 @@ final class ChattingViewModel {
                             return
                         }
                         let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        print("send: \(currentPageDatas)")
                         sendChattingList += currentPageDatas
                         
                         if startIndex == 0 {
                             reloadChattingTableViewPublisher.onNext(())
                         }
-                        
                         startIndex += currentPageDatas.count
                     }
                 } else {
@@ -93,7 +92,9 @@ final class ChattingViewModel {
                 }
                 
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Chatting.self).receiverChatting?.filter({ $0.roomId == self.roomId }) {
+                    if let datas = try? document.data(as: Chatting.self).receiverChatting?
+                        .filter({ $0.messageType == .receive})
+                        .filter({ $0.roomId == self.roomId}) {
                         let sorted = datas.sorted {
                             return $0.sendedDate < $1.sendedDate
                         }
@@ -102,11 +103,10 @@ final class ChattingViewModel {
                         }
                         let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         receiveChattingList += currentPageDatas
-                        
+                        print("receive: \(receiveChattingList)")
                         if startIndex == 0 {
                             reloadChattingTableViewPublisher.onNext(())
                         }
-                        
                         startIndex += currentPageDatas.count
                     }
                 } else {
@@ -128,47 +128,62 @@ final class ChattingViewModel {
 }
 // MARK: - saveChatting
 extension ChattingViewModel {
-    
     func updateRoomData(data: Chatting.ChattingInfo) {
-        let senderRoomData = Room.RoomInfo(roomId: data.roomId, opponentId: data.receiveUserId, lastMessage: data.message, sendedDate: data.sendedDate)
+        let senderRoomData = Room.RoomInfo(id: data.roomId, userId: user.userId, opponentId: data.receiveUserId, lastMessage: data.message, sendedDate: data.sendedDate)
         
-        let receiverRoomData = Room.RoomInfo(roomId: data.roomId, opponentId: UserDefaultsManager.shared.getUserData().userId, lastMessage: data.message, sendedDate: data.sendedDate)
+        let receiverRoomData = Room.RoomInfo(id: data.roomId, userId: data.receiveUserId, opponentId: user.userId, lastMessage: data.message, sendedDate: data.sendedDate)
         
-        let receiverData = Chatting.ChattingInfo(roomId: data.roomId, sendUserId: data.sendUserId, receiveUserId: data.receiveUserId, message: data.message, sendedDate: data.sendedDate, isReading: false, messageTye: .receive)
+        let receiverData = Chatting.ChattingInfo(roomId: data.roomId, sendUserId: data.sendUserId, receiveUserId: data.receiveUserId, message: data.message, sendedDate: data.sendedDate, isReading: false, messageType: .receive)
         
-        DispatchQueue.global().async {
-            // sender
-            self.dbRef.collection(Collections.room.name).document(UserDefaultsManager.shared.getUserData().userId).updateData([
-                "room": FieldValue.arrayUnion([senderRoomData.asDictionary()])
-            ])
-            
-            self.dbRef.collection(Collections.chatting.name).document(UserDefaultsManager.shared.getUserData().userId).updateData([
-                "senderChatting": FieldValue.arrayUnion([data.asDictionary()])
-            ])
-            
-            // receiver
-            self.dbRef.collection(Collections.chatting.name).document(data.receiveUserId).updateData([
-                "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
-            ])
-            
-            self.dbRef.collection(Collections.chatting.name).document(data.receiveUserId).updateData([
-                "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
-            ])
+        FirestoreService.shared.loadDocument(collectionId: .room, documentId: self.user.userId, dataType: Room.self) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                guard let data else { return }
+                var sameRoom = data.room?.filter({$0.id == senderRoomData.id})
+                if sameRoom != nil {
+                    self.dbRef.collection(Collections.room.name).document(user.userId).updateData([
+                        "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                    ])
+                    
+                    self.dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
+                        "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                    ])
+                }
+                self.dbRef.collection(Collections.room.name).document(user.userId).updateData([
+                    "room": FieldValue.arrayUnion([senderRoomData.asDictionary()])
+                ])
+                
+                self.dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
+                    "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
+                ])
+                // chatting
+                self.dbRef.collection(Collections.chatting.name).document(user.userId).updateData([
+                    "senderChatting": FieldValue.arrayUnion([data.asDictionary()])
+                ])
+                
+                self.dbRef.collection(Collections.chatting.name).document(senderRoomData.opponentId).updateData([
+                    "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
+                ])
+            case .failure(let error):
+                print("3")
+                print("룸 불러오기 실패: \(error)")
+            }
         }
     }
     
     func saveChattingData(receiveUserId: String, message: String) {
         
-        let senderUser = UserDefaultsManager.shared.getUserData()
         let roomId = UUID().uuidString
-        print("이 코드 부름")
+        
         DispatchQueue.global().async {
+            
             self.saveSender(roomId: roomId, receiveUserId: receiveUserId, message: message)
             self.saveReceiver(roomId: roomId, receiveUserId: receiveUserId, message: message)
             
-            guard let senderMbti = MBTIType(rawValue: senderUser.mbti) else { return }
+            guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
             
-            let receiverNoti = Noti(receiveId: receiveUserId, sendId: senderUser.userId, name: senderUser.nickName, birth: senderUser.birth, imageUrl: senderUser.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+            let receiverNoti = Noti(receiveId: receiveUserId, sendId: self.user.userId, name: self.user.nickName, birth: self.user.birth, imageUrl: self.user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
             
             FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
         }
@@ -176,19 +191,20 @@ extension ChattingViewModel {
     }
     
     private func saveSender(roomId: String, receiveUserId: String, message: String) {
-        let senderUser = UserDefaultsManager.shared.getUserData()
         
         let matchingReceiveMessages: [String: Any] = [
             "roomId": roomId,
             "sendUserId": receiveUserId,
-            "receiveUserId": senderUser.userId,
+            "receiveUserId": user.userId,
             "message": message,
             "sendedDate": Date().timeIntervalSince1970,
-            "isReading": false
+            "isReading": false,
+            "messageType": "receive"
         ]
         
         let sendRoomMessages: [String: Any] = [
-            "roomId": roomId,
+            "id": roomId,
+            "userId": self.user.userId,
             "opponentId": receiveUserId,
             "lastMessage": message,
             "sendedDate": Date().timeIntervalSince1970
@@ -196,9 +212,9 @@ extension ChattingViewModel {
         
         DispatchQueue.global().async {
             
-            self.dbRef.collection(Collections.room.name).document(senderUser.userId).setData(
+            self.dbRef.collection(Collections.room.name).document(self.user.userId).setData(
                 [
-                    "userId": senderUser.userId,
+                    "userId": self.user.userId,
                     "room": FieldValue.arrayUnion([sendRoomMessages])
                 ], merge: true) { error in
                     if let error = error {
@@ -206,9 +222,9 @@ extension ChattingViewModel {
                     }
                 }
             
-            self.dbRef.collection(Collections.chatting.name).document(senderUser.userId).setData(
+            self.dbRef.collection(Collections.chatting.name).document(self.user.userId).setData(
                 [
-                    "userId": senderUser.userId,
+                    "userId": self.user.userId,
                     "receiverChatting": FieldValue.arrayUnion([matchingReceiveMessages])
                 ], merge: true) { error in
                     if let error = error {
@@ -219,22 +235,22 @@ extension ChattingViewModel {
     }
     
     private func saveReceiver(roomId: String, receiveUserId: String, message: String) {
-        let senderUser = UserDefaultsManager.shared.getUserData()
-        let receiveDBRef = dbRef.collection(Collections.chatting.name).document(receiveUserId)
         
         let receiveMessages: [String: Any] = [
             "id": UUID().uuidString,
             "roomId": roomId,
-            "sendUserId": senderUser.userId,
+            "sendUserId": user.userId,
             "receiveUserId": receiveUserId,
             "message": message,
             "sendedDate": Date().timeIntervalSince1970,
-            "isReading": false
+            "isReading": false,
+            "messageType": "receive"
         ]
         
         let receiveRoomMessages: [String: Any] = [
-            "roomId": roomId,
-            "opponentId": senderUser.userId,
+            "id": roomId,
+            "userId": receiveUserId,
+            "opponentId": user.userId,
             "lastMessage": message,
             "sendedDate": Date().timeIntervalSince1970
         ]

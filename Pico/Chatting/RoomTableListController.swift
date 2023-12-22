@@ -97,10 +97,11 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
         let room = viewModel.roomList[safe: indexPath.row]
         if let room = room {
             chattingDetailView.opponentId = room.opponentId
-            chattingDetailView.opponentName = viewModel.opponentName
-            chattingDetailView.roomId = room.roomId
-            let chatViewModel = ChattingViewModel()
-            chatViewModel.roomId = room.roomId
+            chattingDetailView.roomId = room.id
+            chattingDetailView.opponentName = UserDefaults.standard.string(forKey: UserDefaultsManager.Key.opponentName.rawValue) ?? ""
+            let chattingModel = ChattingViewModel()
+            chattingModel.roomId = room.id
+            UserDefaults.standard.set(chattingModel.roomId, forKey: UserDefaultsManager.Key.roomId.rawValue)
         }
         chattingDetailView.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(chattingDetailView, animated: true)
@@ -114,8 +115,7 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
 // MARK: - bind
 extension RoomTableListController {
     private func bind() {
-        
-        
+                
         let input = RoomViewModel.Input(
             listLoad: loadDataPublsher,
             refresh: refreshPublisher,

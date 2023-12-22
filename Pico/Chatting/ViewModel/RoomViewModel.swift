@@ -30,7 +30,6 @@ final class RoomViewModel {
     
     private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
     var startIndex = 0
-    var opponentName = ""
     
     struct Input {
         let listLoad: Observable<Void>
@@ -104,7 +103,6 @@ final class RoomViewModel {
                     print(error)
                     return
                 }
-                
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Room.self).room {
                         let sorted = datas.sorted {

@@ -12,10 +12,6 @@ import RxCocoa
 
 final class ChattingDetailViewController: UIViewController {
     
-    var opponentId: String = ""
-    var opponentName: String = ""
-    var roomId: String = ""
-    
     private let viewModel = ChattingViewModel()
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
@@ -25,8 +21,13 @@ final class ChattingDetailViewController: UIViewController {
     private let footerView = FooterView()
     private var isRefresh = false
     
+    var opponentId: String = ""
+    var opponentName: String = ""
+    var roomId: String = ""
+    
     private let chattingView: UITableView = {
         let uiTableView = UITableView()
+        uiTableView.backgroundColor = .picoGray
         return uiTableView
     }()
     private let sendStack: UIStackView = {
@@ -58,12 +59,13 @@ final class ChattingDetailViewController: UIViewController {
     
     override func viewDidLoad() {
        super.viewDidLoad()
+        bind()
+        configViewController()
         addViews()
         makeConstraints()
-        configViewController()
         configTableView()
         configRefresh()
-        bind()
+        configSendButton()
         loadDataPublsher.onNext(())
     }
     
@@ -87,7 +89,7 @@ final class ChattingDetailViewController: UIViewController {
         
         chattingView.snp.makeConstraints { make in
             make.top.trailing.leading.equalTo(safeArea)
-            make.bottom.equalTo(sendStack.snp.top)
+            make.bottom.equalTo(sendStack.snp.top).offset(-10)
         }
     }
     
@@ -106,7 +108,7 @@ final class ChattingDetailViewController: UIViewController {
                 if let text = self.chatTextField.text {
                     // sender: 로그인한 사람, recevie 받는 사람
                     print(text)
-                    self.viewModel.updateRoomData(data: Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageTye: .send))
+                    self.viewModel.updateRoomData(data: Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageType: .send))
                     print("눌려짐")
                     chatTextField.text = ""
                 }
@@ -155,8 +157,8 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
         chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
         
         guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
-        
-        switch item.messageTye {
+        print(item)
+        switch item.messageType {
         case .receive:
             let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
             receiveCell.config(chatting: item)

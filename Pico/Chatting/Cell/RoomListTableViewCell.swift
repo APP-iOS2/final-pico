@@ -112,10 +112,11 @@ final class RoomListTableViewCell: UITableViewCell {
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
                     nameLabel.text = userData.nickName
-                    viewModel.opponentName = userData.nickName
-                    print(viewModel.opponentName)
                     mbtiLabelView.isHidden = false
                     mbtiLabelView.setMbti(mbti: userData.mbti)
+                    let chattingModel = ChattingViewModel()
+                    chattingModel.opponentName = userData.nickName
+                    UserDefaults.standard.set(chattingModel.opponentName, forKey: UserDefaultsManager.Key.opponentName.rawValue)
                     guard let imageURL = userData.imageURLs[safe: 0] else { return }
                     guard let url = URL(string: imageURL) else { return }
                     userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
