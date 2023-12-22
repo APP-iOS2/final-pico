@@ -48,12 +48,12 @@ final class CheckService {
         Loading.showLoading()
         
         self.dbRef.collection(Collections.users.name).whereField("phoneNumber", isEqualTo: userNumber).getDocuments { snapShot, err in
-            guard err != nil, let documents = snapShot?.documents else {
+            guard err == nil else {
                 completion("서버에 문제가 있습니다.", false)
                 return
             }
             
-            guard documents.first != nil else {
+            guard let documents = snapShot?.documents, documents.first != nil else {
                 completion("사용가능한 전화번호 입니다.", true)
                 return
             }
@@ -71,16 +71,16 @@ final class CheckService {
             
             if matches.isEmpty {
                 self.dbRef.collection(Collections.users.name).whereField("nickName", isEqualTo: name).getDocuments { snapShot, err in
-                    guard err != nil, let documents = snapShot?.documents else {
+                    guard err == nil else {
                         print("checkNickName: \(String(describing: err))")
                         return
                     }
                     
-                    guard documents.first != nil else {
+                    guard let documents = snapShot?.documents, documents.first != nil else {
                         completion("사용가능한 닉네임이에요!", true)
                         return
                     }
-                    completion("이미 포함된 닉네임이네요..", false)
+                    completion("이미 사용 중인 닉네임이네요..", false)
                 }
             } else {
                 completion("연속된 자음 또는 모음이 포함되어 있어요! 제대로 지어주세요 😁", false)
