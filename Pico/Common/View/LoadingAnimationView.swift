@@ -90,21 +90,16 @@ final class LoadingAnimationView: UIView {
     }
     
     func animateNow() {
-        let jumpDuration: Double = 0.30
-        let delayDuration: Double = 1.25
-        let totalDuration: Double = delayDuration + jumpDuration * 2
-        
-        let jumpRelativeDuration: Double = jumpDuration / totalDuration
         layoutIfNeeded()
         
         for (index, circle) in circles.enumerated() {
-            let delay = jumpDuration * 2 * TimeInterval(index) / TimeInterval(circles.count)
-            UIView.animateKeyframes(withDuration: totalDuration, delay: delay, options: [.repeat], animations: {
-                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: jumpRelativeDuration) {
-                    circle.frame.origin.y -= 30
+            let delay = TimeInterval(index) / TimeInterval(circles.count)
+            UIView.animateKeyframes(withDuration: 1, delay: delay, options: [.repeat], animations: {
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
+                    circle.frame.origin.y -= 25
                 }
-                UIView.addKeyframe(withRelativeStartTime: 1, relativeDuration: jumpRelativeDuration) {
-                    circle.frame.origin.y += 30
+                UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
+                    circle.frame.origin.y += 25
                 }
             })
         }
