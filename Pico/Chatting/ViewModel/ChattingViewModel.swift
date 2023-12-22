@@ -67,11 +67,10 @@ final class ChattingViewModel {
                     print(error)
                     return
                 }
-                
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Chatting.self).senderChatting?
-                        .filter({ $0.messageType == .send })
-                        .filter({ $0.roomId == self.roomId}) {
+                        .filter({ $0.roomId == self.roomId }) {
+                        print("datas: \(datas)")
                         let sorted = datas.sorted {
                             return $0.sendedDate > $1.sendedDate
                         }
@@ -79,9 +78,8 @@ final class ChattingViewModel {
                             return
                         }
                         let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                        print("send: \(currentPageDatas)")
                         sendChattingList += currentPageDatas
-                        
+                        print(sendChattingList)
                         if startIndex == 0 {
                             reloadChattingTableViewPublisher.onNext(())
                         }
@@ -140,33 +138,46 @@ extension ChattingViewModel {
             switch result {
             case .success(let data):
                 guard let data else { return }
-                var sameRoom = data.room?.filter({$0.id == senderRoomData.id})
-                if sameRoom != nil {
-                    self.dbRef.collection(Collections.room.name).document(user.userId).updateData([
-                        "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                if let room = data.room {
+                    var checkRoom = room.firstIndex(where: {$0.id == senderRoomData.id})
+                    var sameRoom: Room.RoomInfo? {
+                        if checkRoom != nil {
+                            return room[checkRoom ?? 0]
+                        }
+                        return nil
+                    }
+                    
+                    if sameRoom != nil {
+                        // ------- 데이터 삭제가 안됨
+                        // 일어나서 할일
+                        // 받은 채팅 화면에 띄우기
+                        // 오류 잡기
+                        dbRef.collection(Collections.room.name).document(user.userId).updateData([
+                            "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                        ])
+                        
+                        dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
+                            "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                        ])
+                    }
+                    dbRef.collection(Collections.room.name).document(user.userId).updateData([
+                        "room": FieldValue.arrayUnion([senderRoomData.asDictionary()])
                     ])
                     
-                    self.dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
-                        "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                    dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
+                        "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
+                    ])
+                    
+                    // chatting
+                    self.dbRef.collection(Collections.chatting.name).document(user.userId).updateData([
+                        "senderChatting": FieldValue.arrayUnion([data.asDictionary()])
+                    ])
+                    
+                    self.dbRef.collection(Collections.chatting.name).document(senderRoomData.opponentId).updateData([
+                        "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
                     ])
                 }
-                self.dbRef.collection(Collections.room.name).document(user.userId).updateData([
-                    "room": FieldValue.arrayUnion([senderRoomData.asDictionary()])
-                ])
-                
-                self.dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
-                    "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
-                ])
-                // chatting
-                self.dbRef.collection(Collections.chatting.name).document(user.userId).updateData([
-                    "senderChatting": FieldValue.arrayUnion([data.asDictionary()])
-                ])
-                
-                self.dbRef.collection(Collections.chatting.name).document(senderRoomData.opponentId).updateData([
-                    "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
-                ])
             case .failure(let error):
-                print("3")
                 print("룸 불러오기 실패: \(error)")
             }
         }
