@@ -13,6 +13,7 @@ import CoreLocation
 
 final class HomeViewController: BaseViewController {
     
+    var isHomeVisible: Bool = false
     var removedView: [UIView] = []
     var userCards: [User] = []
     var users = BehaviorRelay<[User]>(value: [])
@@ -60,6 +61,16 @@ final class HomeViewController: BaseViewController {
         loadCards()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        isHomeVisible = true
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        isHomeVisible = false
+    }
+    
     private func bind() {
         viewModel.users
             .bind(to: users)
@@ -98,14 +109,18 @@ final class HomeViewController: BaseViewController {
         } else {
             mbti = HomeViewModel.filterMbti
         }
-        Observable.combineLatest(users, myLikes, viewModel.blocks)
-            .map { [self] users, myLikes, blocks in
+        
+        let combinedObservable = Observable.combineLatest(users, myLikes, viewModel.blocks)
+        
+        combinedObservable
+            .flatMap { [weak self] users, myLikes, blocks -> Observable<[User]> in
                 let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
                 let myMbti = Set(mbti.map { $0.rawValue })
                 let myBlocks = Set(blocks.map { $0.userId })
                 print("내가 평가한 유저: \(myLikes.count)명")
                 print("내가 차단한 유저: \(blocks.count)명")
-                return users.filter { user in
+                
+                let filteredUsers = users.filter { user in
                     var maxAge: Int = HomeViewModel.filterAgeMax
                     var maxDistance: Int = HomeViewModel.filterDistance
                     if HomeViewModel.filterAgeMax >= 61 {
@@ -115,10 +130,11 @@ final class HomeViewController: BaseViewController {
                         maxDistance = 10000
                     }
                     let filterAge = (HomeViewModel.filterAgeMin..<maxAge + 1).contains(user.age)
-                    let distance = viewModel.calculateDistance(user: user)
+                    let distance = self?.viewModel.calculateDistance(user: user) ?? 0.0
                     let filterDistance = (0..<maxDistance + 1).contains(Int(distance / 1000))
                     return !myLikedUserIds.contains(user.id) && myMbti.contains(user.mbti.rawValue) && filterAge && filterDistance && !myBlocks.contains(user.id)
                 }
+                return Observable.just(filteredUsers)
             }
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] (filteredUsers: [User]) in
@@ -134,12 +150,36 @@ final class HomeViewController: BaseViewController {
                     guard let self = self else { return }
                     addEmptyView()
                     loadingView.removeFromSuperview()
+                    if view.subviews.count <= 3 {
+                        goToFilterAlert()
+                    }
+                    print(view.subviews.count)
                 }
                 addSubView()
                 addGuideView()
                 makeConstraints()
             })
             .disposed(by: disposeBag)
+    }
+
+    func goToFilterAlert() {
+        guard isHomeVisible else { return }
+        viewModel.showHomeCustomAlert(
+            alertType: .canCancel,
+            titleText: "선호 설정으로 이동할까요?",
+            messageText: "현재 설정으로 더 이상 찾을 수 있는 친구가 없어요.",
+            cancelButtonText: "취소",
+            confirmButtonText: "확인",
+            comfrimAction: { [weak self] in
+                guard let self = self else { return }
+                let viewController = HomeFilterViewController()
+                viewController.homeViewController = self
+                viewController.hidesBottomBarWhenPushed = true
+                addChild(viewController)
+                navigationController?.pushViewController(viewController, animated: true)
+            },
+            viewController: self
+        )
     }
     
     func addUserCards() {
@@ -187,8 +227,7 @@ final class HomeViewController: BaseViewController {
     }
     
     private func configButtons() {
-        emptyView.reLoadButton.addTarget(self, action: #selector(reloadView), for: .touchUpInside)
-        emptyView.goToFilterView.addTarget(self, action: #selector(tappedFilterButton), for: .touchUpInside)
+        emptyView.findNewFriendButton.addTarget(self, action: #selector(reloadView), for: .touchUpInside)
         emptyView.backUser.addTarget(self, action: #selector(tappedPickBackButton), for: .touchUpInside)
     }
     
@@ -252,7 +291,7 @@ final class HomeViewController: BaseViewController {
                 }
             )
         } else {
-            showCustomAlert(alertType: .onlyConfirm, titleText: "이전 친구를 찾을 수 없습니다.", messageText: "매칭된 상대는 되돌릴 수 없습니다.", confirmButtonText: "확인")
+            showCustomAlert(alertType: .onlyConfirm, titleText: "이전 친구를 찾을 수 없습니다.", messageText: "💡 매칭된 상대는 되돌릴 수 없습니다.", confirmButtonText: "확인")
         }
     }
     

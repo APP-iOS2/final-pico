@@ -251,8 +251,8 @@ final class HomeUserCardViewController: UIViewController {
     }
     
     private func configButtons() {
-        likeButton.addTarget(self, action: #selector(tappedLikeButton), for: .touchUpInside)
-        disLikeButton.addTarget(self, action: #selector(tappedDisLikeButton), for: .touchUpInside)
+        likeButton.addTarget(self, action: #selector(tappedLikeButtonObjc), for: .touchUpInside)
+        disLikeButton.addTarget(self, action: #selector(tappedDisLikeButtonObjc), for: .touchUpInside)
         pickBackButton.addTarget(self, action: #selector(tappedPickBackButton), for: .touchUpInside)
     }
     
@@ -275,7 +275,7 @@ final class HomeUserCardViewController: UIViewController {
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(touchGesture(_:)))
         self.view.addGestureRecognizer(panGesture)
     }
-        
+    
     private func loadUserImages() {
         for (index, url) in user.imageURLs.enumerated() {
             let imageView = UIImageView()
@@ -312,20 +312,6 @@ final class HomeUserCardViewController: UIViewController {
         return  currentUserLoc.distance(from: otherUserLoc)
     }
     
-    private func notificationServiceForPartner(_ pushType: PushNotiType, _ notiType: NotiType) {
-        NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: pushType)
-        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
-        let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
-        FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: noti.id ?? UUID().uuidString, data: noti)
-    }
-    
-    private func notificationServiceForMe(_ pushType: PushNotiType, _ notiType: NotiType) {
-        NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: user.nickName, notiType: pushType)
-        guard let myMbti = MBTIType(rawValue: user.mbti.rawValue) else { return }
-        let noti = Noti(receiveId: currentUser.userId, sendId: user.id, name: user.nickName, birth: user.birth, imageUrl: user.imageURLs[safe: 0] ?? "", notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
-        FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: noti.id ?? UUID().uuidString, data: noti)
-    }
-    
     @objc func touchGesture(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: self.view)
         
@@ -355,19 +341,15 @@ final class HomeUserCardViewController: UIViewController {
                 
                 if currentUser.userId.prefix(4) != Bundle.main.testId {
                     viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
-                        if let likeInfo = result {
-                            if !likeInfo.isMatch {
-                                viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
-                                viewModel.updateMatcingData(user.id)
-                                notificationServiceForPartner(.matching, .matching)
-                                notificationServiceForMe(.matching, .matching)
-                                homeViewController?.removedView.removeLast()
-                            } else {
-                                print("이미 매칭되었습니다.")
-                            }
+                        if result {
+                            viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
+                            viewModel.updateMatcingData(user.id)
+                            viewModel.notificationServiceForPartner(.matching, .matching, user: user, currentUser: currentUser)
+                            viewModel.notificationServiceForMe(.matching, .matching, user: user, currentUser: currentUser)
+                            homeViewController?.removedView.removeLast()
                         } else {
                             viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
-                            notificationServiceForPartner(.like, .like)
+                            viewModel.notificationServiceForPartner(.like, .like, user: user, currentUser: currentUser)
                         }
                     }
                 }
@@ -402,7 +384,11 @@ final class HomeUserCardViewController: UIViewController {
             break
         }
     }
-    @objc func tappedLikeButton() {
+    @objc func tappedLikeButtonObjc() {
+        tappedLikeButton()
+    }
+    
+    func tappedLikeButton() {
         self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.likeLabel.alpha = 1
         HomeUserCardViewModel.cardCounting += 1
@@ -412,23 +398,20 @@ final class HomeUserCardViewController: UIViewController {
         }
         if currentUser.userId.prefix(4) != Bundle.main.testId {
             viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
-                if let likeInfo = result {
-                    if !likeInfo.isMatch {
-                        viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
-                        viewModel.updateMatcingData(user.id)
-                        notificationServiceForPartner(.matching, .matching)
-                        notificationServiceForMe(.matching, .matching)
-                        homeViewController?.removedView.removeLast()
-                    } else {
-                        print("이미 매칭 되었습니다.")
-                    }
+                if result {
+                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
+                    viewModel.updateMatcingData(user.id)
+                    viewModel.notificationServiceForPartner(.matching, .matching, user: user, currentUser: currentUser)
+                    viewModel.notificationServiceForMe(.matching, .matching, user: user, currentUser: currentUser)
+                    homeViewController?.removedView.removeLast()
+
                 } else {
                     viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
-                    notificationServiceForPartner(.like, .like)
+                    viewModel.notificationServiceForPartner(.like, .like, user: user, currentUser: currentUser)
                 }
             }
         }
-
+        
         UIView.animate(withDuration: 0.5) {
             self.view.center.x += 1000
         } completion: { _ in
@@ -436,7 +419,11 @@ final class HomeUserCardViewController: UIViewController {
         }
     }
     
-    @objc func tappedDisLikeButton() {
+    @objc func tappedDisLikeButtonObjc() {
+        tappedDisLikeButton()
+    }
+    
+    func tappedDisLikeButton() {
         self.homeViewController?.removedView.append(self.view)
         self.homeViewController?.passLabel.alpha = 1
         HomeUserCardViewModel.cardCounting += 1
@@ -486,7 +473,7 @@ final class HomeUserCardViewController: UIViewController {
                 }
             )
         } else {
-            showCustomAlert(alertType: .onlyConfirm, titleText: "첫번째 추천입니다.", messageText: "", confirmButtonText: "확인")
+            showCustomAlert(alertType: .onlyConfirm, titleText: "이전 친구를 찾을 수 없습니다.", messageText: "💡 매칭된 상대는 되돌릴 수 없습니다.", confirmButtonText: "확인")
         }
     }
     
@@ -509,6 +496,12 @@ final class HomeUserCardViewController: UIViewController {
     @objc func tappedInfoButton() {
         let viewController = UserDetailViewController()
         viewController.viewModel = UserDetailViewModel(user: user, isHome: true)
+        viewController.onLike = { [weak self] in
+            self?.tappedLikeButtonObjc()
+        }
+        viewController.onDisLike = { [weak self] in
+            self?.tappedDisLikeButton()
+        }
         navigationController?.pushViewController(viewController, animated: true)
     }
     

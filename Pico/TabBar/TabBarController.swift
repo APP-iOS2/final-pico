@@ -61,4 +61,15 @@ extension TabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return CustomTransitionAnimator(viewControllers: tabBarController.viewControllers)
     }
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if let selectedIndex = tabBarController.viewControllers?.firstIndex(of: viewController), selectedIndex == 0 {
+            if let homeViewController = tabBarController.viewControllers?[selectedIndex] as? UINavigationController {
+                if let rootViewController = homeViewController.viewControllers.first as? HomeViewController {
+                    rootViewController.reloadView()
+                }
+            }
+        }
+    }
+
 }
