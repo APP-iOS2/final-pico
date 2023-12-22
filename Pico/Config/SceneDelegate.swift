@@ -51,11 +51,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
-        
         print("sceneDidDisconnect")
         CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: false) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -65,8 +60,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         print("sceneDidBecomeActive")
         NotificationService.shared.displayResetBadge()
         
@@ -86,17 +79,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         
                         if let token {
                             if data.fcmToken == token {
-                                print("================= sceneDidBecomeActive 같은폰1111111111")
-                                CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: true, completion: nil)
+                                equalTotoken()
                                 
                             } else {
-                                print("================= sceneDidBecomeActive 다른폰222222222")
                                 UserDefaultsManager.shared.removeAll()
                                 changeRootView(UINavigationController(rootViewController: SignViewController(signType: .other)), animated: true)
                             }
                         } else {
                             print("================= sceneDidBecomeActive 토큰 없음")
-                            UserDefaultsManager.shared.removeAll()
                         }
                     }
                 } else {
@@ -110,23 +100,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
-        print("sceneWillResignActive")
     }
     
     func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
-        print("sceneWillEnterForeground")
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
-        print("sceneDidEnterBackground")
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
-        
         CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: false) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 print("백그라운드로 이동하셨습니다.\(UserDefaultsManager.shared.getUserData().phoneNumber) 번호의 세션이 삭제되었습니다.")
@@ -143,13 +122,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 guard let stop else { return }
                 
                 let currentDate = Date()
-                let stopDate = Date(timeIntervalSince1970: stop.createdDate)
-                let stopDuring = stop.during
-                let stopUser = stop.user
-                
-                if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
+                if let resumedDate = stop.endDate {
                     if currentDate > resumedDate {
-                        FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { [weak self] result in
+                        FirestoreService.shared.saveDocument(collectionId: .users, documentId: stop.user.id, data: stop.user) { [weak self] result in
                             guard let self else { return }
                             
                             switch result {
@@ -170,7 +145,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         
                     } else {
                         UserDefaultsManager.shared.removeAll()
-                        rootViewController = UINavigationController(rootViewController: SignViewController(signType: .stop(during: stop.during, endDate: resumedDate.timeIntervalSince1970.toString(dateSeparator: .dot))))
+                        rootViewController = UINavigationController(rootViewController: SignViewController(signType: .stop(during: stop.during, endDate: stop.endDateString)))
                         configRootViewController(rootViewController ?? UIViewController())
                         return
                     }
@@ -186,7 +161,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         return
                         
                     } else {
-                        print("check")
                         checkLoginUserFromOnline(userId: user.userId) { [weak self] result in
                             guard let self else { return }
                             if result {
@@ -200,28 +174,43 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func checkLoginUserFromOnline(userId: String, completion: @escaping (Bool) -> ()) {
-        CheckService.shared.checkOnline(userId: userId) { [weak self] result in
-            guard let self else { return }
-            
+        CheckService.shared.checkOnline(userId: userId) { result in
             if result {
-                print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
                 if UserDefaultsManager.shared.isLogin() {
-                    print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
-                    // 자동로그인 상태에서 로그인이 되어있을 때
-                    completion(true)
+                    completion(true) // 자동로그인 상태에서 로그인이 되어있을 때
                     return
-                } else {
-                    print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
                 }
             } else {
-                print("isonline: \(result), userdefualts: \(UserDefaultsManager.shared.isLogin())")
                 CheckService.shared.updateOnline(userId: userId, isOnline: true) {
-                    // 자동로그인 상태에서 로그인 가능할때
-                    completion(true)
+                    completion(true) // 자동로그인 상태에서 로그인 가능할때
                     return
                 }
             }
         }
+    }
+    
+    private func equalTotoken() {
+        CheckService.shared.checkBlockUser(userNumber: UserDefaultsManager.shared.getUserData().phoneNumber) { [weak self] result in
+            guard let self else { return }
+
+            if result {
+                UserDefaultsManager.shared.removeAll()
+                changeRootView(UINavigationController(rootViewController: SignViewController(signType: .block)), animated: true)
+                return
+            }
+        }
+
+        CheckService.shared.checkStopUser(userNumber: UserDefaultsManager.shared.getUserData().phoneNumber) { [weak self] result, stop in
+            guard let self else { return }
+
+            if result, let stop {
+                UserDefaultsManager.shared.removeAll()
+                changeRootView(UINavigationController(rootViewController: SignViewController(signType: .stop(during: stop.during, endDate: stop.endDateString))), animated: true)
+                return
+            }
+        }
+        
+        CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: true, completion: nil)
     }
     
     private func configRootViewController(_ viewController: UIViewController) {

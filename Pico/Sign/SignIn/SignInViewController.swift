@@ -216,7 +216,7 @@ extension SignInViewController {
                                     
                                 } else {
                                     Loading.hideLoading()
-                                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "\(stop.during)일 정지된 대상입니다.", confirmButtonText: "확인", comfrimAction: configReset)
+                                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "\(stop.during)일 정지된 대상입니다.\n(\(stop.endDateString)일까지 로그인이 제한됩니다.", confirmButtonText: "확인", comfrimAction: configReset)
                                 }
                             } else {
                                 print("날짜 계산 중에 오류가 발생했습니다.")
