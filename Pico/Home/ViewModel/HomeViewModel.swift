@@ -69,33 +69,37 @@ final class HomeViewModel {
         viewController: UIViewController
     ) {
         if todayDontWatchButtonPressedTime() == .watch {
-            let customAlertViewController = CustomPopupViewController()
-            let stopWatchingToday: UIButton = {
-                let button = UIButton()
-                button.setTitle("오늘 하루 알림 그만보기 Ⓧ", for: .normal)
-                button.titleLabel?.textColor = .picoAlphaWhite
-                button.titleLabel?.font = .picoButtonFont
-                button.contentHorizontalAlignment = .right
-                button.addTarget(self, action: #selector(tappedTodayDontWatchButton(sender:)), for: .touchUpInside)
-                return button
-            }()
-            customAlertViewController.modalPresentationStyle = .overFullScreen
-            customAlertViewController.modalTransitionStyle = .crossDissolve
-            customAlertViewController.alertType = alertType
-            customAlertViewController.titleText = titleText
-            customAlertViewController.messageText = messageText
-            customAlertViewController.cancelButtonText = cancelButtonText ?? "취소"
-            customAlertViewController.confirmButtonText = confirmButtonText
-            customAlertViewController.confirmAction = comfrimAction
-            customAlertViewController.cancelAction = cancelAction
-            customAlertViewController.view.addSubview(stopWatchingToday)
-            stopWatchingToday.snp.makeConstraints { make in
-                make.top.equalTo(customAlertViewController.view.subviews[1].snp.bottom).offset(10)
-                make.trailing.equalTo(customAlertViewController.view.subviews[1].snp.trailing).inset(5)
-                make.height.equalTo(20)
-                make.width.equalTo(stopWatchingToday.titleLabel?.snp.width ?? 200)
+            if let presentedVC = viewController.presentedViewController {
+            } else {
+                let customAlertViewController = CustomPopupViewController()
+                let stopWatchingToday: UIButton = {
+                    let button = UIButton()
+                    button.setTitle("오늘 하루 알림 그만보기 Ⓧ", for: .normal)
+                    button.titleLabel?.textColor = .picoAlphaWhite
+                    button.titleLabel?.font = .picoButtonFont
+                    button.contentHorizontalAlignment = .right
+                    button.addTarget(self, action: #selector(tappedTodayDontWatchButton(sender:)), for: .touchUpInside)
+                    return button
+                }()
+                customAlertViewController.modalPresentationStyle = .overFullScreen
+                customAlertViewController.modalTransitionStyle = .crossDissolve
+                customAlertViewController.alertType = alertType
+                customAlertViewController.titleText = titleText
+                customAlertViewController.messageText = messageText
+                customAlertViewController.cancelButtonText = cancelButtonText ?? "취소"
+                customAlertViewController.confirmButtonText = confirmButtonText
+                customAlertViewController.confirmAction = comfrimAction
+                customAlertViewController.cancelAction = cancelAction
+                customAlertViewController.view.addSubview(stopWatchingToday)
+                stopWatchingToday.snp.makeConstraints { make in
+                    make.top.equalTo(customAlertViewController.view.subviews[1].snp.bottom).offset(10)
+                    make.trailing.equalTo(customAlertViewController.view.subviews[1].snp.trailing).inset(5)
+                    make.height.equalTo(20)
+                    make.width.equalTo(stopWatchingToday.titleLabel?.snp.width ?? 200)
+                }
+                viewController.present(customAlertViewController, animated: true, completion: nil)
             }
-            viewController.present(customAlertViewController, animated: true, completion: nil)
+            
         }
     }
     
@@ -160,7 +164,7 @@ final class HomeViewModel {
                     }
                     DispatchQueue.main.async {
                         self.users.accept(users)
-                        print("문서 유저 로드: \(users.count)명")
+                        print("ㄴ 유저 로드 완료: \(users.count)명")
                     }
                 }
             }
@@ -182,8 +186,6 @@ final class HomeViewModel {
                 } else {
                     print("문서 데이터가 없음")
                 }
-            } else {
-                print("문서가 존재하지 않음")
             }
         }
     }

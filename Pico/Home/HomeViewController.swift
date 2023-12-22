@@ -59,6 +59,7 @@ final class HomeViewController: BaseViewController {
         configButtons()
         bind()
         loadCards()
+        addLoadingView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -117,8 +118,9 @@ final class HomeViewController: BaseViewController {
                 let myLikedUserIds = Set(myLikes.map { $0.likedUserId })
                 let myMbti = Set(mbti.map { $0.rawValue })
                 let myBlocks = Set(blocks.map { $0.userId })
-                print("내가 평가한 유저: \(myLikes.count)명")
-                print("내가 차단한 유저: \(blocks.count)명")
+                print("⎼⎼⎼⎼⎼⎼⎼HOME⎼⎼⎼⎼⎼⎼⎼⎼⎼")
+                print(". 내가 평가한 유저: \(myLikes.count)명")
+                print(". 내가 차단한 유저: \(blocks.count)명")
                 
                 let filteredUsers = users.filter { user in
                     var maxAge: Int = HomeViewModel.filterAgeMax
@@ -139,21 +141,20 @@ final class HomeViewController: BaseViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] (filteredUsers: [User]) in
                 guard let self = self else { return }
-                print("필터후 유저: \(filteredUsers.count)명")
+                print(". 필터후 유저: \(filteredUsers.count)명")
+                print("⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺")
                 userCards = filteredUsers
                 view.subviews.forEach { subView in
                     subView.removeFromSuperview()
                 }
-                addLoadingView()
                 addUserCards()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                     guard let self = self else { return }
                     addEmptyView()
                     loadingView.removeFromSuperview()
                     if view.subviews.count <= 3 {
                         goToFilterAlert()
                     }
-                    print(view.subviews.count)
                 }
                 addSubView()
                 addGuideView()
@@ -197,7 +198,7 @@ final class HomeViewController: BaseViewController {
     private func addLoadingView() {
         loadingView.frame = view.frame
         loadingView.configBackgroundColor()
-        loadingView.animate()
+        loadingView.animateNow()
         view.addSubview(loadingView)
     }
     
