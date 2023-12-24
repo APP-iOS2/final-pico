@@ -107,22 +107,24 @@ final class ChattingDetailViewController: UIViewController {
                 self.sendButton.tappedAnimation()
                 if let text = self.chatTextField.text {
                     // sender: 로그인한 사람, recevie 받는 사람
-                    print(text)
-                    self.viewModel.updateRoomData(data: Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageType: .send))
-                    print("눌려짐")
+                    
+                    self.viewModel.updateRoomData(chattingData: Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageType: .send))
+                    
                     chatTextField.text = ""
                 }
             }
             .disposed(by: disposeBag)
+        chattingView.reloadData()
     }
     
     private func configTableView() {
-        chattingView.register(cell: NotificationTableViewCell.self)
+        chattingView.register(cell: ChattingReceiveListTableViewCell.self)
+        chattingView.register(cell: ChattingSendListTableViewCell.self)
         footerView.frame = CGRect(x: 0, y: 0, width: chattingView.bounds.size.width, height: 80)
         if #available(iOS 15.0, *) {
             chattingView.tableHeaderView = UIView()
         }
-        chattingView.rowHeight = 90
+        chattingView.rowHeight = 40
         chattingView.dataSource = self
         chattingView.delegate = self
     }
@@ -148,6 +150,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sender = viewModel.sendChattingList.count
         let receive = viewModel.receiveChattingList.count
+        print(sender + receive)
         return sender + receive
     }
     

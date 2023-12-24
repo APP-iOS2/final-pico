@@ -126,12 +126,12 @@ final class ChattingViewModel {
 }
 // MARK: - saveChatting
 extension ChattingViewModel {
-    func updateRoomData(data: Chatting.ChattingInfo) {
-        let senderRoomData = Room.RoomInfo(id: data.roomId, userId: user.userId, opponentId: data.receiveUserId, lastMessage: data.message, sendedDate: data.sendedDate)
+    func updateRoomData(chattingData: Chatting.ChattingInfo) {
+        let senderRoomData = Room.RoomInfo(id: chattingData.roomId, userId: user.userId, opponentId: chattingData.receiveUserId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
         
-        let receiverRoomData = Room.RoomInfo(id: data.roomId, userId: data.receiveUserId, opponentId: user.userId, lastMessage: data.message, sendedDate: data.sendedDate)
+        let receiverRoomData = Room.RoomInfo(id: chattingData.roomId, userId: chattingData.receiveUserId, opponentId: user.userId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
         
-        let receiverData = Chatting.ChattingInfo(roomId: data.roomId, sendUserId: data.sendUserId, receiveUserId: data.receiveUserId, message: data.message, sendedDate: data.sendedDate, isReading: false, messageType: .receive)
+        let receiverData = Chatting.ChattingInfo(roomId: chattingData.roomId, sendUserId: chattingData.sendUserId, receiveUserId: chattingData.receiveUserId, message: chattingData.message, sendedDate: chattingData.sendedDate, isReading: false, messageType: .receive)
         
         FirestoreService.shared.loadDocument(collectionId: .room, documentId: self.user.userId, dataType: Room.self) { [weak self] result in
             guard let self = self else { return }
@@ -148,8 +148,6 @@ extension ChattingViewModel {
                     }
                     
                     if sameRoom != nil {
-                        // ------- 데이터 삭제가 안됨
-                        // 일어나서 할일
                         // 받은 채팅 화면에 띄우기
                         // 오류 잡기
                         dbRef.collection(Collections.room.name).document(user.userId).updateData([
@@ -170,7 +168,7 @@ extension ChattingViewModel {
                     
                     // chatting
                     self.dbRef.collection(Collections.chatting.name).document(user.userId).updateData([
-                        "senderChatting": FieldValue.arrayUnion([data.asDictionary()])
+                        "senderChatting": FieldValue.arrayUnion([chattingData.asDictionary()])
                     ])
                     
                     self.dbRef.collection(Collections.chatting.name).document(senderRoomData.opponentId).updateData([
