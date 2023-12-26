@@ -79,7 +79,7 @@ final class ChattingViewModel {
                         }
                         let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         sendChattingList += currentPageDatas
-                        print(sendChattingList)
+                        print(roomId)
                         if startIndex == 0 {
                             reloadChattingTableViewPublisher.onNext(())
                         }
@@ -91,10 +91,9 @@ final class ChattingViewModel {
                 
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Chatting.self).receiverChatting?
-                        .filter({ $0.messageType == .receive})
                         .filter({ $0.roomId == self.roomId}) {
                         let sorted = datas.sorted {
-                            return $0.sendedDate < $1.sendedDate
+                            return $0.sendedDate > $1.sendedDate
                         }
                         if startIndex > sorted.count - 1 {
                             return
@@ -126,12 +125,24 @@ final class ChattingViewModel {
 }
 // MARK: - saveChatting
 extension ChattingViewModel {
+    func updateChattingData(chattingData: Chatting.ChattingInfo) {
+        
+        let receiverData = Chatting.ChattingInfo(roomId: chattingData.roomId, sendUserId: chattingData.sendUserId, receiveUserId: chattingData.receiveUserId, message: chattingData.message, sendedDate: chattingData.sendedDate, isReading: false, messageType: .receive)
+        
+        // chatting
+        self.dbRef.collection(Collections.chatting.name).document(user.userId).updateData([
+            "senderChatting": FieldValue.arrayUnion([chattingData.asDictionary()])
+        ])
+        
+        self.dbRef.collection(Collections.chatting.name).document(chattingData.receiveUserId).updateData([
+            "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
+        ])
+    }
+    
     func updateRoomData(chattingData: Chatting.ChattingInfo) {
         let senderRoomData = Room.RoomInfo(id: chattingData.roomId, userId: user.userId, opponentId: chattingData.receiveUserId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
         
         let receiverRoomData = Room.RoomInfo(id: chattingData.roomId, userId: chattingData.receiveUserId, opponentId: user.userId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
-        
-        let receiverData = Chatting.ChattingInfo(roomId: chattingData.roomId, sendUserId: chattingData.sendUserId, receiveUserId: chattingData.receiveUserId, message: chattingData.message, sendedDate: chattingData.sendedDate, isReading: false, messageType: .receive)
         
         FirestoreService.shared.loadDocument(collectionId: .room, documentId: self.user.userId, dataType: Room.self) { [weak self] result in
             guard let self = self else { return }
@@ -139,7 +150,7 @@ extension ChattingViewModel {
             case .success(let data):
                 guard let data else { return }
                 if let room = data.room {
-                    var checkRoom = room.firstIndex(where: {$0.id == senderRoomData.id})
+                    let checkRoom = room.firstIndex(where: {$0.id == senderRoomData.id})
                     var sameRoom: Room.RoomInfo? {
                         if checkRoom != nil {
                             return room[checkRoom ?? 0]
@@ -148,8 +159,6 @@ extension ChattingViewModel {
                     }
                     
                     if sameRoom != nil {
-                        // 받은 채팅 화면에 띄우기
-                        // 오류 잡기
                         dbRef.collection(Collections.room.name).document(user.userId).updateData([
                             "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
                         ])
@@ -165,15 +174,6 @@ extension ChattingViewModel {
                     dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
                         "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
                     ])
-                    
-                    // chatting
-                    self.dbRef.collection(Collections.chatting.name).document(user.userId).updateData([
-                        "senderChatting": FieldValue.arrayUnion([chattingData.asDictionary()])
-                    ])
-                    
-                    self.dbRef.collection(Collections.chatting.name).document(senderRoomData.opponentId).updateData([
-                        "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
-                    ])
                 }
             case .failure(let error):
                 print("룸 불러오기 실패: \(error)")
@@ -187,8 +187,8 @@ extension ChattingViewModel {
         
         DispatchQueue.global().async {
             
-            self.saveSender(roomId: roomId, receiveUserId: receiveUserId, message: message)
-            self.saveReceiver(roomId: roomId, receiveUserId: receiveUserId, message: message)
+            self.saveChatting(roomId: roomId, receiveUserId: receiveUserId, message: message)
+            self.saveRoom(roomId: roomId, receiveUserId: receiveUserId, message: message)
             
             guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
             
@@ -199,7 +199,7 @@ extension ChattingViewModel {
         print("매칭 데이터 업데이트 완료")
     }
     
-    private func saveSender(roomId: String, receiveUserId: String, message: String) {
+    private func saveChatting(roomId: String, receiveUserId: String, message: String) {
         
         let matchingReceiveMessages: [String: Any] = [
             "roomId": roomId,
@@ -210,40 +210,6 @@ extension ChattingViewModel {
             "isReading": false,
             "messageType": "receive"
         ]
-        
-        let sendRoomMessages: [String: Any] = [
-            "id": roomId,
-            "userId": self.user.userId,
-            "opponentId": receiveUserId,
-            "lastMessage": message,
-            "sendedDate": Date().timeIntervalSince1970
-        ]
-        
-        DispatchQueue.global().async {
-            
-            self.dbRef.collection(Collections.room.name).document(self.user.userId).setData(
-                [
-                    "userId": self.user.userId,
-                    "room": FieldValue.arrayUnion([sendRoomMessages])
-                ], merge: true) { error in
-                    if let error = error {
-                        print("룸 데이터 업데이트 에러: \(error)")
-                    }
-                }
-            
-            self.dbRef.collection(Collections.chatting.name).document(self.user.userId).setData(
-                [
-                    "userId": self.user.userId,
-                    "receiverChatting": FieldValue.arrayUnion([matchingReceiveMessages])
-                ], merge: true) { error in
-                    if let error = error {
-                        print("평가 업데이트 에러: \(error)")
-                    }
-                }
-        }
-    }
-    
-    private func saveReceiver(roomId: String, receiveUserId: String, message: String) {
         
         let receiveMessages: [String: Any] = [
             "id": UUID().uuidString,
@@ -256,23 +222,15 @@ extension ChattingViewModel {
             "messageType": "receive"
         ]
         
-        let receiveRoomMessages: [String: Any] = [
-            "id": roomId,
-            "userId": receiveUserId,
-            "opponentId": user.userId,
-            "lastMessage": message,
-            "sendedDate": Date().timeIntervalSince1970
-        ]
-        
         DispatchQueue.global().async {
             
-            self.dbRef.collection(Collections.room.name).document(receiveUserId).setData(
+            self.dbRef.collection(Collections.chatting.name).document(self.user.userId).setData(
                 [
-                    "userId": receiveUserId,
-                    "room": FieldValue.arrayUnion([receiveRoomMessages])
+                    "userId": self.user.userId,
+                    "receiverChatting": FieldValue.arrayUnion([matchingReceiveMessages])
                 ], merge: true) { error in
                     if let error = error {
-                        print("보내기 업데이트 에러: \(error)")
+                        print("평가 업데이트 에러: \(error)")
                     }
                 }
             
@@ -284,6 +242,47 @@ extension ChattingViewModel {
                 ], merge: true) { error in
                     if let error = error {
                         print("받은사람 보내기 업데이트 에러: \(error)")
+                    }
+                }
+        }
+    }
+    
+    private func saveRoom(roomId: String, receiveUserId: String, message: String) {
+        
+        let sendRoomMessages: [String: Any] = [
+            "id": roomId,
+            "userId": self.user.userId,
+            "opponentId": receiveUserId,
+            "lastMessage": message,
+            "sendedDate": Date().timeIntervalSince1970
+        ]
+        
+        let receiveRoomMessages: [String: Any] = [
+            "id": roomId,
+            "userId": receiveUserId,
+            "opponentId": user.userId,
+            "lastMessage": message,
+            "sendedDate": Date().timeIntervalSince1970
+        ]
+        
+        DispatchQueue.global().async {
+            self.dbRef.collection(Collections.room.name).document(self.user.userId).setData(
+                [
+                    "userId": self.user.userId,
+                    "room": FieldValue.arrayUnion([sendRoomMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("룸 데이터 업데이트 에러: \(error)")
+                    }
+                }
+            
+            self.dbRef.collection(Collections.room.name).document(receiveUserId).setData(
+                [
+                    "userId": receiveUserId,
+                    "room": FieldValue.arrayUnion([receiveRoomMessages])
+                ], merge: true) { error in
+                    if let error = error {
+                        print("보내기 업데이트 에러: \(error)")
                     }
                 }
         }

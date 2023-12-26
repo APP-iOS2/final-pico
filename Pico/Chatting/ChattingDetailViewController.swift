@@ -124,6 +124,7 @@ final class ChattingDetailViewController: UIViewController {
     private func configRefresh() {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
+        refreshControl.backgroundColor = .picoGray
         chattingView.refreshControl = refreshControl
     }
     
@@ -134,11 +135,15 @@ final class ChattingDetailViewController: UIViewController {
                 self.sendButton.tappedAnimation()
                 if let text = self.chatTextField.text {
                     // sender: 로그인한 사람, recevie 받는 사람
-                    self.viewModel.updateRoomData(chattingData: Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageType: .send))
+                    let chatting: Chatting.ChattingInfo = Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageType: .send)
+                    
+                    self.viewModel.updateChattingData(chattingData: chatting)
                     
                     chatTextField.text = ""
                     chattingView.reloadData()
-                    refreshPublisher.onNext(())
+                    //refreshPublisher.onNext(())
+                    
+                    self.viewModel.updateRoomData(chattingData: chatting)
                 }
             }
             .disposed(by: disposeBag)
@@ -202,6 +207,6 @@ extension ChattingDetailViewController {
 }
 
 // 일어나서 할일
-// 채팅 cell 연결 보고 수정하기
+// 채팅 receive cell 연결 보고 수정하기
 // Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기
-// 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음..
+// 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함] 

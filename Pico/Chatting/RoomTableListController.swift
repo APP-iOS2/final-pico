@@ -100,7 +100,6 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
             chattingDetailView.roomId = room.id
             chattingDetailView.opponentName = UserDefaults.standard.string(forKey: UserDefaultsManager.Key.opponentName.rawValue) ?? ""
             let chattingModel = ChattingViewModel()
-            chattingModel.roomId = room.id
             UserDefaults.standard.set(chattingModel.roomId, forKey: UserDefaultsManager.Key.roomId.rawValue)
         }
         chattingDetailView.hidesBottomBarWhenPushed = true
