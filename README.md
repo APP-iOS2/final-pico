@@ -13,7 +13,7 @@
 - MBTI(마이어스-브릭스 유형 지표)를 활용한 매칭 시스템을 통해 사용자 간 커뮤니케이션을 지원하는 APP
 - [사용자 메뉴얼](사용자메뉴얼.pdf)
 - 소개 영상: https://youtu.be/efr4abi4cTk
-- 앱스토어: [앱스토어 링크](https://apps.apple.com/kr/app/%ED%94%BC%EC%BD%94-pico-pick-connect/id6473959557)
+- 앱스토어: https://apps.apple.com/kr/app/%ED%94%BC%EC%BD%94-pico-pick-connect/id6473959557
 
 
 <br/><br/>
