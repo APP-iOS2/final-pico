@@ -70,9 +70,9 @@
   <tr>
     <th><code>푸시알림</code></th>
     <th><code>이상형 월드컵</code></th>
-    <th><code>랜덤박스</code></th>
+    <th><code>랜덤 박스</code></th>
     <th><code>마이페이지</code></th>
-    <th><code>관리자모드</code></th>
+    <th><code>관리자 모드</code></th>
   </tr>
   <tr>
     <td><img src="https://github.com/APPSCHOOL3-iOS/final-pico/assets/74815957/7d29cd39-08db-4f5a-8f3f-73e992fbe283" alt="푸시알림"></td>
