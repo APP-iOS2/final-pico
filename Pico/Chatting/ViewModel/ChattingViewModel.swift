@@ -26,7 +26,6 @@ final class ChattingViewModel {
     var lastDocumentSnapshot: DocumentSnapshot?
     var startIndex = 0
     var roomId = UserDefaults.standard.string(forKey: UserDefaultsManager.Key.roomId.rawValue) ?? ""
-    var opponentName = ""
     
     struct Input {
         let listLoad: Observable<Void>
@@ -67,10 +66,10 @@ final class ChattingViewModel {
                     print(error)
                     return
                 }
+                print("불릴때 \(roomId)")
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Chatting.self).senderChatting?
                         .filter({ $0.roomId == self.roomId }) {
-                        print("datas: \(datas)")
                         let sorted = datas.sorted {
                             return $0.sendedDate > $1.sendedDate
                         }
@@ -79,7 +78,6 @@ final class ChattingViewModel {
                         }
                         let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         sendChattingList += currentPageDatas
-                        print(roomId)
                         if startIndex == 0 {
                             reloadChattingTableViewPublisher.onNext(())
                         }
@@ -100,7 +98,6 @@ final class ChattingViewModel {
                         }
                         let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         receiveChattingList += currentPageDatas
-                        print("receive: \(receiveChattingList)")
                         if startIndex == 0 {
                             reloadChattingTableViewPublisher.onNext(())
                         }

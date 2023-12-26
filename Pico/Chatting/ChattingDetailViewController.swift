@@ -61,12 +61,12 @@ final class ChattingDetailViewController: UIViewController {
     override func viewDidLoad() {
        super.viewDidLoad()
         bind()
+        addViews()
+        makeConstraints()
         configViewController()
         configTableView()
         configRefresh()
         configSendButton()
-        addViews()
-        makeConstraints()
         loadDataPublsher.onNext(())
     }
     
@@ -101,9 +101,27 @@ final class ChattingDetailViewController: UIViewController {
         }
     }
     
+    func configData(room: Room.RoomInfo) {
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: room.opponentId, dataType: User.self) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    opponentName = userData.nickName
+                    navigationItem.title = opponentName
+                }
+            case .failure(let err):
+                print(err)
+            }
+        }
+        roomId = room.id
+        viewModel.roomId = roomId
+        opponentId = room.opponentId
+    }
+    
     private func configViewController() {
         view.configBackgroundColor()
-        navigationItem.title = opponentName
         navigationItem.titleView?.tintColor = .picoAlphaBlue
         tabBarController?.tabBar.isHidden = true
     }
@@ -141,7 +159,7 @@ final class ChattingDetailViewController: UIViewController {
                     
                     chatTextField.text = ""
                     chattingView.reloadData()
-                    //refreshPublisher.onNext(())
+                    refreshPublisher.onNext(())
                     
                     self.viewModel.updateRoomData(chattingData: chatting)
                 }
@@ -174,15 +192,13 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
         chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
         
         guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
-        print(item)
-        switch item.messageType {
-        case .receive:
+        if item.messageType == .receive {
             let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
             receiveCell.config(chatting: item)
             receiveCell.selectionStyle = .none
             receiveCell.backgroundColor = .clear
             return receiveCell
-        case .send:
+        } else {
             let sendCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingSendListTableViewCell.self)
             sendCell.config(chatting: item)
             sendCell.selectionStyle = .none
@@ -206,7 +222,7 @@ extension ChattingDetailViewController {
     }
 }
 
-// roomList에서 눌렀는데 채팅방이 다 0번이 뜸 ㄷㄷ
+// 키보드 준비
 // sender 만 또는 receive 만 뜸 ===> 이럼 메일과 다를게 뭐야..
 // Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기
 // 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함] 
