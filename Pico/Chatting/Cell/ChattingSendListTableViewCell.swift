@@ -13,7 +13,7 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     
     private let messageLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.picoDescriptionFont
+        label.font = UIFont.picoContentFont
         label.textColor = .picoFontBlack
         label.textAlignment = .center
         return label
@@ -65,7 +65,6 @@ final class ChattingSendListTableViewCell: UITableViewCell {
         messageLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(10)
             make.trailing.equalTo(contentView).offset(-30)
-            make.height.equalTo(40)
         }
         
         backgroundImageView.snp.makeConstraints { make in

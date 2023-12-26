@@ -116,7 +116,7 @@ final class ChattingDetailViewController: UIViewController {
             chattingView.tableHeaderView = UIView()
         }
         chattingView.separatorStyle = .none
-        chattingView.rowHeight = 50
+        chattingView.rowHeight = 70
         chattingView.dataSource = self
         chattingView.delegate = self
     }
@@ -206,7 +206,7 @@ extension ChattingDetailViewController {
     }
 }
 
-// 일어나서 할일
-// 채팅 receive cell 연결 보고 수정하기
+// roomList에서 눌렀는데 채팅방이 다 0번이 뜸 ㄷㄷ
+// sender 만 또는 receive 만 뜸 ===> 이럼 메일과 다를게 뭐야..
 // Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기
 // 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함] 
