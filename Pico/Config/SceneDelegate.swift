@@ -78,7 +78,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         }
                         
                         if let token {
-                            if data.fcmToken == token {
+                            if data.fcmToken == token || UserDefaultsManager.shared.getUserData().userId == Bundle.main.testId {
                                 equalTotoken()
                                 
                             } else {
@@ -181,7 +181,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     return
                 }
             } else {
-                CheckService.shared.updateOnline(userId: userId, isOnline: true) {
+                let isOnline = userId == Bundle.main.testId ? false : true
+                CheckService.shared.updateOnline(userId: userId, isOnline: isOnline) {
                     completion(true) // 자동로그인 상태에서 로그인 가능할때
                     return
                 }
@@ -210,7 +211,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         
-        CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: true, completion: nil)
+        let isOnline = UserDefaultsManager.shared.getUserData().userId == Bundle.main.testId ? false : true
+        CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: isOnline, completion: nil)
     }
     
     private func configRootViewController(_ viewController: UIViewController) {

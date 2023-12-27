@@ -148,7 +148,7 @@ final class HomeViewController: BaseViewController {
                     subView.removeFromSuperview()
                 }
                 addUserCards()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
                     guard let self = self else { return }
                     addEmptyView()
                     loadingView.removeFromSuperview()
@@ -198,7 +198,7 @@ final class HomeViewController: BaseViewController {
     private func addLoadingView() {
         loadingView.frame = view.frame
         loadingView.configBackgroundColor()
-        loadingView.animateNow()
+        loadingView.animate()
         view.addSubview(loadingView)
     }
     

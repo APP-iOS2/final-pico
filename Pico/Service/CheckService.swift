@@ -153,6 +153,7 @@ final class CheckService {
     }
     
     func updateOnline(userId: String, isOnline: Bool, completion: (() -> Void)? = nil) {
+        let isOnline = userId == Bundle.main.testId ? false : isOnline
         FirestoreService.shared.updateDocument(collectionId: .users, documentId: userId, field: "isOnline", data: isOnline) { result in
             switch result {
             case .success:
