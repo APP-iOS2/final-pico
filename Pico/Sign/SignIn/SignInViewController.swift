@@ -13,7 +13,6 @@ import RxCocoa
 final class SignInViewController: UIViewController {
     private let authManager = SMSAuthService()
     private let keyboardManager = KeyboardService()
-    private let checkService = CheckService()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
     private var cooldownTimer: Timer?
@@ -95,7 +94,7 @@ final class SignInViewController: UIViewController {
     // MARK: - LifeCyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.configBackgroundColor(color: .systemBackground)        
+        view.configBackgroundColor(color: .systemBackground)
         tappedDismissKeyboard(without: [nextButton])
         addSubViews()
         makeConstraints()
@@ -108,13 +107,13 @@ final class SignInViewController: UIViewController {
         super.viewWillAppear(animated)
         keyboardManager.registerKeyboard(with: nextButton)
         phoneNumberTextField.becomeFirstResponder()
-        configReset()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         view.endEditing(true)
         keyboardManager.unregisterKeyboard()
+        configReset()
     }
 }
 // MARK: - Config
@@ -171,26 +170,57 @@ extension SignInViewController {
                 view.endEditing(true)
                 authButton.tappedAnimation()
                 guard isFullPhoneNumber else { return }
-                guard let text = phoneNumberTextField.text else { return }
+                guard let phoneNumber = phoneNumberTextField.text else { return }
                 
                 guard cooldownTimer == nil else {
                     return
                 }
-                // MARK: - 이부분에서 신고 유저를 해야함
-
-                viewModel.signIn(userNumber: text) { [weak self] _, message in
+                
+                viewModel.signIn(userNumber: phoneNumber) { [weak self] _, message in
                     guard let self = self else { return }
                     
                     guard viewModel.isRightUser else {
-                        checkService.checkBlockUser(userNumber: text) { [weak self] isBlock in
+                        CheckService.shared.checkBlockUser(userNumber: phoneNumber) { [weak self] isBlock in
                             guard let self = self else { return }
                             
                             if isBlock {
                                 Loading.hideLoading()
                                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "탈퇴한 회원입니다.", confirmButtonText: "확인", comfrimAction: configReset)
+                                return
                             } else {
                                 Loading.hideLoading()
                                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: message, confirmButtonText: "확인", comfrimAction: configReset)
+                                return
+                            }
+                        }
+                        
+                        CheckService.shared.checkStopUser(userNumber: phoneNumber) { [weak self] isStop, stop in
+                            guard let self = self else { return }
+                            guard isStop else { return }
+                            guard let stop else { return }
+                            
+                            let currentDate = Date()
+                            let stopDate = Date(timeIntervalSince1970: stop.createdDate)
+                            let stopDuring = stop.during
+                            let stopUser = stop.user
+                            
+                            if let resumedDate = Calendar.current.date(byAdding: .day, value: stopDuring, to: stopDate) {
+                                if currentDate > resumedDate {
+                                    Loading.hideLoading()
+                                    
+                                    FirestoreService.shared.saveDocument(collectionId: .users, documentId: stopUser.id, data: stopUser) { _ in }
+                                    
+                                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "정지가 풀렸습니다. 열심히 살아주세요 ㅎㅎ", confirmButtonText: "확인", comfrimAction: configReset)
+                                    
+                                    FirestoreService.shared.deleteDocument(collectionId: .stop, field: "phoneNumber", isEqualto: phoneNumber)
+                                    
+                                } else {
+                                    Loading.hideLoading()
+                                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "\(stop.during)일 정지된 대상입니다.\n(\(stop.endDateString)일까지 로그인이 제한됩니다.)", confirmButtonText: "확인", comfrimAction: configReset)
+                                }
+                            } else {
+                                print("날짜 계산 중에 오류가 발생했습니다.")
+                                return
                             }
                         }
                         return
@@ -203,7 +233,7 @@ extension SignInViewController {
                         RunLoop.main.add(cooldownTimer!, forMode: .common)
                         
                         configTappedAuthButtonState()
-                        authManager.sendVerificationCode(phoneNumber: text)
+                        authManager.sendVerificationCode(phoneNumber: phoneNumber)
                     })
                 }
             })
@@ -234,29 +264,25 @@ extension SignInViewController {
                 
                 showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                     guard let self = self else { return }
-                    guard let number = phoneNumberTextField.text else { return }
-                    
-                    FirestoreService.shared.loadDocument(collectionId: .session, documentId: number, dataType: User.self) { [weak self] result in
-                        guard let self = self else { return }
-                        
-                        switch result {
-                        case .success(let user):
-                            guard user != nil else { return }
-                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "다른기기에서 접속중입니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
-                                guard let self = self else { return }
-                                navigationController?.popViewController(animated: true)
-                            })
-                        case .failure(let err):
-                            print("SingInVIewController 세션부분 에러입니다. error: \(err) ")
-                        }
-                    }
-                    
+                    guard phoneNumberTextField.text != nil else { return }
                     guard let user = viewModel.loginUser else {
                         showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "로그인에 실패하셨습니다.", confirmButtonText: "확인")
                         return
                     }
-                    let viewController = LoginSuccessViewController(user: user)
-                    self.navigationController?.pushViewController(viewController, animated: true)
+                    
+                    CheckService.shared.checkOnline(userId: user.id) { [weak self] result in
+                        guard let self else { return }
+                        
+                        if !result {
+                            let viewController = LoginSuccessViewController(user: user)
+                            self.navigationController?.pushViewController(viewController, animated: true)
+                        } else {
+                            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "다른 기기에서 접속 중입니다", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                                guard let self = self else { return }
+                                navigationController?.popViewController(animated: true)
+                            })
+                        }
+                    }
                 })
             })
             .disposed(by: disposeBag)

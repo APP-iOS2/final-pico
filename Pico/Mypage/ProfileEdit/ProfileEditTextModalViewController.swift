@@ -60,7 +60,7 @@ final class ProfileEditTextModalViewController: UIViewController {
     
     let profileEditViewModel: ProfileEditViewModel
     private let disposeBag = DisposeBag()
-    let checkService = CheckService()
+    
     init(profileEditViewModel: ProfileEditViewModel) {
         self.profileEditViewModel = profileEditViewModel
         super.init(nibName: nil, bundle: nil)

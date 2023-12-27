@@ -41,21 +41,20 @@ final class SignUpViewModel {
     var isSubscribe: Bool = false
     var progressStatus: Float = 0.0
     
-    private lazy var newUser: User =
-    User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe)
+    private lazy var newUser: User = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe, isOnline: false)
     
     init() {
         locationSubject.subscribe { [weak self] location in
             guard let self = self else { return }
+            
             Loading.showLoading()
-            self.newUser.location = location
-            self.saveImage()
+            newUser.location = location
+            saveImage()
         }
         .disposed(by: disposeBag)
         
         imagesSubject
             .flatMap { images -> Observable<[String]> in
-                
                 return StorageService.shared.getUrlStrings(images: images, userId: self.id)
             }
             .subscribe(onNext: urlStringsSubject.onNext(_:))
@@ -64,9 +63,8 @@ final class SignUpViewModel {
         urlStringsSubject
             .subscribe { [weak self] strings in
                 guard let self = self else { return }
-                print("스트링 저장완료")
-                self.newUser.imageURLs = strings
-                self.saveNewUser()
+                newUser.imageURLs = strings
+                saveNewUser()
                 Loading.hideLoading()
             }.disposed(by: disposeBag)
     }
@@ -85,7 +83,7 @@ final class SignUpViewModel {
     
     func saveNewUser() {
         if newUser.phoneNumber == Bundle.main.testPhoneNumber {
-            newUser.id = "test"
+            newUser.id = Bundle.main.testId
         }
         FirestoreService().saveDocumentRx(collectionId: .users, documentId: newUser.id, data: newUser)
             .subscribe(onNext: isSaveSuccess.onNext(_:))

@@ -11,7 +11,6 @@ import SnapKit
 final class SignUpNickNameViewController: UIViewController {
     private let keyboardManager = KeyboardService()
     private let viewModel: SignUpViewModel
-    private let checkNickNameService = CheckService()
     private let slangWordArray: [String] = ["시발", "병신", "개새끼", "꺼져", "지랄", "애미", "애비", "등신", "따까리", "미친", "씨발", "씨팔", "시팔", "쌍놈", "쌍년", "아가리", "장애인", "호구"] // 비속어 필터 API가 있는데 돈주고 하는거라고 하더라구요.
     init(viewModel: SignUpViewModel) {
         self.viewModel = viewModel
@@ -180,7 +179,7 @@ extension SignUpNickNameViewController {
         showCustomAlert(alertType: .canCancel, titleText: "알림", messageText: "\(userNickName) 이름으로 설정합니다.\n변경불가능합니다(추후 변경은 유료)", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             
-            checkNickNameService.checkNickName(name: userNickName) { [weak self] message, isRight in
+            CheckService.shared.checkNickName(name: userNickName) { [weak self] message, isRight in
                 guard let self = self else { return }
                 
                 Loading.hideLoading()

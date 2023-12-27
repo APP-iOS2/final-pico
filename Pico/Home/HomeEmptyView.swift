@@ -45,9 +45,10 @@ final class HomeEmptyView: UIView {
     }()
     
     // 상위뷰에서 에드타겟
-    let reLoadButton: UIButton = {
+    let findNewFriendButton: UIButton = {
         let button = UIButton()
-        button.setTitle("새 친구 찾아보기", for: .normal)
+        button.setTitle("새 추천 불러오기", for: .normal)
+        button.titleLabel?.textAlignment = .center
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .picoButtonFont
         button.backgroundColor = .picoBlue
@@ -59,6 +60,7 @@ final class HomeEmptyView: UIView {
     let backUser: UIButton = {
         let button = UIButton()
         button.setTitle("이전 친구보기", for: .normal)
+        button.titleLabel?.textAlignment = .center
         button.setTitleColor(.picoBlue, for: .normal)
         button.titleLabel?.font = .picoButtonFont
         button.layer.cornerRadius = 15
@@ -78,7 +80,7 @@ final class HomeEmptyView: UIView {
     }
     
     private func addViews() {
-        [animationView, chuImage, reLoadButton, finishLabel, backUser].forEach { item in
+        [animationView, chuImage, findNewFriendButton, finishLabel, backUser].forEach { item in
             addSubview(item)
         }
     }
@@ -101,18 +103,18 @@ final class HomeEmptyView: UIView {
             make.trailing.equalToSuperview().offset(-20)
         }
         
-        reLoadButton.snp.makeConstraints { make in
+        findNewFriendButton.snp.makeConstraints { make in
             make.top.equalTo(finishLabel.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
             make.width.equalTo(140)
-            make.height.equalTo(35)
+            make.height.equalTo(30)
         }
         
         backUser.snp.makeConstraints { make in
-            make.top.equalTo(reLoadButton.snp.bottom).offset(10)
+            make.top.equalTo(findNewFriendButton.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
             make.width.equalTo(140)
-            make.height.equalTo(35)
+            make.height.equalTo(30)
         }
     }
 }

@@ -14,6 +14,9 @@ import CoreLocation
 final class UserDetailViewController: UIViewController {
     // 이전 뷰에서 실행이 필요 해 Defalut로 작성
     var viewModel: UserDetailViewModel!
+    var onDisLike: (() -> Void)?
+    var onLike: (() -> Void)?
+    private let currentUser = UserDefaultsManager.shared.getUserData()
     private let disposeBag = DisposeBag()
     private var distance = CLLocationDistance()
     // SubViews
@@ -92,18 +95,41 @@ final class UserDetailViewController: UIViewController {
         likeButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .like)
-                let viewController = HomeViewController()
-                self.navigationController?.pushViewController(viewController, animated: true)
+                if viewModel.isHome {
+                    onLike?()
+                    navigationController?.popViewController(animated: false)
+                } else {
+                    if currentUser.userId.prefix(4) != "test" {
+                        viewModel.checkYouLikeMe(viewModel.user.id, currentUser.userId) { result in
+                            if result {
+                                self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .matching)
+                                self.viewModel.updateMatcingData(self.viewModel.user.id)
+                                self.viewModel.notificationServiceForPartner(.matching, .matching, user: self.viewModel.user, currentUser: self.currentUser)
+                                self.viewModel.notificationServiceForMe(.matching, .matching, user: self.viewModel.user, currentUser: self.currentUser)
+                            } else {
+                                self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .like)
+                                self.viewModel.notificationServiceForPartner(.like, .like, user: self.viewModel.user, currentUser: self.currentUser)
+                            }
+                        }
+                    }
+                    self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .like)
+                    let viewController = HomeViewController()
+                    navigationController?.pushViewController(viewController, animated: true)
+                }
             })
             .disposed(by: disposeBag)
         
         disLikeButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
-                viewModel.saveLikeData(receiveUserInfo: viewModel.user, likeType: .dislike)
-                let viewController = HomeViewController()
-                navigationController?.pushViewController(viewController, animated: true)
+                if viewModel.isHome {
+                    onDisLike?()
+                    navigationController?.popViewController(animated: false)
+                } else {
+                    viewModel.saveLikeData(receiveUserInfo: viewModel.user, likeType: .dislike)
+                    let viewController = HomeViewController()
+                    navigationController?.pushViewController(viewController, animated: true)
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -124,7 +150,7 @@ final class UserDetailViewController: UIViewController {
             }
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
-                                                      locationText: distance < 1000.0 ? "\(viewModel.user.location.address), 가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
+                                                      locationText: distance < 1000.0 ? "\(viewModel.user.location.address),   가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
                                                       heightText: String(subInfo.height ?? 0))
             
             self.introViewController.config(intro: subInfo.intro)
@@ -143,7 +169,7 @@ final class UserDetailViewController: UIViewController {
         } else {
             self.basicInformationViewContoller.config(mbti: viewModel.user.mbti,
                                                       nameAgeText: "\(viewModel.user.nickName),  \(viewModel.user.age)",
-                                                      locationText: distance < 1000.0 ? "\(viewModel.user.location.address), 가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
+                                                      locationText: distance < 1000.0 ? "\(viewModel.user.location.address),   가까워요!" : "\(viewModel.user.location.address), \(String(format: "%.2f", distance / 1000))km",
                                                       heightText: nil)
             [self.aboutMeViewController.view, self.introViewController.view, self.subInfomationViewController.view].forEach {
                 self.verticalStackView.removeArrangedSubview($0)
@@ -190,7 +216,7 @@ final class UserDetailViewController: UIViewController {
         }
         
         // 차단 버튼 클릭 시 ShowAlert
-        let actionBlock = UIAlertAction(title: "차단", style: .default) { _ in
+        let actionBlock = UIAlertAction(title: "차단", style: .destructive) { _ in
             self.showCustomAlert(alertType: .canCancel, titleText: "차단하기", messageText: "\(self.viewModel.user.nickName)님을 차단 하시겠습니까?", confirmButtonText: "차단", comfrimAction: {
                 self.viewModel.blockUser(blockedUser: self.viewModel.user) {
                     self.showCustomAlert(alertType: .onlyConfirm, titleText: "차단", messageText: "\(self.viewModel.user.nickName)님 차단 완료", confirmButtonText: "확인", comfrimAction: {
@@ -207,7 +233,7 @@ final class UserDetailViewController: UIViewController {
     
     // 신고 버튼 클릭시 액션시트
     private func showingReportSheet() {
-        let nextActionSheet = UIAlertController(title: "신고 사유", message: "신고 사유를 클릭 해 주세요", preferredStyle: .actionSheet)
+        let nextActionSheet = UIAlertController(title: "신고 사유", message: "신고 사유를 클릭 해 주세요\n(허위 신고시 처벌 받을 수 있습니다)", preferredStyle: .actionSheet)
         let actionImage = UIAlertAction(title: "불쾌한 사진", style: .default) { _ in
             self.showCustomAlert(alertType: .canCancel, titleText: "\(self.viewModel.user.nickName)님을 신고 하시겠습니까?", messageText: "신고된 유저는 관리자의 검토 후 제제처리됩니다.", confirmButtonText: "신고", comfrimAction: {
                 self.reportAction(reason: "불쾌한 사진")
@@ -232,13 +258,19 @@ final class UserDetailViewController: UIViewController {
             })
         }
         
+        let actionOther = UIAlertAction(title: "기타", style: .default) { _ in
+          self.showInputCustomAlert(alertType: .canCancel, titleText: "\(self.viewModel.user.nickName)님 신고 사유를 입력 해 주세요.", messageText: "신고된 유저는 관리자의 검토 후 제제처리됩니다.", confirmButtonText: "신고", comfrimAction: { reason in
+                self.reportAction(reason: reason)
+            })
+        }
+         
         let actionCancel = UIAlertAction(title: "취소", style: .cancel)
-        [actionImage, actionFact, actionTheft, actionAbuse, actionCancel].forEach { nextActionSheet.addAction($0) }
+        [actionImage, actionFact, actionTheft, actionAbuse, actionOther, actionCancel].forEach { nextActionSheet.addAction($0) }
         self.present(nextActionSheet, animated: true)
     }
     
     // DB에 신고 내용 저장
-    private func reportAction(reason: String) {
+   private func reportAction(reason: String) {
         self.viewModel.reportUser(reportedUser: viewModel.user, reason: reason) {
             self.showCustomAlert(alertType: .onlyConfirm, titleText: "신고", messageText: "\(self.viewModel.user.nickName)님 신고 완료", confirmButtonText: "확인", comfrimAction: { [weak self] in
                 guard let self else { return }
@@ -261,6 +293,23 @@ final class UserDetailViewController: UIViewController {
                     }
                 }
             })
+        }
+    }
+    
+    private func detectCapture() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(captureAction),
+            name: UIScreen.capturedDidChangeNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func captureAction() {
+        if UIScreen.main.isCaptured {
+            view.secureMode(enable: true)
+        } else {
+            view.secureMode(enable: false)
         }
     }
 }

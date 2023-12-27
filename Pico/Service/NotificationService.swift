@@ -28,12 +28,14 @@ final class NotificationService {
             } else if let token = token {
                 let newToken = Token(fcmToken: token, badgeCount: 0)
                 if UserDefaultsManager.shared.isLogin() {
-                    FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: newToken) { result in
-                        switch result {
-                        case .success:
-                            print("토큰 저장 성공 Token: \(token)")
-                        case .failure(let error):
-                            print("토큰 저장 실패: \(error)")
+                    if UserDefaultsManager.shared.getUserData().userId != "없음" {
+                        FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: newToken) { result in
+                            switch result {
+                            case .success:
+                                print("토큰 저장 성공 Token: \(token)")
+                            case .failure(let error):
+                                print("토큰 저장 실패: \(error)")
+                            }
                         }
                     }
                 }

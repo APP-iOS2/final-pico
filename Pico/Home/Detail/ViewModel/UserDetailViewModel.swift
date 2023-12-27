@@ -15,19 +15,100 @@ import CoreLocation
 final class UserDetailViewModel {
     let user: User!
     let compatibilityView: CompatibilityView
+    var isHome = false
     private let disposeBag = DisposeBag()
     private let dbRef = Firestore.firestore().collection(Collections.users.name)
     private let loginUser = UserDefaultsManager.shared.getUserData()
     private let sendedlikesUpdateFiled = "sendedlikes"
     private let recivedlikesUpdateFiled = "recivedlikes"
+    private let currentUser = UserDefaultsManager.shared.getUserData()
+    private var partnerSendedLikeData: Like.LikeInfo = Like.likeInfoSample
     
     init(user: User, isHome: Bool) {
         var user = user
         if isHome {
             user.imageURLs.remove(at: 1)
+            self.isHome = true
         }
         self.user = user
         compatibilityView = CompatibilityView(currentUser: loginUser, cardUser: user)
+    }
+    
+    func notificationServiceForPartner(_ pushType: PushNotiType, _ notiType: NotiType, user: User, currentUser: CurrentUser) {
+        NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: pushType)
+        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+        let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+    }
+    
+    func notificationServiceForMe(_ pushType: PushNotiType, _ notiType: NotiType, user: User, currentUser: CurrentUser) {
+        NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: user.nickName, notiType: pushType)
+        guard let myMbti = MBTIType(rawValue: user.mbti.rawValue) else { return }
+        let noti = Noti(receiveId: currentUser.userId, sendId: user.id, name: user.nickName, birth: user.birth, imageUrl: user.imageURLs[safe: 0] ?? "", notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+    }
+    
+    func checkYouLikeMe(_ partnerId: String, _ myId: String, completion: @escaping (Bool) -> Void) {
+        var result = false
+        let dbRef = Firestore.firestore().collection("likes")
+        
+        DispatchQueue.global().async {
+            dbRef.document(partnerId).getDocument { [self] (document, error) in
+                if let error = error {
+                    print("Error getting document: \(error)")
+                    completion(false)
+                } else if let document = document, document.exists {
+                    if let data = try? document.data(as: Like.self), let sendedLikes = data.sendedlikes {
+                        let sendedLikesData: [Like.LikeInfo] = sendedLikes
+                        for data in sendedLikesData where data.likedUserId == myId {
+                            partnerSendedLikeData = data
+                            result = true
+                        }
+                    }
+                    completion(result)
+                } else {
+                    print("해당 문서가 존재하지 않습니다.")
+                    completion(false)
+                }
+            }
+        }
+    }
+    
+    func updateMatcingData(_ userId: String) {
+        let docRef = Firestore.firestore().collection(Collections.likes.name)
+            docRef.document(userId).updateData(
+                [
+                    sendedlikesUpdateFiled: FieldValue.arrayRemove([partnerSendedLikeData.asDictionary()])
+                ]) { error in
+                    if let error = error {
+                        print("삭제 my 에러: \(error)")
+                    }
+                }
+        
+        DispatchQueue.global().async { [self] in
+            docRef.document(currentUser.userId).getDocument { [self] (document, error) in
+                if let error = error {
+                    print("에러 : \(error)")
+                } else if let document = document, document.exists {
+                    if let data = try? document.data(as: Like.self), var recivedlikes = data.recivedlikes {
+                        recivedlikes.removeAll { $0.likedUserId == userId }
+                        let recivedlikesDictArray = recivedlikes.map { $0.asDictionary() }
+                        docRef.document(currentUser.userId).updateData(
+                            [
+                                "recivedlikes": recivedlikesDictArray
+                            ]) { error in
+                                if let error = error {
+                                    print("에러 : \(error)")
+                                } else {
+                                    print("매칭 문서 업데이트 성공")
+                                }
+                            }
+                    }
+                } else {
+                    print("해당 문서가 존재하지 않습니다.")
+                }
+            }
+        }
     }
     
     // 거리

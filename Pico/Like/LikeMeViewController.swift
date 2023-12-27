@@ -28,9 +28,7 @@ final class LikeMeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         cellTapped = false
-        if viewModel.likeMeList.isEmpty {
-            refreshPublisher.onNext(())
-        }
+        refreshPublisher.onNext(())
         collectionView.reloadData()
         checkEmptyPublisher.onNext(())
     }
@@ -81,7 +79,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(forIndexPath: indexPath, cellType: LikeCollectionViewCell.self)
         let item = viewModel.likeMeList[indexPath.row]
-        cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true, mbti: item.mbti)
+        cell.configData(image: item.imageURL, nameText: "\(item.nickName), \(item.age)", isHiddenDeleteButton: false, isHiddenMessageButton: true, mbti: item.mbti, isHiddenMatchLabel: !item.isMatch)
         
         cell.deleteButtonTapObservable
             .subscribe(onNext: { [weak self] in
@@ -98,7 +96,30 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
                 })
             })
             .disposed(by: cell.disposeBag)
-        
+        cell.messageButtonTapObservable
+            .withUnretained(self)
+            .subscribe { viewController, _ in
+                FirestoreService.shared.loadDocument(collectionId: .users, documentId: item.likedUserId, dataType: User.self) { result in
+                    switch result {
+                    case .success(let data):
+                        guard data != nil else {
+                            viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                            return
+                        }
+                        viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭된 사용자에게 메일을 보냅니다.", confirmButtonText: "보내기", comfrimAction: {
+                            let mailSendView = MailSendViewController()
+                            mailSendView.configData(userId: item.likedUserId, atMessageView: false)
+                            mailSendView.modalPresentationStyle = .formSheet
+                            self.present(mailSendView, animated: true, completion: nil)
+                        })
+                    case .failure(let error):
+                        print(error)
+                        viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
+                        return
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
         return cell
         
     }

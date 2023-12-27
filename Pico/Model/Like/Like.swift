@@ -28,6 +28,9 @@ struct Like: Codable {
             return ageComponents.year ?? 0
         }
         let createdDate: Double
+        var isMatch: Bool {
+            return likeType == .matching
+        }
     }
 
     enum LikeType: String, Codable {
@@ -39,4 +42,6 @@ struct Like: Codable {
             return self.rawValue.uppercased()
         }
     }
+    
+    static let likeInfoSample = Like.LikeInfo(likedUserId: "", likeType: .dislike, birth: "", nickName: "", mbti: .enfj, imageURL: "", createdDate: 0)
 }

@@ -13,7 +13,7 @@ final class UserDefaultsManager {
         case latitude, longitude
         case filterGender, filterMbti, filterDistance, filterAgeMin, filterAgeMax
         case chuCount
-        case dontWatchAgain
+        case dontWatchAgain, minPoint, maxPoint
     }
     
     static let shared: UserDefaultsManager = UserDefaultsManager()
@@ -38,12 +38,11 @@ final class UserDefaultsManager {
         
         UserDefaults.standard.setValue(userData.chuCount, forKey: Key.chuCount.rawValue)
         UserDefaults.standard.setValue(userData.phoneNumber, forKey: Key.phoneNumber.rawValue)
-        
     }
     
     func isLogin() -> Bool {
-           UserDefaults.standard.string(forKey: Key.userId.rawValue) != nil ? true : false
-       }
+        UserDefaults.standard.string(forKey: Key.userId.rawValue) == nil ? false : true
+    }
     
     func getUserData() -> CurrentUser {
         let userId = UserDefaults.standard.string(forKey: Key.userId.rawValue) ?? "없음"
