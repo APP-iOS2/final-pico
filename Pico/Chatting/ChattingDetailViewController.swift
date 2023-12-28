@@ -25,6 +25,9 @@ final class ChattingDetailViewController: UIViewController {
     var opponentName: String = ""
     var roomId: String = ""
     
+    var chattingsCount: Int = 0
+    var bottomConstraint = NSLayoutConstraint()
+    
     private let chattingView: UITableView = {
         let uiTableView = UITableView()
         uiTableView.backgroundColor = .picoGray
@@ -59,11 +62,12 @@ final class ChattingDetailViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
-       super.viewDidLoad()
+        super.viewDidLoad()
         bind()
+        configViewController()
+        view.tappedDismissKeyboard()
         addViews()
         makeConstraints()
-        configViewController()
         configTableView()
         configRefresh()
         configSendButton()
@@ -72,10 +76,11 @@ final class ChattingDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        configChatFieldView()
         chattingView.reloadData()
         refreshPublisher.onNext(())
     }
-    
+
     private func addViews() {
         sendStack.addArrangedSubview([chatTextField, sendButton])
         view.addSubview([chattingView, sendStack])
@@ -90,7 +95,7 @@ final class ChattingDetailViewController: UIViewController {
         
         sendStack.snp.makeConstraints { make in
             make.leading.equalTo(safeArea).offset(20)
-            make.trailing.bottom.equalTo(safeArea).offset(-20)
+            make.trailing.equalTo(safeArea).offset(-20)
             make.height.equalTo(40)
         }
         
@@ -99,6 +104,9 @@ final class ChattingDetailViewController: UIViewController {
             make.trailing.equalTo(safeArea)
             make.bottom.equalTo(sendStack.snp.top).offset(-10)
         }
+        
+        bottomConstraint = sendStack.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10)
+        view.addConstraint(bottomConstraint)
     }
     
     func configData(room: Room.RoomInfo) {
@@ -126,6 +134,12 @@ final class ChattingDetailViewController: UIViewController {
         tabBarController?.tabBar.isHidden = true
     }
     
+    private func configChatFieldView() {
+        chatTextField.delegate = self
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     private func configTableView() {
         chattingView.register(cell: ChattingReceiveListTableViewCell.self)
         chattingView.register(cell: ChattingSendListTableViewCell.self)
@@ -134,6 +148,7 @@ final class ChattingDetailViewController: UIViewController {
             chattingView.tableHeaderView = UIView()
         }
         chattingView.separatorStyle = .none
+        chattingView.keyboardDismissMode = .onDrag
         chattingView.rowHeight = 70
         chattingView.dataSource = self
         chattingView.delegate = self
@@ -162,6 +177,10 @@ final class ChattingDetailViewController: UIViewController {
                     refreshPublisher.onNext(())
                     
                     self.viewModel.updateRoomData(chattingData: chatting)
+                    
+                    if self.chattingsCount > 0 {
+                        self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+                    }
                 }
             }
             .disposed(by: disposeBag)
@@ -182,8 +201,9 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sender = viewModel.sendChattingList.count
         let receive = viewModel.receiveChattingList.count
-        print(sender + receive)
-        return sender + receive
+        chattingsCount = sender + receive
+        print("sender: \(sender),receive: \(receive)")
+        return chattingsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -192,13 +212,14 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
         chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
         
         guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
-        if item.messageType == .receive {
+        switch item.messageType {
+        case .receive:
             let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
             receiveCell.config(chatting: item)
             receiveCell.selectionStyle = .none
             receiveCell.backgroundColor = .clear
             return receiveCell
-        } else {
+        case .send:
             let sendCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingSendListTableViewCell.self)
             sendCell.config(chatting: item)
             sendCell.selectionStyle = .none
@@ -222,7 +243,37 @@ extension ChattingDetailViewController {
     }
 }
 
-// 키보드 준비
+extension ChattingDetailViewController: UITextFieldDelegate {
+    
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        chatTextField.resignFirstResponder()
+        return false
+    }
+    
+    @objc func keyboardWillShow(_ notification: NSNotification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            self.bottomConstraint.constant = -keyboardRectangle.height
+            print(self.bottomConstraint.constant)
+        }
+        
+        UIView.animate(withDuration: 0) {
+            self.view.layoutIfNeeded()
+        } completion: { _ in
+            if self.chattingsCount > 0 {
+                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide(_ notification: NSNotification) {
+        self.bottomConstraint.constant = -10
+        view.addConstraint(self.bottomConstraint)
+        self.view.layoutIfNeeded()
+    }
+}
+
+// 키보드 준비 -> 빈공간 누르면 사라지게
 // sender 만 또는 receive 만 뜸 ===> 이럼 메일과 다를게 뭐야..
 // Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기
-// 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함] 
+// 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함]

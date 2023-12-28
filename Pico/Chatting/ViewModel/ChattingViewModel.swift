@@ -66,12 +66,11 @@ final class ChattingViewModel {
                     print(error)
                     return
                 }
-                print("불릴때 \(roomId)")
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Chatting.self).senderChatting?
                         .filter({ $0.roomId == self.roomId }) {
                         let sorted = datas.sorted {
-                            return $0.sendedDate > $1.sendedDate
+                            return $0.sendedDate < $1.sendedDate
                         }
                         if startIndex > sorted.count - 1 {
                             return
@@ -91,7 +90,7 @@ final class ChattingViewModel {
                     if let datas = try? document.data(as: Chatting.self).receiverChatting?
                         .filter({ $0.roomId == self.roomId}) {
                         let sorted = datas.sorted {
-                            return $0.sendedDate > $1.sendedDate
+                            return $0.sendedDate < $1.sendedDate
                         }
                         if startIndex > sorted.count - 1 {
                             return
