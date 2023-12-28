@@ -1,5 +1,5 @@
 //
-//  ChattingViewModel.swift
+//  ChattingSendViewModel.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/16.
@@ -10,11 +10,9 @@ import RxSwift
 import RxRelay
 import FirebaseFirestore
 
-final class ChattingViewModel {
+final class ChattingSendViewModel {
     
     private(set) var sendChattingList: [Chatting.ChattingInfo] = []
-    
-    private(set) var receiveChattingList: [Chatting.ChattingInfo] = []
     
     private var isChattingEmptyPublisher = PublishSubject<Bool>()
     private let reloadChattingTableViewPublisher = PublishSubject<Void>()
@@ -68,26 +66,6 @@ final class ChattingViewModel {
                 }
                 
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Chatting.self).receiverChatting?
-                        .filter({ $0.roomId == self.roomId}) {
-                        let sorted = datas.sorted {
-                            return $0.sendedDate < $1.sendedDate
-                        }
-                        if startIndex > sorted.count - 1 {
-                            return
-                        }
-                        let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                        receiveChattingList += currentPageDatas
-                        if startIndex == 0 {
-                            reloadChattingTableViewPublisher.onNext(())
-                        }
-                        startIndex += currentPageDatas.count
-                    }
-                } else {
-                    print("보낸 문서를 찾을 수 없습니다.")
-                }
-                
-                if let document = document, document.exists {
                     if let datas = try? document.data(as: Chatting.self).senderChatting?
                         .filter({ $0.roomId == self.roomId }) {
                         let sorted = datas.sorted {
@@ -113,7 +91,6 @@ final class ChattingViewModel {
     private func refresh() {
         let didSet = isChattingEmptyPublisher
         isChattingEmptyPublisher = PublishSubject<Bool>()
-        receiveChattingList = []
         sendChattingList = []
         startIndex = 0
         isChattingEmptyPublisher = didSet
@@ -121,7 +98,7 @@ final class ChattingViewModel {
     }
 }
 // MARK: - saveChatting
-extension ChattingViewModel {
+extension ChattingSendViewModel {
     func updateChattingData(chattingData: Chatting.ChattingInfo) {
         
         let receiverData = Chatting.ChattingInfo(roomId: chattingData.roomId, sendUserId: chattingData.sendUserId, receiveUserId: chattingData.receiveUserId, message: chattingData.message, sendedDate: chattingData.sendedDate, isReading: false, messageType: .receive)

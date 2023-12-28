@@ -357,7 +357,7 @@ final class HomeUserCardViewController: UIViewController {
                     viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
                         if let likeInfo = result {
                             if !likeInfo.isMatch {
-                                let chatModel = ChattingViewModel()
+                                let chatModel = ChattingSendViewModel()
                                 chatModel.saveChattingData(receiveUserId: user.id, message: "서로 매칭되었습니다")
                                 viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
                                 viewModel.updateMatcingData(user.id)

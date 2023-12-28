@@ -12,7 +12,8 @@ import RxCocoa
 
 final class ChattingDetailViewController: UIViewController {
     
-    private let viewModel = ChattingViewModel()
+    private let sendViewModel = ChattingSendViewModel()
+    private let receiveViewModel = ChattingReciveViewModel()
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
@@ -124,7 +125,7 @@ final class ChattingDetailViewController: UIViewController {
             }
         }
         roomId = room.id
-        viewModel.roomId = roomId
+        sendViewModel.roomId = roomId
         opponentId = room.opponentId
     }
     
@@ -170,13 +171,13 @@ final class ChattingDetailViewController: UIViewController {
                     // sender: 로그인한 사람, recevie 받는 사람
                     let chatting: Chatting.ChattingInfo = Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageType: .send)
                     
-                    self.viewModel.updateChattingData(chattingData: chatting)
+                    self.sendViewModel.updateChattingData(chattingData: chatting)
                     
                     chatTextField.text = ""
                     chattingView.reloadData()
                     refreshPublisher.onNext(())
                     
-                    self.viewModel.updateRoomData(chattingData: chatting)
+                    self.sendViewModel.updateRoomData(chattingData: chatting)
                     
                     if self.chattingsCount > 0 {
                         self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
@@ -203,8 +204,8 @@ final class ChattingDetailViewController: UIViewController {
 // MARK: - TableView
 extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sender = viewModel.sendChattingList.count
-        let receive = viewModel.receiveChattingList.count
+        let sender = sendViewModel.sendChattingList.count
+        let receive = receiveViewModel.receiveChattingList.count
         chattingsCount = sender + receive
         print("sender: \(sender),receive: \(receive)")
         return chattingsCount
@@ -212,7 +213,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var chattingArray = viewModel.sendChattingList + viewModel.receiveChattingList
+        var chattingArray = sendViewModel.sendChattingList + receiveViewModel.receiveChattingList
         chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
         
         guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
@@ -235,8 +236,8 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
 // MARK: - Bind
 extension ChattingDetailViewController {
     private func bind() {
-        let input = ChattingViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
-        let output = viewModel.transform(input: input)
+        let input = ChattingSendViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
+        let output = sendViewModel.transform(input: input)
         
         output.reloadChattingTableView
             .withUnretained(self)
