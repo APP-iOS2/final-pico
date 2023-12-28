@@ -193,6 +193,10 @@ final class ChattingDetailViewController: UIViewController {
             refreshPublisher.onNext(())
             refresh.endRefreshing()
             isRefresh = false
+            if self.chattingsCount > 0 {
+                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+            }
+            print("여기는 언제?")
         }
     }
 }
@@ -254,7 +258,6 @@ extension ChattingDetailViewController: UITextFieldDelegate {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             self.bottomConstraint.constant = -keyboardRectangle.height
-            print(self.bottomConstraint.constant)
         }
         
         UIView.animate(withDuration: 0) {
@@ -273,7 +276,7 @@ extension ChattingDetailViewController: UITextFieldDelegate {
     }
 }
 
-// 키보드 준비 -> 빈공간 누르면 사라지게
-// sender 만 또는 receive 만 뜸 ===> 이럼 메일과 다를게 뭐야..
-// Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기
+// sender 만 또는 receive 만 뜸 ===> 데이터 연결 확인하기 // 뷰 모델 두개로 나눠서 해보기
+// Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기 // uikit 라벨 최대 trailing 하는 방법 찾아서 넣기
 // 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함]
+// 토글해야 맨 아래로 내려감 --> 시작과 동시에 할 수 있는 방법 찾기

@@ -15,7 +15,9 @@ final class ChattingSendListTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.picoContentFont
         label.textColor = .picoFontBlack
-        label.textAlignment = .center
+        label.textAlignment = .right
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
     

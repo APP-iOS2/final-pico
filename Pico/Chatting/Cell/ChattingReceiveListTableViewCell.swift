@@ -30,7 +30,9 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.picoContentFont
         label.textColor = .picoFontBlack
-        label.textAlignment = .center
+        label.textAlignment = .left
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
     
@@ -75,7 +77,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
                     nameLabel.text = userData.nickName
-                   guard let imageURL = userData.imageURLs[safe: 0] else { return }
+                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
                     guard let url = URL(string: imageURL) else { return }
                     userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
                     userImageView.kf.setImage(with: url)
@@ -90,7 +92,6 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         
         nameLabel.sizeToFit()
         self.messageLabel.text = chatting.message
-        
         let date = chatting.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
     }

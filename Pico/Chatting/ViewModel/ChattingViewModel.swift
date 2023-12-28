@@ -66,25 +66,6 @@ final class ChattingViewModel {
                     print(error)
                     return
                 }
-                if let document = document, document.exists {
-                    if let datas = try? document.data(as: Chatting.self).senderChatting?
-                        .filter({ $0.roomId == self.roomId }) {
-                        let sorted = datas.sorted {
-                            return $0.sendedDate < $1.sendedDate
-                        }
-                        if startIndex > sorted.count - 1 {
-                            return
-                        }
-                        let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                        sendChattingList += currentPageDatas
-                        if startIndex == 0 {
-                            reloadChattingTableViewPublisher.onNext(())
-                        }
-                        startIndex += currentPageDatas.count
-                    }
-                } else {
-                    print("보낸 문서를 찾을 수 없습니다.")
-                }
                 
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Chatting.self).receiverChatting?
@@ -97,6 +78,26 @@ final class ChattingViewModel {
                         }
                         let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         receiveChattingList += currentPageDatas
+                        if startIndex == 0 {
+                            reloadChattingTableViewPublisher.onNext(())
+                        }
+                        startIndex += currentPageDatas.count
+                    }
+                } else {
+                    print("보낸 문서를 찾을 수 없습니다.")
+                }
+                
+                if let document = document, document.exists {
+                    if let datas = try? document.data(as: Chatting.self).senderChatting?
+                        .filter({ $0.roomId == self.roomId }) {
+                        let sorted = datas.sorted {
+                            return $0.sendedDate < $1.sendedDate
+                        }
+                        if startIndex > sorted.count - 1 {
+                            return
+                        }
+                        let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        sendChattingList += currentPageDatas
                         if startIndex == 0 {
                             reloadChattingTableViewPublisher.onNext(())
                         }
