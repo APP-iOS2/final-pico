@@ -13,7 +13,6 @@ import RxCocoa
 final class ChattingDetailViewController: UIViewController {
     
     private let sendViewModel = ChattingSendViewModel()
-    private let receiveViewModel = ChattingReciveViewModel()
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
@@ -202,7 +201,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sender = sendViewModel.sendChattingList.count
-        let receive = receiveViewModel.receiveChattingList.count
+        let receive = sendViewModel.receiveChattingList.count
         chattingsCount = sender + receive
         print("sender: \(sender),receive: \(receive)")
         return chattingsCount
@@ -210,7 +209,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var chattingArray = sendViewModel.sendChattingList + receiveViewModel.receiveChattingList
+        var chattingArray = sendViewModel.sendChattingList + sendViewModel.receiveChattingList
         chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
         
         guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
@@ -232,7 +231,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        var chattingArray = sendViewModel.sendChattingList + receiveViewModel.receiveChattingList
+        var chattingArray = sendViewModel.sendChattingList + sendViewModel.receiveChattingList
         chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
         
         if let item = chattingArray[safe: indexPath.row] {
@@ -253,16 +252,6 @@ extension ChattingDetailViewController {
         let sendOutput = sendViewModel.transform(input: sendInput)
         
         sendOutput.reloadChattingTableView
-            .withUnretained(self)
-            .subscribe { viewController, _ in
-                viewController.chattingView.reloadData()
-            }
-            .disposed(by: disposeBag)
-        
-        let receiveInput = ChattingReciveViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
-        let receiveOutput = receiveViewModel.transform(input: receiveInput)
-        
-        receiveOutput.reloadChattingTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
                 viewController.chattingView.reloadData()
@@ -300,8 +289,6 @@ extension ChattingDetailViewController: UITextFieldDelegate {
     }
 }
 
-// 보낸 사람은 되는데 받은 사람이 룸이 여러개가 됨
-// sender 만 또는 receive 만 뜸 ===> 뷰 모델 두개로 나눠서 해보기 --> 같이는 뜨는데 제목이랑 데이터가 0번으로 들어가나봄? // 상단 타이틀 이름만 제대로 들어감 뭐지..?
 // Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기 // uikit 라벨 최대 trailing 하는 방법 찾아서 넣기
 // 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함]
 // 토글해야 맨 아래로 내려감 --> 시작과 동시에 할 수 있는 방법 찾기

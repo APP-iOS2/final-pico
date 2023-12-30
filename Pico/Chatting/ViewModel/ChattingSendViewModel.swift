@@ -13,8 +13,8 @@ import FirebaseFirestore
 final class ChattingSendViewModel {
     
     private(set) var sendChattingList: [Chatting.ChattingInfo] = []
+    private(set) var receiveChattingList: [Chatting.ChattingInfo] = []
     
-    private var isChattingEmptyPublisher = PublishSubject<Bool>()
     private let reloadChattingTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     
@@ -71,29 +71,33 @@ final class ChattingSendViewModel {
                         let sorted = datas.sorted {
                             return $0.sendedDate < $1.sendedDate
                         }
-                        if startIndex > sorted.count - 1 {
-                            return
-                        }
                         let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         sendChattingList += currentPageDatas
-                        if startIndex == 0 {
-                            reloadChattingTableViewPublisher.onNext(())
+                    }
+                    
+                    if let datas = try? document.data(as: Chatting.self).receiverChatting?
+                        .filter({ $0.roomId == self.roomId}) {
+                        let sorted = datas.sorted {
+                            return $0.sendedDate < $1.sendedDate
                         }
-                        startIndex += currentPageDatas.count
+                        let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        receiveChattingList += currentPageDatas
+                    }
+                    
+                    if startIndex == 0 {
+                        reloadChattingTableViewPublisher.onNext(())
                     }
                 } else {
-                    print("보낸 문서를 찾을 수 없습니다.")
+                    print("받은 문서를 찾을 수 없습니다.")
                 }
             }
         }
     }
     
     private func refresh() {
-        let didSet = isChattingEmptyPublisher
-        isChattingEmptyPublisher = PublishSubject<Bool>()
         sendChattingList = []
+        receiveChattingList = []
         startIndex = 0
-        isChattingEmptyPublisher = didSet
         loadNextChattingPage()
     }
 }

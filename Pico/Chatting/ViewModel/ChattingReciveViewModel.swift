@@ -14,8 +14,7 @@ final class ChattingReciveViewModel {
     
     private(set) var receiveChattingList: [Chatting.ChattingInfo] = []
     
-    private var isChattingEmptyPublisher = PublishSubject<Bool>()
-    private let reloadChattingTableViewPublisher = PublishSubject<Void>()
+     private let reloadChattingTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     
     private let dbRef = Firestore.firestore()
@@ -82,18 +81,15 @@ final class ChattingReciveViewModel {
                         startIndex += currentPageDatas.count
                     }
                 } else {
-                    print("보낸 문서를 찾을 수 없습니다.")
+                    print("받은 문서를 찾을 수 없습니다.")
                 }
             }
         }
     }
     
     private func refresh() {
-        let didSet = isChattingEmptyPublisher
-        isChattingEmptyPublisher = PublishSubject<Bool>()
         receiveChattingList = []
         startIndex = 0
-        isChattingEmptyPublisher = didSet
         loadNextChattingPage()
     }
 }
