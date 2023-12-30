@@ -70,9 +70,10 @@ final class ChattingSendListTableViewCell: UITableViewCell {
         }
         
         backgroundImageView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(messageLabel)
+            make.top.equalTo(messageLabel).offset(-10)
             make.leading.equalTo(messageLabel).offset(-10)
             make.trailing.equalTo(messageLabel).offset(15)
+            make.bottom.equalTo(messageLabel).offset(10)
         }
         
         dateLabel.snp.makeConstraints { make in

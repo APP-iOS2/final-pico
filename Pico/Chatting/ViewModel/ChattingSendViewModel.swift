@@ -117,40 +117,60 @@ extension ChattingSendViewModel {
         let senderRoomData = Room.RoomInfo(id: chattingData.roomId, userId: user.userId, opponentId: chattingData.receiveUserId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
         
         let receiverRoomData = Room.RoomInfo(id: chattingData.roomId, userId: chattingData.receiveUserId, opponentId: user.userId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
-        
-        FirestoreService.shared.loadDocument(collectionId: .room, documentId: self.user.userId, dataType: Room.self) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                guard let data else { return }
-                if let room = data.room {
-                    let checkRoom = room.firstIndex(where: {$0.id == senderRoomData.id})
-                    var sameRoom: Room.RoomInfo? {
-                        if checkRoom != nil {
-                            return room[checkRoom ?? 0]
+        DispatchQueue.global().async {
+            FirestoreService.shared.loadDocument(collectionId: .room, documentId: self.user.userId, dataType: Room.self) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    guard let data else { return }
+                    if let room = data.room {
+                        let checkRoom = room.firstIndex(where: {$0.id == senderRoomData.id})
+                        var sameRoom: Room.RoomInfo? {
+                            if checkRoom != nil {
+                                return room[checkRoom ?? 0]
+                            }
+                            return nil
                         }
-                        return nil
-                    }
-                    
-                    if sameRoom != nil {
+                        if sameRoom != nil {
+                            dbRef.collection(Collections.room.name).document(user.userId).updateData([
+                                "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                            ])
+                        }
                         dbRef.collection(Collections.room.name).document(user.userId).updateData([
-                            "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
-                        ])
-                        
-                        dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
-                            "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                            "room": FieldValue.arrayUnion([senderRoomData.asDictionary()])
                         ])
                     }
-                    dbRef.collection(Collections.room.name).document(user.userId).updateData([
-                        "room": FieldValue.arrayUnion([senderRoomData.asDictionary()])
-                    ])
-                    
-                    dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
-                        "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
-                    ])
+                case .failure(let error):
+                    print("룸 불러오기 실패: \(error)")
                 }
-            case .failure(let error):
-                print("룸 불러오기 실패: \(error)")
+            }
+            
+            FirestoreService.shared.loadDocument(collectionId: .room, documentId: senderRoomData.opponentId, dataType: Room.self) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    guard let data else { return }
+                    if let room = data.room {
+                        let checkRoom = room.firstIndex(where: {$0.id == senderRoomData.id})
+                        var sameRoom: Room.RoomInfo? {
+                            if checkRoom != nil {
+                                return room[checkRoom ?? 0]
+                            }
+                            return nil
+                        }
+                        
+                        if sameRoom != nil {
+                            dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
+                                "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                            ])
+                        }
+                        dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
+                            "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
+                        ])
+                    }
+                case .failure(let error):
+                    print("룸 불러오기 실패: \(error)")
+                }
             }
         }
     }
