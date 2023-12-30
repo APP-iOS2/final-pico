@@ -292,3 +292,4 @@ extension ChattingDetailViewController: UITextFieldDelegate {
 // Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기 // uikit 라벨 최대 trailing 하는 방법 찾아서 넣기
 // 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함]
 // 토글해야 맨 아래로 내려감 --> 시작과 동시에 할 수 있는 방법 찾기
+// 룸과 채팅 글자 색상 -> 다크모드냐에 따라 색상 변경
