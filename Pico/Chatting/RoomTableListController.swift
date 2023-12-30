@@ -94,7 +94,6 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let chattingDetailView = ChattingDetailViewController()
         let room = viewModel.roomList[safe: indexPath.row]
-        print(room)
         if let room = room {
             chattingDetailView.configData(room: room)
         }

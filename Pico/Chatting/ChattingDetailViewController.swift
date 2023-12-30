@@ -62,13 +62,11 @@ final class ChattingDetailViewController: UIViewController {
         super.viewDidLoad()
         bind()
         configViewController()
-        view.tappedDismissKeyboard()
         addViews()
         makeConstraints()
         configTableView()
         configRefresh()
         configSendButton()
-        loadDataPublsher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -77,7 +75,14 @@ final class ChattingDetailViewController: UIViewController {
         chattingView.reloadData()
         refreshPublisher.onNext(())
     }
-
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if self.chattingsCount > 0 {
+            self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+        }
+    }
+    
     private func addViews() {
         sendStack.addArrangedSubview([chatTextField, sendButton])
         view.addSubview([chattingView, sendStack])
@@ -127,6 +132,7 @@ final class ChattingDetailViewController: UIViewController {
     
     private func configViewController() {
         view.configBackgroundColor()
+        view.tappedDismissKeyboard()
         navigationItem.titleView?.tintColor = .picoAlphaBlue
         tabBarController?.tabBar.isHidden = true
     }
@@ -153,7 +159,6 @@ final class ChattingDetailViewController: UIViewController {
     private func configRefresh() {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
-        refreshControl.backgroundColor = .picoGray
         chattingView.refreshControl = refreshControl
     }
     
@@ -192,7 +197,6 @@ final class ChattingDetailViewController: UIViewController {
             if self.chattingsCount > 0 {
                 self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
             }
-            print("여기는 언제?")
         }
     }
 }
@@ -203,7 +207,6 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
         let sender = sendViewModel.sendChattingList.count
         let receive = sendViewModel.receiveChattingList.count
         chattingsCount = sender + receive
-        print("sender: \(sender),receive: \(receive)")
         return chattingsCount
     }
     
@@ -230,7 +233,6 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
         var chattingArray = sendViewModel.sendChattingList + sendViewModel.receiveChattingList
         chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
         
@@ -288,8 +290,26 @@ extension ChattingDetailViewController: UITextFieldDelegate {
         self.view.layoutIfNeeded()
     }
 }
+// MARK: - 페이징처리
+extension ChattingDetailViewController: UIScrollViewDelegate {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let contentOffsetY = scrollView.contentOffset.y
+        let tableViewContentSizeY = chattingView.contentSize.height
+        
+        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
+            
+            chattingView.tableFooterView = footerView
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.chattingView.tableFooterView = nil
+                
+                if self.chattingsCount > 0 {
+                    self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+                }
+            }
+        }
+    }
+}
 
 // Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기 // uikit 라벨 최대 trailing 하는 방법 찾아서 넣기
 // 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함]
-// 토글해야 맨 아래로 내려감 --> 시작과 동시에 할 수 있는 방법 찾기
-// 룸과 채팅 글자 색상 -> 다크모드냐에 따라 색상 변경
