@@ -1,5 +1,5 @@
 //
-//  ChattingSendViewModel.swift
+//  ChattingViewModel.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/16.
@@ -10,7 +10,7 @@ import RxSwift
 import RxRelay
 import FirebaseFirestore
 
-final class ChattingSendViewModel {
+final class ChattingViewModel {
     
     private(set) var sendChattingList: [Chatting.ChattingInfo] = []
     private(set) var receiveChattingList: [Chatting.ChattingInfo] = []
@@ -102,7 +102,7 @@ final class ChattingSendViewModel {
     }
 }
 // MARK: - saveChatting
-extension ChattingSendViewModel {
+extension ChattingViewModel {
     func updateChattingData(chattingData: Chatting.ChattingInfo) {
         
         let receiverData = Chatting.ChattingInfo(roomId: chattingData.roomId, sendUserId: chattingData.sendUserId, receiveUserId: chattingData.receiveUserId, message: chattingData.message, sendedDate: chattingData.sendedDate, isReading: false, messageType: .receive)

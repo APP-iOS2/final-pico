@@ -12,7 +12,7 @@ import RxCocoa
 
 final class ChattingDetailViewController: UIViewController {
     
-    private let sendViewModel = ChattingSendViewModel()
+    private let sendViewModel = ChattingViewModel()
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
@@ -248,7 +248,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
 // MARK: - Bind
 extension ChattingDetailViewController {
     private func bind() {
-        let sendInput = ChattingSendViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
+        let sendInput = ChattingViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
         let sendOutput = sendViewModel.transform(input: sendInput)
         
         sendOutput.reloadChattingTableView
