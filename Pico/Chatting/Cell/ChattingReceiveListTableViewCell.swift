@@ -28,7 +28,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
     
     private let chatView: UIView = {
         let view = UIView()
-        view.backgroundColor = .orange
+//        view.backgroundColor = .orange
         return view
     }()
     
@@ -54,6 +54,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         label.textAlignment = .left
         return label
     }()
+    
     // MARK: - MailCell +LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -102,41 +103,42 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
     }
     
     private func addViews() {
-        chatView.addSubview([userImageView, nameLabel, backgroundImageView, messageLabel, dateLabel])
         contentView.addSubview([chatView])
+        chatView.addSubview([userImageView, nameLabel, backgroundImageView, messageLabel, dateLabel])
     }
     
     private func makeConstraints() {
-        
         chatView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 10, left: 20, bottom: -10, right: 20))
+            make.edges.equalToSuperview()
         }
         
         userImageView.snp.makeConstraints { make in
-            make.top.left.equalTo(chatView)
+            make.top.leading.equalTo(chatView).offset(10)
             make.width.height.equalTo(50)
         }
         
         nameLabel.snp.makeConstraints { make in
             make.top.equalTo(userImageView)
             make.leading.equalTo(userImageView.snp.trailing).offset(10)
-        }
-        
-        backgroundImageView.snp.makeConstraints { make in
-            make.top.equalTo(messageLabel).offset(-10)
-            make.leading.equalTo(messageLabel).offset(-15)
-            make.bottom.trailing.equalTo(messageLabel).offset(10)
+            make.trailing.equalTo(-10)
         }
         
         messageLabel.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(15)
-            make.leading.equalTo(userImageView.snp.trailing).offset(20)
+            make.top.equalTo(nameLabel.snp.bottom).offset(20)
+            make.leading.equalTo(nameLabel).offset(10)
+            make.bottom.equalTo(-10)
         }
         
         dateLabel.snp.makeConstraints { make in
-            make.leading.equalTo(backgroundImageView.snp.trailing).offset(10)
-            make.top.equalTo(backgroundImageView)
-            make.width.equalTo(60)
+            make.leading.equalTo(messageLabel.snp.trailing).offset(10)
+            make.trailing.equalTo(-10)
+            make.bottom.equalTo(messageLabel.snp.bottom)
+        }
+        
+        backgroundImageView.snp.makeConstraints { make in
+            make.top.leading.equalTo(messageLabel).offset(-10)
+            make.trailing.equalTo(messageLabel).offset(5)
+            make.bottom.equalTo(messageLabel).offset(10)
         }
     }
 }

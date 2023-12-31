@@ -91,20 +91,19 @@ final class ChattingDetailViewController: UIViewController {
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
-        sendButton.snp.makeConstraints { make in
-            make.width.equalTo(50)
+        chattingView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(safeArea)
         }
         
         sendStack.snp.makeConstraints { make in
+            make.top.equalTo(chattingView.snp.bottom).offset(10)
             make.leading.equalTo(safeArea).offset(20)
             make.trailing.equalTo(safeArea).offset(-20)
             make.height.equalTo(40)
         }
         
-        chattingView.snp.makeConstraints { make in
-            make.top.leading.equalTo(safeArea)
-            make.trailing.equalTo(safeArea)
-            make.bottom.equalTo(sendStack.snp.top).offset(-10)
+        sendButton.snp.makeConstraints { make in
+            make.width.equalTo(50)
         }
         
         bottomConstraint = sendStack.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10)

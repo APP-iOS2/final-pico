@@ -13,7 +13,7 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     
     private let chatView: UIView = {
         let view = UIView()
-        view.backgroundColor = .yellow
+//        view.backgroundColor = .yellow
         return view
     }()
     
@@ -59,7 +59,6 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    
     func config(chatting: Chatting.ChattingInfo) {
         self.messageLabel.text = chatting.message
         let date = chatting.sendedDate.timeAgoSinceDate()
@@ -67,34 +66,32 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     }
     
     private func addViews() {
-        chatView.addSubview([dateLabel, backgroundImageView, messageLabel])
         contentView.addSubview([chatView])
+        chatView.addSubview([dateLabel, backgroundImageView, messageLabel])
     }
     
     private func makeConstraints() {
-        
         chatView.snp.makeConstraints { make in
-            make.top.equalTo(contentView).offset(10)
-            make.bottom.equalTo(contentView)
-            make.leading.equalTo(contentView).offset(30)
-            make.trailing.equalTo(contentView).offset(-30)
+            make.edges.equalToSuperview()
         }
         
         messageLabel.snp.makeConstraints { make in
-            make.top.trailing.equalTo(chatView)
+            make.top.equalTo(chatView).offset(20)
+            make.trailing.equalTo(chatView).offset(-20)
+            make.bottom.equalTo(-10)
+        }
+        
+        dateLabel.snp.makeConstraints { make in
+            make.leading.equalTo(10)
+            make.trailing.equalTo(messageLabel.snp.leading).offset(-10)
+            make.bottom.equalTo(messageLabel.snp.bottom)
         }
         
         backgroundImageView.snp.makeConstraints { make in
             make.top.equalTo(messageLabel).offset(-10)
-            make.leading.equalTo(messageLabel).offset(-10)
-            make.trailing.equalTo(messageLabel).offset(15)
+            make.leading.equalTo(messageLabel).offset(-5)
+            make.trailing.equalTo(messageLabel).offset(10)
             make.bottom.equalTo(messageLabel).offset(10)
-        }
-        
-        dateLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(backgroundImageView.snp.leading).offset(-10)
-            make.bottom.equalTo(backgroundImageView)
-            make.width.equalTo(60)
         }
     }
 }
