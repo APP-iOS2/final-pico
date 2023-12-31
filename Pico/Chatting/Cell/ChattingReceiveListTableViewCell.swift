@@ -26,22 +26,28 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let messageLabel: UILabel = {
+    private let chatView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .orange
+        return view
+    }()
+    
+    lazy var messageLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoContentFont
         label.textColor = .picoFontBlack
         label.textAlignment = .left
-        label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
         return label
     }()
     
-    private let backgroundImageView: UIImageView = {
+    lazy var backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: ChattingType.receive.imageStyle))
         return imageView
     }()
     
-    private let dateLabel: UILabel = {
+    lazy var dateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .gray
@@ -51,6 +57,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
     // MARK: - MailCell +LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.contentView.backgroundColor = .clear
         addViews()
         makeConstraints()
     }
@@ -89,28 +96,30 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
                 print(err)
             }
         }
-        
-        nameLabel.sizeToFit()
         self.messageLabel.text = chatting.message
         let date = chatting.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
     }
     
     private func addViews() {
-        contentView.addSubview([userImageView, nameLabel, backgroundImageView, messageLabel, dateLabel])
+        chatView.addSubview([userImageView, nameLabel, backgroundImageView, messageLabel, dateLabel])
+        contentView.addSubview([chatView])
     }
     
     private func makeConstraints() {
+        
+        chatView.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 10, left: 20, bottom: -10, right: 20))
+        }
+        
         userImageView.snp.makeConstraints { make in
-            make.top.equalTo(contentView).offset(10)
-            make.leading.equalTo(contentView).offset(10)
+            make.top.left.equalTo(chatView)
             make.width.height.equalTo(50)
         }
         
         nameLabel.snp.makeConstraints { make in
             make.top.equalTo(userImageView)
             make.leading.equalTo(userImageView.snp.trailing).offset(10)
-            make.height.equalTo(10)
         }
         
         backgroundImageView.snp.makeConstraints { make in
@@ -126,7 +135,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         
         dateLabel.snp.makeConstraints { make in
             make.leading.equalTo(backgroundImageView.snp.trailing).offset(10)
-            make.bottom.equalTo(backgroundImageView)
+            make.top.equalTo(backgroundImageView)
             make.width.equalTo(60)
         }
     }

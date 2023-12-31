@@ -11,6 +11,12 @@ import RxSwift
 
 final class ChattingSendListTableViewCell: UITableViewCell {
     
+    private let chatView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .yellow
+        return view
+    }()
+    
     private let messageLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoContentFont
@@ -53,6 +59,7 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
+    
     func config(chatting: Chatting.ChattingInfo) {
         self.messageLabel.text = chatting.message
         let date = chatting.sendedDate.timeAgoSinceDate()
@@ -60,13 +67,21 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     }
     
     private func addViews() {
-        contentView.addSubview([dateLabel, backgroundImageView, messageLabel])
+        chatView.addSubview([dateLabel, backgroundImageView, messageLabel])
+        contentView.addSubview([chatView])
     }
     
     private func makeConstraints() {
-        messageLabel.snp.makeConstraints { make in
+        
+        chatView.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(10)
+            make.bottom.equalTo(contentView)
+            make.leading.equalTo(contentView).offset(30)
             make.trailing.equalTo(contentView).offset(-30)
+        }
+        
+        messageLabel.snp.makeConstraints { make in
+            make.top.trailing.equalTo(chatView)
         }
         
         backgroundImageView.snp.makeConstraints { make in

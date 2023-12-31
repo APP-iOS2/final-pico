@@ -233,18 +233,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        var chattingArray = sendViewModel.sendChattingList + sendViewModel.receiveChattingList
-        chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
-        
-        if let item = chattingArray[safe: indexPath.row] {
-            switch item.messageType {
-            case .receive:
-                return 70
-            case .send:
-                return 50
-            }
-        }
-        return 70
+        return UITableView.automaticDimension
     }
 }
 // MARK: - Bind
@@ -311,5 +300,5 @@ extension ChattingDetailViewController: UIScrollViewDelegate {
     }
 }
 
-// Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기 // uikit 라벨 최대 trailing 하는 방법 찾아서 넣기
+// Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기 // 오히려 uiview안에 다 넣어서 width 맞도록 만들어버리기
 // 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함]
