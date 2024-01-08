@@ -73,7 +73,7 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
             return cell
         case 2:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageDefaultTableCell.self)
-            cell.configure(imageName: "envelope", title: "쪽지보관함")
+            cell.configure(imageName: "envelope", title: "쪽지 보관함")
             return cell
         case 3:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageDefaultTableCell.self)
