@@ -27,7 +27,7 @@ final class TabBarController: UITabBarController {
         let mypageViewController = UINavigationController(rootViewController: MypageViewController())
         
         homeViewController.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house.fill"), tag: 0)
-        chattingViewController.tabBarItem = UITabBarItem(title: "채팅", image: UIImage(systemName: "envelope.fill"), tag: 1)
+        chattingViewController.tabBarItem = UITabBarItem(title: "채팅", image: UIImage(systemName: "message.fill"), tag: 1)
         likeViewController.tabBarItem = UITabBarItem(title: "좋아요", image: UIImage(systemName: "heart.fill"), tag: 2)
         entViewController.tabBarItem = UITabBarItem(title: "게임", image: UIImage(systemName: "gamecontroller.fill"), tag: 3)
         mypageViewController.tabBarItem = UITabBarItem(title: "마이", image: UIImage(systemName: "person.fill"), tag: 4)
@@ -60,5 +60,15 @@ final class TabBarController: UITabBarController {
 extension TabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return CustomTransitionAnimator(viewControllers: tabBarController.viewControllers)
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if let selectedIndex = tabBarController.viewControllers?.firstIndex(of: viewController), selectedIndex == 0 {
+            if let homeViewController = tabBarController.viewControllers?[selectedIndex] as? UINavigationController {
+                if let rootViewController = homeViewController.viewControllers.first as? HomeViewController {
+                    rootViewController.reloadView()
+                }
+            }
+        }
     }
 }

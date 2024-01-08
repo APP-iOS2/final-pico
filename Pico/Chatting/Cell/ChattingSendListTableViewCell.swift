@@ -11,11 +11,7 @@ import RxSwift
 
 final class ChattingSendListTableViewCell: UITableViewCell {
     
-    private let chatView: UIView = {
-        let view = UIView()
-//        view.backgroundColor = .yellow
-        return view
-    }()
+    private let chatView = UIView()
     
     private let messageLabel: UILabel = {
         let label = UILabel()
@@ -81,17 +77,17 @@ final class ChattingSendListTableViewCell: UITableViewCell {
             make.bottom.equalTo(-10)
         }
         
-        dateLabel.snp.makeConstraints { make in
-            make.leading.equalTo(10)
-            make.trailing.equalTo(messageLabel.snp.leading).offset(-10)
-            make.bottom.equalTo(messageLabel.snp.bottom)
-        }
-        
         backgroundImageView.snp.makeConstraints { make in
             make.top.equalTo(messageLabel).offset(-10)
-            make.leading.equalTo(messageLabel).offset(-5)
-            make.trailing.equalTo(messageLabel).offset(10)
+            make.leading.equalTo(messageLabel).offset(-10)
+            make.trailing.equalTo(messageLabel).offset(15)
             make.bottom.equalTo(messageLabel).offset(10)
+        }
+        
+        dateLabel.snp.makeConstraints { make in
+            make.leading.equalTo(10)
+            make.trailing.equalTo(backgroundImageView.snp.leading).offset(-10)
+            make.bottom.equalTo(backgroundImageView.snp.bottom)
         }
     }
 }

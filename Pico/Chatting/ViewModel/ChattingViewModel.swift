@@ -115,12 +115,20 @@ extension ChattingViewModel {
         self.dbRef.collection(Collections.chatting.name).document(chattingData.receiveUserId).updateData([
             "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
         ])
+        
+        NotificationService.shared.sendNotification(userId: chattingData.receiveUserId, sendUserName: user.nickName, notiType: .message, messageContent: chattingData.message)
+        
+        guard let senderMbti = MBTIType(rawValue: user.mbti) else { return }
+        let receiverNoti = Noti(receiveId: chattingData.receiveUserId, sendId: user.userId, name: user.nickName, birth: user.birth, imageUrl: user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+        
+        FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: receiverNoti.id ?? UUID().uuidString, data: receiverNoti)
     }
     
     func updateRoomData(chattingData: Chatting.ChattingInfo) {
         let senderRoomData = Room.RoomInfo(id: chattingData.roomId, userId: user.userId, opponentId: chattingData.receiveUserId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
         
         let receiverRoomData = Room.RoomInfo(id: chattingData.roomId, userId: chattingData.receiveUserId, opponentId: user.userId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
+        
         DispatchQueue.global().async {
             FirestoreService.shared.loadDocument(collectionId: .room, documentId: self.user.userId, dataType: Room.self) { [weak self] result in
                 guard let self = self else { return }
@@ -128,7 +136,7 @@ extension ChattingViewModel {
                 case .success(let data):
                     guard let data else { return }
                     if let room = data.room {
-                        let checkRoom = room.firstIndex(where: {$0.id == senderRoomData.id})
+                        let checkRoom = room.firstIndex(where: {$0.id == chattingData.roomId})
                         var sameRoom: Room.RoomInfo? {
                             if checkRoom != nil {
                                 return room[checkRoom ?? 0]
@@ -149,13 +157,13 @@ extension ChattingViewModel {
                 }
             }
             
-            FirestoreService.shared.loadDocument(collectionId: .room, documentId: senderRoomData.opponentId, dataType: Room.self) { [weak self] result in
+            FirestoreService.shared.loadDocument(collectionId: .room, documentId: chattingData.receiveUserId, dataType: Room.self) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let data):
                     guard let data else { return }
                     if let room = data.room {
-                        let checkRoom = room.firstIndex(where: {$0.id == senderRoomData.id})
+                        let checkRoom = room.firstIndex(where: {$0.id == chattingData.roomId})
                         var sameRoom: Room.RoomInfo? {
                             if checkRoom != nil {
                                 return room[checkRoom ?? 0]

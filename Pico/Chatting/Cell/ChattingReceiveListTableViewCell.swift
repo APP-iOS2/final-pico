@@ -26,11 +26,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         return label
     }()
     
-    private let chatView: UIView = {
-        let view = UIView()
-//        view.backgroundColor = .orange
-        return view
-    }()
+    private let chatView = UIView()
     
     lazy var messageLabel: UILabel = {
         let label = UILabel()
@@ -121,24 +117,26 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
             make.top.equalTo(userImageView)
             make.leading.equalTo(userImageView.snp.trailing).offset(10)
             make.trailing.equalTo(-10)
+            make.height.equalTo(15)
         }
         
         messageLabel.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(20)
+            make.top.equalTo(nameLabel.snp.bottom).offset(15)
             make.leading.equalTo(nameLabel).offset(10)
             make.bottom.equalTo(-10)
         }
         
-        dateLabel.snp.makeConstraints { make in
-            make.leading.equalTo(messageLabel.snp.trailing).offset(10)
-            make.trailing.equalTo(-10)
-            make.bottom.equalTo(messageLabel.snp.bottom)
+        backgroundImageView.snp.makeConstraints { make in
+            make.top.equalTo(messageLabel).offset(-10)
+            make.leading.equalTo(messageLabel).offset(-15)
+            make.trailing.equalTo(messageLabel).offset(10)
+            make.bottom.equalTo(messageLabel).offset(10)
         }
         
-        backgroundImageView.snp.makeConstraints { make in
-            make.top.leading.equalTo(messageLabel).offset(-10)
-            make.trailing.equalTo(messageLabel).offset(5)
-            make.bottom.equalTo(messageLabel).offset(10)
+        dateLabel.snp.makeConstraints { make in
+            make.leading.equalTo(backgroundImageView.snp.trailing).offset(10)
+            make.trailing.equalTo(-10)
+            make.bottom.equalTo(backgroundImageView.snp.bottom)
         }
     }
 }

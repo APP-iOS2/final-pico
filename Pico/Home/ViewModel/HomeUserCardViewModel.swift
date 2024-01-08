@@ -15,10 +15,24 @@ final class HomeUserCardViewModel {
     private let sendedlikesUpdateFiled = "sendedlikes"
     private let recivedlikesUpdateFiled = "recivedlikes"
     private let docRef = Firestore.firestore().collection(Collections.likes.name)
-    private var partnerSendedLikeData: Like.LikeInfo = Like.LikeInfo(likedUserId: "", likeType: .dislike, birth: "", nickName: "", mbti: .enfj, imageURL: "", createdDate: 0)
+    private var partnerSendedLikeData: Like.LikeInfo = Like.likeInfoSample
     static var passedMyData: [[String: Any]] = []
     static var passedUserData: [[String: Any]] = []
     static var cardCounting: Int = 0
+    
+    func notificationServiceForPartner(_ pushType: PushNotiType, _ notiType: NotiType, user: User, currentUser: CurrentUser) {
+        NotificationService.shared.sendNotification(userId: user.id, sendUserName: currentUser.nickName, notiType: pushType)
+        guard let myMbti = MBTIType(rawValue: currentUser.mbti) else { return }
+        let noti = Noti(receiveId: user.id, sendId: currentUser.userId, name: currentUser.nickName, birth: currentUser.birth, imageUrl: currentUser.imageURL, notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+    }
+    
+    func notificationServiceForMe(_ pushType: PushNotiType, _ notiType: NotiType, user: User, currentUser: CurrentUser) {
+        NotificationService.shared.sendNotification(userId: currentUser.userId, sendUserName: user.nickName, notiType: pushType)
+        guard let myMbti = MBTIType(rawValue: user.mbti.rawValue) else { return }
+        let noti = Noti(receiveId: currentUser.userId, sendId: user.id, name: user.nickName, birth: user.birth, imageUrl: user.imageURLs[safe: 0] ?? "", notiType: notiType, mbti: myMbti, createDate: Date().timeIntervalSince1970)
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
+    }
     
     func saveLikeData(receiveUserInfo: User, likeType: Like.LikeType) {
         let myLikeUser: Like.LikeInfo = Like.LikeInfo(likedUserId: receiveUserInfo.id,
@@ -128,7 +142,7 @@ final class HomeUserCardViewModel {
                                 if let error = error {
                                     print("에러 : \(error)")
                                 } else {
-                                    print("매칭 문서 업데이트 오류")
+                                    print("매칭 문서 업데이트 성공")
                                 }
                             }
                     }
@@ -149,29 +163,27 @@ final class HomeUserCardViewModel {
         })
     }
     
-    func checkYouLikeMe(_ partnerId: String, _ myId: String, completion: @escaping (Like.LikeInfo?) -> Void) {
-        var result: Like.LikeInfo?
-        let dbRef = Firestore.firestore().collection(Collections.likes.name)
+    func checkYouLikeMe(_ partnerId: String, _ myId: String, completion: @escaping (Bool, Like.LikeInfo?) -> Void) {
+        var result = false
+        let dbRef = Firestore.firestore().collection("likes")
         
         DispatchQueue.global().async {
             dbRef.document(partnerId).getDocument { [self] (document, error) in
                 if let error = error {
                     print("Error getting document: \(error)")
-                    completion(nil)
-                    
+                    completion(false, nil)
                 } else if let document = document, document.exists {
                     if let data = try? document.data(as: Like.self), let sendedLikes = data.sendedlikes {
                         let sendedLikesData: [Like.LikeInfo] = sendedLikes
                         for data in sendedLikesData where data.likedUserId == myId {
                             partnerSendedLikeData = data
-                            result = partnerSendedLikeData
+                            result = true
                         }
                     }
-                    completion(result)
-                    
+                    completion(result, partnerSendedLikeData)
                 } else {
                     print("해당 문서가 존재하지 않습니다.")
-                    completion(nil)
+                    completion(false, nil)
                 }
             }
         }

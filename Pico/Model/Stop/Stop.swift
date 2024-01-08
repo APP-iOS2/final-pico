@@ -15,6 +15,14 @@ struct Stop: Codable {
     let during: Int
     let phoneNumber: String
     let user: User
+    
+    var endDate: Date? {
+        return Calendar.current.date(byAdding: .day, value: self.during, to: Date(timeIntervalSince1970: self.createdDate))
+    }
+    
+    var endDateString: String {
+        return endDate?.timeIntervalSince1970.toString(dateSeparator: .dot) ?? "0000.00.00"
+    }
 }
 
 enum DuringType: CaseIterable {
