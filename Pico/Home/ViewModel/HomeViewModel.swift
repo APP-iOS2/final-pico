@@ -69,7 +69,7 @@ final class HomeViewModel {
         viewController: UIViewController
     ) {
         if todayDontWatchButtonPressedTime() == .watch {
-            if let presentedVC = viewController.presentedViewController {
+            if viewController.presentedViewController != nil {
             } else {
                 let customAlertViewController = CustomPopupViewController()
                 let stopWatchingToday: UIButton = {
@@ -99,7 +99,6 @@ final class HomeViewModel {
                 }
                 viewController.present(customAlertViewController, animated: true, completion: nil)
             }
-            
         }
     }
     
