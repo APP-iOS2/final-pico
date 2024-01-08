@@ -12,7 +12,7 @@ import RxCocoa
 
 final class ChattingDetailViewController: UIViewController {
     
-    private let sendViewModel = ChattingViewModel()
+    private let viewModel = ChattingViewModel()
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
@@ -125,7 +125,7 @@ final class ChattingDetailViewController: UIViewController {
             }
         }
         roomId = room.id
-        sendViewModel.roomId = roomId
+        viewModel.roomId = roomId
         opponentId = room.opponentId
     }
     
@@ -170,13 +170,13 @@ final class ChattingDetailViewController: UIViewController {
                     // sender: 로그인한 사람, recevie 받는 사람
                     let chatting: Chatting.ChattingInfo = Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageType: .send)
                     
-                    self.sendViewModel.updateChattingData(chattingData: chatting)
+                    self.viewModel.updateChattingData(chattingData: chatting)
                     
                     chatTextField.text = ""
                     chattingView.reloadData()
                     refreshPublisher.onNext(())
                     
-                    self.sendViewModel.updateRoomData(chattingData: chatting)
+                    self.viewModel.updateRoomData(chattingData: chatting)
                     
                     if self.chattingsCount > 0 {
                         self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
@@ -203,15 +203,15 @@ final class ChattingDetailViewController: UIViewController {
 extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sender = sendViewModel.sendChattingList.count
-        let receive = sendViewModel.receiveChattingList.count
+        let sender = viewModel.sendChattingList.count
+        let receive = viewModel.receiveChattingList.count
         chattingsCount = sender + receive
         return chattingsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var chattingArray = sendViewModel.sendChattingList + sendViewModel.receiveChattingList
+        var chattingArray = viewModel.sendChattingList + viewModel.receiveChattingList
         chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
         
         guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
@@ -239,7 +239,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
 extension ChattingDetailViewController {
     private func bind() {
         let sendInput = ChattingViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
-        let sendOutput = sendViewModel.transform(input: sendInput)
+        let sendOutput = viewModel.transform(input: sendInput)
         
         sendOutput.reloadChattingTableView
             .withUnretained(self)
@@ -299,5 +299,4 @@ extension ChattingDetailViewController: UIScrollViewDelegate {
     }
 }
 
-// Text가 화면의 2/3 이상이면 잘라서 보이도록 하기 --> 물어보기 // 오히려 uiview안에 다 넣어서 width 맞도록 만들어버리기
 // 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함]
