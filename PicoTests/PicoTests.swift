@@ -37,7 +37,6 @@ final class StringExtensionTests: XCTestCase {
     }
     
     func test_timeAgoSinceDate_시간을_현_시간과_비교해서_얼마나_지났는지() throws {
-        
         var result = ""
         let sut2DateDouble = sut2?.toDate().timeIntervalSince1970
         

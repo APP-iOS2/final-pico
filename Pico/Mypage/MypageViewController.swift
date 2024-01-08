@@ -92,7 +92,7 @@ final class MypageViewController: BaseViewController {
                let composeViewController = MFMailComposeViewController()
                composeViewController.mailComposeDelegate = self
                let bodyString = "문의 내용을 작성해주세요."
-                   composeViewController.setSubject(" PICO 문의")
+                   composeViewController.setSubject("PICO 문의")
                
                composeViewController.setToRecipients(["rlaalsrl1227@gmail.com"])
                composeViewController.setMessageBody(bodyString, isHTML: false)
@@ -132,8 +132,10 @@ extension MypageViewController: MyPageViewDelegate {
         case 1:
             presentViewController(PremiumViewController())
         case 2:
-            presentEmail()
+            presentViewController(UINavigationController(rootViewController: MailViewController()))
         case 3:
+            presentEmail()
+        case 4:
             presentViewController(AdvertisementViewController())
         default:
             break

@@ -13,44 +13,48 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
     
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 25
         return imageView
-    }()
-    
-    private let textStack: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .leading
-        stackView.spacing = 10
-        return stackView
     }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.picoContentBoldFont
-        label.textColor = .picoFontBlack
-        return label
-    }()
-    
-    private let messageLabel: UILabel = {
-        let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .picoFontBlack
         return label
     }()
     
-    private let backgroundImageView: UIImageView = UIImageView()
+    private let chatView = UIView()
     
-    private let dateLabel: UILabel = {
+    lazy var messageLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.picoContentFont
+        label.textColor = .picoFontBlack
+        label.textAlignment = .left
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    lazy var backgroundImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: ChattingType.receive.imageStyle))
+        return imageView
+    }()
+    
+    lazy var dateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .gray
-        label.textAlignment = .right
+        label.textAlignment = .left
         return label
     }()
+    
     // MARK: - MailCell +LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.contentView.backgroundColor = .clear
         addViews()
         makeConstraints()
     }
@@ -60,18 +64,10 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        userImageView.layer.cornerRadius = userImageView.frame.width / 2.0
-        userImageView.clipsToBounds = true
-        self.setNeedsUpdateConstraints()
-    }
-    
     override func prepareForReuse() {
         userImageView.image = UIImage(named: "AppIcon")
         nameLabel.text = ""
         messageLabel.text = ""
-        backgroundImageView.image = UIImage()
         dateLabel.text = ""
     }
     
@@ -85,11 +81,10 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
                     nameLabel.text = userData.nickName
-                   guard let imageURL = userData.imageURLs[safe: 0] else { return }
+                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
                     guard let url = URL(string: imageURL) else { return }
                     userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
                     userImageView.kf.setImage(with: url)
-                    backgroundImageView.image = UIImage(systemName: ChattingType.receive.imageStyle)
                 } else {
                     userImageView.image = UIImage(named: "AppIcon_gray")
                     nameLabel.text = "탈퇴된 회원"
@@ -98,40 +93,50 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
                 print(err)
             }
         }
-        
-        nameLabel.sizeToFit()
         self.messageLabel.text = chatting.message
-        
         let date = chatting.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
     }
     
     private func addViews() {
-        textStack.addArrangedSubview([nameLabel, messageLabel, backgroundImageView])
-        contentView.addSubview([userImageView, textStack, dateLabel])
+        contentView.addSubview([chatView])
+        chatView.addSubview([userImageView, nameLabel, backgroundImageView, messageLabel, dateLabel])
     }
     
     private func makeConstraints() {
+        chatView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         userImageView.snp.makeConstraints { make in
-            make.top.equalTo(contentView).offset(10)
-            make.leading.equalTo(contentView).offset(20)
-            make.trailing.equalTo(self)
-            make.width.height.equalTo(60)
+            make.top.leading.equalTo(chatView).offset(10)
+            make.width.height.equalTo(50)
+        }
+        
+        nameLabel.snp.makeConstraints { make in
+            make.top.equalTo(userImageView)
+            make.leading.equalTo(userImageView.snp.trailing).offset(10)
+            make.trailing.equalTo(-10)
+            make.height.equalTo(15)
+        }
+        
+        messageLabel.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel.snp.bottom).offset(15)
+            make.leading.equalTo(nameLabel).offset(10)
+            make.bottom.equalTo(-10)
         }
         
         backgroundImageView.snp.makeConstraints { make in
-            make.edges.equalTo((textLabel?.snp.edges)!)
-        }
-        
-        textStack.snp.makeConstraints { make in
-            make.leading.equalTo(userImageView.snp.trailing).offset(10)
-            make.height.equalTo(70)
+            make.top.equalTo(messageLabel).offset(-10)
+            make.leading.equalTo(messageLabel).offset(-15)
+            make.trailing.equalTo(messageLabel).offset(10)
+            make.bottom.equalTo(messageLabel).offset(10)
         }
         
         dateLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(contentView.snp.trailing).offset(-30)
-            make.bottom.equalTo(backgroundImageView)
-            make.width.equalTo(60)
+            make.leading.equalTo(backgroundImageView.snp.trailing).offset(10)
+            make.trailing.equalTo(-10)
+            make.bottom.equalTo(backgroundImageView.snp.bottom)
         }
     }
 }

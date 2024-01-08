@@ -101,10 +101,10 @@ final class RoomListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(receiveUser: Room.RoomInfo) {
+    func config(receiveUser: Room.RoomInfo) -> String {
         
         let userId: String = receiveUser.opponentId
-        
+        var nickName: String = ""
         FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -112,8 +112,7 @@ final class RoomListTableViewCell: UITableViewCell {
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
                     nameLabel.text = userData.nickName
-                    viewModel.opponentName = userData.nickName
-                    print(viewModel.opponentName)
+                    nickName = userData.nickName
                     mbtiLabelView.isHidden = false
                     mbtiLabelView.setMbti(mbti: userData.mbti)
                     guard let imageURL = userData.imageURLs[safe: 0] else { return }
@@ -136,6 +135,8 @@ final class RoomListTableViewCell: UITableViewCell {
         
         let date = receiveUser.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
+        
+        return nickName
     }
     
     private func addViews() {
