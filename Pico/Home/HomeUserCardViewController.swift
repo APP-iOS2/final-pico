@@ -406,6 +406,8 @@ final class HomeUserCardViewController: UIViewController {
         if currentUser.userId.prefix(4) != Bundle.main.testId {
             viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result, _ in
                 if result {
+                    let chatModel = ChattingViewModel()
+                    chatModel.saveChattingData(receiveUserId: user.id, message: "서로 매칭되었습니다")
                     viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
                     viewModel.updateMatcingData(user.id)
                     viewModel.notificationServiceForPartner(.matching, .matching, user: user, currentUser: currentUser)
