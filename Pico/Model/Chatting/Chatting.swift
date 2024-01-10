@@ -26,7 +26,7 @@ struct Chatting: Codable {
     var receiverChatting: [ChattingInfo]?
     
     struct ChattingInfo: Codable {
-        var id: String = UUID().uuidString
+        //var id: String = UUID().uuidString
         let roomId: String
         let sendUserId: String
         let receiveUserId: String

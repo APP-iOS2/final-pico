@@ -68,6 +68,7 @@ final class ChattingViewModel {
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Chatting.self).senderChatting?
                         .filter({ $0.roomId == self.roomId }) {
+
                         let sorted = datas.sorted {
                             return $0.sendedDate < $1.sendedDate
                         }
@@ -153,7 +154,7 @@ extension ChattingViewModel {
                         ])
                     }
                 case .failure(let error):
-                    print("룸 불러오기 실패: \(error)")
+                    print("자신의 룸 불러오기 실패: \(error)")
                 }
             }
             
@@ -172,16 +173,16 @@ extension ChattingViewModel {
                         }
                         
                         if sameRoom != nil {
-                            dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
+                            dbRef.collection(Collections.room.name).document(receiverRoomData.userId).updateData([
                                 "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
                             ])
                         }
-                        dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
+                        dbRef.collection(Collections.room.name).document(receiverRoomData.userId).updateData([
                             "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
                         ])
                     }
                 case .failure(let error):
-                    print("룸 불러오기 실패: \(error)")
+                    print("받는 사람의 룸 불러오기 실패: \(error)")
                 }
             }
         }
@@ -218,7 +219,6 @@ extension ChattingViewModel {
         ]
         
         let receiveMessages: [String: Any] = [
-            "id": UUID().uuidString,
             "roomId": roomId,
             "sendUserId": user.userId,
             "receiveUserId": receiveUserId,

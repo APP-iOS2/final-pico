@@ -76,13 +76,6 @@ final class ChattingDetailViewController: UIViewController {
         refreshPublisher.onNext(())
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if self.chattingsCount > 0 {
-            self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
-        }
-    }
-    
     private func addViews() {
         sendStack.addArrangedSubview([chatTextField, sendButton])
         view.addSubview([chattingView, sendStack])
@@ -176,14 +169,14 @@ final class ChattingDetailViewController: UIViewController {
                     chattingView.reloadData()
                     refreshPublisher.onNext(())
                     
-                    self.viewModel.updateRoomData(chattingData: chatting)
-                    
-                    if self.chattingsCount > 0 {
-                        self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+                    DispatchQueue.global().async {
+                        self.viewModel.updateRoomData(chattingData: chatting)
                     }
                 }
             }
             .disposed(by: disposeBag)
+        
+        print("save this")
     }
     
     @objc func refreshTable(refresh: UIRefreshControl) {
@@ -191,6 +184,7 @@ final class ChattingDetailViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             refreshPublisher.onNext(())
+            chattingView.reloadData()
             refresh.endRefreshing()
             isRefresh = false
             if self.chattingsCount > 0 {
@@ -233,6 +227,13 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if self.chattingsCount > 0 {
+            self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+        }
     }
 }
 // MARK: - Bind
@@ -298,5 +299,3 @@ extension ChattingDetailViewController: UIScrollViewDelegate {
         }
     }
 }
-
-// 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함]
