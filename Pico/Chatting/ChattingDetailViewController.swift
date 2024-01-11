@@ -72,9 +72,15 @@ final class ChattingDetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configChatFieldView()
-        chattingView.reloadData()
         refreshPublisher.onNext(())
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            if self.chattingsCount > 0 {
+                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+            }
+        }
     
     private func addViews() {
         sendStack.addArrangedSubview([chatTextField, sendButton])
@@ -117,9 +123,10 @@ final class ChattingDetailViewController: UIViewController {
                 print(err)
             }
         }
-        roomId = room.id
-        viewModel.roomId = roomId
-        opponentId = room.opponentId
+            guard let roomid = room.id else {return}
+            roomId = roomid
+            viewModel.roomId = roomid
+            opponentId = room.opponentId
     }
     
     private func configViewController() {
@@ -166,8 +173,12 @@ final class ChattingDetailViewController: UIViewController {
                     self.viewModel.updateChattingData(chattingData: chatting)
                     
                     chatTextField.text = ""
-                    chattingView.reloadData()
                     refreshPublisher.onNext(())
+                    
+                    if self.chattingsCount > 0 {
+                        let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
+                        chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
+                    }
                     
                     DispatchQueue.global().async {
                         self.viewModel.updateRoomData(chattingData: chatting)
@@ -176,7 +187,7 @@ final class ChattingDetailViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        print("save this")
+        refreshPublisher.onNext(())
     }
     
     @objc func refreshTable(refresh: UIRefreshControl) {
@@ -184,11 +195,11 @@ final class ChattingDetailViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             refreshPublisher.onNext(())
-            chattingView.reloadData()
             refresh.endRefreshing()
             isRefresh = false
             if self.chattingsCount > 0 {
-                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+                let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
+                chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
             }
         }
     }
@@ -197,18 +208,15 @@ final class ChattingDetailViewController: UIViewController {
 extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sender = viewModel.sendChattingList.count
-        let receive = viewModel.receiveChattingList.count
-        chattingsCount = sender + receive
+        chattingsCount = viewModel.chattingArray.count
+        print(chattingsCount)
         return chattingsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var chattingArray = viewModel.sendChattingList + viewModel.receiveChattingList
-        chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
-        
-        guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
+        guard let item = viewModel.chattingArray[safe: indexPath.row] else { return UITableViewCell() }
+        print(item)
         switch item.messageType {
         case .receive:
             let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
@@ -227,13 +235,6 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        if self.chattingsCount > 0 {
-            self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
-        }
     }
 }
 // MARK: - Bind
@@ -281,21 +282,30 @@ extension ChattingDetailViewController: UITextFieldDelegate {
 }
 // MARK: - 페이징처리
 extension ChattingDetailViewController: UIScrollViewDelegate {
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        let contentOffsetY = scrollView.contentOffset.y
-        let tableViewContentSizeY = chattingView.contentSize.height
-        
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
-            
-            chattingView.tableFooterView = footerView
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.chattingView.tableFooterView = nil
-                
-                if self.chattingsCount > 0 {
-                    self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
-                }
-            }
-        }
-    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+           let offsetY = scrollView.contentOffset.y
+           let contentHeight = scrollView.contentSize.height
+           let height = scrollView.frame.height
+           
+           if offsetY > (contentHeight - height) {
+               if viewModel.isPaging == false {
+                   beginPaging()
+               }
+           }
+       }
+       
+       func beginPaging() {
+           viewModel.isPaging = true
+           
+           chattingView.tableFooterView = footerView
+           
+           DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+               self.chattingView.tableFooterView = nil
+               self.refreshPublisher.onNext(())
+               if self.chattingsCount > 0 {
+                   self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+               }
+           }
+       }
 }

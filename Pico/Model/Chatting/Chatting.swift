@@ -12,7 +12,7 @@ struct Room: Codable {
     var room: [RoomInfo]?
     
     struct RoomInfo: Codable {
-        var id: String
+        var id: String?
         let userId: String
         let opponentId: String
         let lastMessage: String
@@ -26,7 +26,6 @@ struct Chatting: Codable {
     var receiverChatting: [ChattingInfo]?
     
     struct ChattingInfo: Codable {
-        //var id: String = UUID().uuidString
         let roomId: String
         let sendUserId: String
         let receiveUserId: String
