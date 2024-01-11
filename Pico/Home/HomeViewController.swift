@@ -12,7 +12,6 @@ import RxCocoa
 import CoreLocation
 
 final class HomeViewController: BaseViewController {
-    
     var isHomeVisible: Bool = false
     var removedView: [UIView] = []
     var userCards: [User] = []
@@ -148,7 +147,7 @@ final class HomeViewController: BaseViewController {
                     subView.removeFromSuperview()
                 }
                 addUserCards()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
                     guard let self = self else { return }
                     addEmptyView()
                     loadingView.removeFromSuperview()

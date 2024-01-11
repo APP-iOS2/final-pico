@@ -312,6 +312,57 @@ final class HomeUserCardViewController: UIViewController {
         return  currentUserLoc.distance(from: otherUserLoc)
     }
     
+    private func likeUser() {
+        self.homeViewController?.removedView.append(self.view)
+        HomeUserCardViewModel.cardCounting += 1
+        if HomeUserCardViewModel.cardCounting == 3 {
+            HomeUserCardViewModel.cardCounting = -1
+            homeViewController?.addUserCards()
+        }
+        if currentUser.userId.prefix(4) != Bundle.main.testId {
+            viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
+                if result == .like {
+                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
+                    viewModel.updateMatcingData(user.id)
+                    viewModel.notificationServiceForPartner(.matching, .matching, user: user, currentUser: currentUser)
+                    viewModel.notificationServiceForMe(.matching, .matching, user: user, currentUser: currentUser)
+                    homeViewController?.removedView.removeLast()
+                } else if result == .matching {
+                    homeViewController?.removedView.removeLast()
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "이미 매칭된 상대입니다.", messageText: "", confirmButtonText: "확인")
+                } else {
+                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
+                    viewModel.notificationServiceForPartner(.like, .like, user: user, currentUser: currentUser)
+                }
+            }
+        }
+        
+        UIView.animate(withDuration: 0.5) {
+            self.view.center.x += 1000
+        } completion: { _ in
+            self.homeViewController?.likeLabel.alpha = 0
+        }
+    }
+    
+    private func disLikeUser() {
+        self.homeViewController?.removedView.append(self.view)
+        HomeUserCardViewModel.cardCounting += 1
+        if HomeUserCardViewModel.cardCounting == 3 {
+            HomeUserCardViewModel.cardCounting = -1
+            homeViewController?.addUserCards()
+        }
+        
+        if currentUser.userId.prefix(4) != Bundle.main.testId {
+            self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
+        }
+        
+        UIView.animate(withDuration: 0.5) {
+            self.view.center.x -= 1000
+        } completion: { _ in
+            self.homeViewController?.passLabel.alpha = 0
+        }
+    }
+    
     @objc func touchGesture(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: self.view)
         
@@ -332,46 +383,9 @@ final class HomeUserCardViewController: UIViewController {
             }
         case .ended:
             if translation.x > 150 {
-                HomeUserCardViewModel.cardCounting += 1
-                if HomeUserCardViewModel.cardCounting == 3 {
-                    HomeUserCardViewModel.cardCounting = -1
-                    homeViewController?.addUserCards()
-                }
-                homeViewController?.removedView.append(view)
-                
-                if currentUser.userId.prefix(4) != Bundle.main.testId {
-                    viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
-                        if result {
-                            viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
-                            viewModel.updateMatcingData(user.id)
-                            viewModel.notificationServiceForPartner(.matching, .matching, user: user, currentUser: currentUser)
-                            viewModel.notificationServiceForMe(.matching, .matching, user: user, currentUser: currentUser)
-                            homeViewController?.removedView.removeLast()
-                        } else {
-                            viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
-                            viewModel.notificationServiceForPartner(.like, .like, user: user, currentUser: currentUser)
-                        }
-                    }
-                }
-                
-                UIView.animate(withDuration: 0.5) { [self] in
-                    view.center.x += 1000
-                    homeViewController?.likeLabel.alpha = 0
-                }
+                likeUser()
             } else if translation.x < -150 {
-                HomeUserCardViewModel.cardCounting += 1
-                if HomeUserCardViewModel.cardCounting == 3 {
-                    HomeUserCardViewModel.cardCounting = -1
-                    homeViewController?.addUserCards()
-                }
-                if currentUser.userId.prefix(4) != Bundle.main.testId {
-                    self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
-                }
-                UIView.animate(withDuration: 0.5) { [self] in
-                    homeViewController?.removedView.append(view)
-                    view.center.x -= 1000
-                    homeViewController?.passLabel.alpha = 0
-                }
+                disLikeUser()
             } else {
                 UIView.animate(withDuration: 0.3) {
                     self.view.center = self.initialCenter
@@ -384,63 +398,15 @@ final class HomeUserCardViewController: UIViewController {
             break
         }
     }
-    @objc func tappedLikeButtonObjc() {
-        tappedLikeButton()
-    }
     
-    func tappedLikeButton() {
-        self.homeViewController?.removedView.append(self.view)
+    @objc func tappedLikeButtonObjc() {
+        likeUser()
         self.homeViewController?.likeLabel.alpha = 1
-        HomeUserCardViewModel.cardCounting += 1
-        if HomeUserCardViewModel.cardCounting == 3 {
-            HomeUserCardViewModel.cardCounting = -1
-            homeViewController?.addUserCards()
-        }
-        if currentUser.userId.prefix(4) != Bundle.main.testId {
-            viewModel.checkYouLikeMe(user.id, currentUser.userId) { [self] result in
-                if result {
-                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .matching)
-                    viewModel.updateMatcingData(user.id)
-                    viewModel.notificationServiceForPartner(.matching, .matching, user: user, currentUser: currentUser)
-                    viewModel.notificationServiceForMe(.matching, .matching, user: user, currentUser: currentUser)
-                    homeViewController?.removedView.removeLast()
-
-                } else {
-                    viewModel.saveLikeData(receiveUserInfo: user, likeType: .like)
-                    viewModel.notificationServiceForPartner(.like, .like, user: user, currentUser: currentUser)
-                }
-            }
-        }
-        
-        UIView.animate(withDuration: 0.5) {
-            self.view.center.x += 1000
-        } completion: { _ in
-            self.homeViewController?.likeLabel.alpha = 0
-        }
     }
     
     @objc func tappedDisLikeButtonObjc() {
-        tappedDisLikeButton()
-    }
-    
-    func tappedDisLikeButton() {
-        self.homeViewController?.removedView.append(self.view)
+        disLikeUser()
         self.homeViewController?.passLabel.alpha = 1
-        HomeUserCardViewModel.cardCounting += 1
-        if HomeUserCardViewModel.cardCounting == 3 {
-            HomeUserCardViewModel.cardCounting = -1
-            homeViewController?.addUserCards()
-        }
-        
-        if currentUser.userId.prefix(4) != Bundle.main.testId {
-            self.viewModel.saveLikeData(receiveUserInfo: user, likeType: .dislike)
-        }
-        
-        UIView.animate(withDuration: 0.5) {
-            self.view.center.x -= 1000
-        } completion: { _ in
-            self.homeViewController?.passLabel.alpha = 0
-        }
     }
     
     @objc func tappedPickBackButton() {
@@ -500,7 +466,7 @@ final class HomeUserCardViewController: UIViewController {
             self?.tappedLikeButtonObjc()
         }
         viewController.onDisLike = { [weak self] in
-            self?.tappedDisLikeButton()
+            self?.disLikeUser()
         }
         navigationController?.pushViewController(viewController, animated: true)
     }
