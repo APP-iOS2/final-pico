@@ -13,6 +13,7 @@ import CoreLocation
 
 final class HomeViewController: BaseViewController {
     var isHomeVisible: Bool = false
+    var doingReloadingHome: Bool = false
     var removedView: [UIView] = []
     var userCards: [User] = []
     var users = BehaviorRelay<[User]>(value: [])
@@ -58,7 +59,7 @@ final class HomeViewController: BaseViewController {
         configButtons()
         bind()
         loadCards()
-        addLoadingView()
+        loadingView.animateNow()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -147,13 +148,15 @@ final class HomeViewController: BaseViewController {
                     subView.removeFromSuperview()
                 }
                 addUserCards()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+                addLoadingView()
+                addEmptyView()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) { [weak self] in
                     guard let self = self else { return }
-                    addEmptyView()
                     loadingView.removeFromSuperview()
                     if view.subviews.count <= 3 {
                         goToFilterAlert()
                     }
+                    doingReloadingHome = false
                 }
                 addSubView()
                 addGuideView()
@@ -197,7 +200,6 @@ final class HomeViewController: BaseViewController {
     private func addLoadingView() {
         loadingView.frame = view.frame
         loadingView.configBackgroundColor()
-        loadingView.animateNow()
         view.addSubview(loadingView)
     }
     
@@ -297,6 +299,7 @@ final class HomeViewController: BaseViewController {
     
     @objc func reloadView() {
         let newViewController = HomeViewController()
+        newViewController.doingReloadingHome = true
         self.navigationController?.setViewControllers([newViewController], animated: false)
         HomeUserCardViewModel.passedMyData.removeAll()
         HomeUserCardViewModel.passedUserData.removeAll()
