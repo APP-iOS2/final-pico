@@ -186,6 +186,13 @@ extension ChattingViewModel {
                 }
             }
         }
+        
+        guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
+        
+        let receiverNoti = Noti(receiveId: chattingData.receiveUserId, sendId: self.user.userId, name: self.user.nickName, birth: self.user.birth, imageUrl: self.user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+        
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
+        
     }
     
     func saveChattingData(receiveUserId: String, message: String) {
