@@ -185,7 +185,7 @@ final class HomeUserCardViewModel {
                             }
                         }
                     }
-                    completion(result, partnerSendedLikeData)
+                    completion(result)
                 } else {
                     print("해당 문서가 존재하지 않습니다.")
                     completion(nil)

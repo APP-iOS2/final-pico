@@ -59,7 +59,7 @@ final class HomeViewController: BaseViewController {
         configButtons()
         bind()
         loadCards()
-        loadingView.animateNow()
+        loadingView.homeAnimation()
     }
     
     override func viewWillAppear(_ animated: Bool) {
