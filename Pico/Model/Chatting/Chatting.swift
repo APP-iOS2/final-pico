@@ -12,7 +12,8 @@ struct Room: Codable {
     var room: [RoomInfo]?
     
     struct RoomInfo: Codable {
-        var roomId: String
+        var id: String
+        let userId: String
         let opponentId: String
         let lastMessage: String
         let sendedDate: Double
@@ -32,11 +33,11 @@ struct Chatting: Codable {
         let message: String
         let sendedDate: Double
         let isReading: Bool
-        let messageTye: ChattingType
+        let messageType: ChattingType
     }
 }
 
-enum ChattingType: Codable {
+enum ChattingType: String, Codable {
     case send
     case receive
     

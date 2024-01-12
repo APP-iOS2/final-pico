@@ -11,26 +11,35 @@ import RxSwift
 
 final class ChattingSendListTableViewCell: UITableViewCell {
     
+    private let chatView = UIView()
+    
     private let messageLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.picoDescriptionFont
-        label.textColor = .picoFontBlack
+        label.font = UIFont.picoContentFont
+        label.textColor = .white
+        label.textAlignment = .right
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
     
-    private let backgroundImageView: UIImageView = UIImageView()
+    private var backgroundImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: ChattingType.send.imageStyle))
+        return imageView
+    }()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.picoDescriptionFont
         label.textColor = .gray
-        label.textAlignment = .left
+        label.textAlignment = .right
         return label
     }()
     
     // MARK: - MailCell +LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.contentView.backgroundColor = .clear
         addViews()
         makeConstraints()
     }
@@ -42,53 +51,43 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         messageLabel.text = ""
-        backgroundImageView.image = UIImage()
         dateLabel.text = ""
     }
     
     // MARK: - MailCell +UI
     func config(chatting: Chatting.ChattingInfo) {
-        
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: chatting.receiveUserId, dataType: User.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let user):
-                if !user.isEmpty {
-                    guard user[safe: 0] != nil else { break }
-                    backgroundImageView.image = UIImage(systemName: ChattingType.receive.imageStyle)
-                }
-            case .failure(let err):
-                print(err)
-            }
-        }
-        
         self.messageLabel.text = chatting.message
-        
         let date = chatting.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
     }
     
     private func addViews() {
-        contentView.addSubview([messageLabel, backgroundImageView, dateLabel])
+        contentView.addSubview([chatView])
+        chatView.addSubview([dateLabel, backgroundImageView, messageLabel])
     }
     
     private func makeConstraints() {
+        chatView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
         messageLabel.snp.makeConstraints { make in
-            make.top.equalTo(contentView).offset(10)
-            make.leading.equalTo(self)
-            make.trailing.equalTo(contentView).offset(-20)
-            make.height.equalTo(70)
+            make.top.equalTo(chatView).offset(20)
+            make.trailing.equalTo(chatView).offset(-20)
+            make.bottom.equalTo(-10)
         }
         
         backgroundImageView.snp.makeConstraints { make in
-            make.edges.equalTo(messageLabel.snp.edges)
+            make.top.equalTo(messageLabel).offset(-10)
+            make.leading.equalTo(messageLabel).offset(-10)
+            make.trailing.equalTo(messageLabel).offset(15)
+            make.bottom.equalTo(messageLabel).offset(10)
         }
         
         dateLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(contentView.snp.trailing).offset(-30)
-            make.bottom.equalTo(backgroundImageView)
-            make.width.equalTo(60)
+            make.leading.equalTo(10)
+            make.trailing.equalTo(backgroundImageView.snp.leading).offset(-10)
+            make.bottom.equalTo(backgroundImageView.snp.bottom)
         }
     }
 }

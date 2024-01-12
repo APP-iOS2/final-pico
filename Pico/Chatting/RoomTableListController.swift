@@ -21,6 +21,7 @@ final class RoomTableListController: BaseViewController {
     private let checkRoomEmptyPublisher = PublishSubject<Void>()
     private let footerView = FooterView()
     private var isRefresh = false
+    private var nickname = ""
     
     private let chattingLabel: UILabel = {
         let label = UILabel()
@@ -48,8 +49,6 @@ final class RoomTableListController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.startIndex = 0
-        refreshPublisher.onNext(())
         checkRoomEmptyPublisher.onNext(())
         roomListTableView.reloadData()
     }
@@ -87,7 +86,7 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
         guard let item = viewModel.roomList[safe: indexPath.row] else { return UITableViewCell() }
-        cell.config(receiveUser: item)
+        nickname = cell.config(receiveUser: item)
         cell.selectionStyle = .none
         return cell
     }
@@ -96,11 +95,7 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
         let chattingDetailView = ChattingDetailViewController()
         let room = viewModel.roomList[safe: indexPath.row]
         if let room = room {
-            chattingDetailView.opponentId = room.opponentId
-            chattingDetailView.opponentName = viewModel.opponentName
-            chattingDetailView.roomId = room.roomId
-            let chatViewModel = ChattingViewModel()
-            chatViewModel.roomId = room.roomId
+            chattingDetailView.configData(room: room)
         }
         chattingDetailView.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(chattingDetailView, animated: true)

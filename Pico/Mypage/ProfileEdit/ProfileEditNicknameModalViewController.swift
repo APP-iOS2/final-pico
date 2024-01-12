@@ -130,6 +130,8 @@ final class ProfileEditNicknameModalViewController: UIViewController {
             .bind { [weak self] _ in
                 guard let self else { return }
                 self.self.textField.text = ""
+                self.nickNameCheckButton.isEnabled = false
+                self.nickNameCheckButton.backgroundColor = .picoGray
                 self.completeButton.isEnabled = false
                 self.completeButton.backgroundColor = .picoGray
             }
@@ -141,7 +143,8 @@ final class ProfileEditNicknameModalViewController: UIViewController {
         nickNameCheckButton.rx.tap
             .bind { [weak self] _ in
                 guard let self else { return }
-                CheckService.shared.checkNickName(name: self.textField.text?.trimmed() ?? "") { [weak self] message, isRight in
+                guard searchSlangWord(name: self.textField.text?.replacingOccurrences(of: " ", with: "") ?? "") else { return }
+                CheckService.shared.checkNickName(name: self.textField.text?.replacingOccurrences(of: " ", with: "") ?? "") { [weak self] message, isRight in
                     guard let self = self else { return }
                     Loading.hideLoading()
                     guard isRight else {
@@ -164,9 +167,26 @@ final class ProfileEditNicknameModalViewController: UIViewController {
                 guard let self else { return }
                 self.showCustomAlert(alertType: .canCancel, titleText: "닉네임 변경", messageText: "닉네임 변경을 위해서는 50츄가 필요합니다.\n현재 츄 : \(chuCount) 개", confirmButtonText: "변경 (50츄) ", comfrimAction: {
                     self.consumeChuCountPublish.onNext(())
-                    self.profileEditViewModel.updateData(data: self.textField.text?.trimmed())
+                    self.profileEditViewModel.updateUserData(data: self.textField.text?.replacingOccurrences(of: " ", with: ""), selectedCase: .nickName)
+                    self.profileEditViewModel.updateData(data: self.textField.text?.replacingOccurrences(of: " ", with: ""))
                 })
             }.disposed(by: disposeBag)
+    }
+    
+    private func searchSlangWord(name: String) -> Bool {
+        let slangWordArray: [String] = ["시발", "병신", "개새끼", "꺼져", "지랄", "애미", "애비", "등신", "따까리", "미친", "씨발", "씨팔", "시팔", "쌍놈", "쌍년", "아가리", "장애인", "호구"]
+        for slangWord in slangWordArray {
+            if name.contains(slangWord) {
+                showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "비속어 및 성적인 단어가 포함되어있습니다.", confirmButtonText: "확인")
+                textField.text = ""
+                completeButton.isEnabled = false
+                completeButton.backgroundColor = .picoGray
+                nickNameCheckButton.isEnabled = false
+                nickNameCheckButton.backgroundColor = .picoGray
+                return false
+            }
+        }
+        return true
     }
     
     private func textFieldConfigure() {
@@ -219,17 +239,24 @@ final class ProfileEditNicknameModalViewController: UIViewController {
 
 extension ProfileEditNicknameModalViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if string == " " {
+            return false
+        }
         let text = profileEditViewModel.textData ?? ""
-        let updatedText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
-        if updatedText == text {
-            completeButton.isEnabled = false
-            completeButton.backgroundColor = .picoGray
-            nickNameCheckButton.isEnabled = false
-            nickNameCheckButton.backgroundColor = .picoGray
-        } else {
+        var updatedText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
+        updatedText = updatedText.replacingOccurrences(of: " ", with: "")
+        completeButton.isEnabled = false
+        completeButton.backgroundColor = .picoGray
+        if updatedText.count > 8 {
+            return false
+        }
+        if updatedText != text && updatedText.count > 2 && updatedText.count < 9 {
             nickNameCheckButton.isEnabled = true
             nickNameCheckButton.backgroundColor = .picoBlue
+        } else {
+            nickNameCheckButton.isEnabled = false
+            nickNameCheckButton.backgroundColor = .picoGray
         }
-        return true
+        return updatedText.count <= 8
     }
 }

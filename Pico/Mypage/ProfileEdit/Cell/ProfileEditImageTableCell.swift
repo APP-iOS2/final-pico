@@ -93,7 +93,9 @@ final class ProfileEditImageTableCell: UITableViewCell {
         profileEditViewModel?.modalType = .imageURLs
         profileEditViewModel?.collectionData = images
         profileEditViewModel?.updateData(data: images)
-
+        if index == 0 {
+            profileEditViewModel?.updateUserData(data: images.first, selectedCase: .imageURLs)
+        }
     }
 
 }

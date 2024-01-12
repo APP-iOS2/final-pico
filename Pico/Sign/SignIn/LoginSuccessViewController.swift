@@ -69,7 +69,8 @@ extension LoginSuccessViewController {
                 NotificationService.shared.saveToken()
                 nextButton.tappedAnimation()
                 
-                CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: true) {
+                let isOnline = UserDefaultsManager.shared.getUserData().userId == Bundle.main.testId ? false : true
+                CheckService.shared.updateOnline(userId: UserDefaultsManager.shared.getUserData().userId, isOnline: isOnline) {
                     print("로그인완료. \(UserDefaultsManager.shared.getUserData().phoneNumber) 번호의 세션이 다시 추가되었습니다.")
                     (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootView(TabBarController(), animated: true)
                 }
