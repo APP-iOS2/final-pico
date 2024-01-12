@@ -213,8 +213,6 @@
 		BC4927372AE162960073E882 /* HomeGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4927362AE162960073E882 /* HomeGuideView.swift */; };
 		BC5DE6642AC6EFB00082D18D /* HomeEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */; };
 		BC6F61922AD834160067F500 /* RangeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6F61912AD834160067F500 /* RangeSliderView.swift */; };
-		BC89368B2B359EC8006D6128 /* FirebaseAPIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC8936892B359EC8006D6128 /* FirebaseAPIKeys.plist */; };
-		BC89368C2B359EC8006D6128 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC89368A2B359EC8006D6128 /* GoogleService-Info.plist */; };
 		BCD6253B2AE5B5940079BD28 /* HomeEmptyLottie.json in Resources */ = {isa = PBXBuildFile; fileRef = BCD6253A2AE5B5940079BD28 /* HomeEmptyLottie.json */; };
 		BCEACEEF2AC26FC200C93699 /* HomeFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */; };
 		BCEACEF52AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */; };
@@ -438,8 +436,6 @@
 		BC4927362AE162960073E882 /* HomeGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeGuideView.swift; sourceTree = "<group>"; };
 		BC5DE6632AC6EFB00082D18D /* HomeEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyView.swift; sourceTree = "<group>"; };
 		BC6F61912AD834160067F500 /* RangeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeSliderView.swift; sourceTree = "<group>"; };
-		BC8936892B359EC8006D6128 /* FirebaseAPIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = FirebaseAPIKeys.plist; path = ../../../../../Desktop/AppFile/FirebaseAPIKeys.plist; sourceTree = "<group>"; };
-		BC89368A2B359EC8006D6128 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Desktop/AppFile/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BCD6253A2AE5B5940079BD28 /* HomeEmptyLottie.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = HomeEmptyLottie.json; sourceTree = "<group>"; };
 		BCEACEEE2AC26FC200C93699 /* HomeFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFilterViewController.swift; sourceTree = "<group>"; };
 		BCEACEF42AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTILabelCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -814,8 +810,6 @@
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
-				BC8936892B359EC8006D6128 /* FirebaseAPIKeys.plist */,
-				BC89368A2B359EC8006D6128 /* GoogleService-Info.plist */,
 				B14B58D42AC0A232009889DA /* LaunchScreen.storyboard */,
 			);
 			path = Config;
@@ -1392,12 +1386,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
-				BC89368C2B359EC8006D6128 /* GoogleService-Info.plist in Resources */,
 				BCD6253B2AE5B5940079BD28 /* HomeEmptyLottie.json in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
 				B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
-				BC89368B2B359EC8006D6128 /* FirebaseAPIKeys.plist in Resources */,
 				B15383E42AE770810037DBBA /* worldcupAnimation.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
