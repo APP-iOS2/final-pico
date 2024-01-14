@@ -61,9 +61,9 @@ final class ChattingDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
-        configViewController()
         addViews()
         makeConstraints()
+        configViewController()
         configTableView()
         configRefresh()
         configSendButton()
@@ -77,6 +77,8 @@ final class ChattingDetailViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
             super.viewDidAppear(animated)
+            refreshPublisher.onNext(())
+            chattingView.reloadData()
             if self.chattingsCount > 0 {
                 self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
             }
