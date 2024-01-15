@@ -69,49 +69,50 @@ final class HomeViewModel {
         viewController: UIViewController
     ) {
         if todayDontWatchButtonPressedTime() == .watch {
-            if viewController.presentedViewController != nil {
-            } else {
-                let customAlertViewController = CustomPopupViewController()
-                let stopWatchingToday: UIButton = {
-                    let button = UIButton()
-                    button.setTitle("오늘 하루 알림 그만보기 Ⓧ", for: .normal)
-                    button.titleLabel?.textColor = .picoAlphaWhite
-                    button.titleLabel?.font = .picoButtonFont
-                    button.contentHorizontalAlignment = .right
-                    button.addTarget(self, action: #selector(tappedTodayDontWatchButton(sender:)), for: .touchUpInside)
-                    return button
-                }()
-                customAlertViewController.modalPresentationStyle = .overFullScreen
-                customAlertViewController.modalTransitionStyle = .crossDissolve
-                customAlertViewController.alertType = alertType
-                customAlertViewController.titleText = titleText
-                customAlertViewController.messageText = messageText
-                customAlertViewController.cancelButtonText = cancelButtonText ?? "취소"
-                customAlertViewController.confirmButtonText = confirmButtonText
-                customAlertViewController.confirmAction = comfrimAction
-                customAlertViewController.cancelAction = cancelAction
-                customAlertViewController.view.addSubview(stopWatchingToday)
-                stopWatchingToday.snp.makeConstraints { make in
-                    make.top.equalTo(customAlertViewController.view.subviews[1].snp.bottom).offset(10)
-                    make.trailing.equalTo(customAlertViewController.view.subviews[1].snp.trailing).inset(5)
-                    make.height.equalTo(20)
-                    make.width.equalTo(stopWatchingToday.titleLabel?.snp.width ?? 200)
-                }
-                viewController.present(customAlertViewController, animated: true, completion: nil)
+            guard viewController.presentedViewController == nil else { return }
+            let customAlertViewController = CustomPopupViewController()
+            let stopWatchingToday: UIButton = {
+                let button = UIButton()
+                button.setTitle("오늘 하루 알림 그만보기 Ⓧ", for: .normal)
+                button.titleLabel?.textColor = .picoAlphaWhite
+                button.titleLabel?.font = .picoButtonFont
+                button.contentHorizontalAlignment = .right
+                button.addTarget(self, action: #selector(tappedTodayDontWatchButton(sender:)), for: .touchUpInside)
+                return button
+            }()
+            customAlertViewController.modalPresentationStyle = .overFullScreen
+            customAlertViewController.modalTransitionStyle = .crossDissolve
+            customAlertViewController.alertType = alertType
+            customAlertViewController.titleText = titleText
+            customAlertViewController.messageText = messageText
+            customAlertViewController.cancelButtonText = cancelButtonText ?? "취소"
+            customAlertViewController.confirmButtonText = confirmButtonText
+            customAlertViewController.confirmAction = comfrimAction
+            customAlertViewController.cancelAction = cancelAction
+            customAlertViewController.view.addSubview(stopWatchingToday)
+            stopWatchingToday.snp.makeConstraints { make in
+                make.top.equalTo(customAlertViewController.view.subviews[1].snp.bottom).offset(10)
+                make.trailing.equalTo(customAlertViewController.view.subviews[1].snp.trailing).inset(5)
+                make.height.equalTo(20)
+                make.width.equalTo(stopWatchingToday.titleLabel?.snp.width ?? 200)
             }
+            viewController.present(customAlertViewController, animated: true, completion: nil)
         }
     }
     
     private func todayDontWatchButtonPressedTime() -> HomeAlertType {
-        let currentDate = Date()
-        if let homeAlertPressedDate = UserDefaults.standard.object(forKey: "homeAlertPressedDate") as? Date {
+        if let storedDate = UserDefaults.standard.object(forKey: "homeAlertPressedDate") as? Date {
             let calendar = Calendar.current
-            let today = calendar.component(.day, from: currentDate)
-            let buttonPressedDay = calendar.component(.day, from: homeAlertPressedDate)
-            
-            if today > buttonPressedDay {
+            let components = calendar.dateComponents([.year, .month, .day], from: storedDate)
+            guard let storedDateWithoutTime = calendar.date(from: components) else { return HomeAlertType.watch }
+            let today = calendar.startOfDay(for: Date())
+            let dateComparison = calendar.compare(today, to: storedDateWithoutTime, toGranularity: .day)
+            switch dateComparison {
+            case .orderedSame:
+                return HomeAlertType.dontWatch
+            case .orderedAscending:
                 return HomeAlertType.watch
-            } else {
+            case .orderedDescending:
                 return HomeAlertType.dontWatch
             }
         } else {

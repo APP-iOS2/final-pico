@@ -10,6 +10,8 @@ import SnapKit
 
 final class TabBarController: UITabBarController {
     
+    private var previouslyClickedTap: String = "home"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTabBar()
@@ -66,9 +68,17 @@ extension TabBarController: UITabBarControllerDelegate {
         if let selectedIndex = tabBarController.viewControllers?.firstIndex(of: viewController), selectedIndex == 0 {
             if let homeViewController = tabBarController.viewControllers?[selectedIndex] as? UINavigationController {
                 if let rootViewController = homeViewController.viewControllers.first as? HomeViewController {
-                    rootViewController.reloadView()
+                    if previouslyClickedTap == "home" && rootViewController.doingReloadingHome == false {
+                        rootViewController.reloadView()
+                        previouslyClickedTap = "home"
+                    }
+                    if previouslyClickedTap != "home" {
+                        previouslyClickedTap = "home"
+                    }
                 }
             }
+        } else {
+            previouslyClickedTap = "notHome"
         }
     }
 }
