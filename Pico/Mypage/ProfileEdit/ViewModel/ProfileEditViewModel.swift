@@ -187,7 +187,7 @@ final class ProfileEditViewModel {
         return indexs
     }
     
-    func convertLikeData(data: String,selectedCase:SubInfoCase,likeData: Like.LikeInfo) -> Like.LikeInfo?{
+    func convertLikeData(data: String, selectedCase: SubInfoCase, likeData: Like.LikeInfo) -> Like.LikeInfo? {
         switch selectedCase {
         case .imageURLs:
             return Like.LikeInfo(likedUserId: likeData.likedUserId, likeType: likeData.likeType, birth: likeData.birth, nickName: likeData.nickName, mbti: likeData.mbti, imageURL: data, createdDate: likeData.createdDate)
@@ -200,8 +200,7 @@ final class ProfileEditViewModel {
         }
     }
     
-    func updataLikesdata(data: String,selectedCase:SubInfoCase) async {
-        
+    func updataLikesdata(data: String, selectedCase: SubInfoCase) async {
         let likesdocument = dbRef.collection("likes")
         do {
             let querySnapshot = try await likesdocument.getDocuments()
@@ -267,9 +266,9 @@ final class ProfileEditViewModel {
         }
     }
     
-    func updateNotisData(data: String,selectedCase:SubInfoCase) async{
+    func updateNotisData(data: String, selectedCase: SubInfoCase) async {
         var field = ""
-        switch selectedCase{
+        switch selectedCase {
         case .imageURLs:
             field = "imageUrl"
         case .nickName:
@@ -299,15 +298,16 @@ final class ProfileEditViewModel {
         }
     }
     
-    func updateUserData<T: Codable>(data: T,selectedCase:SubInfoCase){
+    func updateUserData<T: Codable>(data: T, selectedCase: SubInfoCase) {
         guard let data = data as? String else { return }
-        Task{
+        Task {
             await updataLikesdata(data: data, selectedCase: selectedCase)
         }
-        Task{
+        Task {
             await updateNotisData(data: data, selectedCase: selectedCase)
         }
     }
+    
     func updateData<T: Codable>(data: T) {
         guard let field = modalType?.dataName else { return }
         
@@ -352,6 +352,7 @@ final class ProfileEditViewModel {
         }
         return text
     }
+    
     func loadUserData() {
         Loading.showLoading()
         FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { [weak self] result in
