@@ -40,7 +40,7 @@ final class ChattingViewModel {
         input.refresh
             .withUnretained(self)
             .subscribe { viewModel, _ in
-                viewModel.refresh()
+                viewModel.refreshChatting()
             }
             .disposed(by: disposeBag)
         
@@ -73,6 +73,7 @@ final class ChattingViewModel {
                             return $0.sendedDate < $1.sendedDate
                         }
                         sendChattingList += sorted
+                        print("send --------- \(sendChattingList.count)")
                     }
                     
                     if let datas = try? document.data(as: Chatting.self).receiverChatting?
@@ -81,35 +82,21 @@ final class ChattingViewModel {
                             return $0.sendedDate < $1.sendedDate
                         }
                         receiveChattingList += sorted
+                        print("receive --------- \(receiveChattingList.count)")
                     }
                 } else {
                     print("받은 문서를 찾을 수 없습니다.")
                 }
-                // 다시 정리하기
                 
-                var chatting = sendChattingList + receiveChattingList
-                chatting.sort(by: {$0.sendedDate < $1.sendedDate})
-                
-                var datas: [Chatting.ChattingInfo] = []
-                for _ in chattingIndex..<(chattingIndex + 20) {
-                    if chattingIndex > chatting.count - 1 {
-                        break
-                    } else {
-                        let data = chatting [chattingIndex]
-                        datas.append(data)
-                        chattingIndex += 1
-                    }
-                }
-                self.chattingArray += datas
-                self.isPaging = false
+                chattingArray = sendChattingList + receiveChattingList
+                chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
             }
         }
     }
     
-    private func refresh() {
+    private func refreshChatting() {
         sendChattingList = []
         receiveChattingList = []
-        chattingIndex = 0
         loadNextChattingPage()
     }
 }
