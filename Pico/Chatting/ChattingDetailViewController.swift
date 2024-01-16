@@ -60,28 +60,30 @@ final class ChattingDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        bind()
-        configViewController()
         addViews()
         makeConstraints()
+        configViewController()
         configTableView()
         configRefresh()
         configSendButton()
+        bind()
+        loadDataPublsher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configChatFieldView()
         chattingView.reloadData()
-        refreshPublisher.onNext(())
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if self.chattingsCount > 0 {
-            self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+            super.viewDidAppear(animated)
+            refreshPublisher.onNext(())
+            chattingView.reloadData()
+            if self.chattingsCount > 0 {
+                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+            }
         }
-    }
     
     private func addViews() {
         sendStack.addArrangedSubview([chatTextField, sendButton])
@@ -124,9 +126,10 @@ final class ChattingDetailViewController: UIViewController {
                 print(err)
             }
         }
-        roomId = room.id
-        viewModel.roomId = roomId
-        opponentId = room.opponentId
+            guard let roomid = room.id else {return}
+            roomId = roomid
+            viewModel.roomId = roomid
+            opponentId = room.opponentId
     }
     
     private func configViewController() {
@@ -173,17 +176,18 @@ final class ChattingDetailViewController: UIViewController {
                     self.viewModel.updateChattingData(chattingData: chatting)
                     
                     chatTextField.text = ""
-                    chattingView.reloadData()
                     refreshPublisher.onNext(())
+                    chattingView.reloadData()
+                    if self.chattingsCount > 0 {
+                        let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
+                        chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
+                    }
                     
                     self.viewModel.updateRoomData(chattingData: chatting)
-                    
-                    if self.chattingsCount > 0 {
-                        self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
-                    }
                 }
             }
             .disposed(by: disposeBag)
+        
     }
     
     @objc func refreshTable(refresh: UIRefreshControl) {
@@ -194,7 +198,8 @@ final class ChattingDetailViewController: UIViewController {
             refresh.endRefreshing()
             isRefresh = false
             if self.chattingsCount > 0 {
-                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+                let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
+                chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
             }
         }
     }
@@ -203,18 +208,14 @@ final class ChattingDetailViewController: UIViewController {
 extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sender = viewModel.sendChattingList.count
-        let receive = viewModel.receiveChattingList.count
-        chattingsCount = sender + receive
+        chattingsCount = viewModel.chattingArray.count
+        print(chattingsCount)
         return chattingsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var chattingArray = viewModel.sendChattingList + viewModel.receiveChattingList
-        chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
-        
-        guard let item = chattingArray[safe: indexPath.row] else { return UITableViewCell() }
+        guard let item = viewModel.chattingArray[safe: indexPath.row] else { return UITableViewCell() }
         switch item.messageType {
         case .receive:
             let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
@@ -284,19 +285,22 @@ extension ChattingDetailViewController: UIScrollViewDelegate {
         let contentOffsetY = scrollView.contentOffset.y
         let tableViewContentSizeY = chattingView.contentSize.height
         
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
+        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
             
             chattingView.tableFooterView = footerView
             
+            refreshPublisher.onNext(())
+            chattingView.reloadData()
+            
+            chattingsCount = viewModel.chattingArray.count
+            if self.chattingsCount > 0 {
+                let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
+                chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
+            }
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.chattingView.tableFooterView = nil
-                
-                if self.chattingsCount > 0 {
-                    self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
-                }
             }
         }
     }
 }
-
-// 자동으로 reload 데이터 할 수 있도록 찾아보기 --> 번쩍쓰 생김 이유 모르겠음.. [다른 데이터 접근 시 그런다고 함]

@@ -14,15 +14,17 @@ final class ChattingViewModel {
     
     private(set) var sendChattingList: [Chatting.ChattingInfo] = []
     private(set) var receiveChattingList: [Chatting.ChattingInfo] = []
+    private(set) var chattingArray: [Chatting.ChattingInfo] = []
     
     private let reloadChattingTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     
     private let dbRef = Firestore.firestore()
     private let user = UserDefaultsManager.shared.getUserData()
-    private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
-    var lastDocumentSnapshot: DocumentSnapshot?
-    var startIndex = 0
+    
+    var isPaging: Bool = false
+    var chattingIndex: Int = 0
+    
     var roomId = UserDefaults.standard.string(forKey: UserDefaultsManager.Key.roomId.rawValue) ?? ""
     
     struct Input {
@@ -38,7 +40,7 @@ final class ChattingViewModel {
         input.refresh
             .withUnretained(self)
             .subscribe { viewModel, _ in
-                viewModel.refresh()
+                viewModel.refreshChatting()
             }
             .disposed(by: disposeBag)
         
@@ -55,8 +57,6 @@ final class ChattingViewModel {
     func loadNextChattingPage() {
         let ref = dbRef.collection(Collections.chatting.name).document(user.userId)
         
-        let endIndex = startIndex + itemsPerPage
-        
         DispatchQueue.global().async {
             ref.getDocument { [weak self] document, error in
                 guard let self = self else { return }
@@ -68,11 +68,12 @@ final class ChattingViewModel {
                 if let document = document, document.exists {
                     if let datas = try? document.data(as: Chatting.self).senderChatting?
                         .filter({ $0.roomId == self.roomId }) {
+                        
                         let sorted = datas.sorted {
                             return $0.sendedDate < $1.sendedDate
                         }
-                        let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                        sendChattingList += currentPageDatas
+                        sendChattingList += sorted
+                        print("send --------- \(sendChattingList.count)")
                     }
                     
                     if let datas = try? document.data(as: Chatting.self).receiverChatting?
@@ -80,24 +81,22 @@ final class ChattingViewModel {
                         let sorted = datas.sorted {
                             return $0.sendedDate < $1.sendedDate
                         }
-                        let currentPageDatas: [Chatting.ChattingInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                        receiveChattingList += currentPageDatas
-                    }
-                    
-                    if startIndex == 0 {
-                        reloadChattingTableViewPublisher.onNext(())
+                        receiveChattingList += sorted
+                        print("receive --------- \(receiveChattingList.count)")
                     }
                 } else {
                     print("받은 문서를 찾을 수 없습니다.")
                 }
+                
+                chattingArray = sendChattingList + receiveChattingList
+                chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
             }
         }
     }
     
-    private func refresh() {
+    private func refreshChatting() {
         sendChattingList = []
         receiveChattingList = []
-        startIndex = 0
         loadNextChattingPage()
     }
 }
@@ -130,6 +129,35 @@ extension ChattingViewModel {
         let receiverRoomData = Room.RoomInfo(id: chattingData.roomId, userId: chattingData.receiveUserId, opponentId: user.userId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
         
         DispatchQueue.global().async {
+            
+            FirestoreService.shared.loadDocument(collectionId: .room, documentId: chattingData.receiveUserId, dataType: Room.self) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let data):
+                    guard let data else { return }
+                    if let room = data.room {
+                        let checkRoom = room.firstIndex(where: {$0.id == chattingData.roomId})
+                        var sameRoom: Room.RoomInfo? {
+                            if checkRoom != nil {
+                                return room[checkRoom ?? 0]
+                            }
+                            return nil
+                        }
+                        
+                        if sameRoom != nil {
+                            dbRef.collection(Collections.room.name).document(receiverRoomData.userId).updateData([
+                                "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
+                            ])
+                        }
+                        dbRef.collection(Collections.room.name).document(receiverRoomData.userId).updateData([
+                            "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
+                        ])
+                    }
+                case .failure(let error):
+                    print("받는 사람의 룸 불러오기 실패: \(error)")
+                }
+            }
+            
             FirestoreService.shared.loadDocument(collectionId: .room, documentId: self.user.userId, dataType: Room.self) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
@@ -153,38 +181,17 @@ extension ChattingViewModel {
                         ])
                     }
                 case .failure(let error):
-                    print("룸 불러오기 실패: \(error)")
-                }
-            }
-            
-            FirestoreService.shared.loadDocument(collectionId: .room, documentId: chattingData.receiveUserId, dataType: Room.self) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    guard let data else { return }
-                    if let room = data.room {
-                        let checkRoom = room.firstIndex(where: {$0.id == chattingData.roomId})
-                        var sameRoom: Room.RoomInfo? {
-                            if checkRoom != nil {
-                                return room[checkRoom ?? 0]
-                            }
-                            return nil
-                        }
-                        
-                        if sameRoom != nil {
-                            dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
-                                "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
-                            ])
-                        }
-                        dbRef.collection(Collections.room.name).document(senderRoomData.opponentId).updateData([
-                            "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
-                        ])
-                    }
-                case .failure(let error):
-                    print("룸 불러오기 실패: \(error)")
+                    print("자신의 룸 불러오기 실패: \(error)")
                 }
             }
         }
+        
+        guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
+        
+        let receiverNoti = Noti(receiveId: chattingData.receiveUserId, sendId: self.user.userId, name: self.user.nickName, birth: self.user.birth, imageUrl: self.user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+        
+        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
+        
     }
     
     func saveChattingData(receiveUserId: String, message: String) {
@@ -218,7 +225,6 @@ extension ChattingViewModel {
         ]
         
         let receiveMessages: [String: Any] = [
-            "id": UUID().uuidString,
             "roomId": roomId,
             "sendUserId": user.userId,
             "receiveUserId": receiveUserId,
