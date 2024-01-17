@@ -88,96 +88,43 @@ final class ChattingDetailViewModel {
 }
 // MARK: - saveChatting
 extension ChattingDetailViewModel {
-    func updateChattingData(chattingData: Chatting.ChattingInfo) {
+    func updateChattingData(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
+        
+        FirestoreService.shared.saveDocument(collectionId: .chatDetail, documentId: roomId, fieldId: "chatInfo", data: chatInfo) { result in
+            switch result {
+            case .success(_):
+                print("updateChattingData saveDocument")
+            case .failure(let err):
+                print("err: updateChattingData saveDocument \(err)")
+            }
+        }
      
-        let receiverData = Chatting.ChattingInfo(roomId: chattingData.roomId, sendUserId: chattingData.sendUserId, receiveUserId: chattingData.receiveUserId, message: chattingData.message, sendedDate: chattingData.sendedDate, isReading: false, messageType: .receive)
+//        let receiverData = Chatting.ChattingInfo(roomId: chattingData.roomId, sendUserId: chattingData.sendUserId, receiveUserId: chattingData.receiveUserId, message: chattingData.message, sendedDate: chattingData.sendedDate, isReading: false, messageType: .receive)
+//        
+//        // chatting
+//        self.dbRef.collection(Collections.chatting.name).document(user.userId).updateData([
+//            "senderChatting": FieldValue.arrayUnion([chattingData.asDictionary()])
+//        ])
+//        
+//        self.dbRef.collection(Collections.chatting.name).document(chattingData.receiveUserId).updateData([
+//            "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
+//        ])
         
-        // chatting
-        self.dbRef.collection(Collections.chatting.name).document(user.userId).updateData([
-            "senderChatting": FieldValue.arrayUnion([chattingData.asDictionary()])
-        ])
-        
-        self.dbRef.collection(Collections.chatting.name).document(chattingData.receiveUserId).updateData([
-            "receiverChatting": FieldValue.arrayUnion([receiverData.asDictionary()])
-        ])
-        
-        NotificationService.shared.sendNotification(userId: chattingData.receiveUserId, sendUserName: user.nickName, notiType: .message, messageContent: chattingData.message)
-        
+        // noti
+        NotificationService.shared.sendNotification(userId: receiveUserId, sendUserName: user.nickName, notiType: .message, messageContent: chatInfo.message)
         guard let senderMbti = MBTIType(rawValue: user.mbti) else { return }
-        let receiverNoti = Noti(receiveId: chattingData.receiveUserId, sendId: user.userId, name: user.nickName, birth: user.birth, imageUrl: user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
-        
+        let receiverNoti = Noti(receiveId: receiveUserId, sendId: user.userId, name: user.nickName, birth: user.birth, imageUrl: user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
         FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: receiverNoti.id ?? UUID().uuidString, data: receiverNoti)
     }
     
-    func updateRoomData(chattingData: Chatting.ChattingInfo) {
-        let senderRoomData = Room.RoomInfo(id: chattingData.roomId, userId: user.userId, opponentId: chattingData.receiveUserId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
-        
-        let receiverRoomData = Room.RoomInfo(id: chattingData.roomId, userId: chattingData.receiveUserId, opponentId: user.userId, lastMessage: chattingData.message, sendedDate: chattingData.sendedDate)
-        
+    func updateRoomData(roomId: String, receiveUserId: String) {
         DispatchQueue.global().async {
             
-            FirestoreService.shared.loadDocument(collectionId: .room, documentId: chattingData.receiveUserId, dataType: Room.self) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    guard let data else { return }
-                    if let room = data.room {
-                        let checkRoom = room.firstIndex(where: {$0.id == chattingData.roomId})
-                        var sameRoom: Room.RoomInfo? {
-                            if checkRoom != nil {
-                                return room[checkRoom ?? 0]
-                            }
-                            return nil
-                        }
-                        
-                        if sameRoom != nil {
-                            dbRef.collection(Collections.room.name).document(receiverRoomData.userId).updateData([
-                                "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
-                            ])
-                        }
-                        dbRef.collection(Collections.room.name).document(receiverRoomData.userId).updateData([
-                            "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
-                        ])
-                    }
-                case .failure(let error):
-                    print("받는 사람의 룸 불러오기 실패: \(error)")
-                }
-            }
-            
-            FirestoreService.shared.loadDocument(collectionId: .room, documentId: self.user.userId, dataType: Room.self) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    guard let data else { return }
-                    if let room = data.room {
-                        let checkRoom = room.firstIndex(where: {$0.id == chattingData.roomId})
-                        var sameRoom: Room.RoomInfo? {
-                            if checkRoom != nil {
-                                return room[checkRoom ?? 0]
-                            }
-                            return nil
-                        }
-                        if sameRoom != nil {
-                            dbRef.collection(Collections.room.name).document(user.userId).updateData([
-                                "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
-                            ])
-                        }
-                        dbRef.collection(Collections.room.name).document(user.userId).updateData([
-                            "room": FieldValue.arrayUnion([senderRoomData.asDictionary()])
-                        ])
-                    }
-                case .failure(let error):
-                    print("자신의 룸 불러오기 실패: \(error)")
-                }
-            }
         }
         
-        guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
-        
-        let receiverNoti = Noti(receiveId: chattingData.receiveUserId, sendId: self.user.userId, name: self.user.nickName, birth: self.user.birth, imageUrl: self.user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
-        
+        guard let senderMbti = MBTIType(rawValue: user.mbti) else { return }
+        let receiverNoti = Noti(receiveId: receiveUserId, sendId: user.userId, name: user.nickName, birth: user.birth, imageUrl: user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
         FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
-        
     }
     
     func saveChattingData(receiveUserId: String, message: String) {

@@ -177,10 +177,9 @@ final class ChattingDetailViewController: UIViewController {
                 guard let self = self  else { return }
                 self.sendButton.tappedAnimation()
                 if let text = self.chatTextField.text {
-                    // sender: 로그인한 사람, recevie 받는 사람
-                    let chatting: Chatting.ChattingInfo = Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageType: .send)
+                    let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
                     
-                    self.viewModel.updateChattingData(chattingData: chatting)
+                    self.viewModel.updateChattingData(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
                     
                     chatTextField.text = ""
                     chattingsCount = 0
@@ -195,7 +194,7 @@ final class ChattingDetailViewController: UIViewController {
                         }
                     }
                     
-                    self.viewModel.updateRoomData(chattingData: chatting)
+                    self.viewModel.updateRoomData(roomId: roomId, receiveUserId: opponentId)
                 }
             }
             .disposed(by: disposeBag)
