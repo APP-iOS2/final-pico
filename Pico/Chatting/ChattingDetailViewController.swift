@@ -172,13 +172,15 @@ final class ChattingDetailViewController: UIViewController {
     private func configSendButton() {
         sendButton.rx.tap
             .bind { [weak self] _ in
-                guard let self = self  else { return }
-                self.sendButton.tappedAnimation()
+                guard let self else { return }
+                
+                sendButton.tappedAnimation()
                 if let text = self.chatTextField.text {
                     let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
                     
-                    self.viewModel.updateChattingData(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
-                    self.viewModel.updateRoomData(roomId: roomId, receiveUserId: opponentId)
+                    viewModel.updateChattingData(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
+                    viewModel.updateRoomData(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
+
                     chatTextField.text = ""
                 }
             }

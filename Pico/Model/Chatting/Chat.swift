@@ -15,8 +15,8 @@ struct ChatRoom: Codable {
         /// 대화상대 아이디
         let opponentId: String
         /// 마지막 메시지
-        let lastMessage: String
-        let sendedDate: Double
+        var lastMessage: String
+        var sendedDate: Double
     }
 }
 

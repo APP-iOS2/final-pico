@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import FirebaseFirestore
 
 final class TabBarController: UITabBarController {
     
@@ -19,6 +20,8 @@ final class TabBarController: UITabBarController {
         UITabBar.appearance().backgroundColor = .secondarySystemBackground
         UITabBar.appearance().tintColor = .picoBlue
         NotificationService.shared.registerRemoteNotification()
+        
+        previousMatching()
     }
     
     private func configureTabBar() {
@@ -79,6 +82,46 @@ extension TabBarController: UITabBarControllerDelegate {
             }
         } else {
             previouslyClickedTap = "notHome"
+        }
+    }
+}
+
+extension TabBarController {
+    /// 채팅생기기전의 매칭된 사람들
+    private func previousMatching() {
+        print("previousMatching")
+        let chatModel = ChattingDetailViewModel()
+        
+        let dbRef = Firestore.firestore()
+            .collection(Collections.likes.name)
+            .document(UserDefaultsManager.shared.getUserData().userId)
+        
+        DispatchQueue.global().async {
+            dbRef.getDocument { document, error in
+                if error != nil { return }
+                
+                if let document {
+                    if let datas = try? document.data(as: Like.self).sendedlikes {
+                        datas.filter { $0.likeType == .matching }.forEach { likeInfo in
+                            FirestoreService.shared.loadDocument(collectionId: .chatRoom, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: ChatRoom.self) { result in
+                                switch result {
+                                case .success(let room):
+                                    if let room {
+                                        if !room.roomInfo.contains(where: { $0.opponentId == likeInfo.likedUserId }) {
+                                            chatModel.saveChattingData(receiveUserId: likeInfo.likedUserId, message: "서로 매칭되었습니다", sendedDate: likeInfo.createdDate)
+                                        }
+                                    } else {
+                                        chatModel.saveChattingData(receiveUserId: likeInfo.likedUserId, message: "서로 매칭되었습니다", sendedDate: likeInfo.createdDate)
+                                    }
+                                    
+                                case .failure(let err):
+                                    print("previousMatching: \(err.localizedDescription)")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

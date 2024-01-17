@@ -21,7 +21,6 @@ final class RoomTableListController: BaseViewController {
     private let checkRoomEmptyPublisher = PublishSubject<Void>()
     private let footerView = FooterView()
     private var isRefresh = false
-    private var nickname = ""
     
     private let roomListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -80,7 +79,7 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
         guard let item = viewModel.roomList[safe: indexPath.row] else { return UITableViewCell() }
-        nickname = cell.config(roomInfo: item)
+        cell.config(roomInfo: item)
         cell.selectionStyle = .none
         return cell
     }

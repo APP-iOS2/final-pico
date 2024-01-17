@@ -101,42 +101,38 @@ final class RoomListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(roomInfo: ChatRoom.RoomInfo) -> String {
-        
+    func config(roomInfo: ChatRoom.RoomInfo) {
         let userId: String = roomInfo.opponentId
-        var nickName: String = ""
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
+        
+        FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }
+            
             switch result {
             case .success(let user):
-                if !user.isEmpty {
-                    guard let userData = user[safe: 0] else { break }
-                    nameLabel.text = userData.nickName
-                    nickName = userData.nickName
+                if let user = user {
+                    nameLabel.text = user.nickName
                     mbtiLabelView.isHidden = false
-                    mbtiLabelView.setMbti(mbti: userData.mbti)
-                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
-                    guard let url = URL(string: imageURL) else { return }
+                    mbtiLabelView.setMbti(mbti: user.mbti)
+                    guard let imageURL = user.imageURLs[safe: 0] else { return }
+                    let url = URL(string: imageURL) ?? URL(string: Defaults.userImageURLString)
                     userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
                     userImageView.kf.setImage(with: url)
                 } else {
-                    userImageView.image = UIImage(named: "AppIcon_gray")
                     nameLabel.text = "탈퇴된 회원"
                     mbtiLabelView.isHidden = true
                     mbtiLabelView.setMbti(mbti: nil)
+                    let url = URL(string: Defaults.userImageURLString)
+                    userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+                    userImageView.kf.setImage(with: url)
                 }
             case .failure(let err):
-                print(err)
+                print("RoomListTableViewCell cofig user: \(err.localizedDescription)")
             }
         }
-        
         nameLabel.sizeToFit()
-        self.messageLabel.text = roomInfo.lastMessage
         
-        let date = roomInfo.sendedDate.timeAgoSinceDate()
-        self.dateLabel.text = date
-        
-        return nickName
+        messageLabel.text = roomInfo.lastMessage
+        dateLabel.text = roomInfo.sendedDate.timeAgoSinceDate()
     }
     
     private func addViews() {

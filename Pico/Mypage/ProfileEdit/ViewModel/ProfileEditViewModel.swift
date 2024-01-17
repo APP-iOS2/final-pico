@@ -313,7 +313,7 @@ final class ProfileEditViewModel {
         
         if modalType == .location {
             Loading.showLoading(title: "위치정보를 받는중이에요!")
-            FirestoreService.shared.updataDocuments(collectionId: .users, documentId: userId, field: field, data: data) { _ in
+            FirestoreService.shared.updateDocuments(collectionId: .users, documentId: userId, field: field, data: data) { _ in
                 Loading.hideLoading()
             }
         } else {

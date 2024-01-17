@@ -256,7 +256,7 @@ final class FirestoreService {
         }
     }
     
-    func updataDocuments<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func updateDocuments<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         let jsonData = data.asDictionary()
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
