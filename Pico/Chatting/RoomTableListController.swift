@@ -50,6 +50,7 @@ final class RoomTableListController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkRoomEmptyPublisher.onNext(())
+        refreshPublisher.onNext(())
         roomListTableView.reloadData()
     }
     // MARK: - config
