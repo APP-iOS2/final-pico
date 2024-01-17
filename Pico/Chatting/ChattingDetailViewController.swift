@@ -47,7 +47,6 @@ final class ChattingDetailViewController: UIViewController {
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkReceiveEmptyPublisher = PublishSubject<Void>()
-    private let footerView = FooterView()
     private var isRefresh = false
     
     private var roomId: String
@@ -89,10 +88,6 @@ final class ChattingDetailViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         chattingTableView.reloadData()
-        if self.chattingsCount > 0 {
-            let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-            chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
-        }
     }
     
     private func addViews() {
@@ -154,7 +149,6 @@ final class ChattingDetailViewController: UIViewController {
     private func configTableView() {
         chattingTableView.register(cell: ChattingReceiveListTableViewCell.self)
         chattingTableView.register(cell: ChattingSendListTableViewCell.self)
-        footerView.frame = CGRect(x: 0, y: 0, width: chattingTableView.bounds.size.width, height: 80)
         if #available(iOS 15.0, *) {
             chattingTableView.tableHeaderView = UIView()
         }
@@ -196,11 +190,6 @@ final class ChattingDetailViewController: UIViewController {
             refresh.endRefreshing()
             isRefresh = false
             chattingTableView.reloadData()
-            
-            if self.chattingsCount > 0 {
-                let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-                chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
-            }
         }
     }
 }
@@ -284,24 +273,24 @@ extension ChattingDetailViewController: UITextFieldDelegate {
 }
 // MARK: - 페이징처리
 extension ChattingDetailViewController: UIScrollViewDelegate {
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        let contentOffsetY = scrollView.contentOffset.y
-        let tableViewContentSizeY = chattingTableView.contentSize.height
-        
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
-            
-            chattingTableView.tableFooterView = footerView
-            refreshPublisher.onNext(())
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.chattingTableView.tableFooterView = nil
-                self.chattingTableView.reloadData()
-                
-                if self.chattingsCount > 0 {
-                    let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
-                    self.chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
-                }
-            }
-        }
-    }
+//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+//        let contentOffsetY = scrollView.contentOffset.y
+//        let tableViewContentSizeY = chattingTableView.contentSize.height
+//        
+//        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
+//            
+//            chattingTableView.tableFooterView = footerView
+//            refreshPublisher.onNext(())
+//            
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//                self.chattingTableView.tableFooterView = nil
+//                self.chattingTableView.reloadData()
+//                
+//                if self.chattingsCount > 0 {
+//                    let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
+//                    self.chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
+//                }
+//            }
+//        }
+//    }
 }
