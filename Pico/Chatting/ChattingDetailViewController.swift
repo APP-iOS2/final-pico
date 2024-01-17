@@ -60,30 +60,30 @@ final class ChattingDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        bind()
         addViews()
         makeConstraints()
         configViewController()
         configTableView()
         configRefresh()
         configSendButton()
-        bind()
         loadDataPublsher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configChatFieldView()
-        chattingView.reloadData()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            refreshPublisher.onNext(())
-            chattingView.reloadData()
-            if self.chattingsCount > 0 {
-                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
-            }
+        super.viewDidAppear(animated)
+        chattingView.reloadData()
+        if self.chattingsCount > 0 {
+            let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
+            chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
         }
+    }
     
     private func addViews() {
         sendStack.addArrangedSubview([chatTextField, sendButton])
@@ -126,10 +126,10 @@ final class ChattingDetailViewController: UIViewController {
                 print(err)
             }
         }
-            guard let roomid = room.id else {return}
-            roomId = roomid
-            viewModel.roomId = roomid
-            opponentId = room.opponentId
+        guard let roomid = room.id else {return}
+        roomId = roomid
+        viewModel.roomId = roomid
+        opponentId = room.opponentId
     }
     
     private func configViewController() {
@@ -176,45 +176,50 @@ final class ChattingDetailViewController: UIViewController {
                     self.viewModel.updateChattingData(chattingData: chatting)
                     
                     chatTextField.text = ""
+                    chattingsCount = 0
                     refreshPublisher.onNext(())
-                    chattingView.reloadData()
-                    if self.chattingsCount > 0 {
-                        let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-                        chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        self.chattingView.reloadData()
+                        
+                        if self.chattingsCount > 0 {
+                            let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
+                            self.chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
+                        }
                     }
                     
                     self.viewModel.updateRoomData(chattingData: chatting)
                 }
             }
             .disposed(by: disposeBag)
-        
     }
     
     @objc func refreshTable(refresh: UIRefreshControl) {
         isRefresh = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+        refreshPublisher.onNext(())
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self = self else { return }
-            refreshPublisher.onNext(())
+            
             refresh.endRefreshing()
             isRefresh = false
+            chattingView.reloadData()
+            
             if self.chattingsCount > 0 {
                 let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-                chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
+                chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
             }
         }
     }
 }
 // MARK: - TableView
 extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         chattingsCount = viewModel.chattingArray.count
-        print(chattingsCount)
         return chattingsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         guard let item = viewModel.chattingArray[safe: indexPath.row] else { return UITableViewCell() }
         switch item.messageType {
         case .receive:
@@ -268,7 +273,8 @@ extension ChattingDetailViewController: UITextFieldDelegate {
             self.view.layoutIfNeeded()
         } completion: { _ in
             if self.chattingsCount > 0 {
-                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+                let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
+                self.chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
             }
         }
     }
@@ -288,18 +294,16 @@ extension ChattingDetailViewController: UIScrollViewDelegate {
         if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
             
             chattingView.tableFooterView = footerView
-            
             refreshPublisher.onNext(())
-            chattingView.reloadData()
             
-            chattingsCount = viewModel.chattingArray.count
-            if self.chattingsCount > 0 {
-                let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-                chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.chattingView.tableFooterView = nil
+                self.chattingView.reloadData()
+                
+                if self.chattingsCount > 0 {
+                    let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
+                    self.chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
+                }
             }
         }
     }

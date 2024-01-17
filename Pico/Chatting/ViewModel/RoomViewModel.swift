@@ -97,31 +97,27 @@ final class RoomViewModel {
         let endIndex = startIndex + itemsPerPage
         
         DispatchQueue.global().async {
-            ref.getDocument { [weak self] document, error in
-                guard let self = self else { return }
-                if let error = error {
-                    print(error)
+            
+            ref.addSnapshotListener { [self] documentSnapshot, error in
+                guard let document = documentSnapshot else {
+                    print("Error fetching document: \(error!)")
                     return
                 }
-                if let document = document, document.exists {
-                    if let datas = try? document.data(as: Room.self).room {
-                        let sorted = datas.sorted {
-                            return $0.sendedDate > $1.sendedDate
-                        }
-                        if startIndex > sorted.count - 1 {
-                            return
-                        }
-                        let currentPageDatas: [Room.RoomInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                        roomList += currentPageDatas
-                        
-                        if startIndex == 0 {
-                            reloadRoomTableViewPublisher.onNext(())
-                        }
-                        
-                        startIndex += currentPageDatas.count
+                if let datas = try? document.data(as: Room.self).room {
+                    let sorted = datas.sorted {
+                        return $0.sendedDate > $1.sendedDate
                     }
-                } else {
-                    print("받은 문서를 찾을 수 없습니다.")
+                    if startIndex > sorted.count - 1 {
+                        return
+                    }
+                    let currentPageDatas: [Room.RoomInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                    roomList += currentPageDatas
+                    
+                    if startIndex == 0 {
+                        reloadRoomTableViewPublisher.onNext(())
+                    }
+                    
+                    startIndex += currentPageDatas.count
                 }
             }
         }

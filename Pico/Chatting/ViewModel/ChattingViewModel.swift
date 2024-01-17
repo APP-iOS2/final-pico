@@ -12,8 +12,6 @@ import FirebaseFirestore
 
 final class ChattingViewModel {
     
-    private(set) var sendChattingList: [Chatting.ChattingInfo] = []
-    private(set) var receiveChattingList: [Chatting.ChattingInfo] = []
     private(set) var chattingArray: [Chatting.ChattingInfo] = []
     
     private let reloadChattingTableViewPublisher = PublishSubject<Void>()
@@ -55,55 +53,40 @@ final class ChattingViewModel {
     }
     
     func loadNextChattingPage() {
+        
         let ref = dbRef.collection(Collections.chatting.name).document(user.userId)
         
         DispatchQueue.global().async {
-            ref.getDocument { [weak self] document, error in
-                guard let self = self else { return }
-                if let error = error {
-                    print(error)
+            
+            ref.addSnapshotListener { (documentSnapshot, error) in
+                guard let document = documentSnapshot else {
+                    print("Error fetching document: \(error!)")
                     return
                 }
+                if let datas = try? document.data(as: Chatting.self).senderChatting?
+                    .filter({ $0.roomId == self.roomId }) {
+                    self.chattingArray += datas
+                    }
                 
-                if let document = document, document.exists {
-                    if let datas = try? document.data(as: Chatting.self).senderChatting?
-                        .filter({ $0.roomId == self.roomId }) {
-                        
-                        let sorted = datas.sorted {
-                            return $0.sendedDate < $1.sendedDate
-                        }
-                        sendChattingList += sorted
-                        print("send --------- \(sendChattingList.count)")
-                    }
-                    
-                    if let datas = try? document.data(as: Chatting.self).receiverChatting?
-                        .filter({ $0.roomId == self.roomId}) {
-                        let sorted = datas.sorted {
-                            return $0.sendedDate < $1.sendedDate
-                        }
-                        receiveChattingList += sorted
-                        print("receive --------- \(receiveChattingList.count)")
-                    }
-                } else {
-                    print("받은 문서를 찾을 수 없습니다.")
+                if let datas = try? document.data(as: Chatting.self).receiverChatting?
+                    .filter({ $0.roomId == self.roomId}) {
+                    self.chattingArray += datas
                 }
                 
-                chattingArray = sendChattingList + receiveChattingList
-                chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
+                self.chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
             }
         }
     }
     
     private func refreshChatting() {
-        sendChattingList = []
-        receiveChattingList = []
+        chattingArray = []
         loadNextChattingPage()
     }
 }
 // MARK: - saveChatting
 extension ChattingViewModel {
     func updateChattingData(chattingData: Chatting.ChattingInfo) {
-        
+     
         let receiverData = Chatting.ChattingInfo(roomId: chattingData.roomId, sendUserId: chattingData.sendUserId, receiveUserId: chattingData.receiveUserId, message: chattingData.message, sendedDate: chattingData.sendedDate, isReading: false, messageType: .receive)
         
         // chatting
