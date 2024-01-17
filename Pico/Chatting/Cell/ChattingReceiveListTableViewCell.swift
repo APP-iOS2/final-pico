@@ -72,9 +72,9 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(chatting: Chatting.ChattingInfo) {
+    func config(chatInfo: ChatDetail.ChatInfo) {
         
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: chatting.sendUserId, dataType: User.self) { [weak self] result in
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: chatInfo.sendUserId, dataType: User.self) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let user):
@@ -93,8 +93,8 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
                 print(err)
             }
         }
-        self.messageLabel.text = chatting.message
-        let date = chatting.sendedDate.timeAgoSinceDate()
+        self.messageLabel.text = chatInfo.message
+        let date = chatInfo.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
     }
     

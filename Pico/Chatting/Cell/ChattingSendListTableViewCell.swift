@@ -55,9 +55,9 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(chatting: Chatting.ChattingInfo) {
-        self.messageLabel.text = chatting.message
-        let date = chatting.sendedDate.timeAgoSinceDate()
+    func config(chatInfo: ChatDetail.ChatInfo) {
+        self.messageLabel.text = chatInfo.message
+        let date = chatInfo.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
     }
     

@@ -31,11 +31,7 @@ final class ChattingDetailViewModel {
     var isPaging: Bool = false
     var chattingIndex: Int = 0
     
-    private var roomId: String
-    
-    init(roomId: String) {
-        self.roomId = roomId
-    }
+    var roomId: String = ""
     
     func transform(input: Input) -> Output {
         input.refresh
@@ -56,7 +52,6 @@ final class ChattingDetailViewModel {
     }
     
     func loadNextChattingPage() {
-        
         let ref = dbRef.collection(Collections.chatDetail.name).document(roomId)
         
         DispatchQueue.global().async {
@@ -66,17 +61,22 @@ final class ChattingDetailViewModel {
                     print("Error fetching document: \(error!)")
                     return
                 }
-                if let datas = try? document.data(as: Chatting.self).senderChatting?
-                    .filter({ $0.roomId == self.roomId }) {
-                    self.chattingArray += datas
-                    }
-                
-                if let datas = try? document.data(as: Chatting.self).receiverChatting?
-                    .filter({ $0.roomId == self.roomId}) {
-                    self.chattingArray += datas
+                if let datas = try? document.data(as: ChatDetail.self).chatInfo {
+                    let sorted = datas.sorted(by: {$0.sendedDate < $1.sendedDate})
+                    self.chattingArray += sorted
                 }
                 
-                self.chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
+//                if let datas = try? document.data(as: Chatting.self).senderChatting?
+//                    .filter({ $0.roomId == self.roomId }) {
+//                    self.chattingArray += datas
+//                    }
+//                
+//                if let datas = try? document.data(as: Chatting.self).receiverChatting?
+//                    .filter({ $0.roomId == self.roomId}) {
+//                    self.chattingArray += datas
+//                }
+//                
+//                self.chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
             }
         }
     }

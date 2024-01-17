@@ -11,23 +11,6 @@ import RxSwift
 import RxCocoa
 
 final class ChattingDetailViewController: UIViewController {
-    
-    private let viewModel = ChattingDetailViewModel(roomId: roomId)
-    private let disposeBag = DisposeBag()
-    private let refreshControl = UIRefreshControl()
-    private let refreshPublisher = PublishSubject<Void>()
-    private let loadDataPublsher = PublishSubject<Void>()
-    private let checkReceiveEmptyPublisher = PublishSubject<Void>()
-    private let footerView = FooterView()
-    private var isRefresh = false
-    
-    private var opponentId: String
-    private var opponentName: String
-    private var roomId: String
-    
-    var chattingsCount: Int = 0
-    var bottomConstraint = NSLayoutConstraint()
-    
     private let chattingView = UITableView()
     
     private let sendStack: UIStackView = {
@@ -57,6 +40,34 @@ final class ChattingDetailViewController: UIViewController {
         button.tintColor = .picoBlue
         return button
     }()
+    
+    private let viewModel = ChattingDetailViewModel()
+    private let disposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
+    private let refreshPublisher = PublishSubject<Void>()
+    private let loadDataPublsher = PublishSubject<Void>()
+    private let checkReceiveEmptyPublisher = PublishSubject<Void>()
+    private let footerView = FooterView()
+    private var isRefresh = false
+    
+    private var roomId: String
+    private var opponentId: String
+    private var opponentName: String = ""
+    
+    var chattingsCount: Int = 0
+    var bottomConstraint = NSLayoutConstraint()
+    
+    init(roomId: String, opponentId: String) {
+        self.roomId = roomId
+        self.opponentId = opponentId
+        super.init(nibName: nil, bundle: nil)
+        viewModel.roomId = roomId
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,24 +123,21 @@ final class ChattingDetailViewController: UIViewController {
         view.addConstraint(bottomConstraint)
     }
     
-//    func configData(roomInfo: ChatRoom.RoomInfo) {
-//        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: roomInfo.opponentId, dataType: User.self) { [weak self] result in
-//            guard let self else { return }
-//            switch result {
-//            case .success(let user):
-//                if !user.isEmpty {
-//                    guard let userData = user[safe: 0] else { break }
-//                    opponentName = userData.nickName
-//                    navigationItem.title = opponentName
-//                }
-//            case .failure(let err):
-//                print(err)
-//            }
-//        }
-//        roomId = roomInfo.roomId
-//        viewModel.roomId = roomInfo.roomId
-//        opponentId = roomInfo.opponentId
-//    }
+    func configData(roomInfo: ChatRoom.RoomInfo) {
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: roomInfo.opponentId, dataType: User.self) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    opponentName = userData.nickName
+                    navigationItem.title = opponentName
+                }
+            case .failure(let err):
+                print(err)
+            }
+        }
+    }
     
     private func configViewController() {
         view.configBackgroundColor()
@@ -220,19 +228,21 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let item = viewModel.chattingArray[safe: indexPath.row] else { return UITableViewCell() }
-        switch item.messageType {
-        case .receive:
-            let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
-            receiveCell.config(chatting: item)
-            receiveCell.selectionStyle = .none
-            receiveCell.backgroundColor = .clear
-            return receiveCell
-        case .send:
+        
+        switch item.sendUserId {
+        case UserDefaultsManager.shared.getUserData().userId:
             let sendCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingSendListTableViewCell.self)
-            sendCell.config(chatting: item)
+            sendCell.config(chatInfo: item)
             sendCell.selectionStyle = .none
             sendCell.backgroundColor = .clear
             return sendCell
+            
+        default:
+            let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
+            receiveCell.config(chatInfo: item)
+            receiveCell.selectionStyle = .none
+            receiveCell.backgroundColor = .clear
+            return receiveCell
         }
     }
     
