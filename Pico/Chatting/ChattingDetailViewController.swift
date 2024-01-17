@@ -52,6 +52,7 @@ final class ChattingDetailViewController: UIViewController {
     private var roomId: String
     private var opponentId: String
     private var opponentName: String = ""
+    private var opponentImageURLString: String = ""
     
     var chattingsCount: Int = 0
     var bottomConstraint = NSLayoutConstraint()
@@ -103,7 +104,7 @@ final class ChattingDetailViewController: UIViewController {
         }
         
         sendStack.snp.makeConstraints { make in
-            make.top.equalTo(chattingTableView.snp.bottom).offset(10)
+            make.top.equalTo(chattingTableView.snp.bottom)
             make.leading.equalTo(safeArea).offset(20)
             make.trailing.equalTo(safeArea).offset(-20)
             make.height.equalTo(40)
@@ -126,6 +127,9 @@ final class ChattingDetailViewController: UIViewController {
                     guard let userData = user[safe: 0] else { break }
                     opponentName = userData.nickName
                     navigationItem.title = opponentName
+                    
+                    guard let userImageURLString = userData.imageURLs[safe: 0] else { break }
+                    opponentImageURLString = userImageURLString
                 }
             case .failure(let err):
                 print(err)
@@ -147,6 +151,7 @@ final class ChattingDetailViewController: UIViewController {
     }
     
     private func configTableView() {
+        chattingTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         chattingTableView.register(cell: ChattingReceiveListTableViewCell.self)
         chattingTableView.register(cell: ChattingSendListTableViewCell.self)
         if #available(iOS 15.0, *) {
@@ -213,7 +218,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
             
         default:
             let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
-            receiveCell.config(chatInfo: item)
+            receiveCell.config(chatInfo: item, opponentName: opponentName, opponentImageURLString: opponentImageURLString)
             receiveCell.selectionStyle = .none
             receiveCell.backgroundColor = .clear
             return receiveCell

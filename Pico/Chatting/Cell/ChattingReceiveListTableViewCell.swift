@@ -35,6 +35,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         label.textAlignment = .left
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
+        label.setLineSpacing(spacing: 10)
         return label
     }()
     
@@ -72,30 +73,17 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(chatInfo: ChatDetail.ChatInfo) {
+    func config(chatInfo: ChatDetail.ChatInfo, opponentName: String, opponentImageURLString: String) {
+        nameLabel.text = opponentName
         
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: chatInfo.sendUserId, dataType: User.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let user):
-                if !user.isEmpty {
-                    guard let userData = user[safe: 0] else { break }
-                    nameLabel.text = userData.nickName
-                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
-                    guard let url = URL(string: imageURL) else { return }
-                    userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-                    userImageView.kf.setImage(with: url)
-                } else {
-                    userImageView.image = UIImage(named: "AppIcon_gray")
-                    nameLabel.text = "탈퇴된 회원"
-                }
-            case .failure(let err):
-                print(err)
-            }
-        }
-        self.messageLabel.text = chatInfo.message
+        let url = URL(string: opponentImageURLString) ?? URL(string: Defaults.userImageURLString)
+        
+        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+        userImageView.kf.setImage(with: url)
+        
+        messageLabel.text = chatInfo.message
         let date = chatInfo.sendedDate.timeAgoSinceDate()
-        self.dateLabel.text = date
+        dateLabel.text = date
     }
     
     private func addViews() {
