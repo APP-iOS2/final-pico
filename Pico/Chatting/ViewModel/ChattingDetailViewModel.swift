@@ -55,7 +55,6 @@ final class ChattingDetailViewModel {
         let ref = dbRef.collection(Collections.chatDetail.name).document(roomId)
         
         DispatchQueue.global().async {
-            
             ref.addSnapshotListener { (documentSnapshot, error) in
                 guard let document = documentSnapshot else {
                     print("Error fetching document: \(error!)")
@@ -63,7 +62,7 @@ final class ChattingDetailViewModel {
                 }
                 if let datas = try? document.data(as: ChatDetail.self).chatInfo {
                     let sorted = datas.sorted(by: {$0.sendedDate < $1.sendedDate})
-                    self.chattingArray += sorted
+                    self.chattingArray = sorted
                 }
                 
 //                if let datas = try? document.data(as: Chatting.self).senderChatting?
@@ -92,7 +91,7 @@ extension ChattingDetailViewModel {
         
         FirestoreService.shared.saveDocument(collectionId: .chatDetail, documentId: roomId, fieldId: "chatInfo", data: chatInfo) { result in
             switch result {
-            case .success(_):
+            case .success( _):
                 print("updateChattingData saveDocument")
             case .failure(let err):
                 print("err: updateChattingData saveDocument \(err)")
