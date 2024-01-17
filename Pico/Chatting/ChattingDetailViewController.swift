@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class ChattingDetailViewController: UIViewController {
-    private let chattingView = UITableView()
+    private let chattingTableView = UITableView()
     
     private let sendStack: UIStackView = {
         let stackView = UIStackView()
@@ -84,32 +84,31 @@ final class ChattingDetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configChatFieldView()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        chattingView.reloadData()
+        chattingTableView.reloadData()
         if self.chattingsCount > 0 {
             let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-            chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
+            chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
         }
     }
     
     private func addViews() {
         sendStack.addArrangedSubview([chatTextField, sendButton])
-        view.addSubview([chattingView, sendStack])
+        view.addSubview([chattingTableView, sendStack])
     }
     
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
-        chattingView.snp.makeConstraints { make in
+        chattingTableView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(safeArea)
         }
         
         sendStack.snp.makeConstraints { make in
-            make.top.equalTo(chattingView.snp.bottom).offset(10)
+            make.top.equalTo(chattingTableView.snp.bottom).offset(10)
             make.leading.equalTo(safeArea).offset(20)
             make.trailing.equalTo(safeArea).offset(-20)
             make.height.equalTo(40)
@@ -153,22 +152,22 @@ final class ChattingDetailViewController: UIViewController {
     }
     
     private func configTableView() {
-        chattingView.register(cell: ChattingReceiveListTableViewCell.self)
-        chattingView.register(cell: ChattingSendListTableViewCell.self)
-        footerView.frame = CGRect(x: 0, y: 0, width: chattingView.bounds.size.width, height: 80)
+        chattingTableView.register(cell: ChattingReceiveListTableViewCell.self)
+        chattingTableView.register(cell: ChattingSendListTableViewCell.self)
+        footerView.frame = CGRect(x: 0, y: 0, width: chattingTableView.bounds.size.width, height: 80)
         if #available(iOS 15.0, *) {
-            chattingView.tableHeaderView = UIView()
+            chattingTableView.tableHeaderView = UIView()
         }
-        chattingView.separatorStyle = .none
-        chattingView.keyboardDismissMode = .onDrag
-        chattingView.dataSource = self
-        chattingView.delegate = self
+        chattingTableView.separatorStyle = .none
+        chattingTableView.keyboardDismissMode = .onDrag
+        chattingTableView.dataSource = self
+        chattingTableView.delegate = self
     }
     
     private func configRefresh() {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
-        chattingView.refreshControl = refreshControl
+        chattingTableView.refreshControl = refreshControl
     }
     
     private func configSendButton() {
@@ -180,21 +179,8 @@ final class ChattingDetailViewController: UIViewController {
                     let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
                     
                     self.viewModel.updateChattingData(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
-                    
-                    chatTextField.text = ""
-                    chattingsCount = 0
-                    refreshPublisher.onNext(())
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        self.chattingView.reloadData()
-                        
-                        if self.chattingsCount > 0 {
-                            let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
-                            self.chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
-                        }
-                    }
-                    
                     self.viewModel.updateRoomData(roomId: roomId, receiveUserId: opponentId)
+                    chatTextField.text = ""
                 }
             }
             .disposed(by: disposeBag)
@@ -209,11 +195,11 @@ final class ChattingDetailViewController: UIViewController {
             
             refresh.endRefreshing()
             isRefresh = false
-            chattingView.reloadData()
+            chattingTableView.reloadData()
             
             if self.chattingsCount > 0 {
                 let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-                chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
+                chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
             }
         }
     }
@@ -252,13 +238,16 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
 // MARK: - Bind
 extension ChattingDetailViewController {
     private func bind() {
-        let sendInput = ChattingDetailViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
+        let sendInput = ChattingDetailViewModel.Input(
+            listLoad: loadDataPublsher
+        )
         let sendOutput = viewModel.transform(input: sendInput)
         
         sendOutput.reloadChattingTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.chattingView.reloadData()
+                viewController.chattingTableView.reloadData()
+                viewController.chattingTableView.scrollToRow(at: IndexPath(row: viewController.viewModel.chattingArray.count - 1, section: 0), at: .top, animated: false)
             }
             .disposed(by: disposeBag)
     }
@@ -282,7 +271,7 @@ extension ChattingDetailViewController: UITextFieldDelegate {
         } completion: { _ in
             if self.chattingsCount > 0 {
                 let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
-                self.chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
+                self.chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
             }
         }
     }
@@ -297,20 +286,20 @@ extension ChattingDetailViewController: UITextFieldDelegate {
 extension ChattingDetailViewController: UIScrollViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let contentOffsetY = scrollView.contentOffset.y
-        let tableViewContentSizeY = chattingView.contentSize.height
+        let tableViewContentSizeY = chattingTableView.contentSize.height
         
         if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
             
-            chattingView.tableFooterView = footerView
+            chattingTableView.tableFooterView = footerView
             refreshPublisher.onNext(())
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.chattingView.tableFooterView = nil
-                self.chattingView.reloadData()
+                self.chattingTableView.tableFooterView = nil
+                self.chattingTableView.reloadData()
                 
                 if self.chattingsCount > 0 {
                     let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
-                    self.chattingView.scrollToRow(at: lastindexPath, at: .top, animated: false)
+                    self.chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
                 }
             }
         }

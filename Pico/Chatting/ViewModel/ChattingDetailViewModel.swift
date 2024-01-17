@@ -13,7 +13,6 @@ import FirebaseFirestore
 final class ChattingDetailViewModel {
     struct Input {
         let listLoad: Observable<Void>
-        let refresh: Observable<Void>
     }
     
     struct Output {
@@ -34,12 +33,6 @@ final class ChattingDetailViewModel {
     var roomId: String = ""
     
     func transform(input: Input) -> Output {
-        input.refresh
-            .withUnretained(self)
-            .subscribe { viewModel, _ in
-                viewModel.refreshChatting()
-            }
-            .disposed(by: disposeBag)
         
         input.listLoad
             .withUnretained(self)
@@ -52,10 +45,9 @@ final class ChattingDetailViewModel {
     }
     
     func loadNextChattingPage() {
-        let ref = dbRef.collection(Collections.chatDetail.name).document(roomId)
-        
-        DispatchQueue.global().async {
-            ref.addSnapshotListener { (documentSnapshot, error) in
+        dbRef.collection(Collections.chatDetail.name)
+            .document(roomId)
+            .addSnapshotListener { (documentSnapshot, error) in
                 guard let document = documentSnapshot else {
                     print("Error fetching document: \(error!)")
                     return
@@ -63,26 +55,12 @@ final class ChattingDetailViewModel {
                 if let datas = try? document.data(as: ChatDetail.self).chatInfo {
                     let sorted = datas.sorted(by: {$0.sendedDate < $1.sendedDate})
                     self.chattingArray = sorted
+                    
+                    DispatchQueue.main.async {
+                        self.reloadChattingTableViewPublisher.onNext(())
+                    }
                 }
-                
-//                if let datas = try? document.data(as: Chatting.self).senderChatting?
-//                    .filter({ $0.roomId == self.roomId }) {
-//                    self.chattingArray += datas
-//                    }
-//                
-//                if let datas = try? document.data(as: Chatting.self).receiverChatting?
-//                    .filter({ $0.roomId == self.roomId}) {
-//                    self.chattingArray += datas
-//                }
-//                
-//                self.chattingArray.sort(by: {$0.sendedDate < $1.sendedDate})
             }
-        }
-    }
-    
-    private func refreshChatting() {
-        chattingArray = []
-        loadNextChattingPage()
     }
 }
 // MARK: - saveChatting
@@ -91,8 +69,8 @@ extension ChattingDetailViewModel {
         
         FirestoreService.shared.saveDocument(collectionId: .chatDetail, documentId: roomId, fieldId: "chatInfo", data: chatInfo) { result in
             switch result {
-            case .success( _):
-                print("updateChattingData saveDocument")
+            case .success(let data):
+                print("updateChattingData saveDocument \(data)")
             case .failure(let err):
                 print("err: updateChattingData saveDocument \(err)")
             }
