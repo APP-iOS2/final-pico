@@ -12,7 +12,7 @@ import RxCocoa
 
 final class ChattingDetailViewController: UIViewController {
     
-    private let viewModel = ChattingViewModel()
+    private let viewModel = ChattingDetailViewModel(roomId: roomId)
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
@@ -21,9 +21,9 @@ final class ChattingDetailViewController: UIViewController {
     private let footerView = FooterView()
     private var isRefresh = false
     
-    var opponentId: String = ""
-    var opponentName: String = ""
-    var roomId: String = ""
+    private var opponentId: String
+    private var opponentName: String
+    private var roomId: String
     
     var chattingsCount: Int = 0
     var bottomConstraint = NSLayoutConstraint()
@@ -112,25 +112,24 @@ final class ChattingDetailViewController: UIViewController {
         view.addConstraint(bottomConstraint)
     }
     
-    func configData(room: Room.RoomInfo) {
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: room.opponentId, dataType: User.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let user):
-                if !user.isEmpty {
-                    guard let userData = user[safe: 0] else { break }
-                    opponentName = userData.nickName
-                    navigationItem.title = opponentName
-                }
-            case .failure(let err):
-                print(err)
-            }
-        }
-        guard let roomid = room.id else {return}
-        roomId = roomid
-        viewModel.roomId = roomid
-        opponentId = room.opponentId
-    }
+//    func configData(roomInfo: ChatRoom.RoomInfo) {
+//        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: roomInfo.opponentId, dataType: User.self) { [weak self] result in
+//            guard let self else { return }
+//            switch result {
+//            case .success(let user):
+//                if !user.isEmpty {
+//                    guard let userData = user[safe: 0] else { break }
+//                    opponentName = userData.nickName
+//                    navigationItem.title = opponentName
+//                }
+//            case .failure(let err):
+//                print(err)
+//            }
+//        }
+//        roomId = roomInfo.roomId
+//        viewModel.roomId = roomInfo.roomId
+//        opponentId = roomInfo.opponentId
+//    }
     
     private func configViewController() {
         view.configBackgroundColor()
@@ -244,7 +243,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
 // MARK: - Bind
 extension ChattingDetailViewController {
     private func bind() {
-        let sendInput = ChattingViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
+        let sendInput = ChattingDetailViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
         let sendOutput = viewModel.transform(input: sendInput)
         
         sendOutput.reloadChattingTableView

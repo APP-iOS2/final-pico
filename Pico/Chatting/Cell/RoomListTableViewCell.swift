@@ -101,9 +101,9 @@ final class RoomListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(receiveUser: Room.RoomInfo) -> String {
+    func config(roomInfo: ChatRoom.RoomInfo) -> String {
         
-        let userId: String = receiveUser.opponentId
+        let userId: String = roomInfo.opponentId
         var nickName: String = ""
         FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
             guard let self else { return }
@@ -131,9 +131,9 @@ final class RoomListTableViewCell: UITableViewCell {
         }
         
         nameLabel.sizeToFit()
-        self.messageLabel.text = receiveUser.lastMessage
+        self.messageLabel.text = roomInfo.lastMessage
         
-        let date = receiveUser.sendedDate.timeAgoSinceDate()
+        let date = roomInfo.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
         
         return nickName

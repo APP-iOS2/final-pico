@@ -10,9 +10,17 @@ import RxSwift
 import RxRelay
 import FirebaseFirestore
 
-final class ChattingViewModel {
+final class ChattingDetailViewModel {
+    struct Input {
+        let listLoad: Observable<Void>
+        let refresh: Observable<Void>
+    }
     
-    private(set) var chattingArray: [Chatting.ChattingInfo] = []
+    struct Output {
+        let reloadChattingTableView: Observable<Void>
+    }
+    
+    private(set) var chattingArray: [ChatDetail.ChatInfo] = []
     
     private let reloadChattingTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
@@ -23,15 +31,10 @@ final class ChattingViewModel {
     var isPaging: Bool = false
     var chattingIndex: Int = 0
     
-    var roomId = UserDefaults.standard.string(forKey: UserDefaultsManager.Key.roomId.rawValue) ?? ""
+    private var roomId: String
     
-    struct Input {
-        let listLoad: Observable<Void>
-        let refresh: Observable<Void>
-    }
-    
-    struct Output {
-        let reloadChattingTableView: Observable<Void>
+    init(roomId: String) {
+        self.roomId = roomId
     }
     
     func transform(input: Input) -> Output {
@@ -54,7 +57,7 @@ final class ChattingViewModel {
     
     func loadNextChattingPage() {
         
-        let ref = dbRef.collection(Collections.chatting.name).document(user.userId)
+        let ref = dbRef.collection(Collections.chatDetail.name).document(roomId)
         
         DispatchQueue.global().async {
             
@@ -84,7 +87,7 @@ final class ChattingViewModel {
     }
 }
 // MARK: - saveChatting
-extension ChattingViewModel {
+extension ChattingDetailViewModel {
     func updateChattingData(chattingData: Chatting.ChattingInfo) {
      
         let receiverData = Chatting.ChattingInfo(roomId: chattingData.roomId, sendUserId: chattingData.sendUserId, receiveUserId: chattingData.receiveUserId, message: chattingData.message, sendedDate: chattingData.sendedDate, isReading: false, messageType: .receive)
@@ -178,21 +181,61 @@ extension ChattingViewModel {
     }
     
     func saveChattingData(receiveUserId: String, message: String) {
-        
         let roomId = UUID().uuidString
-        
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
             
-            self.saveChatting(roomId: roomId, receiveUserId: receiveUserId, message: message)
-            self.saveRoom(roomId: roomId, receiveUserId: receiveUserId, message: message)
+            saveRoom2(roomId: roomId, receiveUserId: receiveUserId, message: message)
+            saveChatting2(roomId: roomId, receiveUserId: receiveUserId, message: message)
             
+            /// noti 보내기
             guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
-            
             let receiverNoti = Noti(receiveId: receiveUserId, sendId: self.user.userId, name: self.user.nickName, birth: self.user.birth, imageUrl: self.user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
-            
             FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
         }
         print("매칭 데이터 업데이트 완료")
+    }
+    
+    private func saveRoom2(roomId: String, receiveUserId: String, message: String) {
+        let sendedDate = Date().timeIntervalSince1970
+        
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            
+            var roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: receiveUserId, lastMessage: message, sendedDate: sendedDate)
+            FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: user.userId, fieldId: "roomInfo", data: roomInfo) { result in
+                switch result {
+                case .success(let data):
+                    print("saveRoom2 saveDocument sendUserId \(data)")
+                case .failure(let err):
+                    print(err)
+                }
+            }
+            
+            roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: user.userId, lastMessage: message, sendedDate: sendedDate)
+            FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: receiveUserId, fieldId: "roomInfo", data: roomInfo) { result in
+                switch result {
+                case .success(let data):
+                    print("saveRoom2 saveDocument receiveUserId \(data)")
+                case .failure(let err):
+                    print(err)
+                }
+            }
+        }
+    }
+    
+    private func saveChatting2(roomId: String, receiveUserId: String, message: String) {
+        let sendedDate = Date().timeIntervalSince1970
+        let chatInfo = ChatDetail.ChatInfo(sendUserId: user.userId, message: message, sendedDate: sendedDate, isReading: false)
+        
+        FirestoreService.shared.saveDocument(collectionId: .chatDetail, documentId: roomId, fieldId: "chatInfo", data: chatInfo) { result in
+            switch result {
+            case .success(let data):
+                print("saveRoom2 saveDocument \(data)")
+            case .failure(let err):
+                print(err)
+            }
+        }
     }
     
     private func saveChatting(roomId: String, receiveUserId: String, message: String) {

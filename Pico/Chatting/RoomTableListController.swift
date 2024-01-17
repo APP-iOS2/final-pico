@@ -87,7 +87,7 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
         guard let item = viewModel.roomList[safe: indexPath.row] else { return UITableViewCell() }
-        nickname = cell.config(receiveUser: item)
+        nickname = cell.config(roomInfo: item)
         cell.selectionStyle = .none
         return cell
     }
@@ -96,11 +96,10 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
         let chattingDetailView = ChattingDetailViewController()
         let room = viewModel.roomList[safe: indexPath.row]
         if let room = room {
-            chattingDetailView.configData(room: room)
+            chattingDetailView.configData(roomInfo: room)
         }
         chattingDetailView.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(chattingDetailView, animated: true)
-        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

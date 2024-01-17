@@ -12,7 +12,7 @@ import FirebaseFirestore
 
 final class RoomViewModel {
     
-    private(set) var roomList: [Room.RoomInfo] = [] {
+    private(set) var roomList: [ChatRoom.RoomInfo] = [] {
         didSet {
             if roomList.isEmpty {
                 isRoomEmptyPublisher.onNext(true)
@@ -91,7 +91,7 @@ final class RoomViewModel {
     }
     
     func loadNextRoomPage() {
-        let ref = dbRef.collection(Collections.room.name)
+        let ref = dbRef.collection(Collections.chatRoom.name)
             .document(UserDefaultsManager.shared.getUserData().userId)
         
         let endIndex = startIndex + itemsPerPage
@@ -103,14 +103,14 @@ final class RoomViewModel {
                     print("Error fetching document: \(error!)")
                     return
                 }
-                if let datas = try? document.data(as: Room.self).room {
+                if let datas = try? document.data(as: ChatRoom.self).roomInfo {
                     let sorted = datas.sorted {
                         return $0.sendedDate > $1.sendedDate
                     }
                     if startIndex > sorted.count - 1 {
                         return
                     }
-                    let currentPageDatas: [Room.RoomInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                    let currentPageDatas: [ChatRoom.RoomInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                     roomList += currentPageDatas
                     
                     if startIndex == 0 {
