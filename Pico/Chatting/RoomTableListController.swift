@@ -23,13 +23,6 @@ final class RoomTableListController: BaseViewController {
     private var isRefresh = false
     private var nickname = ""
     
-    private let chattingLabel: UILabel = {
-        let label = UILabel()
-        label.text = "채팅"
-        label.font = UIFont.picoLargeTitleFont
-        return label
-    }()
-    
     private let roomListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.register(cell: RoomListTableViewCell.self)
@@ -120,29 +113,18 @@ extension RoomTableListController {
         output.roomIsEmpty
             .withUnretained(self)
             .subscribe(onNext: { viewController, isEmpty in
-                
                 if isEmpty {
                     viewController.addChild(viewController.emptyView)
-                    viewController.view.addSubview([self.chattingLabel, viewController.emptyView.view ?? UIView()])
-                    viewController.chattingLabel.snp.makeConstraints { make in
-                        make.top.equalTo(safeArea)
-                        make.trailing.leading.equalTo(safeArea).offset(20)
-                        make.height.equalTo(50)
-                    }
+                    viewController.view.addSubview([viewController.emptyView.view ?? UIView()])
                     viewController.emptyView.didMove(toParent: self)
                     viewController.emptyView.view.snp.makeConstraints { make in
-                        make.top.equalTo(self.chattingLabel.snp.bottom).offset(20)
+                        make.top.equalTo(safeArea)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 } else {
-                    viewController.view.addSubview([self.chattingLabel, viewController.roomListTableView])
-                    viewController.chattingLabel.snp.makeConstraints { make in
-                        make.top.equalTo(safeArea)
-                        make.trailing.leading.equalTo(safeArea).offset(20)
-                        make.height.equalTo(50)
-                    }
+                    viewController.view.addSubview([viewController.roomListTableView])
                     viewController.roomListTableView.snp.makeConstraints { make in
-                        make.top.equalTo(self.chattingLabel.snp.bottom)
+                        make.top.equalTo(safeArea)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 }
