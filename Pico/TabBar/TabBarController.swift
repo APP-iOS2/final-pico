@@ -83,15 +83,15 @@ extension TabBarController: UITabBarControllerDelegate {
             previouslyClickedTap = "notHome"
         }
     }
-    
+}
+
+extension TabBarController {
     private func previousChat() {
         let chatModel = ChatDetailViewModel()
+        let dbRef = Firestore.firestore().collection(Collections.likes.name)
         
-        DispatchQueue.global().async { [weak self] in
-            guard let self else { return }
-            let dbRef = Firestore.firestore()
-            dbRef.collection(Collections.likes.name)
-                .document(UserDefaultsManager.shared.getUserData().userId).addSnapshotListener { document, error in
+        DispatchQueue.global().async {
+            dbRef.document(UserDefaultsManager.shared.getUserData().userId).addSnapshotListener { document, error in
                 if error != nil { return }
                 
                 if let document {
