@@ -58,7 +58,7 @@ final class NotificationService {
                     body = "\(sendUserName)님이 좋아요를 누르셨습니다."
                 case .message:
                     subTitle = "\(sendUserName)님이 메시지를 보냈습니다."
-                    body = messageContent ?? "메일함을 확인해보세요."
+                    body = messageContent ?? "채팅을 확인해보세요."
                 case .matching:
                     body = "\(sendUserName)님과 매칭이 되었습니다."
                 }

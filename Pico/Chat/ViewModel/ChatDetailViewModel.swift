@@ -77,9 +77,6 @@ extension ChatDetailViewModel {
         
         // noti
         NotificationService.shared.sendNotification(userId: receiveUserId, sendUserName: user.nickName, notiType: .message, messageContent: chatInfo.message)
-        guard let senderMbti = MBTIType(rawValue: user.mbti) else { return }
-        let receiverNoti = Noti(receiveId: receiveUserId, sendId: user.userId, name: user.nickName, birth: user.birth, imageUrl: user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
-        FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: receiverNoti.id ?? UUID().uuidString, data: receiverNoti)
     }
     
     func updateRoomInfo(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
@@ -121,10 +118,6 @@ extension ChatDetailViewModel {
                 }
             }
         }
-        
-        guard let senderMbti = MBTIType(rawValue: user.mbti) else { return }
-        let receiverNoti = Noti(receiveId: receiveUserId, sendId: user.userId, name: user.nickName, birth: user.birth, imageUrl: user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
-        FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
     }
     
     func saveMatchingChat(receiveUserId: String, message: String, sendedDate: Double = Date().timeIntervalSince1970) {
@@ -135,11 +128,6 @@ extension ChatDetailViewModel {
             
             saveRoomInfo(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
             saveChatInfo(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
-            
-            /// noti 보내기
-            guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
-            let receiverNoti = Noti(receiveId: receiveUserId, sendId: self.user.userId, name: self.user.nickName, birth: self.user.birth, imageUrl: self.user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
-            FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
         }
     }
     
