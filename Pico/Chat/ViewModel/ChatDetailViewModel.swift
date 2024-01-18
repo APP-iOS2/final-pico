@@ -31,6 +31,7 @@ final class ChatDetailViewModel {
     var chattingIndex: Int = 0
     
     var roomId: String = ""
+    var doubleCheck: Bool = false
     
     func transform(input: Input) -> Output {
         
@@ -65,6 +66,28 @@ final class ChatDetailViewModel {
 }
 // MARK: - saveChatting
 extension ChatDetailViewModel {
+    
+    func updateChat(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            
+            FirestoreService.shared.loadDocument(collectionId: .users, documentId: receiveUserId, dataType: User.self) { [weak self] result in
+                guard let self else { return }
+                
+                switch result {
+                case .success(let data):
+                    guard let data else { return }
+                    
+                    updateChatInfo(roomId: roomId, receiveUserId: receiveUserId, chatInfo: chatInfo)
+                    updateRoomInfo(roomId: roomId, receiveUser: data, chatInfo: chatInfo)
+                    
+                case .failure(let error):
+                    print("상대 유저 불러오기 실패: \(error)")
+                }
+            }
+        }
+    }
+    
     func updateChatInfo(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
         FirestoreService.shared.saveDocument(collectionId: .chatDetail, documentId: roomId, fieldId: "chatInfo", data: chatInfo) { result in
             switch result {
@@ -82,21 +105,22 @@ extension ChatDetailViewModel {
         FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: receiverNoti.id ?? UUID().uuidString, data: receiverNoti)
     }
     
-    func updateRoomInfo(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
+    func updateRoomInfo(roomId: String, receiveUser: User, chatInfo: ChatDetail.ChatInfo) {
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
             
-            FirestoreService.shared.loadDocument(collectionId: .chatRoom, documentId: receiveUserId, dataType: ChatRoom.self) { [weak self] result in
+            FirestoreService.shared.loadDocument(collectionId: .chatRoom, documentId: receiveUser.id, dataType: ChatRoom.self) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let data):
                     guard let data else { return }
                     
                     var filteredRooms = data.roomInfo.filter({ $0.roomId != roomId })
-                    filteredRooms.append(ChatRoom.RoomInfo(roomId: roomId, opponentId: user.userId, lastMessage: chatInfo.message, sendedDate: chatInfo.sendedDate))
+                    guard let senderMbti = MBTIType(rawValue: user.mbti) else { return }
+                    filteredRooms.append(ChatRoom.RoomInfo(roomId: roomId, opponentId: user.userId, opponentNickName: user.nickName, opponentMbti: senderMbti, opponentImageURL: user.imageURL, lastMessage: chatInfo.message, sendedDate: chatInfo.sendedDate))
                     let rooms = ChatRoom(roomInfo: filteredRooms)
                     
-                    FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: receiveUserId, data: rooms)
+                    FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: receiveUser.id, data: rooms)
                     
                 case .failure(let error):
                     print("받는 사람의 룸 불러오기 실패: \(error)")
@@ -111,7 +135,7 @@ extension ChatDetailViewModel {
                     guard let data else { return }
                     
                     var filteredRooms = data.roomInfo.filter({ $0.roomId != roomId })
-                    filteredRooms.append(ChatRoom.RoomInfo(roomId: roomId, opponentId: receiveUserId, lastMessage: chatInfo.message, sendedDate: chatInfo.sendedDate))
+                    filteredRooms.append(ChatRoom.RoomInfo(roomId: roomId, opponentId: receiveUser.id, opponentNickName: receiveUser.nickName, opponentMbti: receiveUser.mbti, opponentImageURL: receiveUser.imageURLs[0], lastMessage: chatInfo.message, sendedDate: chatInfo.sendedDate))
                     let rooms = ChatRoom(roomInfo: filteredRooms)
                     
                     FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: user.userId, data: rooms)
@@ -123,7 +147,7 @@ extension ChatDetailViewModel {
         }
         
         guard let senderMbti = MBTIType(rawValue: user.mbti) else { return }
-        let receiverNoti = Noti(receiveId: receiveUserId, sendId: user.userId, name: user.nickName, birth: user.birth, imageUrl: user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
+        let receiverNoti = Noti(receiveId: receiveUser.id, sendId: user.userId, name: user.nickName, birth: user.birth, imageUrl: user.imageURL, notiType: .message, mbti: senderMbti, createDate: Date().timeIntervalSince1970)
         FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
     }
     
@@ -133,8 +157,20 @@ extension ChatDetailViewModel {
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
             
-            saveRoomInfo(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
-            saveChatInfo(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
+            FirestoreService.shared.loadDocument(collectionId: .users, documentId: receiveUserId, dataType: User.self) { [weak self] result in
+                guard let self else { return }
+                
+                switch result {
+                case .success(let data):
+                    guard let data else { return }
+                    
+                    saveRoomInfo(roomId: roomId, receiveUser: data, message: message, sendedDate: sendedDate)
+                    saveChatInfo(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
+                    
+                case .failure(let error):
+                    print("상대 유저 불러오기 실패: \(error)")
+                }
+            }
             
             /// noti 보내기
             guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
@@ -143,11 +179,12 @@ extension ChatDetailViewModel {
         }
     }
     
-    private func saveRoomInfo(roomId: String, receiveUserId: String, message: String, sendedDate: Double) {
+    private func saveRoomInfo(roomId: String, receiveUser: User, message: String, sendedDate: Double) {
+        
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
             
-            var roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: receiveUserId, lastMessage: message, sendedDate: sendedDate)
+            var roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: receiveUser.id, opponentNickName: receiveUser.nickName, opponentMbti: receiveUser.mbti, opponentImageURL: receiveUser.imageURLs[0], lastMessage: message, sendedDate: sendedDate)
             
             FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: user.userId, fieldId: "roomInfo", data: roomInfo) { result in
                 switch result {
@@ -158,8 +195,9 @@ extension ChatDetailViewModel {
                 }
             }
             
-            roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: user.userId, lastMessage: message, sendedDate: sendedDate)
-            FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: receiveUserId, fieldId: "roomInfo", data: roomInfo) { result in
+            guard let senderMbti = MBTIType(rawValue: user.mbti) else { return }
+            roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: user.userId, opponentNickName: user.nickName, opponentMbti: senderMbti, opponentImageURL: user.imageURL, lastMessage: message, sendedDate: sendedDate)
+            FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: receiveUser.id, fieldId: "roomInfo", data: roomInfo) { result in
                 switch result {
                 case .success(let data):
                     print("saveRoomInfo saveDocument receiveUserId \(data)")

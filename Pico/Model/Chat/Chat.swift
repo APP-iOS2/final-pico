@@ -12,8 +12,11 @@ struct ChatRoom: Codable {
     
     struct RoomInfo: Codable {
         var roomId: String
-        /// 대화상대 아이디
-        let opponentId: String
+        /// 대화상대 정보
+        var opponentId: String
+        var opponentNickName: String
+        var opponentMbti: MBTIType
+        var opponentImageURL: String
         /// 마지막 메시지
         var lastMessage: String
         var sendedDate: Double

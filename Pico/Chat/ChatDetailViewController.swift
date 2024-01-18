@@ -182,8 +182,7 @@ final class ChatDetailViewController: UIViewController {
                 if let text = self.chatTextField.text {
                     let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
                     
-                    viewModel.updateChatInfo(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
-                    viewModel.updateRoomInfo(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
+                    viewModel.updateChat(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
 
                     chatTextField.text = ""
                 }

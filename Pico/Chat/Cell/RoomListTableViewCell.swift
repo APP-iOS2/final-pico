@@ -102,35 +102,16 @@ final class RoomListTableViewCell: UITableViewCell {
     
     // MARK: - MailCell +UI
     func config(roomInfo: ChatRoom.RoomInfo) {
-        let userId: String = roomInfo.opponentId
         
-        FirestoreService.shared.loadDocument(collectionId: .users, documentId: userId, dataType: User.self) { [weak self] result in
-            guard let self else { return }
-            
-            switch result {
-            case .success(let user):
-                if let user = user {
-                    nameLabel.text = user.nickName
-                    mbtiLabelView.isHidden = false
-                    mbtiLabelView.setMbti(mbti: user.mbti)
-                    guard let imageURL = user.imageURLs[safe: 0] else { return }
-                    let url = URL(string: imageURL) ?? URL(string: Defaults.userImageURLString)
-                    userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-                    userImageView.kf.setImage(with: url)
-                } else {
-                    nameLabel.text = "탈퇴된 회원"
-                    mbtiLabelView.isHidden = true
-                    mbtiLabelView.setMbti(mbti: nil)
-                    let url = URL(string: Defaults.userImageURLString)
-                    userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-                    userImageView.kf.setImage(with: url)
-                }
-            case .failure(let err):
-                print("RoomListTableViewCell cofig user: \(err.localizedDescription)")
-            }
-        }
         nameLabel.sizeToFit()
+        nameLabel.text = roomInfo.opponentNickName
+        mbtiLabelView.isHidden = false
+        mbtiLabelView.setMbti(mbti: roomInfo.opponentMbti)
         
+        let url = URL(string: roomInfo.opponentImageURL) ?? URL(string: Defaults.userImageURLString)
+        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+        userImageView.kf.setImage(with: url)
+
         messageLabel.text = roomInfo.lastMessage
         dateLabel.text = roomInfo.sendedDate.timeAgoSinceDate()
     }
