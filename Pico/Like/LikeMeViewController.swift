@@ -91,7 +91,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
         
         cell.likeButtonTapObservalbe
             .subscribe(onNext: { [weak self] in
-                self?.showCustomAlert(alertType: .canCancel, titleText: "Matching", messageText: "\(item.nickName)님께 좋아요를 보냅니다.\n 바로 매칭되어 채팅 가능합니다.", confirmButtonText: "확인", comfrimAction: {
+                self?.showCustomAlert(alertType: .canCancel, titleText: "Matching", messageText: "\(item.nickName)님께 좋아요를 보냅니다.\n 바로 매칭되어 쪽지가 가능합니다.", confirmButtonText: "확인", comfrimAction: {
                     self?.likeUserPublisher.onNext(item.likedUserId)
                 })
             })
@@ -106,7 +106,7 @@ extension LikeMeViewController: UICollectionViewDelegate, UICollectionViewDelega
                             viewController.showCustomAlert(alertType: .onlyConfirm, titleText: "탈퇴 회원", messageText: "탈퇴된 회원입니다.", confirmButtonText: "확인")
                             return
                         }
-                        viewController.showCustomAlert(alertType: .canCancel, titleText: "채팅 보내기", messageText: "매칭된 사용자에게 채팅을 보냅니다.", confirmButtonText: "보내기", comfrimAction: {
+                        viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭된 사용자에게 메일을 보냅니다.", confirmButtonText: "보내기", comfrimAction: {
                             let mailSendView = MailSendViewController()
                             mailSendView.configData(userId: item.likedUserId, atMessageView: false)
                             mailSendView.modalPresentationStyle = .formSheet
