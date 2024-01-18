@@ -107,6 +107,5 @@ extension AppDelegate: MessagingDelegate {
         print("FCM등록 토큰 : \(token)")
         let dataDict: [String: String] = ["token": token]
         NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
-        NotificationService.shared.saveToken()
     }
 }
