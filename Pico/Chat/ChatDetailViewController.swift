@@ -203,6 +203,11 @@ final class ChatDetailViewController: UIViewController {
             chatDetailTableView.reloadData()
         }
     }
+    
+    deinit {
+      NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+      NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
 }
 // MARK: - TableView
 extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
@@ -286,9 +291,10 @@ extension ChatDetailViewController: UITextFieldDelegate {
 
 extension ChatDetailViewController: ChatDetailDelegate {
     func tappedImageView(user: User) {
+        self.navigationController?.popViewController(animated: true)
+        
         let viewController = UserDetailViewController()
         viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
-        viewController.modalPresentationStyle = .formSheet
-        self.present(viewController, animated: true, completion: nil)
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
