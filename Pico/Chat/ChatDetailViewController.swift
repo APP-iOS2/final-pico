@@ -182,8 +182,7 @@ final class ChatDetailViewController: UIViewController {
                 if let text = self.chatTextField.text {
                     let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
                     
-                    viewModel.updateChatInfo(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
-                    viewModel.updateRoomInfo(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
+                    viewModel.updateChat(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
 
                     chatTextField.text = ""
                 }
@@ -202,6 +201,11 @@ final class ChatDetailViewController: UIViewController {
             isRefresh = false
             chatDetailTableView.reloadData()
         }
+    }
+    
+    deinit {
+      NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+      NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
 // MARK: - TableView
@@ -286,9 +290,10 @@ extension ChatDetailViewController: UITextFieldDelegate {
 
 extension ChatDetailViewController: ChatDetailDelegate {
     func tappedImageView(user: User) {
+        self.navigationController?.popViewController(animated: true)
+        
         let viewController = UserDetailViewController()
         viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
-        viewController.modalPresentationStyle = .formSheet
-        self.present(viewController, animated: true, completion: nil)
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
