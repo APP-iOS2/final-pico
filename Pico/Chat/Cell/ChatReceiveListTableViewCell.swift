@@ -1,5 +1,5 @@
 //
-//  ChattingReceiveListTableViewCell.swift
+//  ChatReceiveListTableViewCell.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/16.
@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 
-final class ChattingReceiveListTableViewCell: UITableViewCell {
+final class ChatReceiveListTableViewCell: UITableViewCell {
     
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
@@ -35,11 +35,12 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         label.textAlignment = .left
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
+        label.setLineSpacing(spacing: 10)
         return label
     }()
     
     lazy var backgroundImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: ChattingType.receive.imageStyle))
+        let imageView = UIImageView(image: UIImage(named: ChatType.receive.imageStyle))
         return imageView
     }()
     
@@ -51,12 +52,16 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         return label
     }()
     
+    weak var chatDetailDelegate: ChatDetailDelegate?
+    private var opponentId: String = ""
+    
     // MARK: - MailCell +LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.contentView.backgroundColor = .clear
         addViews()
         makeConstraints()
+        configGesture()
     }
     
     @available(*, unavailable)
@@ -71,31 +76,46 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         dateLabel.text = ""
     }
     
-    // MARK: - MailCell +UI
-    func config(chatting: Chatting.ChattingInfo) {
-        
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: chatting.sendUserId, dataType: User.self) { [weak self] result in
+    private func configGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedImageView))
+        userImageView.addGestureRecognizer(tapGesture)
+        userImageView.isUserInteractionEnabled = true
+    }
+    
+    @objc private func tappedImageView(_ sender: UITapGestureRecognizer) {
+        getUserData { [weak self] user in
             guard let self else { return }
+            chatDetailDelegate?.tappedImageView(user: user)
+        }
+    }
+    
+    private func getUserData(completion: @escaping (User) -> ()) {
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: opponentId, dataType: User.self) { result in
             switch result {
             case .success(let user):
                 if !user.isEmpty {
                     guard let userData = user[safe: 0] else { break }
-                    nameLabel.text = userData.nickName
-                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
-                    guard let url = URL(string: imageURL) else { return }
-                    userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-                    userImageView.kf.setImage(with: url)
-                } else {
-                    userImageView.image = UIImage(named: "AppIcon_gray")
-                    nameLabel.text = "탈퇴된 회원"
+                    completion(userData)
                 }
             case .failure(let err):
                 print(err)
             }
         }
-        self.messageLabel.text = chatting.message
-        let date = chatting.sendedDate.timeAgoSinceDate()
-        self.dateLabel.text = date
+    }
+   
+    // MARK: - MailCell +UI
+    func config(chatInfo: ChatDetail.ChatInfo, opponentName: String, opponentImageURLString: String) {
+        opponentId = chatInfo.sendUserId
+        nameLabel.text = opponentName
+        
+        let url = URL(string: opponentImageURLString) ?? URL(string: Defaults.userImageURLString)
+        
+        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+        userImageView.kf.setImage(with: url)
+        
+        messageLabel.text = chatInfo.message
+        let date = chatInfo.sendedDate.timeAgoSinceDate()
+        dateLabel.text = date
     }
     
     private func addViews() {

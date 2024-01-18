@@ -1,5 +1,5 @@
 //
-//  ChattingDetailViewController.swift
+//  ChatDetailViewController.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/16.
@@ -10,25 +10,12 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class ChattingDetailViewController: UIViewController {
-    
-    private let viewModel = ChattingViewModel()
-    private let disposeBag = DisposeBag()
-    private let refreshControl = UIRefreshControl()
-    private let refreshPublisher = PublishSubject<Void>()
-    private let loadDataPublsher = PublishSubject<Void>()
-    private let checkReceiveEmptyPublisher = PublishSubject<Void>()
-    private let footerView = FooterView()
-    private var isRefresh = false
-    
-    var opponentId: String = ""
-    var opponentName: String = ""
-    var roomId: String = ""
-    
-    var chattingsCount: Int = 0
-    var bottomConstraint = NSLayoutConstraint()
-    
-    private let chattingView = UITableView()
+protocol ChatDetailDelegate: AnyObject {
+    func tappedImageView(user: User)
+}
+
+final class ChatDetailViewController: UIViewController {
+    private let chatDetailTableView = UITableView()
     
     private let sendStack: UIStackView = {
         let stackView = UIStackView()
@@ -58,47 +45,70 @@ final class ChattingDetailViewController: UIViewController {
         return button
     }()
     
+    private let viewModel = ChatDetailViewModel()
+    private let disposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
+    private let refreshPublisher = PublishSubject<Void>()
+    private let loadDataPublsher = PublishSubject<Void>()
+    private let checkReceiveEmptyPublisher = PublishSubject<Void>()
+    private var isRefresh = false
+    
+    private var roomId: String
+    private var opponentId: String
+    private var opponentName: String = ""
+    private var opponentImageURLString: String = ""
+    
+    var chattingsCount: Int = 0
+    var bottomConstraint = NSLayoutConstraint()
+    
+    init(roomId: String, opponentId: String) {
+        self.roomId = roomId
+        self.opponentId = opponentId
+        super.init(nibName: nil, bundle: nil)
+        viewModel.roomId = roomId
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        bind()
         addViews()
         makeConstraints()
         configViewController()
         configTableView()
         configRefresh()
         configSendButton()
-        bind()
         loadDataPublsher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configChatFieldView()
-        chattingView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            refreshPublisher.onNext(())
-            chattingView.reloadData()
-            if self.chattingsCount > 0 {
-                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
-            }
-        }
+        super.viewDidAppear(animated)
+        chatDetailTableView.reloadData()
+    }
     
     private func addViews() {
         sendStack.addArrangedSubview([chatTextField, sendButton])
-        view.addSubview([chattingView, sendStack])
+        view.addSubview([chatDetailTableView, sendStack])
     }
     
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
-        chattingView.snp.makeConstraints { make in
+        chatDetailTableView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(safeArea)
         }
         
         sendStack.snp.makeConstraints { make in
-            make.top.equalTo(chattingView.snp.bottom).offset(10)
+            make.top.equalTo(chatDetailTableView.snp.bottom)
             make.leading.equalTo(safeArea).offset(20)
             make.trailing.equalTo(safeArea).offset(-20)
             make.height.equalTo(40)
@@ -112,8 +122,8 @@ final class ChattingDetailViewController: UIViewController {
         view.addConstraint(bottomConstraint)
     }
     
-    func configData(room: Room.RoomInfo) {
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: room.opponentId, dataType: User.self) { [weak self] result in
+    func configData(roomInfo: ChatRoom.RoomInfo) {
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: roomInfo.opponentId, dataType: User.self) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let user):
@@ -121,15 +131,14 @@ final class ChattingDetailViewController: UIViewController {
                     guard let userData = user[safe: 0] else { break }
                     opponentName = userData.nickName
                     navigationItem.title = opponentName
+                    
+                    guard let userImageURLString = userData.imageURLs[safe: 0] else { break }
+                    opponentImageURLString = userImageURLString
                 }
             case .failure(let err):
                 print(err)
             }
         }
-            guard let roomid = room.id else {return}
-            roomId = roomid
-            viewModel.roomId = roomid
-            opponentId = room.opponentId
     }
     
     private func configViewController() {
@@ -146,89 +155,80 @@ final class ChattingDetailViewController: UIViewController {
     }
     
     private func configTableView() {
-        chattingView.register(cell: ChattingReceiveListTableViewCell.self)
-        chattingView.register(cell: ChattingSendListTableViewCell.self)
-        footerView.frame = CGRect(x: 0, y: 0, width: chattingView.bounds.size.width, height: 80)
+        chatDetailTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
+        chatDetailTableView.register(cell: ChatReceiveListTableViewCell.self)
+        chatDetailTableView.register(cell: ChatSendListTableViewCell.self)
         if #available(iOS 15.0, *) {
-            chattingView.tableHeaderView = UIView()
+            chatDetailTableView.tableHeaderView = UIView()
         }
-        chattingView.separatorStyle = .none
-        chattingView.keyboardDismissMode = .onDrag
-        chattingView.dataSource = self
-        chattingView.delegate = self
+        chatDetailTableView.separatorStyle = .none
+        chatDetailTableView.keyboardDismissMode = .onDrag
+        chatDetailTableView.dataSource = self
+        chatDetailTableView.delegate = self
     }
     
     private func configRefresh() {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
-        chattingView.refreshControl = refreshControl
+        chatDetailTableView.refreshControl = refreshControl
     }
     
     private func configSendButton() {
         sendButton.rx.tap
             .bind { [weak self] _ in
-                guard let self = self  else { return }
-                self.sendButton.tappedAnimation()
+                guard let self else { return }
+                
+                sendButton.tappedAnimation()
                 if let text = self.chatTextField.text {
-                    // sender: 로그인한 사람, recevie 받는 사람
-                    let chatting: Chatting.ChattingInfo = Chatting.ChattingInfo(roomId: roomId, sendUserId: UserDefaultsManager.shared.getUserData().userId, receiveUserId: opponentId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: true, messageType: .send)
+                    let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
                     
-                    self.viewModel.updateChattingData(chattingData: chatting)
-                    
+                    viewModel.updateChatInfo(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
+                    viewModel.updateRoomInfo(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
+
                     chatTextField.text = ""
-                    refreshPublisher.onNext(())
-                    chattingView.reloadData()
-                    if self.chattingsCount > 0 {
-                        let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-                        chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
-                    }
-                    
-                    self.viewModel.updateRoomData(chattingData: chatting)
                 }
             }
             .disposed(by: disposeBag)
-        
     }
     
     @objc func refreshTable(refresh: UIRefreshControl) {
         isRefresh = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+        refreshPublisher.onNext(())
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self = self else { return }
-            refreshPublisher.onNext(())
+            
             refresh.endRefreshing()
             isRefresh = false
-            if self.chattingsCount > 0 {
-                let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-                chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
-            }
+            chatDetailTableView.reloadData()
         }
     }
 }
 // MARK: - TableView
-extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelegate {
-    
+extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        chattingsCount = viewModel.chattingArray.count
-        print(chattingsCount)
+        chattingsCount = viewModel.chatInfoArray.count
         return chattingsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let item = viewModel.chatInfoArray[safe: indexPath.row] else { return UITableViewCell() }
         
-        guard let item = viewModel.chattingArray[safe: indexPath.row] else { return UITableViewCell() }
-        switch item.messageType {
-        case .receive:
-            let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
-            receiveCell.config(chatting: item)
-            receiveCell.selectionStyle = .none
-            receiveCell.backgroundColor = .clear
-            return receiveCell
-        case .send:
-            let sendCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingSendListTableViewCell.self)
-            sendCell.config(chatting: item)
+        switch item.sendUserId {
+        case UserDefaultsManager.shared.getUserData().userId:
+            let sendCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChatSendListTableViewCell.self)
+            sendCell.config(chatInfo: item)
             sendCell.selectionStyle = .none
             sendCell.backgroundColor = .clear
             return sendCell
+            
+        default:
+            let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChatReceiveListTableViewCell.self)
+            receiveCell.config(chatInfo: item, opponentName: opponentName, opponentImageURLString: opponentImageURLString)
+            receiveCell.chatDetailDelegate = self
+            receiveCell.selectionStyle = .none
+            receiveCell.backgroundColor = .clear
+            return receiveCell
         }
     }
     
@@ -237,21 +237,24 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     }
 }
 // MARK: - Bind
-extension ChattingDetailViewController {
+extension ChatDetailViewController {
     private func bind() {
-        let sendInput = ChattingViewModel.Input(listLoad: loadDataPublsher, refresh: refreshPublisher)
+        let sendInput = ChatDetailViewModel.Input(
+            listLoad: loadDataPublsher
+        )
         let sendOutput = viewModel.transform(input: sendInput)
         
-        sendOutput.reloadChattingTableView
+        sendOutput.reloadChatDetailTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.chattingView.reloadData()
+                viewController.chatDetailTableView.reloadData()
+                viewController.chatDetailTableView.scrollToRow(at: IndexPath(row: viewController.viewModel.chatInfoArray.count - 1, section: 0), at: .top, animated: false)
             }
             .disposed(by: disposeBag)
     }
 }
 
-extension ChattingDetailViewController: UITextFieldDelegate {
+extension ChatDetailViewController: UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         chatTextField.resignFirstResponder()
@@ -268,7 +271,8 @@ extension ChattingDetailViewController: UITextFieldDelegate {
             self.view.layoutIfNeeded()
         } completion: { _ in
             if self.chattingsCount > 0 {
-                self.chattingView.scrollToRow(at: IndexPath(item: self.chattingsCount - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+                let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
+                self.chatDetailTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
             }
         }
     }
@@ -279,28 +283,12 @@ extension ChattingDetailViewController: UITextFieldDelegate {
         self.view.layoutIfNeeded()
     }
 }
-// MARK: - 페이징처리
-extension ChattingDetailViewController: UIScrollViewDelegate {
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        let contentOffsetY = scrollView.contentOffset.y
-        let tableViewContentSizeY = chattingView.contentSize.height
-        
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
-            
-            chattingView.tableFooterView = footerView
-            
-            refreshPublisher.onNext(())
-            chattingView.reloadData()
-            
-            chattingsCount = viewModel.chattingArray.count
-            if self.chattingsCount > 0 {
-                let lastindexPath = IndexPath(row: chattingsCount - 1, section: 0)
-                chattingView.scrollToRow(at: lastindexPath, at: UITableView.ScrollPosition.bottom, animated: true)
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.chattingView.tableFooterView = nil
-            }
-        }
+
+extension ChatDetailViewController: ChatDetailDelegate {
+    func tappedImageView(user: User) {
+        let viewController = UserDetailViewController()
+        viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
+        viewController.modalPresentationStyle = .formSheet
+        self.present(viewController, animated: true, completion: nil)
     }
 }

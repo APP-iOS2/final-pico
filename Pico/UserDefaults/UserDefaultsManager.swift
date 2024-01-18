@@ -14,7 +14,6 @@ final class UserDefaultsManager {
         case filterGender, filterMbti, filterDistance, filterAgeMin, filterAgeMax
         case chuCount
         case dontWatchAgain, minPoint, maxPoint
-        case roomId, opponentName
     }
     
     static let shared: UserDefaultsManager = UserDefaultsManager()

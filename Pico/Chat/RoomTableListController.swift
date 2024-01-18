@@ -21,14 +21,6 @@ final class RoomTableListController: BaseViewController {
     private let checkRoomEmptyPublisher = PublishSubject<Void>()
     private let footerView = FooterView()
     private var isRefresh = false
-    private var nickname = ""
-    
-    private let chattingLabel: UILabel = {
-        let label = UILabel()
-        label.text = "채팅"
-        label.font = UIFont.picoLargeTitleFont
-        return label
-    }()
     
     private let roomListTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -50,7 +42,6 @@ final class RoomTableListController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkRoomEmptyPublisher.onNext(())
-        roomListTableView.reloadData()
     }
     // MARK: - config
     
@@ -84,22 +75,22 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
         guard let item = viewModel.roomList[safe: indexPath.row] else { return UITableViewCell() }
-        nickname = cell.config(receiveUser: item)
+        
+        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
+        cell.config(roomInfo: item)
         cell.selectionStyle = .none
+        cell.backgroundColor = .clear
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let chattingDetailView = ChattingDetailViewController()
-        let room = viewModel.roomList[safe: indexPath.row]
-        if let room = room {
-            chattingDetailView.configData(room: room)
-        }
-        chattingDetailView.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(chattingDetailView, animated: true)
+        guard let room = viewModel.roomList[safe: indexPath.row] else { return }
         
+        let chatDetailView = ChatDetailViewController(roomId: room.roomId, opponentId: room.opponentId)
+        chatDetailView.configData(roomInfo: room)
+        chatDetailView.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(chatDetailView, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -117,33 +108,21 @@ extension RoomTableListController {
         let output = viewModel.transform(input: input)
         
         let safeArea = view.safeAreaLayoutGuide
-        
         output.roomIsEmpty
             .withUnretained(self)
             .subscribe(onNext: { viewController, isEmpty in
-                
                 if isEmpty {
                     viewController.addChild(viewController.emptyView)
-                    viewController.view.addSubview([self.chattingLabel, viewController.emptyView.view ?? UIView()])
-                    viewController.chattingLabel.snp.makeConstraints { make in
-                        make.top.equalTo(safeArea)
-                        make.trailing.leading.equalTo(safeArea).offset(20)
-                        make.height.equalTo(50)
-                    }
+                    viewController.view.addSubview([viewController.emptyView.view ?? UIView()])
                     viewController.emptyView.didMove(toParent: self)
                     viewController.emptyView.view.snp.makeConstraints { make in
-                        make.top.equalTo(self.chattingLabel.snp.bottom).offset(20)
+                        make.top.equalTo(safeArea)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 } else {
-                    viewController.view.addSubview([self.chattingLabel, viewController.roomListTableView])
-                    viewController.chattingLabel.snp.makeConstraints { make in
-                        make.top.equalTo(safeArea)
-                        make.trailing.leading.equalTo(safeArea).offset(20)
-                        make.height.equalTo(50)
-                    }
+                    viewController.view.addSubview([viewController.roomListTableView])
                     viewController.roomListTableView.snp.makeConstraints { make in
-                        make.top.equalTo(self.chattingLabel.snp.bottom)
+                        make.top.equalTo(safeArea)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 }

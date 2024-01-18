@@ -1,5 +1,5 @@
 //
-//  ChattingSendListTableViewCell.swift
+//  ChatSendListTableViewCell.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/21.
@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 
-final class ChattingSendListTableViewCell: UITableViewCell {
+final class ChatSendListTableViewCell: UITableViewCell {
     
     private let chatView = UIView()
     
@@ -18,13 +18,14 @@ final class ChattingSendListTableViewCell: UITableViewCell {
         label.font = UIFont.picoContentFont
         label.textColor = .white
         label.textAlignment = .right
-        label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+        label.setLineSpacing(spacing: 10)
         return label
     }()
     
     private var backgroundImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: ChattingType.send.imageStyle))
+        let imageView = UIImageView(image: UIImage(named: ChatType.send.imageStyle))
         return imageView
     }()
     
@@ -55,9 +56,9 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(chatting: Chatting.ChattingInfo) {
-        self.messageLabel.text = chatting.message
-        let date = chatting.sendedDate.timeAgoSinceDate()
+    func config(chatInfo: ChatDetail.ChatInfo) {
+        self.messageLabel.text = chatInfo.message
+        let date = chatInfo.sendedDate.timeAgoSinceDate()
         self.dateLabel.text = date
     }
     
