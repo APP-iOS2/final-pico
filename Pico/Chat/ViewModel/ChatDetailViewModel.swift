@@ -1,5 +1,5 @@
 //
-//  ChattingViewModel.swift
+//  ChatDetailViewModel.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/16.
@@ -10,18 +10,18 @@ import RxSwift
 import RxRelay
 import FirebaseFirestore
 
-final class ChattingDetailViewModel {
+final class ChatDetailViewModel {
     struct Input {
         let listLoad: Observable<Void>
     }
     
     struct Output {
-        let reloadChattingTableView: Observable<Void>
+        let reloadChatDetailTableView: Observable<Void>
     }
     
-    private(set) var chattingArray: [ChatDetail.ChatInfo] = []
+    private(set) var chatInfoArray: [ChatDetail.ChatInfo] = []
     
-    private let reloadChattingTableViewPublisher = PublishSubject<Void>()
+    private let reloadChatDetailTableViewPublisher = PublishSubject<Void>()
     private let disposeBag = DisposeBag()
     
     private let dbRef = Firestore.firestore()
@@ -37,14 +37,14 @@ final class ChattingDetailViewModel {
         input.listLoad
             .withUnretained(self)
             .subscribe { viewModel, _ in
-                viewModel.loadNextChattingPage()
+                viewModel.loadChatDetail()
             }
             .disposed(by: disposeBag)
         
-        return Output(reloadChattingTableView: reloadChattingTableViewPublisher.asObservable())
+        return Output(reloadChatDetailTableView: reloadChatDetailTableViewPublisher.asObservable())
     }
     
-    func loadNextChattingPage() {
+    func loadChatDetail() {
         dbRef.collection(Collections.chatDetail.name)
             .document(roomId)
             .addSnapshotListener { (documentSnapshot, error) in
@@ -54,24 +54,24 @@ final class ChattingDetailViewModel {
                 }
                 if let datas = try? document.data(as: ChatDetail.self).chatInfo {
                     let sorted = datas.sorted(by: {$0.sendedDate < $1.sendedDate})
-                    self.chattingArray = sorted
+                    self.chatInfoArray = sorted
                     
                     DispatchQueue.main.async {
-                        self.reloadChattingTableViewPublisher.onNext(())
+                        self.reloadChatDetailTableViewPublisher.onNext(())
                     }
                 }
             }
     }
 }
 // MARK: - saveChatting
-extension ChattingDetailViewModel {
-    func updateChattingData(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
+extension ChatDetailViewModel {
+    func updateChatInfo(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
         FirestoreService.shared.saveDocument(collectionId: .chatDetail, documentId: roomId, fieldId: "chatInfo", data: chatInfo) { result in
             switch result {
             case .success(let data):
-                print("updateChattingData saveDocument \(data)")
+                print("updateChatInfo saveDocument \(data)")
             case .failure(let err):
-                print("err: updateChattingData saveDocument \(err)")
+                print("err: updateChatInfo saveDocument \(err)")
             }
         }
         
@@ -82,7 +82,7 @@ extension ChattingDetailViewModel {
         FirestoreService.shared.saveDocument(collectionId: .notifications, documentId: receiverNoti.id ?? UUID().uuidString, data: receiverNoti)
     }
     
-    func updateRoomData(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
+    func updateRoomInfo(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
             
@@ -127,14 +127,14 @@ extension ChattingDetailViewModel {
         FirestoreService.shared.saveDocument(collectionId: .notifications, data: receiverNoti)
     }
     
-    func saveChattingData(receiveUserId: String, message: String, sendedDate: Double = Date().timeIntervalSince1970) {
+    func saveMatchingChat(receiveUserId: String, message: String, sendedDate: Double = Date().timeIntervalSince1970) {
         let roomId = UUID().uuidString
         
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
             
-            saveRoom(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
-            saveChatting(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
+            saveRoomInfo(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
+            saveChatInfo(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
             
             /// noti 보내기
             guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
@@ -143,7 +143,7 @@ extension ChattingDetailViewModel {
         }
     }
     
-    private func saveRoom(roomId: String, receiveUserId: String, message: String, sendedDate: Double) {
+    private func saveRoomInfo(roomId: String, receiveUserId: String, message: String, sendedDate: Double) {
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
             
@@ -152,7 +152,7 @@ extension ChattingDetailViewModel {
             FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: user.userId, fieldId: "roomInfo", data: roomInfo) { result in
                 switch result {
                 case .success(let data):
-                    print("saveRoom saveDocument sendUserId \(data)")
+                    print("saveRoomInfo saveDocument sendUserId \(data)")
                 case .failure(let err):
                     print(err)
                 }
@@ -162,7 +162,7 @@ extension ChattingDetailViewModel {
             FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: receiveUserId, fieldId: "roomInfo", data: roomInfo) { result in
                 switch result {
                 case .success(let data):
-                    print("saveRoom saveDocument receiveUserId \(data)")
+                    print("saveRoomInfo saveDocument receiveUserId \(data)")
                 case .failure(let err):
                     print(err)
                 }
@@ -170,13 +170,13 @@ extension ChattingDetailViewModel {
         }
     }
     
-    private func saveChatting(roomId: String, receiveUserId: String, message: String, sendedDate: Double) {
+    private func saveChatInfo(roomId: String, receiveUserId: String, message: String, sendedDate: Double) {
         let chatInfo = ChatDetail.ChatInfo(sendUserId: user.userId, message: message, sendedDate: sendedDate, isReading: false)
         
         FirestoreService.shared.saveDocument(collectionId: .chatDetail, documentId: roomId, fieldId: "chatInfo", data: chatInfo) { result in
             switch result {
             case .success(let data):
-                print("saveRoom saveDocument \(data)")
+                print("saveChatInfo saveDocument \(data)")
             case .failure(let err):
                 print(err)
             }

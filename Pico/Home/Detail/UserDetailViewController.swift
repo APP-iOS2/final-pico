@@ -103,8 +103,8 @@ final class UserDetailViewController: UIViewController {
                         viewModel.checkYouLikeMe(viewModel.user.id, currentUser.userId) { [weak self] result in
                             guard let self else { return }
                             if result == .like {
-                                let chatModel = ChattingDetailViewModel()
-                                chatModel.saveChattingData(receiveUserId: self.viewModel.user.id, message: "서로 매칭되었습니다")                                
+                                let chatModel = ChatDetailViewModel()
+                                chatModel.saveMatchingChat(receiveUserId: self.viewModel.user.id, message: "서로 매칭되었습니다")                                
                                 viewModel.saveLikeData(receiveUserInfo: viewModel.user, likeType: .matching)
                                 viewModel.updateMatcingData(viewModel.user.id)
                                 viewModel.notificationServiceForPartner(.matching, .matching, user: viewModel.user, currentUser: currentUser)

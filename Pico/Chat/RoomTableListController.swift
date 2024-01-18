@@ -87,10 +87,10 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let room = viewModel.roomList[safe: indexPath.row] else { return }
         
-        let chattingDetailView = ChattingDetailViewController(roomId: room.roomId, opponentId: room.opponentId)
-        chattingDetailView.configData(roomInfo: room)
-        chattingDetailView.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(chattingDetailView, animated: true)
+        let chatDetailView = ChatDetailViewController(roomId: room.roomId, opponentId: room.opponentId)
+        chatDetailView.configData(roomInfo: room)
+        chatDetailView.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(chatDetailView, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

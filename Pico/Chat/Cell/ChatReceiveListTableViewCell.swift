@@ -1,5 +1,5 @@
 //
-//  ChattingReceiveListTableViewCell.swift
+//  ChatReceiveListTableViewCell.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/16.
@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 
-final class ChattingReceiveListTableViewCell: UITableViewCell {
+final class ChatReceiveListTableViewCell: UITableViewCell {
     
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
@@ -52,7 +52,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         return label
     }()
     
-    weak var chattingDetailDelegate: ChattingDetailDelegate?
+    weak var chatDetailDelegate: ChatDetailDelegate?
     private var opponentId: String = ""
     
     // MARK: - MailCell +LifeCycle
@@ -85,7 +85,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
     @objc private func tappedImageView(_ sender: UITapGestureRecognizer) {
         getUserData { [weak self] user in
             guard let self else { return }
-            chattingDetailDelegate?.tappedImageView(user: user)
+            chatDetailDelegate?.tappedImageView(user: user)
         }
     }
     

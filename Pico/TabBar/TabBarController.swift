@@ -25,24 +25,24 @@ final class TabBarController: UITabBarController {
     
     private func configureTabBar() {
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
-        let chattingViewController = UINavigationController(rootViewController: RoomTableListController())
+        let chatViewController = UINavigationController(rootViewController: RoomTableListController())
         let likeViewController = UINavigationController(rootViewController: LikeViewController())
         let entViewController = UINavigationController(rootViewController: EntViewController())
         let mypageViewController = UINavigationController(rootViewController: MypageViewController())
         
         homeViewController.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house.fill"), tag: 0)
-        chattingViewController.tabBarItem = UITabBarItem(title: "채팅", image: UIImage(systemName: "message.fill"), tag: 1)
+        chatViewController.tabBarItem = UITabBarItem(title: "채팅", image: UIImage(systemName: "message.fill"), tag: 1)
         likeViewController.tabBarItem = UITabBarItem(title: "좋아요", image: UIImage(systemName: "heart.fill"), tag: 2)
         entViewController.tabBarItem = UITabBarItem(title: "게임", image: UIImage(systemName: "gamecontroller.fill"), tag: 3)
         mypageViewController.tabBarItem = UITabBarItem(title: "마이", image: UIImage(systemName: "person.fill"), tag: 4)
         
         homeViewController.navigationBar.prefersLargeTitles = false
-        chattingViewController.navigationBar.prefersLargeTitles = false
+        chatViewController.navigationBar.prefersLargeTitles = false
         likeViewController.navigationBar.prefersLargeTitles = false
         entViewController.navigationBar.prefersLargeTitles = false
         mypageViewController.navigationBar.prefersLargeTitles = false
         
-        self.viewControllers = [homeViewController, chattingViewController, likeViewController, entViewController, mypageViewController]
+        self.viewControllers = [homeViewController, chatViewController, likeViewController, entViewController, mypageViewController]
         delegate = self
     }
     
@@ -85,7 +85,7 @@ extension TabBarController: UITabBarControllerDelegate {
     }
     
     private func previousChat() {
-        let chatModel = ChattingDetailViewModel()
+        let chatModel = ChatDetailViewModel()
         
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
@@ -105,10 +105,10 @@ extension TabBarController: UITabBarControllerDelegate {
                                 case .success(let room):
                                     if let room {
                                         if !room.roomInfo.contains(where: { $0.opponentId == likeInfo.likedUserId }) {
-                                            chatModel.saveChattingData(receiveUserId: likeInfo.likedUserId, message: "서로 매칭되었습니다", sendedDate: likeInfo.createdDate)
+                                            chatModel.saveMatchingChat(receiveUserId: likeInfo.likedUserId, message: "서로 매칭되었습니다", sendedDate: likeInfo.createdDate)
                                         }
                                     } else {
-                                        chatModel.saveChattingData(receiveUserId: likeInfo.likedUserId, message: "서로 매칭되었습니다", sendedDate: likeInfo.createdDate)
+                                        chatModel.saveMatchingChat(receiveUserId: likeInfo.likedUserId, message: "서로 매칭되었습니다", sendedDate: likeInfo.createdDate)
                                     }
                                     
                                 case .failure(let err):

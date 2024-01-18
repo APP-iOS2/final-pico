@@ -23,8 +23,6 @@ enum Collections {
     case block
     case adminReport
     case session
-    case chatting
-    case room
     case chatRoom
     case chatDetail
     
@@ -54,10 +52,6 @@ enum Collections {
             return "reports"
         case .session:
             return "session"
-        case .chatting:
-            return "chatting"
-        case .room:
-            return "room"
         case .chatRoom:
             return "chatRoom"
         case .chatDetail:

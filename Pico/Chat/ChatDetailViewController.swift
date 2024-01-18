@@ -1,5 +1,5 @@
 //
-//  ChattingDetailViewController.swift
+//  ChatDetailViewController.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/16.
@@ -10,12 +10,12 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-protocol ChattingDetailDelegate: AnyObject {
+protocol ChatDetailDelegate: AnyObject {
     func tappedImageView(user: User)
 }
 
-final class ChattingDetailViewController: UIViewController {
-    private let chattingTableView = UITableView()
+final class ChatDetailViewController: UIViewController {
+    private let chatDetailTableView = UITableView()
     
     private let sendStack: UIStackView = {
         let stackView = UIStackView()
@@ -45,7 +45,7 @@ final class ChattingDetailViewController: UIViewController {
         return button
     }()
     
-    private let viewModel = ChattingDetailViewModel()
+    private let viewModel = ChatDetailViewModel()
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let refreshPublisher = PublishSubject<Void>()
@@ -92,23 +92,23 @@ final class ChattingDetailViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        chattingTableView.reloadData()
+        chatDetailTableView.reloadData()
     }
     
     private func addViews() {
         sendStack.addArrangedSubview([chatTextField, sendButton])
-        view.addSubview([chattingTableView, sendStack])
+        view.addSubview([chatDetailTableView, sendStack])
     }
     
     private func makeConstraints() {
         let safeArea = view.safeAreaLayoutGuide
         
-        chattingTableView.snp.makeConstraints { make in
+        chatDetailTableView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(safeArea)
         }
         
         sendStack.snp.makeConstraints { make in
-            make.top.equalTo(chattingTableView.snp.bottom)
+            make.top.equalTo(chatDetailTableView.snp.bottom)
             make.leading.equalTo(safeArea).offset(20)
             make.trailing.equalTo(safeArea).offset(-20)
             make.height.equalTo(40)
@@ -155,22 +155,22 @@ final class ChattingDetailViewController: UIViewController {
     }
     
     private func configTableView() {
-        chattingTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
-        chattingTableView.register(cell: ChattingReceiveListTableViewCell.self)
-        chattingTableView.register(cell: ChattingSendListTableViewCell.self)
+        chatDetailTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
+        chatDetailTableView.register(cell: ChatReceiveListTableViewCell.self)
+        chatDetailTableView.register(cell: ChatSendListTableViewCell.self)
         if #available(iOS 15.0, *) {
-            chattingTableView.tableHeaderView = UIView()
+            chatDetailTableView.tableHeaderView = UIView()
         }
-        chattingTableView.separatorStyle = .none
-        chattingTableView.keyboardDismissMode = .onDrag
-        chattingTableView.dataSource = self
-        chattingTableView.delegate = self
+        chatDetailTableView.separatorStyle = .none
+        chatDetailTableView.keyboardDismissMode = .onDrag
+        chatDetailTableView.dataSource = self
+        chatDetailTableView.delegate = self
     }
     
     private func configRefresh() {
         refreshControl.addTarget(self, action: #selector(refreshTable(refresh:)), for: .valueChanged)
         refreshControl.tintColor = .picoBlue
-        chattingTableView.refreshControl = refreshControl
+        chatDetailTableView.refreshControl = refreshControl
     }
     
     private func configSendButton() {
@@ -182,8 +182,8 @@ final class ChattingDetailViewController: UIViewController {
                 if let text = self.chatTextField.text {
                     let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
                     
-                    viewModel.updateChattingData(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
-                    viewModel.updateRoomData(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
+                    viewModel.updateChatInfo(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
+                    viewModel.updateRoomInfo(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
 
                     chatTextField.text = ""
                 }
@@ -200,32 +200,32 @@ final class ChattingDetailViewController: UIViewController {
             
             refresh.endRefreshing()
             isRefresh = false
-            chattingTableView.reloadData()
+            chatDetailTableView.reloadData()
         }
     }
 }
 // MARK: - TableView
-extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelegate {
+extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        chattingsCount = viewModel.chattingArray.count
+        chattingsCount = viewModel.chatInfoArray.count
         return chattingsCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let item = viewModel.chattingArray[safe: indexPath.row] else { return UITableViewCell() }
+        guard let item = viewModel.chatInfoArray[safe: indexPath.row] else { return UITableViewCell() }
         
         switch item.sendUserId {
         case UserDefaultsManager.shared.getUserData().userId:
-            let sendCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingSendListTableViewCell.self)
+            let sendCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChatSendListTableViewCell.self)
             sendCell.config(chatInfo: item)
             sendCell.selectionStyle = .none
             sendCell.backgroundColor = .clear
             return sendCell
             
         default:
-            let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
+            let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChatReceiveListTableViewCell.self)
             receiveCell.config(chatInfo: item, opponentName: opponentName, opponentImageURLString: opponentImageURLString)
-            receiveCell.chattingDetailDelegate = self
+            receiveCell.chatDetailDelegate = self
             receiveCell.selectionStyle = .none
             receiveCell.backgroundColor = .clear
             return receiveCell
@@ -237,24 +237,24 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
     }
 }
 // MARK: - Bind
-extension ChattingDetailViewController {
+extension ChatDetailViewController {
     private func bind() {
-        let sendInput = ChattingDetailViewModel.Input(
+        let sendInput = ChatDetailViewModel.Input(
             listLoad: loadDataPublsher
         )
         let sendOutput = viewModel.transform(input: sendInput)
         
-        sendOutput.reloadChattingTableView
+        sendOutput.reloadChatDetailTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.chattingTableView.reloadData()
-                viewController.chattingTableView.scrollToRow(at: IndexPath(row: viewController.viewModel.chattingArray.count - 1, section: 0), at: .top, animated: false)
+                viewController.chatDetailTableView.reloadData()
+                viewController.chatDetailTableView.scrollToRow(at: IndexPath(row: viewController.viewModel.chatInfoArray.count - 1, section: 0), at: .top, animated: false)
             }
             .disposed(by: disposeBag)
     }
 }
 
-extension ChattingDetailViewController: UITextFieldDelegate {
+extension ChatDetailViewController: UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         chatTextField.resignFirstResponder()
@@ -272,7 +272,7 @@ extension ChattingDetailViewController: UITextFieldDelegate {
         } completion: { _ in
             if self.chattingsCount > 0 {
                 let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
-                self.chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
+                self.chatDetailTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
             }
         }
     }
@@ -284,7 +284,7 @@ extension ChattingDetailViewController: UITextFieldDelegate {
     }
 }
 
-extension ChattingDetailViewController: ChattingDetailDelegate {
+extension ChatDetailViewController: ChatDetailDelegate {
     func tappedImageView(user: User) {
         let viewController = UserDetailViewController()
         viewController.viewModel = UserDetailViewModel(user: user, isHome: false)

@@ -1,5 +1,5 @@
 //
-//  ChattingSendListTableViewCell.swift
+//  ChatSendListTableViewCell.swift
 //  Pico
 //
 //  Created by 양성혜 on 2023/12/21.
@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import RxSwift
 
-final class ChattingSendListTableViewCell: UITableViewCell {
+final class ChatSendListTableViewCell: UITableViewCell {
     
     private let chatView = UIView()
     
