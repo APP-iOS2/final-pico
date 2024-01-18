@@ -97,14 +97,14 @@ extension LikeUViewController: UICollectionViewDelegate, UICollectionViewDelegat
                             return
                         }
                         if item.isMatch {
-                            viewController.showCustomAlert(alertType: .canCancel, titleText: "채팅 보내기", messageText: "매칭된 사용자에게 채팅을 보냅니다.", confirmButtonText: "보내기", comfrimAction: {
+                            viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭된 사용자에게 메일을 보냅니다.", confirmButtonText: "보내기", comfrimAction: {
                                 let mailSendView = MailSendViewController()
                                 mailSendView.configData(userId: item.likedUserId, atMessageView: false)
                                 mailSendView.modalPresentationStyle = .formSheet
                                 self.present(mailSendView, animated: true, completion: nil)
                             })
                         } else {
-                            viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭되지 않은 사용자에게 채팅을 보내기 위해서는 50츄가 필요합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", confirmButtonText: "보내기 (50츄)", comfrimAction: {
+                            viewController.showCustomAlert(alertType: .canCancel, titleText: "메일 보내기", messageText: "매칭되지 않은 사용자에게 메일을 보내기 위해서는 50츄가 필요합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", confirmButtonText: "보내기 (50츄)", comfrimAction: {
                                 let resultChu = UserDefaultsManager.shared.getChuCount() - 50
                                 if resultChu < 0 {
                                     viewController.showCustomAlert(alertType: .canCancel, titleText: "보유 츄 부족", messageText: "보유하고 있는 츄가 부족합니다. \n현재 츄 : \(UserDefaultsManager.shared.getChuCount()) 개", cancelButtonText: "보내기 취소", confirmButtonText: "스토어로 이동", comfrimAction: {

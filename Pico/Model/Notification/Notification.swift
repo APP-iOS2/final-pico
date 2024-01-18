@@ -32,7 +32,7 @@ enum NotiType: String, Codable {
         case .message:
             return "님이 쪽지를 보냈습니다."
         case .matching:
-            return "님과 매칭이 되었습니다. 채팅을 보내보세요."
+            return "님과 매칭이 되었습니다. 쪽지를 보내보세요."
         }
     }
     
