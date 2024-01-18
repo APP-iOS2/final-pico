@@ -113,8 +113,7 @@ final class NotificationService {
     }
     
     func fcmTokenDelete() {
-        let emptyToken = Token(fcmToken: "", badgeCount: 0)
-        FirestoreService.shared.saveDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId, data: emptyToken) { result in
+        FirestoreService.shared.deleteDocument(collectionId: .tokens, documentId: UserDefaultsManager.shared.getUserData().userId) { result in
             switch result {
             case .success:
                 print("토큰 비우기 성공")
