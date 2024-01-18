@@ -273,14 +273,26 @@ final class UserDetailViewModel {
                         print("평가 업데이트 에러: \(error)")
                     }
                 }
-            docRef.document(receiveUserInfo.id).setData(
-                [
-                    "userId": receiveUserInfo.id,
-                    recivedlikesUpdateFiled: FieldValue.arrayUnion([myInfoDic])
-                ], merge: true) { error in
-                    if let error = error {
-                        print("평가 업데이트 에러: \(error)")
+            if likeType == .matching {
+                docRef.document(receiveUserInfo.id).setData(
+                    [
+                        "userId": receiveUserInfo.id,
+                        sendedlikesUpdateFiled: FieldValue.arrayUnion([myInfoDic])
+                    ], merge: true) { error in
+                        if let error = error {
+                            print("평가 업데이트 에러: \(error)")
+                        }
                     }
-                }
+            } else {
+                docRef.document(receiveUserInfo.id).setData(
+                    [
+                        "userId": receiveUserInfo.id,
+                        recivedlikesUpdateFiled: FieldValue.arrayUnion([myInfoDic])
+                    ], merge: true) { error in
+                        if let error = error {
+                            print("평가 업데이트 에러: \(error)")
+                        }
+                    }
+            }
         }
     }
