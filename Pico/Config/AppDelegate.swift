@@ -37,10 +37,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
         UIApplication.shared.registerForRemoteNotifications()
         
-        if let launchOptions {
-            let userInfo = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification]
-            if userInfo != nil {
-                moveNotificationView()
+        if let userInfo = launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification] as? [String: Any] {
+            if let aps = userInfo["aps"]  as? [String: Any], let alert = aps["alert"] as? [String: Any] {
+                if alert["subtitle"] != nil {
+                    moveChattingView()
+                } else {
+                    moveNotificationView()
+                }
             }
         }
         return true
@@ -71,7 +74,14 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        moveNotificationView()
+        let userInfo = response.notification.request.content.userInfo
+        if let aps = userInfo["aps"]  as? [String: Any], let alert = aps["alert"] as? [String: Any] {
+            if alert["subtitle"] != nil {
+                moveChattingView()
+            } else {
+                moveNotificationView()
+            }
+        }
         completionHandler()
     }
     
@@ -96,6 +106,18 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 }
             } else if rootViewController is UINavigationController {
                 rootViewController.navigationController?.pushViewController(notificationViewController, animated: true)
+            }
+        }
+    }
+    
+    private func moveChattingView() {
+        if UIApplication.shared.connectedScenes.first?.delegate is SceneDelegate {
+            guard let rootViewController = (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.window?.rootViewController else { return }
+            if let tabBarController = rootViewController as? UITabBarController {
+                tabBarController.selectedIndex = 1
+                if let navigationController = tabBarController.viewControllers?[1] as? UINavigationController {
+                    navigationController.popToRootViewController(animated: true)
+                }
             }
         }
     }
