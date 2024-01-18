@@ -71,6 +71,7 @@ final class RoomTableListController: BaseViewController {
 // MARK: - UIMailTableView
 extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print(viewModel.roomList.count)
         return viewModel.roomList.count
     }
     
