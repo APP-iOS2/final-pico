@@ -15,13 +15,12 @@ final class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        previousChat()
         configureTabBar()
         addShadowToTabBar()
         UITabBar.appearance().backgroundColor = .secondarySystemBackground
         UITabBar.appearance().tintColor = .picoBlue
         NotificationService.shared.registerRemoteNotification()
-        
-        previousMatching()
     }
     
     private func configureTabBar() {
@@ -84,25 +83,23 @@ extension TabBarController: UITabBarControllerDelegate {
             previouslyClickedTap = "notHome"
         }
     }
-}
-
-extension TabBarController {
-    /// 채팅생기기전의 매칭된 사람들
-    private func previousMatching() {
-        print("previousMatching")
+    
+    private func previousChat() {
         let chatModel = ChattingDetailViewModel()
         
-        let dbRef = Firestore.firestore()
-            .collection(Collections.likes.name)
-            .document(UserDefaultsManager.shared.getUserData().userId)
-        
-        DispatchQueue.global().async {
-            dbRef.getDocument { document, error in
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            let dbRef = Firestore.firestore()
+            dbRef.collection(Collections.likes.name)
+                .document(UserDefaultsManager.shared.getUserData().userId).addSnapshotListener { document, error in
                 if error != nil { return }
                 
                 if let document {
                     if let datas = try? document.data(as: Like.self).sendedlikes {
-                        datas.filter { $0.likeType == .matching }.forEach { likeInfo in
+                        let filtered = datas.filter { $0.likeType == .matching }
+                        print("========previousChat \(filtered.count)")
+                        
+                        filtered.forEach { likeInfo in
                             FirestoreService.shared.loadDocument(collectionId: .chatRoom, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: ChatRoom.self) { result in
                                 switch result {
                                 case .success(let room):
@@ -115,7 +112,7 @@ extension TabBarController {
                                     }
                                     
                                 case .failure(let err):
-                                    print("previousMatching: \(err.localizedDescription)")
+                                    print("previousChat: \(err.localizedDescription)")
                                 }
                             }
                         }

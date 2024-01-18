@@ -108,7 +108,6 @@ extension RoomTableListController {
         let output = viewModel.transform(input: input)
         
         let safeArea = view.safeAreaLayoutGuide
-        
         output.roomIsEmpty
             .withUnretained(self)
             .subscribe(onNext: { viewController, isEmpty in

@@ -10,6 +10,10 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+protocol ChattingDetailDelegate: AnyObject {
+    func tappedImageView(user: User)
+}
+
 final class ChattingDetailViewController: UIViewController {
     private let chattingTableView = UITableView()
     
@@ -221,6 +225,7 @@ extension ChattingDetailViewController: UITableViewDataSource, UITableViewDelega
         default:
             let receiveCell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: ChattingReceiveListTableViewCell.self)
             receiveCell.config(chatInfo: item, opponentName: opponentName, opponentImageURLString: opponentImageURLString)
+            receiveCell.chattingDetailDelegate = self
             receiveCell.selectionStyle = .none
             receiveCell.backgroundColor = .clear
             return receiveCell
@@ -300,4 +305,13 @@ extension ChattingDetailViewController: UIScrollViewDelegate {
 //            }
 //        }
 //    }
+}
+
+extension ChattingDetailViewController: ChattingDetailDelegate {
+    func tappedImageView(user: User) {
+        let viewController = UserDetailViewController()
+        viewController.viewModel = UserDetailViewModel(user: user, isHome: false)
+        viewController.modalPresentationStyle = .formSheet
+        self.present(viewController, animated: true, completion: nil)
+    }
 }

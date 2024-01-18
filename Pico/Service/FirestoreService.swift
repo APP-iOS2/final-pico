@@ -256,6 +256,40 @@ final class FirestoreService {
         }
     }
     
+    func updateDocumentUnion<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            
+            dbRef.collection(collectionId.name).document(documentId).updateData([
+                field: FieldValue.arrayUnion([data.asDictionary()])
+            ]) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document successfully updateDocumentUnion")
+                }
+            }
+        }
+    }
+    
+    func updateDocumentRemove<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            
+            dbRef.collection(collectionId.name).document(documentId).updateData([
+                field: FieldValue.arrayRemove([data.asDictionary()])
+            ]) { error in
+                if let error = error {
+                    completion(.failure(error))
+                    print("Error updating document: \(error)")
+                } else {
+                    completion(.success(true))
+                    print("Document successfully updateDocumentRemove")
+                }
+            }
+        }
+    }
+    
     func updateDocuments<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         let jsonData = data.asDictionary()
         DispatchQueue.global().async { [weak self] in

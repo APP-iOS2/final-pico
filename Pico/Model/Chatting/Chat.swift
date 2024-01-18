@@ -31,3 +31,17 @@ struct ChatDetail: Codable {
         let isReading: Bool
     }
 }
+
+enum ChatType: String, Codable {
+    case send
+    case receive
+    
+    var imageStyle: String {
+        switch self {
+        case .send:
+            return "myChat"
+        case .receive:
+            return "yourChat"
+        }
+    }
+}

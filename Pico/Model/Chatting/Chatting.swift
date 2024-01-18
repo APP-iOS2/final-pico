@@ -7,6 +7,7 @@
 
 import Foundation
 
+/*
 struct Room: Codable {
     var userId: String
     var room: [RoomInfo]?
@@ -49,3 +50,5 @@ enum ChattingType: String, Codable {
         }
     }
 }
+
+ */

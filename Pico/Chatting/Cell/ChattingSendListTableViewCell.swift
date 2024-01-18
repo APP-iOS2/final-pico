@@ -25,7 +25,7 @@ final class ChattingSendListTableViewCell: UITableViewCell {
     }()
     
     private var backgroundImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: ChattingType.send.imageStyle))
+        let imageView = UIImageView(image: UIImage(named: ChatType.send.imageStyle))
         return imageView
     }()
     

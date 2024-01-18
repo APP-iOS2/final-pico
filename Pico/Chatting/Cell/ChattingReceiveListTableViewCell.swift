@@ -40,7 +40,7 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
     }()
     
     lazy var backgroundImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: ChattingType.receive.imageStyle))
+        let imageView = UIImageView(image: UIImage(named: ChatType.receive.imageStyle))
         return imageView
     }()
     
@@ -52,12 +52,16 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         return label
     }()
     
+    weak var chattingDetailDelegate: ChattingDetailDelegate?
+    private var opponentId: String = ""
+    
     // MARK: - MailCell +LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.contentView.backgroundColor = .clear
         addViews()
         makeConstraints()
+        configGesture()
     }
     
     @available(*, unavailable)
@@ -72,8 +76,36 @@ final class ChattingReceiveListTableViewCell: UITableViewCell {
         dateLabel.text = ""
     }
     
+    private func configGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedImageView))
+        userImageView.addGestureRecognizer(tapGesture)
+        userImageView.isUserInteractionEnabled = true
+    }
+    
+    @objc private func tappedImageView(_ sender: UITapGestureRecognizer) {
+        getUserData { [weak self] user in
+            guard let self else { return }
+            chattingDetailDelegate?.tappedImageView(user: user)
+        }
+    }
+    
+    private func getUserData(completion: @escaping (User) -> ()) {
+        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: opponentId, dataType: User.self) { result in
+            switch result {
+            case .success(let user):
+                if !user.isEmpty {
+                    guard let userData = user[safe: 0] else { break }
+                    completion(userData)
+                }
+            case .failure(let err):
+                print(err)
+            }
+        }
+    }
+   
     // MARK: - MailCell +UI
     func config(chatInfo: ChatDetail.ChatInfo, opponentName: String, opponentImageURLString: String) {
+        opponentId = chatInfo.sendUserId
         nameLabel.text = opponentName
         
         let url = URL(string: opponentImageURLString) ?? URL(string: Defaults.userImageURLString)

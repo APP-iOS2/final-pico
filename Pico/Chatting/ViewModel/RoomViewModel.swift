@@ -87,7 +87,10 @@ final class RoomViewModel {
                 }
             }
         
-        return Output(roomIsEmpty: isRoomEmpty, reloadRoomTableView: reloadRoomTableViewPublisher.asObservable())
+        return Output(
+            roomIsEmpty: isRoomEmpty,
+            reloadRoomTableView: reloadRoomTableViewPublisher.asObservable()
+        )
     }
     
     func loadNextRoomPage() {
@@ -97,7 +100,6 @@ final class RoomViewModel {
         let endIndex = startIndex + itemsPerPage
         
         DispatchQueue.global().async {
-            
             ref.addSnapshotListener { [self] documentSnapshot, error in
                 guard let document = documentSnapshot else {
                     print("Error fetching document: \(error!)")
