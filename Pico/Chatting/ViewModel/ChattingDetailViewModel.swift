@@ -83,10 +83,6 @@ extension ChattingDetailViewModel {
     }
     
     func updateRoomData(roomId: String, receiveUserId: String, chatInfo: ChatDetail.ChatInfo) {
-        let senderRoomData = ChatRoom.RoomInfo(roomId: roomId, opponentId: receiveUserId, lastMessage: chatInfo.message, sendedDate: chatInfo.sendedDate)
-        
-        let receiverRoomData = ChatRoom.RoomInfo(roomId: roomId, opponentId: user.userId, lastMessage: chatInfo.message, sendedDate: chatInfo.sendedDate)
-        
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
             
@@ -96,22 +92,11 @@ extension ChattingDetailViewModel {
                 case .success(let data):
                     guard let data else { return }
                     
-                    let checkRoom = data.roomInfo.firstIndex(where: {$0.roomId == roomId})
-                    var sameRoom: ChatRoom.RoomInfo? {
-                        if checkRoom != nil {
-                            return data.roomInfo[checkRoom ?? 0]
-                        }
-                        return nil
-                    }
+                    var filteredRooms = data.roomInfo.filter({ $0.roomId != roomId })
+                    filteredRooms.append(ChatRoom.RoomInfo(roomId: roomId, opponentId: user.userId, lastMessage: chatInfo.message, sendedDate: chatInfo.sendedDate))
+                    let rooms = ChatRoom(roomInfo: filteredRooms)
                     
-                    if sameRoom != nil {
-                        dbRef.collection(Collections.room.name).document(receiveUserId).updateData([
-                            "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
-                        ])
-                    }
-                    dbRef.collection(Collections.room.name).document(receiveUserId).updateData([
-                        "room": FieldValue.arrayUnion([receiverRoomData.asDictionary()])
-                    ])
+                    FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: receiveUserId, data: rooms)
                     
                 case .failure(let error):
                     print("받는 사람의 룸 불러오기 실패: \(error)")
@@ -119,26 +104,17 @@ extension ChattingDetailViewModel {
             }
             
             FirestoreService.shared.loadDocument(collectionId: .chatRoom, documentId: user.userId, dataType: ChatRoom.self) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
+                
                 switch result {
                 case .success(let data):
                     guard let data else { return }
                     
-                    let checkRoom = data.roomInfo.firstIndex(where: {$0.roomId == roomId})
-                    var sameRoom: ChatRoom.RoomInfo? {
-                        if checkRoom != nil {
-                            return data.roomInfo[checkRoom ?? 0]
-                        }
-                        return nil
-                    }
-                    if sameRoom != nil {
-                        dbRef.collection(Collections.room.name).document(user.userId).updateData([
-                            "room": FieldValue.arrayRemove([sameRoom.asDictionary()])
-                        ])
-                    }
-                    dbRef.collection(Collections.room.name).document(user.userId).updateData([
-                        "room": FieldValue.arrayUnion([senderRoomData.asDictionary()])
-                    ])
+                    var filteredRooms = data.roomInfo.filter({ $0.roomId != roomId })
+                    filteredRooms.append(ChatRoom.RoomInfo(roomId: roomId, opponentId: receiveUserId, lastMessage: chatInfo.message, sendedDate: chatInfo.sendedDate))
+                    let rooms = ChatRoom(roomInfo: filteredRooms)
+                    
+                    FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: user.userId, data: rooms)
                     
                 case .failure(let error):
                     print("자신의 룸 불러오기 실패: \(error)")

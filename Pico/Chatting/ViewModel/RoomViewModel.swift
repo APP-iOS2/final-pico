@@ -97,7 +97,7 @@ final class RoomViewModel {
         let ref = dbRef.collection(Collections.chatRoom.name)
             .document(UserDefaultsManager.shared.getUserData().userId)
         
-        let endIndex = startIndex + itemsPerPage
+//        let endIndex = startIndex + itemsPerPage
         
         DispatchQueue.global().async {
             ref.addSnapshotListener { [self] documentSnapshot, error in
@@ -109,17 +109,21 @@ final class RoomViewModel {
                     let sorted = datas.sorted {
                         return $0.sendedDate > $1.sendedDate
                     }
-                    if startIndex > sorted.count - 1 {
-                        return
-                    }
-                    let currentPageDatas: [ChatRoom.RoomInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                    roomList += currentPageDatas
+                    roomList = sorted
                     
-                    if startIndex == 0 {
-                        reloadRoomTableViewPublisher.onNext(())
+                    DispatchQueue.main.async {
+                        self.reloadRoomTableViewPublisher.onNext(())
                     }
-                    
-                    startIndex += currentPageDatas.count
+//                    if startIndex > sorted.count - 1 {
+//                        return
+//                    }
+//                    let currentPageDatas: [ChatRoom.RoomInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+//                    roomList += currentPageDatas
+//                    
+//                    if startIndex == 0 {
+//                        reloadRoomTableViewPublisher.onNext(())
+//                    }
+//                    startIndex += currentPageDatas.count
                 }
             }
         }

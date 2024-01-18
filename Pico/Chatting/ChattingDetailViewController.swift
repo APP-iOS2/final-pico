@@ -283,29 +283,6 @@ extension ChattingDetailViewController: UITextFieldDelegate {
         self.view.layoutIfNeeded()
     }
 }
-// MARK: - 페이징처리
-extension ChattingDetailViewController: UIScrollViewDelegate {
-//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//        let contentOffsetY = scrollView.contentOffset.y
-//        let tableViewContentSizeY = chattingTableView.contentSize.height
-//        
-//        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height {
-//            
-//            chattingTableView.tableFooterView = footerView
-//            refreshPublisher.onNext(())
-//            
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//                self.chattingTableView.tableFooterView = nil
-//                self.chattingTableView.reloadData()
-//                
-//                if self.chattingsCount > 0 {
-//                    let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
-//                    self.chattingTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
-//                }
-//            }
-//        }
-//    }
-}
 
 extension ChattingDetailViewController: ChattingDetailDelegate {
     func tappedImageView(user: User) {

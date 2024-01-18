@@ -42,8 +42,6 @@ final class RoomTableListController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkRoomEmptyPublisher.onNext(())
-        refreshPublisher.onNext(())
-        roomListTableView.reloadData()
     }
     // MARK: - config
     
@@ -77,10 +75,12 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
         guard let item = viewModel.roomList[safe: indexPath.row] else { return UITableViewCell() }
+        
+        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
         cell.config(roomInfo: item)
         cell.selectionStyle = .none
+        cell.backgroundColor = .clear
         return cell
     }
     
