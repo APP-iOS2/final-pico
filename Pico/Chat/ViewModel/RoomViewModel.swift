@@ -93,26 +93,21 @@ final class RoomViewModel {
     }
     
     func loadNextRoomPage() {
-        let ref = dbRef.collection(Collections.chatRoom.name)
+        dbRef.collection(Collections.chatRoom.name)
             .document(UserDefaultsManager.shared.getUserData().userId)
-        
-        DispatchQueue.global().async {
-            ref.addSnapshotListener { [self] documentSnapshot, error in
+            .addSnapshotListener { (documentSnapshot, error) in
                 guard let document = documentSnapshot else {
                     print("Error fetching document: \(error!)")
                     return
                 }
                 if let datas = try? document.data(as: ChatRoom.self).roomInfo {
-                    let sorted = datas.sorted {
-                        return $0.sendedDate > $1.sendedDate
-                    }
-                    roomList = sorted
+                    let sorted = datas.sorted(by: {$0.sendedDate > $1.sendedDate})
+                    self.roomList = sorted
                     
                     DispatchQueue.main.async {
                         self.reloadRoomTableViewPublisher.onNext(())
                     }
                 }
             }
-        }
     }
 }

@@ -15,7 +15,7 @@ final class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        previousChat()
+//        previousChat()
         configureTabBar()
         addShadowToTabBar()
         UITabBar.appearance().backgroundColor = .secondarySystemBackground

@@ -34,7 +34,6 @@ final class ChatDetailViewModel {
     var doubleCheck: Bool = false
     
     func transform(input: Input) -> Output {
-        
         input.listLoad
             .withUnretained(self)
             .subscribe { viewModel, _ in
@@ -42,7 +41,8 @@ final class ChatDetailViewModel {
             }
             .disposed(by: disposeBag)
         
-        return Output(reloadChatDetailTableView: reloadChatDetailTableViewPublisher.asObservable())
+        return Output(
+            reloadChatDetailTableView: reloadChatDetailTableViewPublisher.asObservable())
     }
     
     func loadChatDetail() {
@@ -145,53 +145,50 @@ extension ChatDetailViewModel {
     }
     
     func saveMatchingChat(receiveUserId: String, message: String, sendedDate: Double = Date().timeIntervalSince1970) {
-        let roomId = UUID().uuidString
+        print("세이브매칭챗")
+        let newRoomId = UUID().uuidString
         
-        DispatchQueue.global().async { [weak self] in
-            guard let self else { return }
-            
-            FirestoreService.shared.loadDocument(collectionId: .users, documentId: receiveUserId, dataType: User.self) { [weak self] result in
-                guard let self else { return }
-                
-                switch result {
-                case .success(let data):
-                    guard let data else { return }
-                    
-                    saveRoomInfo(roomId: roomId, receiveUser: data, message: message, sendedDate: sendedDate)
-                    saveChatInfo(roomId: roomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
-                    
-                case .failure(let error):
-                    print("상대 유저 불러오기 실패: \(error)")
-                }
-            }
-        }
+        saveRoomInfo(roomId: newRoomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
+        saveChatInfo(roomId: newRoomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
     }
     
-    private func saveRoomInfo(roomId: String, receiveUser: User, message: String, sendedDate: Double) {
-        
-        DispatchQueue.global().async { [weak self] in
-            guard let self else { return }
-            
-            var roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: receiveUser.id, opponentNickName: receiveUser.nickName, opponentMbti: receiveUser.mbti, opponentImageURL: receiveUser.imageURLs[0], lastMessage: message, sendedDate: sendedDate)
-            
-            FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: user.userId, fieldId: "roomInfo", data: roomInfo) { result in
-                switch result {
-                case .success(let data):
-                    print("saveRoomInfo saveDocument sendUserId \(data)")
-                case .failure(let err):
-                    print(err)
-                }
+    private func saveRoomInfo(roomId: String, receiveUserId: String, message: String, sendedDate: Double) {
+        dbRef.collection(Collections.users.name).document(receiveUserId).getDocument { (snapshot, error) in
+            if let error = error {
+                print("saveMatchingChat: \(error.localizedDescription)")
+                return
             }
             
-            guard let senderMbti = MBTIType(rawValue: user.mbti) else { return }
-            roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: user.userId, opponentNickName: user.nickName, opponentMbti: senderMbti, opponentImageURL: user.imageURL, lastMessage: message, sendedDate: sendedDate)
-            FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: receiveUser.id, fieldId: "roomInfo", data: roomInfo) { result in
-                switch result {
-                case .success(let data):
-                    print("saveRoomInfo saveDocument receiveUserId \(data)")
-                case .failure(let err):
-                    print(err)
+            if let snapshot = snapshot, snapshot.exists {
+                do {
+                    let receiveUser = try snapshot.data(as: User.self)
+                    
+                        var roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: receiveUser.id, opponentNickName: receiveUser.nickName, opponentMbti: receiveUser.mbti, opponentImageURL: receiveUser.imageURLs[0], lastMessage: message, sendedDate: sendedDate)
+
+                    FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: self.user.userId, fieldId: "roomInfo", data: roomInfo) { result in
+                            switch result {
+                            case .success(let data):
+                                print("saveRoomInfo saveDocument sendUserId \(data)")
+                            case .failure(let err):
+                                print(err)
+                            }
+                        }
+
+                    guard let senderMbti = MBTIType(rawValue: self.user.mbti) else { return }
+                    roomInfo = ChatRoom.RoomInfo(roomId: roomId, opponentId: self.user.userId, opponentNickName: self.user.nickName, opponentMbti: senderMbti, opponentImageURL: self.user.imageURL, lastMessage: message, sendedDate: sendedDate)
+                        FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: receiveUser.id, fieldId: "roomInfo", data: roomInfo) { result in
+                            switch result {
+                            case .success(let data):
+                                print("saveRoomInfo saveDocument receiveUserId \(data)")
+                            case .failure(let err):
+                                print(err)
+                            }
+                        }
+                } catch {
+                    print("saveMatchingChat catch: \(error.localizedDescription)")
                 }
+            } else {
+                print("saveMatchingChat snapshot 존재하지 않음")
             }
         }
     }

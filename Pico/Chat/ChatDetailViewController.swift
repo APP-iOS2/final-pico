@@ -155,16 +155,17 @@ final class ChatDetailViewController: UIViewController {
     }
     
     private func configTableView() {
-        chatDetailTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         chatDetailTableView.register(cell: ChatReceiveListTableViewCell.self)
         chatDetailTableView.register(cell: ChatSendListTableViewCell.self)
-        if #available(iOS 15.0, *) {
-            chatDetailTableView.tableHeaderView = UIView()
-        }
+        chatDetailTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         chatDetailTableView.separatorStyle = .none
         chatDetailTableView.keyboardDismissMode = .onDrag
         chatDetailTableView.dataSource = self
         chatDetailTableView.delegate = self
+        
+        if #available(iOS 15.0, *) {
+            chatDetailTableView.tableHeaderView = UIView()
+        }
     }
     
     private func configRefresh() {
@@ -243,12 +244,12 @@ extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
 // MARK: - Bind
 extension ChatDetailViewController {
     private func bind() {
-        let sendInput = ChatDetailViewModel.Input(
+        let input = ChatDetailViewModel.Input(
             listLoad: loadDataPublsher
         )
-        let sendOutput = viewModel.transform(input: sendInput)
+        let output = viewModel.transform(input: input)
         
-        sendOutput.reloadChatDetailTableView
+        output.reloadChatDetailTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
                 viewController.chatDetailTableView.reloadData()

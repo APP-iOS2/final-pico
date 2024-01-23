@@ -22,13 +22,7 @@ final class RoomTableListController: BaseViewController {
     private let footerView = FooterView()
     private var isRefresh = false
     
-    private let roomListTableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(cell: RoomListTableViewCell.self)
-        tableView.showsVerticalScrollIndicator = false
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
-        return tableView
-    }()
+    private let roomListTableView = UITableView()
     
     // MARK: - MailView +LifeCycle
     override func viewDidLoad() {
@@ -36,6 +30,7 @@ final class RoomTableListController: BaseViewController {
         bind()
         configRefresh()
         configTableView()
+        configRefresh()
         loadDataPublsher.onNext(())
     }
     
@@ -43,12 +38,16 @@ final class RoomTableListController: BaseViewController {
         super.viewWillAppear(animated)
         checkRoomEmptyPublisher.onNext(())
     }
-    // MARK: - config
     
+    // MARK: - config
     private func configTableView() {
-        footerView.frame = CGRect(x: 0, y: 0, width: roomListTableView.bounds.size.width, height: 80)
+        roomListTableView.register(cell: RoomListTableViewCell.self)
+        roomListTableView.showsVerticalScrollIndicator = false
+        roomListTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         roomListTableView.dataSource = self
         roomListTableView.delegate = self
+        
+        footerView.frame = CGRect(x: 0, y: 0, width: roomListTableView.bounds.size.width, height: 80)
     }
     
     private func configRefresh() {
@@ -100,14 +99,12 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
 // MARK: - bind
 extension RoomTableListController {
     private func bind() {
-        
         let input = RoomViewModel.Input(
             listLoad: loadDataPublsher,
             refresh: refreshPublisher,
             isRoomEmptyChecked: checkRoomEmptyPublisher)
         let output = viewModel.transform(input: input)
         
-        let safeArea = view.safeAreaLayoutGuide
         output.roomIsEmpty
             .withUnretained(self)
             .subscribe(onNext: { viewController, isEmpty in
@@ -116,13 +113,13 @@ extension RoomTableListController {
                     viewController.view.addSubview([viewController.emptyView.view ?? UIView()])
                     viewController.emptyView.didMove(toParent: self)
                     viewController.emptyView.view.snp.makeConstraints { make in
-                        make.top.equalTo(safeArea)
+                        make.top.equalTo(viewController.view.safeAreaLayoutGuide)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 } else {
                     viewController.view.addSubview([viewController.roomListTableView])
                     viewController.roomListTableView.snp.makeConstraints { make in
-                        make.top.equalTo(safeArea)
+                        make.top.equalTo(viewController.view.safeAreaLayoutGuide)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 }
@@ -133,27 +130,28 @@ extension RoomTableListController {
             .withUnretained(self)
             .subscribe { viewController, _ in
                 viewController.roomListTableView.reloadData()
-                viewController.checkRoomEmptyPublisher.onNext(())
+                viewController.roomListTableView.scrollToRow(at: IndexPath(row: viewController.viewModel.roomList.count - 1, section: 0), at: .top, animated: false)
             }
             .disposed(by: disposeBag)
     }
 }
+
 // MARK: - Paging
 extension RoomTableListController: UIScrollViewDelegate {
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        let contentOffsetY = scrollView.contentOffset.y
-        let tableViewContentSizeY = roomListTableView.contentSize.height
-        
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
-            roomListTableView.tableFooterView = footerView
-            loadDataPublsher.onNext(())
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                guard let self else { return }
-                
-                roomListTableView.reloadData()
-                roomListTableView.tableFooterView = nil
-            }
-        }
-    }
+//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+//        let contentOffsetY = scrollView.contentOffset.y
+//        let tableViewContentSizeY = roomListTableView.contentSize.height
+//        
+//        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
+//            roomListTableView.tableFooterView = footerView
+//            loadDataPublsher.onNext(())
+//            
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+//                guard let self else { return }
+//                
+//                roomListTableView.reloadData()
+//                roomListTableView.tableFooterView = nil
+//            }
+//        }
+//    }
 }
