@@ -60,7 +60,7 @@ final class ChatDetailViewController: UIViewController {
     private var opponentName: String = ""
     private var opponentImageURLString: String = ""
     
-    var bottomConstraint = NSLayoutConstraint()
+    private var bottomConstraint = NSLayoutConstraint()
     
     init(roomId: String, opponentId: String) {
         self.roomId = roomId
@@ -109,17 +109,17 @@ final class ChatDetailViewController: UIViewController {
         }
         
         sendStack.snp.makeConstraints { make in
-            make.top.equalTo(chatDetailTableView.snp.bottom).offset(10)
-            make.leading.equalTo(safeArea).offset(20)
-            make.trailing.equalTo(safeArea).offset(-20)
+            make.top.equalTo(chatDetailTableView.snp.bottom)
+            make.leading.equalTo(safeArea).offset(15)
+            make.trailing.equalTo(safeArea).offset(-15)
             make.height.equalTo(40)
         }
         
         sendButton.snp.makeConstraints { make in
-            make.width.equalTo(50)
+            make.width.equalTo(30)
         }
         
-        bottomConstraint = sendStack.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10)
+        bottomConstraint = sendStack.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -5)
         view.addConstraint(bottomConstraint)
     }
     
@@ -155,10 +155,9 @@ final class ChatDetailViewController: UIViewController {
     }
     
     private func configTableView() {
-        chatDetailTableView.configBackgroundColor(color: .systemGray6)
         chatDetailTableView.register(cell: ChatReceiveListTableViewCell.self)
         chatDetailTableView.register(cell: ChatSendListTableViewCell.self)
-        chatDetailTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
+        chatDetailTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
         chatDetailTableView.separatorStyle = .none
         chatDetailTableView.keyboardDismissMode = .onDrag
         chatDetailTableView.dataSource = self
@@ -188,7 +187,9 @@ final class ChatDetailViewController: UIViewController {
                 guard let self else { return }
                 
                 sendButton.tappedAnimation()
-                if let text = self.chatTextField.text {
+                if let text = chatTextField.text {
+                    guard !text.isEmpty else { return }
+                    
                     let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
                     
                     viewModel.updateChat(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
@@ -203,12 +204,10 @@ final class ChatDetailViewController: UIViewController {
         isRefresh = true
         refreshPublisher.onNext(())
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self else { return }
-            
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             refresh.endRefreshing()
-            isRefresh = false
-            reloadTableView()
+            self.isRefresh = false
+            self.reloadTableView()
         }
     }
     
@@ -272,29 +271,29 @@ extension ChatDetailViewController {
 
 extension ChatDetailViewController: UITextFieldDelegate {
     
-    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        chatTextField.resignFirstResponder()
-        return false
-    }
-    
     @objc func keyboardWillShow(_ notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            self.bottomConstraint.constant = -keyboardRectangle.height
+            let keyboardHeight = keyboardFrame.cgRectValue.height
+            let scenes = UIApplication.shared.connectedScenes
+            let windowScene = scenes.first as? UIWindowScene
+            let window = windowScene?.windows.first
+            
+            UIView.animate(withDuration: 0.5) {
+                self.bottomConstraint.constant = -(keyboardHeight - (window?.safeAreaInsets.bottom ?? 0)) - 5
+                self.view.layoutIfNeeded()
+            }
         }
         
-        UIView.animate(withDuration: 0) {
-            self.view.layoutIfNeeded()
-        } completion: { _ in
+        UIView.animate(withDuration: 0.5) {} completion: { _ in
             if !self.viewModel.chatInfoArray.isEmpty {
                 let lastindexPath = IndexPath(row: self.viewModel.chatInfoArray.count - 1, section: 0)
-                self.chatDetailTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
+                self.chatDetailTableView.scrollToRow(at: lastindexPath, at: .top, animated: true)
             }
         }
     }
     
     @objc func keyboardWillHide(_ notification: NSNotification) {
-        self.bottomConstraint.constant = -10
+        self.bottomConstraint.constant = -5
         view.addConstraint(self.bottomConstraint)
         self.view.layoutIfNeeded()
     }
