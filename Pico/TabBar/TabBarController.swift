@@ -15,7 +15,7 @@ final class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        previousChat()
+        previousChat()
         configureTabBar()
         addShadowToTabBar()
         UITabBar.appearance().backgroundColor = .secondarySystemBackground
@@ -91,7 +91,7 @@ extension TabBarController {
         let dbRef = Firestore.firestore().collection(Collections.likes.name)
         
         DispatchQueue.global().async {
-            dbRef.document(UserDefaultsManager.shared.getUserData().userId).addSnapshotListener { document, error in
+            dbRef.document(UserDefaultsManager.shared.getUserData().userId).getDocument { document, error in
                 if error != nil { return }
                 
                 if let document {

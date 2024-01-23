@@ -60,7 +60,6 @@ final class RoomTableListController: BaseViewController {
         isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            viewModel.startIndex = 0
             refreshPublisher.onNext(())
             refresh.endRefreshing()
             isRefresh = false
@@ -109,6 +108,7 @@ extension RoomTableListController {
             .withUnretained(self)
             .subscribe(onNext: { viewController, isEmpty in
                 if isEmpty {
+                    viewController.roomListTableView.isHidden = true
                     viewController.addChild(viewController.emptyView)
                     viewController.view.addSubview([viewController.emptyView.view ?? UIView()])
                     viewController.emptyView.didMove(toParent: self)
@@ -117,6 +117,7 @@ extension RoomTableListController {
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 } else {
+                    viewController.roomListTableView.isHidden = false
                     viewController.view.addSubview([viewController.roomListTableView])
                     viewController.roomListTableView.snp.makeConstraints { make in
                         make.top.equalTo(viewController.view.safeAreaLayoutGuide)

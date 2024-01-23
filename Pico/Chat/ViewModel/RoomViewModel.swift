@@ -28,8 +28,6 @@ final class RoomViewModel {
     
     private let dbRef = Firestore.firestore()
     
-    var startIndex = 0
-    
     struct Input {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
@@ -42,11 +40,7 @@ final class RoomViewModel {
     }
     
     private func refresh() {
-        let didSet = isRoomEmptyPublisher
-        isRoomEmptyPublisher = PublishSubject<Bool>()
         roomList = []
-        startIndex = 0
-        isRoomEmptyPublisher = didSet
         loadNextRoomPage()
     }
     
