@@ -120,7 +120,7 @@ final class RoomViewModel {
                 case .success(let data):
                     guard let data else { return }
                     
-                    let filteredRooms = data.roomInfo.filter({ $0.opponentId != roomInfo.opponentId })
+                    let filteredRooms = data.roomInfo.filter({ $0.roomId != roomInfo.roomId })
                     let rooms = ChatRoom(roomInfo: filteredRooms)
                     
                     FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: UserDefaultsManager.shared.getUserData().userId, data: rooms)
