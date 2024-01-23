@@ -56,7 +56,7 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -72,6 +72,10 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageMatchingTableCell.self)
             return cell
         case 2:
+            let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageDefaultTableCell.self)
+            cell.configure(imageName: "envelope", title: "쪽지 보관함")
+            return cell
+        case 3:
             let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: MyPageDefaultTableCell.self)
             cell.configure(imageName: "person", title: "문의하기")
             return cell
@@ -94,8 +98,7 @@ extension MyPageTableView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView()
-        return view
+        return UIView()
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

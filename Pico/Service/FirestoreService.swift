@@ -23,8 +23,8 @@ enum Collections {
     case block
     case adminReport
     case session
-    case chatting
-    case room
+    case chatRoom
+    case chatDetail
     
     var name: String {
         switch self {
@@ -52,10 +52,10 @@ enum Collections {
             return "reports"
         case .session:
             return "session"
-        case .chatting:
-            return "chatting"
-        case .room:
-            return "room"
+        case .chatRoom:
+            return "chatRoom"
+        case .chatDetail:
+            return "chatDetail"
         }
     }
 }
@@ -106,13 +106,15 @@ final class FirestoreService {
     func saveDocument<T: Codable>(collectionId: Collections, documentId: String, fieldId: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.global().async {
             self.dbRef.collection(collectionId.name).document(documentId)
-                .setData([fieldId: FieldValue.arrayUnion([data.asDictionary()])], merge: true) { error in
+                .setData([
+                    fieldId: FieldValue.arrayUnion([data.asDictionary()])
+                ], merge: true) { error in
                     if let error = error {
                         print("Error to save new document at \(collectionId.name) \(documentId) \(error)")
                         completion(.failure(error))
                     } else {
-                        completion(.success(true))
                         print("Success to save new document at \(collectionId.name) \(documentId)")
+                        completion(.success(true))
                     }
                 }
         }
@@ -248,7 +250,41 @@ final class FirestoreService {
         }
     }
     
-    func updataDocuments<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func updateDocumentUnion<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            
+            dbRef.collection(collectionId.name).document(documentId).updateData([
+                field: FieldValue.arrayUnion([data.asDictionary()])
+            ]) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document successfully updateDocumentUnion")
+                }
+            }
+        }
+    }
+    
+    func updateDocumentRemove<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            
+            dbRef.collection(collectionId.name).document(documentId).updateData([
+                field: FieldValue.arrayRemove([data.asDictionary()])
+            ]) { error in
+                if let error = error {
+                    completion(.failure(error))
+                    print("Error updating document: \(error)")
+                } else {
+                    completion(.success(true))
+                    print("Document successfully updateDocumentRemove")
+                }
+            }
+        }
+    }
+    
+    func updateDocuments<T: Codable>(collectionId: Collections, documentId: String, field: String, data: T, completion: @escaping (Result<Bool, Error>) -> Void) {
         let jsonData = data.asDictionary()
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }

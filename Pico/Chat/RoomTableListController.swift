@@ -19,23 +19,11 @@ final class RoomTableListController: BaseViewController {
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkRoomEmptyPublisher = PublishSubject<Void>()
+    private let deletePublisher = PublishSubject<ChatRoom.RoomInfo>()
     private let footerView = FooterView()
     private var isRefresh = false
     
-    private let chattingLabel: UILabel = {
-        let label = UILabel()
-        label.text = "채팅"
-        label.font = UIFont.picoLargeTitleFont
-        return label
-    }()
-    
-    private let roomListTableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.register(cell: RoomListTableViewCell.self)
-        tableView.showsVerticalScrollIndicator = false
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
-        return tableView
-    }()
+    private let roomListTableView = UITableView()
     
     // MARK: - MailView +LifeCycle
     override func viewDidLoad() {
@@ -43,22 +31,24 @@ final class RoomTableListController: BaseViewController {
         bind()
         configRefresh()
         configTableView()
+        configRefresh()
         loadDataPublsher.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.startIndex = 0
-        refreshPublisher.onNext(())
         checkRoomEmptyPublisher.onNext(())
-        roomListTableView.reloadData()
     }
-    // MARK: - config
     
+    // MARK: - config
     private func configTableView() {
-        footerView.frame = CGRect(x: 0, y: 0, width: roomListTableView.bounds.size.width, height: 80)
+        roomListTableView.register(cell: RoomListTableViewCell.self)
+        roomListTableView.showsVerticalScrollIndicator = false
+        roomListTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         roomListTableView.dataSource = self
         roomListTableView.delegate = self
+        
+        footerView.frame = CGRect(x: 0, y: 0, width: roomListTableView.bounds.size.width, height: 80)
     }
     
     private func configRefresh() {
@@ -71,86 +61,83 @@ final class RoomTableListController: BaseViewController {
         isRefresh = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            viewModel.startIndex = 0
             refreshPublisher.onNext(())
             refresh.endRefreshing()
             isRefresh = false
         }
     }
 }
-// MARK: - UIMailTableView
+// MARK: - UIRoomListTableView
 extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.roomList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
         guard let item = viewModel.roomList[safe: indexPath.row] else { return UITableViewCell() }
-        cell.config(receiveUser: item)
+        
+        let cell = tableView.dequeueReusableCell(forIndexPath: indexPath, cellType: RoomListTableViewCell.self)
+        cell.config(roomInfo: item)
         cell.selectionStyle = .none
+        cell.backgroundColor = .clear
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let chattingDetailView = ChattingDetailViewController()
-        let room = viewModel.roomList[safe: indexPath.row]
-        if let room = room {
-            chattingDetailView.opponentId = room.opponentId
-            chattingDetailView.opponentName = viewModel.opponentName
-            chattingDetailView.roomId = room.roomId
-            let chatViewModel = ChattingViewModel()
-            chatViewModel.roomId = room.roomId
-        }
-        chattingDetailView.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(chattingDetailView, animated: true)
+        guard let room = viewModel.roomList[safe: indexPath.row] else { return }
         
+        let chatDetailView = ChatDetailViewController(roomId: room.roomId, opponentId: room.opponentId)
+        chatDetailView.configData(roomInfo: room)
+        chatDetailView.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(chatDetailView, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            showCustomAlert(alertType: .canCancel, titleText: "알림", messageText: "채팅목록에서 삭제하시겠습니까?", confirmButtonText: "삭제", comfrimAction: { [weak self] in
+                guard let self else { return }
+                guard let item = viewModel.roomList[safe: indexPath.row] else { return }
+                viewModel.roomList.remove(at: indexPath.row)
+                deletePublisher.onNext(item)
+            })
+        }
+    }
 }
 // MARK: - bind
 extension RoomTableListController {
     private func bind() {
-        
         let input = RoomViewModel.Input(
             listLoad: loadDataPublsher,
             refresh: refreshPublisher,
-            isRoomEmptyChecked: checkRoomEmptyPublisher)
+            isRoomEmptyChecked: checkRoomEmptyPublisher,
+            deleteRoom: deletePublisher
+        )
         let output = viewModel.transform(input: input)
-        
-        let safeArea = view.safeAreaLayoutGuide
         
         output.roomIsEmpty
             .withUnretained(self)
             .subscribe(onNext: { viewController, isEmpty in
-                
                 if isEmpty {
+                    viewController.roomListTableView.isHidden = true
                     viewController.addChild(viewController.emptyView)
-                    viewController.view.addSubview([self.chattingLabel, viewController.emptyView.view ?? UIView()])
-                    viewController.chattingLabel.snp.makeConstraints { make in
-                        make.top.equalTo(safeArea)
-                        make.trailing.leading.equalTo(safeArea).offset(20)
-                        make.height.equalTo(50)
-                    }
+                    viewController.view.addSubview([viewController.emptyView.view ?? UIView()])
                     viewController.emptyView.didMove(toParent: self)
                     viewController.emptyView.view.snp.makeConstraints { make in
-                        make.top.equalTo(self.chattingLabel.snp.bottom).offset(20)
+                        make.top.equalTo(viewController.view.safeAreaLayoutGuide)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
                 } else {
-                    viewController.view.addSubview([self.chattingLabel, viewController.roomListTableView])
-                    viewController.chattingLabel.snp.makeConstraints { make in
-                        make.top.equalTo(safeArea)
-                        make.trailing.leading.equalTo(safeArea).offset(20)
-                        make.height.equalTo(50)
-                    }
+                    viewController.roomListTableView.isHidden = false
+                    viewController.view.addSubview([viewController.roomListTableView])
                     viewController.roomListTableView.snp.makeConstraints { make in
-                        make.top.equalTo(self.chattingLabel.snp.bottom)
+                        make.top.equalTo(viewController.view.safeAreaLayoutGuide)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
+                    viewController.reloadTableView()
                 }
             })
             .disposed(by: disposeBag)
@@ -158,28 +145,36 @@ extension RoomTableListController {
         output.reloadRoomTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.roomListTableView.reloadData()
-                viewController.checkRoomEmptyPublisher.onNext(())
+                viewController.reloadTableView()
             }
             .disposed(by: disposeBag)
     }
-}
-// MARK: - Paging
-extension RoomTableListController: UIScrollViewDelegate {
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        let contentOffsetY = scrollView.contentOffset.y
-        let tableViewContentSizeY = roomListTableView.contentSize.height
-        
-        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
-            roomListTableView.tableFooterView = footerView
-            loadDataPublsher.onNext(())
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                guard let self else { return }
-                
-                roomListTableView.reloadData()
-                roomListTableView.tableFooterView = nil
-            }
+    
+    private func reloadTableView() {
+        self.roomListTableView.reloadData()
+        if !isRefresh {
+            let topIndexPath = IndexPath(row: 0, section: 0)
+            self.roomListTableView.scrollToRow(at: topIndexPath, at: .top, animated: true)
         }
     }
+}
+
+// MARK: - Paging
+extension RoomTableListController: UIScrollViewDelegate {
+//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+//        let contentOffsetY = scrollView.contentOffset.y
+//        let tableViewContentSizeY = roomListTableView.contentSize.height
+//        
+//        if contentOffsetY > tableViewContentSizeY - scrollView.frame.size.height && !isRefresh {
+//            roomListTableView.tableFooterView = footerView
+//            loadDataPublsher.onNext(())
+//            
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+//                guard let self else { return }
+//                
+//                roomListTableView.reloadData()
+//                roomListTableView.tableFooterView = nil
+//            }
+//        }
+//    }
 }

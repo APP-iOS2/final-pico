@@ -100,19 +100,23 @@ final class UserDetailViewController: UIViewController {
                     navigationController?.popViewController(animated: false)
                 } else {
                     if currentUser.userId.prefix(4) != "test" {
-                        viewModel.checkYouLikeMe(viewModel.user.id, currentUser.userId) { result in
-                            if result {
-                                self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .matching)
-                                self.viewModel.updateMatcingData(self.viewModel.user.id)
-                                self.viewModel.notificationServiceForPartner(.matching, .matching, user: self.viewModel.user, currentUser: self.currentUser)
-                                self.viewModel.notificationServiceForMe(.matching, .matching, user: self.viewModel.user, currentUser: self.currentUser)
+                        viewModel.checkYouLikeMe(viewModel.user.id, currentUser.userId) { [weak self] result in
+                            guard let self else { return }
+                            if result == .like {
+                                let chatModel = ChatDetailViewModel()
+                                chatModel.saveMatchingChat(receiveUserId: self.viewModel.user.id, message: "서로 매칭되었습니다")                                
+                                viewModel.saveLikeData(receiveUserInfo: viewModel.user, likeType: .matching)
+                                viewModel.updateMatcingData(viewModel.user.id)
+                                viewModel.notificationServiceForPartner(.matching, .matching, user: viewModel.user, currentUser: currentUser)
+                                viewModel.notificationServiceForMe(.matching, .matching, user: viewModel.user, currentUser: currentUser)
+                            } else if result == .matching {
+                                showCustomAlert(alertType: .onlyConfirm, titleText: "이미 매칭된 상대입니다.", messageText: "", confirmButtonText: "확인")
                             } else {
-                                self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .like)
-                                self.viewModel.notificationServiceForPartner(.like, .like, user: self.viewModel.user, currentUser: self.currentUser)
+                                viewModel.saveLikeData(receiveUserInfo: viewModel.user, likeType: .like)
+                                viewModel.notificationServiceForPartner(.like, .like, user: viewModel.user, currentUser: currentUser)
                             }
                         }
                     }
-                    self.viewModel.saveLikeData(receiveUserInfo: self.viewModel.user, likeType: .like)
                     let viewController = HomeViewController()
                     navigationController?.pushViewController(viewController, animated: true)
                 }

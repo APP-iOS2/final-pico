@@ -12,7 +12,7 @@ import FirebaseFirestore
 
 final class RoomViewModel {
     
-    private(set) var roomList: [Room.RoomInfo] = [] {
+    var roomList: [ChatRoom.RoomInfo] = [] {
         didSet {
             if roomList.isEmpty {
                 isRoomEmptyPublisher.onNext(true)
@@ -28,14 +28,11 @@ final class RoomViewModel {
     
     private let dbRef = Firestore.firestore()
     
-    private var itemsPerPage: Int = Int(Screen.height * 1.5 / 60)
-    var startIndex = 0
-    var opponentName = ""
-    
     struct Input {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
         let isRoomEmptyChecked: Observable<Void>
+        let deleteRoom: Observable<ChatRoom.RoomInfo>
     }
     
     struct Output {
@@ -44,11 +41,7 @@ final class RoomViewModel {
     }
     
     private func refresh() {
-        let didSet = isRoomEmptyPublisher
-        isRoomEmptyPublisher = PublishSubject<Bool>()
         roomList = []
-        startIndex = 0
-        isRoomEmptyPublisher = didSet
         loadNextRoomPage()
     }
     
@@ -88,42 +81,52 @@ final class RoomViewModel {
                 }
             }
         
-        return Output(roomIsEmpty: isRoomEmpty, reloadRoomTableView: reloadRoomTableViewPublisher.asObservable())
+        input.deleteRoom
+            .withUnretained(self)
+            .subscribe { viewModel, roomInfo in
+                viewModel.deleteRoom(roomInfo: roomInfo)
+            }
+            .disposed(by: disposeBag)
+        
+        return Output(
+            roomIsEmpty: isRoomEmpty,
+            reloadRoomTableView: reloadRoomTableViewPublisher.asObservable()
+        )
     }
     
     func loadNextRoomPage() {
-        let ref = dbRef.collection(Collections.room.name)
+        dbRef.collection(Collections.chatRoom.name)
             .document(UserDefaultsManager.shared.getUserData().userId)
-        
-        let endIndex = startIndex + itemsPerPage
-        
-        DispatchQueue.global().async {
-            ref.getDocument { [weak self] document, error in
-                guard let self = self else { return }
-                if let error = error {
-                    print(error)
+            .addSnapshotListener { (documentSnapshot, error) in
+                guard let document = documentSnapshot else {
+                    print("Error fetching document: \(error!)")
                     return
                 }
-                
-                if let document = document, document.exists {
-                    if let datas = try? document.data(as: Room.self).room {
-                        let sorted = datas.sorted {
-                            return $0.sendedDate > $1.sendedDate
-                        }
-                        if startIndex > sorted.count - 1 {
-                            return
-                        }
-                        let currentPageDatas: [Room.RoomInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
-                        roomList += currentPageDatas
-                        
-                        if startIndex == 0 {
-                            reloadRoomTableViewPublisher.onNext(())
-                        }
-                        
-                        startIndex += currentPageDatas.count
+                if let datas = try? document.data(as: ChatRoom.self).roomInfo {
+                    let sorted = datas.sorted(by: {$0.sendedDate > $1.sendedDate})
+                    self.roomList = sorted
+                    
+                    DispatchQueue.main.async {
+                        self.reloadRoomTableViewPublisher.onNext(())
                     }
-                } else {
-                    print("받은 문서를 찾을 수 없습니다.")
+                }
+            }
+    }
+    
+    private func deleteRoom(roomInfo: ChatRoom.RoomInfo) {
+        DispatchQueue.global().async {            
+            FirestoreService.shared.loadDocument(collectionId: .chatRoom, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: ChatRoom.self) { result in
+                switch result {
+                case .success(let data):
+                    guard let data else { return }
+                    
+                    let filteredRooms = data.roomInfo.filter({ $0.opponentId != roomInfo.opponentId })
+                    let rooms = ChatRoom(roomInfo: filteredRooms)
+                    
+                    FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: UserDefaultsManager.shared.getUserData().userId, data: rooms)
+                    
+                case .failure(let error):
+                    print("받는 사람의 룸 불러오기 실패: \(error)")
                 }
             }
         }

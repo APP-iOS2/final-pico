@@ -101,41 +101,19 @@ final class RoomListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(receiveUser: Room.RoomInfo) {
-        
-        let userId: String = receiveUser.opponentId
-        
-        FirestoreService.shared.searchDocumentWithEqualField(collectionId: .users, field: "id", compareWith: userId, dataType: User.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let user):
-                if !user.isEmpty {
-                    guard let userData = user[safe: 0] else { break }
-                    nameLabel.text = userData.nickName
-                    viewModel.opponentName = userData.nickName
-                    print(viewModel.opponentName)
-                    mbtiLabelView.isHidden = false
-                    mbtiLabelView.setMbti(mbti: userData.mbti)
-                    guard let imageURL = userData.imageURLs[safe: 0] else { return }
-                    guard let url = URL(string: imageURL) else { return }
-                    userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
-                    userImageView.kf.setImage(with: url)
-                } else {
-                    userImageView.image = UIImage(named: "AppIcon_gray")
-                    nameLabel.text = "탈퇴된 회원"
-                    mbtiLabelView.isHidden = true
-                    mbtiLabelView.setMbti(mbti: nil)
-                }
-            case .failure(let err):
-                print(err)
-            }
-        }
+    func config(roomInfo: ChatRoom.RoomInfo) {
         
         nameLabel.sizeToFit()
-        self.messageLabel.text = receiveUser.lastMessage
+        nameLabel.text = roomInfo.opponentNickName
+        mbtiLabelView.isHidden = false
+        mbtiLabelView.setMbti(mbti: roomInfo.opponentMbti)
         
-        let date = receiveUser.sendedDate.timeAgoSinceDate()
-        self.dateLabel.text = date
+        let url = URL(string: roomInfo.opponentImageURL) ?? URL(string: Defaults.userImageURLString)
+        userImageView.kf.indicatorType = .custom(indicator: CustomIndicator(cycleSize: .small))
+        userImageView.kf.setImage(with: url)
+
+        messageLabel.text = roomInfo.lastMessage
+        dateLabel.text = roomInfo.sendedDate.timeAgoSinceDate()
     }
     
     private func addViews() {

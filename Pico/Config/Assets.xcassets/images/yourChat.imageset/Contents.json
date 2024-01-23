@@ -1,14 +1,14 @@
 {
   "images" : [
     {
-      "filename" : "message_gray.png",
+      "filename" : "receive1.png",
       "idiom" : "universal",
       "resizing" : {
         "cap-insets" : {
-          "bottom" : 4,
-          "left" : 10,
-          "right" : 3,
-          "top" : 7
+          "bottom" : 2,
+          "left" : 6,
+          "right" : 1,
+          "top" : 5
         },
         "center" : {
           "height" : 1,
@@ -20,14 +20,14 @@
       "scale" : "1x"
     },
     {
-      "filename" : "message_gray@2x.png",
+      "filename" : "receive2.png",
       "idiom" : "universal",
       "resizing" : {
         "cap-insets" : {
-          "bottom" : 5,
-          "left" : 18,
-          "right" : 5,
-          "top" : 11
+          "bottom" : 3,
+          "left" : 13,
+          "right" : 2,
+          "top" : 10
         },
         "center" : {
           "height" : 1,
@@ -39,13 +39,13 @@
       "scale" : "2x"
     },
     {
-      "filename" : "message_gray@3x.png",
+      "filename" : "receive3.png",
       "idiom" : "universal",
       "resizing" : {
         "cap-insets" : {
-          "bottom" : 8,
-          "left" : 27,
-          "right" : 8,
+          "bottom" : 4,
+          "left" : 23,
+          "right" : 4,
           "top" : 15
         },
         "center" : {

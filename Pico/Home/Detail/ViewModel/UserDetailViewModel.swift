@@ -48,27 +48,32 @@ final class UserDetailViewModel {
         FirestoreService.shared.saveDocument(collectionId: .notifications, data: noti)
     }
     
-    func checkYouLikeMe(_ partnerId: String, _ myId: String, completion: @escaping (Bool) -> Void) {
-        var result = false
+    func checkYouLikeMe(_ partnerId: String, _ myId: String, completion: @escaping (Like.LikeType?) -> Void) {
+        var result: Like.LikeType = .dislike
         let dbRef = Firestore.firestore().collection("likes")
         
         DispatchQueue.global().async {
             dbRef.document(partnerId).getDocument { [self] (document, error) in
                 if let error = error {
                     print("Error getting document: \(error)")
-                    completion(false)
+                    completion(nil)
                 } else if let document = document, document.exists {
                     if let data = try? document.data(as: Like.self), let sendedLikes = data.sendedlikes {
                         let sendedLikesData: [Like.LikeInfo] = sendedLikes
                         for data in sendedLikesData where data.likedUserId == myId {
                             partnerSendedLikeData = data
-                            result = true
+                            if data.likeType == .like {
+                                result = .like
+                            }
+                            if data.likeType == .matching {
+                                result = .matching
+                            }
                         }
                     }
                     completion(result)
                 } else {
                     print("해당 문서가 존재하지 않습니다.")
-                    completion(false)
+                    completion(nil)
                 }
             }
         }
@@ -268,14 +273,26 @@ final class UserDetailViewModel {
                         print("평가 업데이트 에러: \(error)")
                     }
                 }
-            docRef.document(receiveUserInfo.id).setData(
-                [
-                    "userId": receiveUserInfo.id,
-                    recivedlikesUpdateFiled: FieldValue.arrayUnion([myInfoDic])
-                ], merge: true) { error in
-                    if let error = error {
-                        print("평가 업데이트 에러: \(error)")
+            if likeType == .matching {
+                docRef.document(receiveUserInfo.id).setData(
+                    [
+                        "userId": receiveUserInfo.id,
+                        sendedlikesUpdateFiled: FieldValue.arrayUnion([myInfoDic])
+                    ], merge: true) { error in
+                        if let error = error {
+                            print("평가 업데이트 에러: \(error)")
+                        }
                     }
-                }
+            } else {
+                docRef.document(receiveUserInfo.id).setData(
+                    [
+                        "userId": receiveUserInfo.id,
+                        recivedlikesUpdateFiled: FieldValue.arrayUnion([myInfoDic])
+                    ], merge: true) { error in
+                        if let error = error {
+                            print("평가 업데이트 에러: \(error)")
+                        }
+                    }
+            }
         }
     }
