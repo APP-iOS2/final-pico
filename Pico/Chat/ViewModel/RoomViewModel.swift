@@ -12,7 +12,7 @@ import FirebaseFirestore
 
 final class RoomViewModel {
     
-    private(set) var roomList: [ChatRoom.RoomInfo] = [] {
+    var roomList: [ChatRoom.RoomInfo] = [] {
         didSet {
             if roomList.isEmpty {
                 isRoomEmptyPublisher.onNext(true)
@@ -32,6 +32,7 @@ final class RoomViewModel {
         let listLoad: Observable<Void>
         let refresh: Observable<Void>
         let isRoomEmptyChecked: Observable<Void>
+        let deleteRoom: Observable<ChatRoom.RoomInfo>
     }
     
     struct Output {
@@ -80,6 +81,13 @@ final class RoomViewModel {
                 }
             }
         
+        input.deleteRoom
+            .withUnretained(self)
+            .subscribe { viewModel, roomInfo in
+                viewModel.deleteRoom(roomInfo: roomInfo)
+            }
+            .disposed(by: disposeBag)
+        
         return Output(
             roomIsEmpty: isRoomEmpty,
             reloadRoomTableView: reloadRoomTableViewPublisher.asObservable()
@@ -103,5 +111,24 @@ final class RoomViewModel {
                     }
                 }
             }
+    }
+    
+    private func deleteRoom(roomInfo: ChatRoom.RoomInfo) {
+        DispatchQueue.global().async {            
+            FirestoreService.shared.loadDocument(collectionId: .chatRoom, documentId: UserDefaultsManager.shared.getUserData().userId, dataType: ChatRoom.self) { result in
+                switch result {
+                case .success(let data):
+                    guard let data else { return }
+                    
+                    let filteredRooms = data.roomInfo.filter({ $0.opponentId != roomInfo.opponentId })
+                    let rooms = ChatRoom(roomInfo: filteredRooms)
+                    
+                    FirestoreService.shared.saveDocument(collectionId: .chatRoom, documentId: UserDefaultsManager.shared.getUserData().userId, data: rooms)
+                    
+                case .failure(let error):
+                    print("받는 사람의 룸 불러오기 실패: \(error)")
+                }
+            }
+        }
     }
 }

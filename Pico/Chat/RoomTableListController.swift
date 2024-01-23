@@ -19,6 +19,7 @@ final class RoomTableListController: BaseViewController {
     private let refreshPublisher = PublishSubject<Void>()
     private let loadDataPublsher = PublishSubject<Void>()
     private let checkRoomEmptyPublisher = PublishSubject<Void>()
+    private let deletePublisher = PublishSubject<ChatRoom.RoomInfo>()
     private let footerView = FooterView()
     private var isRefresh = false
     
@@ -94,6 +95,17 @@ extension RoomTableListController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            showCustomAlert(alertType: .canCancel, titleText: "알림", messageText: "채팅목록에서 삭제하시겠습니까?", confirmButtonText: "삭제", comfrimAction: { [weak self] in
+                guard let self else { return }
+                guard let item = viewModel.roomList[safe: indexPath.row] else { return }
+                viewModel.roomList.remove(at: indexPath.row)
+                deletePublisher.onNext(item)
+            })
+        }
+    }
 }
 // MARK: - bind
 extension RoomTableListController {
@@ -101,7 +113,9 @@ extension RoomTableListController {
         let input = RoomViewModel.Input(
             listLoad: loadDataPublsher,
             refresh: refreshPublisher,
-            isRoomEmptyChecked: checkRoomEmptyPublisher)
+            isRoomEmptyChecked: checkRoomEmptyPublisher,
+            deleteRoom: deletePublisher
+        )
         let output = viewModel.transform(input: input)
         
         output.roomIsEmpty

@@ -145,7 +145,6 @@ extension ChatDetailViewModel {
     }
     
     func saveMatchingChat(receiveUserId: String, message: String, sendedDate: Double = Date().timeIntervalSince1970) {
-        print("세이브매칭챗")
         let newRoomId = UUID().uuidString
         
         saveRoomInfo(roomId: newRoomId, receiveUserId: receiveUserId, message: message, sendedDate: sendedDate)
