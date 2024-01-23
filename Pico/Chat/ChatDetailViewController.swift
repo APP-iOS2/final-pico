@@ -185,19 +185,21 @@ final class ChatDetailViewController: UIViewController {
         sendButton.rx.tap
             .bind { [weak self] _ in
                 guard let self else { return }
-                
-                sendButton.tappedAnimation()
-                if let text = chatTextField.text {
-                    guard !text.isEmpty else { return }
-                    
-                    let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
-                    
-                    viewModel.updateChat(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
-
-                    chatTextField.text = ""
-                }
+                tappedSendButton()
             }
             .disposed(by: disposeBag)
+    }
+    
+    private func tappedSendButton() {
+        sendButton.tappedAnimation()
+        if let text = chatTextField.text {
+            guard !text.isEmpty else { return }
+            
+            let chatInfo = ChatDetail.ChatInfo(sendUserId: UserDefaultsManager.shared.getUserData().userId, message: text, sendedDate: Date().timeIntervalSince1970, isReading: false)
+            
+            viewModel.updateChat(roomId: roomId, receiveUserId: opponentId, chatInfo: chatInfo)
+            chatTextField.text = ""
+        }
     }
     
     @objc func refreshTable(refresh: UIRefreshControl) {
@@ -270,6 +272,11 @@ extension ChatDetailViewController {
 }
 
 extension ChatDetailViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        tappedSendButton()
+        return true
+    }
     
     @objc func keyboardWillShow(_ notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
