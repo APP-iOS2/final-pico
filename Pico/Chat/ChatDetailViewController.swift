@@ -33,6 +33,8 @@ final class ChatDetailViewController: UIViewController {
         textField.layer.borderColor = UIColor.picoFontGray.cgColor
         textField.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 12.0, height: 0.0))
         textField.leftViewMode = .always
+        textField.autocorrectionType = .default
+        textField.spellCheckingType = .default
         return textField
     }()
     
@@ -58,7 +60,6 @@ final class ChatDetailViewController: UIViewController {
     private var opponentName: String = ""
     private var opponentImageURLString: String = ""
     
-    var chattingsCount: Int = 0
     var bottomConstraint = NSLayoutConstraint()
     
     init(roomId: String, opponentId: String) {
@@ -92,7 +93,7 @@ final class ChatDetailViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        chatDetailTableView.reloadData()
+        reloadTableView()
     }
     
     private func addViews() {
@@ -108,7 +109,7 @@ final class ChatDetailViewController: UIViewController {
         }
         
         sendStack.snp.makeConstraints { make in
-            make.top.equalTo(chatDetailTableView.snp.bottom)
+            make.top.equalTo(chatDetailTableView.snp.bottom).offset(10)
             make.leading.equalTo(safeArea).offset(20)
             make.trailing.equalTo(safeArea).offset(-20)
             make.height.equalTo(40)
@@ -143,7 +144,6 @@ final class ChatDetailViewController: UIViewController {
     
     private func configViewController() {
         view.configBackgroundColor()
-        view.tappedDismissKeyboard()
         navigationItem.titleView?.tintColor = .picoAlphaBlue
         tabBarController?.tabBar.isHidden = true
     }
@@ -155,6 +155,7 @@ final class ChatDetailViewController: UIViewController {
     }
     
     private func configTableView() {
+        chatDetailTableView.configBackgroundColor(color: .systemGray6)
         chatDetailTableView.register(cell: ChatReceiveListTableViewCell.self)
         chatDetailTableView.register(cell: ChatSendListTableViewCell.self)
         chatDetailTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
@@ -166,6 +167,13 @@ final class ChatDetailViewController: UIViewController {
         if #available(iOS 15.0, *) {
             chatDetailTableView.tableHeaderView = UIView()
         }
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedChatTableView))
+        chatDetailTableView.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func tappedChatTableView() {
+        chatTextField.resignFirstResponder()
     }
     
     private func configRefresh() {
@@ -200,7 +208,7 @@ final class ChatDetailViewController: UIViewController {
             
             refresh.endRefreshing()
             isRefresh = false
-            chatDetailTableView.reloadData()
+            reloadTableView()
         }
     }
     
@@ -212,8 +220,7 @@ final class ChatDetailViewController: UIViewController {
 // MARK: - TableView
 extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        chattingsCount = viewModel.chatInfoArray.count
-        return chattingsCount
+        return viewModel.chatInfoArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -252,10 +259,14 @@ extension ChatDetailViewController {
         output.reloadChatDetailTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.chatDetailTableView.reloadData()
-                viewController.chatDetailTableView.scrollToRow(at: IndexPath(row: viewController.viewModel.chatInfoArray.count - 1, section: 0), at: .top, animated: false)
+                viewController.reloadTableView()
             }
             .disposed(by: disposeBag)
+    }
+    
+    private func reloadTableView() {
+        chatDetailTableView.reloadData()
+        chatDetailTableView.scrollToRow(at: IndexPath(row: viewModel.chatInfoArray.count - 1, section: 0), at: .top, animated: false)
     }
 }
 
@@ -275,8 +286,8 @@ extension ChatDetailViewController: UITextFieldDelegate {
         UIView.animate(withDuration: 0) {
             self.view.layoutIfNeeded()
         } completion: { _ in
-            if self.chattingsCount > 0 {
-                let lastindexPath = IndexPath(row: self.chattingsCount - 1, section: 0)
+            if !self.viewModel.chatInfoArray.isEmpty {
+                let lastindexPath = IndexPath(row: self.viewModel.chatInfoArray.count - 1, section: 0)
                 self.chatDetailTableView.scrollToRow(at: lastindexPath, at: .top, animated: false)
             }
         }

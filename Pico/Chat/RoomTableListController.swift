@@ -123,6 +123,7 @@ extension RoomTableListController {
                         make.top.equalTo(viewController.view.safeAreaLayoutGuide)
                         make.leading.trailing.bottom.equalToSuperview()
                     }
+                    viewController.reloadTableView()
                 }
             })
             .disposed(by: disposeBag)
@@ -130,10 +131,17 @@ extension RoomTableListController {
         output.reloadRoomTableView
             .withUnretained(self)
             .subscribe { viewController, _ in
-                viewController.roomListTableView.reloadData()
-                viewController.roomListTableView.scrollToRow(at: IndexPath(row: viewController.viewModel.roomList.count - 1, section: 0), at: .top, animated: false)
+                viewController.reloadTableView()
             }
             .disposed(by: disposeBag)
+    }
+    
+    private func reloadTableView() {
+        self.roomListTableView.reloadData()
+        if !isRefresh {
+            let topIndexPath = IndexPath(row: 0, section: 0)
+            self.roomListTableView.scrollToRow(at: topIndexPath, at: .top, animated: true)
+        }
     }
 }
 

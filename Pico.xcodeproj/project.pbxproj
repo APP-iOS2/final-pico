@@ -201,6 +201,8 @@
 		B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */ = {isa = PBXBuildFile; fileRef = B1A0C0092AE4ADEF0031AC65 /* randomBox.json */; };
 		B1A4C85D2B580572004D9D4A /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A4C85C2B580572004D9D4A /* Chat.swift */; };
 		B1A4C85F2B58417E004D9D4A /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A4C85E2B58417E004D9D4A /* Defaults.swift */; };
+		B1CB94302B5F761F002004C1 /* FirebaseAPIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = B1CB942E2B5F761E002004C1 /* FirebaseAPIKeys.plist */; };
+		B1CB94312B5F761F002004C1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B1CB942F2B5F761F002004C1 /* GoogleService-Info.plist */; };
 		B1E30BDD2AD5E21A00F95C66 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BDC2AD5E21A00F95C66 /* ViewModelType.swift */; };
 		B1E30BE02AD5E7B500F95C66 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B1E30BDF2AD5E7B500F95C66 /* Kingfisher */; };
 		B1E30BEB2AD5EE3300F95C66 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */; };
@@ -426,6 +428,8 @@
 		B1A0C0092AE4ADEF0031AC65 /* randomBox.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = randomBox.json; sourceTree = "<group>"; };
 		B1A4C85C2B580572004D9D4A /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		B1A4C85E2B58417E004D9D4A /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
+		B1CB942E2B5F761E002004C1 /* FirebaseAPIKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FirebaseAPIKeys.plist; sourceTree = "<group>"; };
+		B1CB942F2B5F761F002004C1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B1E30BDC2AD5E21A00F95C66 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
 		B1E30BEA2AD5EE3300F95C66 /* SignUpViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		B1E30BEC2AD5EE8400F95C66 /* HomeUserCardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeUserCardViewController.swift; sourceTree = "<group>"; };
@@ -813,6 +817,8 @@
 				B14B58D22AC0A232009889DA /* Assets.xcassets */,
 				B14B58C92AC0A230009889DA /* AppDelegate.swift */,
 				B14B58CB2AC0A230009889DA /* SceneDelegate.swift */,
+				B1CB942E2B5F761E002004C1 /* FirebaseAPIKeys.plist */,
+				B1CB942F2B5F761F002004C1 /* GoogleService-Info.plist */,
 				B14B58D42AC0A232009889DA /* LaunchScreen.storyboard */,
 			);
 			path = Config;
@@ -1391,9 +1397,11 @@
 				B1844F762AC0D78000ACFFED /* .swiftlint.yml in Resources */,
 				BCD6253B2AE5B5940079BD28 /* HomeEmptyLottie.json in Resources */,
 				B14B58D62AC0A232009889DA /* LaunchScreen.storyboard in Resources */,
+				B1CB94312B5F761F002004C1 /* GoogleService-Info.plist in Resources */,
 				B1A0C00A2AE4ADEF0031AC65 /* randomBox.json in Resources */,
 				B14B58D32AC0A232009889DA /* Assets.xcassets in Resources */,
 				B15383E42AE770810037DBBA /* worldcupAnimation.json in Resources */,
+				B1CB94302B5F761F002004C1 /* FirebaseAPIKeys.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1811,7 +1819,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pico/Pico.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = C39BYRTABZ;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pico/Config/Info.plist;
