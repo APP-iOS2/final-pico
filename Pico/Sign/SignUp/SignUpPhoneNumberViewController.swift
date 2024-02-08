@@ -11,7 +11,6 @@ import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardService()
-    private let smsAuthManager: SMSAuthService = SMSAuthService()
     let viewModel: SignUpViewModel
     private var cooldownTimer: Timer?
     private var cooldownSeconds = 180
@@ -270,7 +269,7 @@ extension SignUpPhoneNumberViewController {
     }
     
     private func alertSendNumber(phoneNumber: String, isRight: Bool) {
-        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "가입하신 이메일로 인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             
             cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
