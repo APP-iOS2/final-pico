@@ -52,7 +52,7 @@ class WorldCupResultViewModel: ViewModelType {
     private func requestMessage(resultUser: User) -> Observable<Void> {
         return Observable.create { [weak self] emitter in
             guard let self = self else { return Disposables.create() }
-            let newMail = Mail.MailInfo(sendedUserId: resultUser.id, receivedUserId: currentUser.userId, mailType: .receive, message: "월드컵 우승자에게 메일을 보내보세요!", sendedDate: Date().timeIntervalSince1970, isReading: false)
+            let newMail = DirectMail.MailInfo(sendedUserId: resultUser.id, receivedUserId: currentUser.userId, mailType: .receive, message: "월드컵 우승자에게 메일을 보내보세요!", sendedDate: Date().timeIntervalSince1970, isReading: false)
             dbRef.collection(Collections.mail.name).document(currentUser.userId).setData(
                 [
                     "userId": currentUser.userId,

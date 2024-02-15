@@ -11,7 +11,6 @@ import RxSwift
 import RxCocoa
 
 final class SignInViewController: UIViewController {
-    private let authManager = SMSAuthService()
     private let keyboardManager = KeyboardService()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
@@ -176,7 +175,7 @@ extension SignInViewController {
                     return
                 }
                 
-                viewModel.signIn(userNumber: phoneNumber) { [weak self] _, message in
+                viewModel.signIn(userNumber: phoneNumber) { [weak self] user, message in
                     guard let self = self else { return }
                     
                     guard viewModel.isRightUser else {
@@ -228,12 +227,23 @@ extension SignInViewController {
                     Loading.hideLoading()
                     showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
+                        guard let user = user else { return }
                         
                         cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
                         RunLoop.main.add(cooldownTimer!, forMode: .common)
                         
                         configTappedAuthButtonState()
-                        authManager.sendVerificationCode(phoneNumber: phoneNumber)
+                        if let email = user.email {
+                            EmailAuthService.shared.sendVerificationCode(phoneNumber: user.phoneNumber, email: email) { result in
+                                if !result {
+                                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "메일 전송에 실패하셨습니다.", confirmButtonText: "확인")
+                                }
+                            }
+                        } else {
+                            self.showCustomAlert(alertType: .canCancel, titleText: "알림", messageText: "이메일이 등록되어있지 않습니다. 이메일 등록을 해주세요", confirmButtonText: "등록하기", comfrimAction: {
+                                print("이메일 등록하러 가기")
+                            })
+                        }
                     })
                 }
             })
@@ -257,7 +267,7 @@ extension SignInViewController {
                 view.endEditing(true)
                 configAuthText()
                 
-                guard authManager.checkRightCode(code: authText) else {
+                guard EmailAuthService.shared.checkRandomNumber(number: authText) else {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
                     return
                 }

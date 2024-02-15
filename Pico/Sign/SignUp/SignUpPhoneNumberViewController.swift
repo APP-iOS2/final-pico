@@ -277,7 +277,8 @@ extension SignUpPhoneNumberViewController {
             
             updateViewState(num: phoneNumber)
             viewModel.isRightPhoneNumber = isRight
-            smsAuthManager.sendVerificationCode(phoneNumber: phoneNumber)
+            print("인증번호확인절차")
+//            smsAuthManager.sendVerificationCode(phoneNumber: phoneNumber)
         })
     }
     
@@ -285,10 +286,11 @@ extension SignUpPhoneNumberViewController {
         view.endEditing(true)
         sender.tappedAnimation()
         configAuthText()
-        guard smsAuthManager.checkRightCode(code: authText) else {
-            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
-            return
-        }
+        print("인증번호확인절차")
+//        guard smsAuthManager.checkRightCode(code: authText) else {
+//            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
+//            return
+//        }
         showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             

@@ -13,7 +13,7 @@ final class MailListTableViewCell: UITableViewCell {
     
     private let disposeBag = DisposeBag()
     
-    private var mailInfo: Mail.MailInfo?
+    private var mailInfo: DirectMail.MailInfo?
     
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
@@ -102,7 +102,7 @@ final class MailListTableViewCell: UITableViewCell {
     }
     
     // MARK: - MailCell +UI
-    func config(senderUser: Mail.MailInfo, type: MailType) {
+    func config(senderUser: DirectMail.MailInfo, type: MailType) {
         self.mailInfo = senderUser
         var userId: String
         if type == .receive {

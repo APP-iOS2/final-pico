@@ -173,7 +173,7 @@
 		B17D67902AC0AC15006F91DC /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D678F2AC0AC15006F91DC /* Block.swift */; };
 		B17D67922AC0ACDF006F91DC /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67912AC0ACDF006F91DC /* Notification.swift */; };
 		B17D67942AC0AD45006F91DC /* Like.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67932AC0AD45006F91DC /* Like.swift */; };
-		B17D67962AC0AE11006F91DC /* Mail.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67952AC0AE11006F91DC /* Mail.swift */; };
+		B17D67962AC0AE11006F91DC /* DirectMail.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67952AC0AE11006F91DC /* DirectMail.swift */; };
 		B17D67982AC0AEE0006F91DC /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67972AC0AEE0006F91DC /* Payment.swift */; };
 		B17D679F2AC0B116006F91DC /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D679E2AC0B116006F91DC /* UserDefaultsManager.swift */; };
 		B17D67A12AC0B1FA006F91DC /* Encodable+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17D67A02AC0B1FA006F91DC /* Encodable+Extensions.swift */; };
@@ -404,7 +404,7 @@
 		B17D678F2AC0AC15006F91DC /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		B17D67912AC0ACDF006F91DC /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		B17D67932AC0AD45006F91DC /* Like.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Like.swift; sourceTree = "<group>"; };
-		B17D67952AC0AE11006F91DC /* Mail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mail.swift; sourceTree = "<group>"; };
+		B17D67952AC0AE11006F91DC /* DirectMail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectMail.swift; sourceTree = "<group>"; };
 		B17D67972AC0AEE0006F91DC /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		B17D679E2AC0B116006F91DC /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		B17D67A02AC0B1FA006F91DC /* Encodable+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+Extensions.swift"; sourceTree = "<group>"; };
@@ -1139,7 +1139,7 @@
 		B17D679C2AC0B06B006F91DC /* Mail */ = {
 			isa = PBXGroup;
 			children = (
-				B17D67952AC0AE11006F91DC /* Mail.swift */,
+				B17D67952AC0AE11006F91DC /* DirectMail.swift */,
 			);
 			path = Mail;
 			sourceTree = "<group>";
@@ -1457,7 +1457,7 @@
 				B14D2AB92AD8E2900014DE29 /* HobbyCollectionViewCell.swift in Sources */,
 				6A73784B2AC26AB30047DE35 /* MyPageTableView.swift in Sources */,
 				BCEACEF52AC3D4FC00C93699 /* MBTILabelCollectionViewCell.swift in Sources */,
-				B17D67962AC0AE11006F91DC /* Mail.swift in Sources */,
+				B17D67962AC0AE11006F91DC /* DirectMail.swift in Sources */,
 				362418BB2AC3E2C400DAE818 /* SignUpNickNameViewController.swift in Sources */,
 				693738DB2B2DE435004571B6 /* RoomTableListController.swift in Sources */,
 				B15383E02AE770650037DBBA /* WorldCupResultViewController.swift in Sources */,

@@ -12,7 +12,7 @@ import FirebaseFirestore
 
 final class MailSendViewModel {
     
-    private(set) var sendList: [Mail.MailInfo] = [] {
+    private(set) var sendList: [DirectMail.MailInfo] = [] {
         didSet {
             if sendList.isEmpty {
                 isSendEmptyPublisher.onNext(true)
@@ -105,7 +105,7 @@ final class MailSendViewModel {
                 }
                 
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: Mail.self)
+                    if let datas = try? document.data(as: DirectMail.self)
                         .sendMailInfo?.filter({ $0.mailType == .send }) {
                         let sorted = datas.sorted {
                             return $0.sendedDate > $1.sendedDate
@@ -113,7 +113,7 @@ final class MailSendViewModel {
                         if startIndex > sorted.count - 1 {
                             return
                         }
-                        let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        let currentPageDatas: [DirectMail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         sendList += currentPageDatas
                         
                         if startIndex == 0 {
@@ -147,7 +147,7 @@ final class MailSendViewModel {
         }) else {
             return
         }
-        guard let removeData: Mail.MailInfo = sendList[safe: index] else {
+        guard let removeData: DirectMail.MailInfo = sendList[safe: index] else {
             print("삭제 실패: 해당 유저 정보 얻기 실패")
             return
         }

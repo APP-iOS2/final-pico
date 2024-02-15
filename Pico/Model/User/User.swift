@@ -11,6 +11,7 @@ struct User: Codable, Hashable {
     var id: String = UUID().uuidString
     let mbti: MBTIType
     let phoneNumber: String
+    let email: String?
     let gender: GenderType
     let birth: String
     let nickName: String
@@ -29,7 +30,7 @@ struct User: Codable, Hashable {
     let isSubscribe: Bool
     let isOnline: Bool?
     
-    static let tempUser = User(mbti: .enfj, phoneNumber: "", gender: .etc, birth: "", nickName: "", location: Location(address: "", latitude: 0.0, longitude: 0.0), imageURLs: [Defaults.userImageURLString], createdDate: 0.0, chuCount: 0, isSubscribe: false, isOnline: false)
+    static let tempUser = User(mbti: .enfj, phoneNumber: "", email: "", gender: .etc, birth: "", nickName: "", location: Location(address: "", latitude: 0.0, longitude: 0.0), imageURLs: [Defaults.userImageURLString], createdDate: 0.0, chuCount: 0, isSubscribe: false, isOnline: false)
     
     var age: Int {
         let calendar = Calendar.current
