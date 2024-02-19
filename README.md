@@ -1,4 +1,4 @@
-# PICO (Pick & Connect)
+# PICO :Pick & Connect
 
 
 
