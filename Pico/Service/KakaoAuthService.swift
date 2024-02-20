@@ -54,8 +54,7 @@ final class KakaoAuthService {
         
         guard let imageUrl = URL(string: Defaults.logoImageURLString) else { return }
         let content = Content(title: """
-                                    인증 코드를 발급해드립니다.
-                                    인증번호는 "\(configRandomNumber())" 입니다.
+                                    인증번호는 "\(configRandomNumber())" 입니다. \n
                                     해당 인증코드를 입력해주세요.
                                     타인에게 절대 알려주지 마세요.
                                     """,
@@ -72,8 +71,7 @@ final class KakaoAuthService {
                         if let error = error {
                             print("error : \(error)")
                             completion(.err)
-                        }
-                        else {
+                        } else {
                             print("defaultLink(templateObject:templateJsonObject) success.")
                             guard let linkResult = linkResult else { return }
                             completion(.app(url: linkResult.url))

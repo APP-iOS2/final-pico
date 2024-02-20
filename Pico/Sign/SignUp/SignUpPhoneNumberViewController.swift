@@ -269,7 +269,7 @@ extension SignUpPhoneNumberViewController {
     }
     
     private func alertSendNumber(phoneNumber: String, isRight: Bool) {
-        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "카카오톡으로 공유를 하시면 인증번호를 확인할 수 있습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송합니다.\n\n카카오톡으로 공유를 하시면 인증번호를 확인할 수 있습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             
             cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
