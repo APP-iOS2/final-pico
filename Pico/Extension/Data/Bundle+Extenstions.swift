@@ -9,7 +9,7 @@ import Foundation
 
 enum APIKey: String {
     case FirebaseAPIKeys
-    case NaverAPIKeys
+    case AuthKeys
     
     var name: String {
         return self.rawValue
@@ -40,7 +40,7 @@ extension Bundle {
     }
     
     var testAuthNum: String {
-        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.AuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -51,7 +51,7 @@ extension Bundle {
     }
     
     var testPhoneNumber: String {
-        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.AuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -61,45 +61,12 @@ extension Bundle {
         return key
     }
     
-    var senderPhoneNumber: String {
-        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
+    var kakaoAppKey: String {
+        guard let file = self.path(forResource: APIKey.AuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
-        guard let key = resource["SENDER_PHONE_NUMBER"] as? String else {
-            fatalError("KEY를 찾을수없음")
-        }
-        return key
-    }
-    
-    var accessKey: String {
-        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
-        
-        guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
-        
-        guard let key = resource["ACCESS_KEY"] as? String else {
-            fatalError("KEY를 찾을수없음")
-        }
-        return key
-    }
-    
-    var secretKey: String {
-        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
-        
-        guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
-        
-        guard let key = resource["SECRET_KEY"] as? String else {
-            fatalError("KEY를 찾을수없음")
-        }
-        return key
-    }
-    
-    var serviceId: String {
-        guard let file = self.path(forResource: APIKey.NaverAPIKeys.name, ofType: "plist") else { return "" }
-        
-        guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
-        
-        guard let key = resource["SERVICE_ID"] as? String else {
+        guard let key = resource["KAKAO_APP_KEY"] as? String else {
             fatalError("KEY를 찾을수없음")
         }
         return key

@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import SafariServices
 
 extension UIViewController {
     /// logo leftBarButton
@@ -115,5 +116,29 @@ extension UIViewController {
         customAlertViewController.confirmAction = comfrimAction
         customAlertViewController.cancelAction = cancelAction
         self.present(customAlertViewController, animated: true, completion: nil)
+    }
+}
+
+extension UIViewController {
+    
+    func openKakaoLink(kakaoLinkType: KakaoLinkType) {
+        switch kakaoLinkType {
+        case .app(let url):
+            print("앱으로 열기")
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            
+        case .web(let url):
+            print("웹으로 열기")
+            let safariViewController = SFSafariViewController(url: url)
+            safariViewController.modalTransitionStyle = .crossDissolve
+            safariViewController.modalPresentationStyle = .overCurrentContext
+            self.present(safariViewController, animated: true) {
+                print("웹 present success")
+            }
+            
+        case .err:
+            print("에러")
+            self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "다시 시도해주세요.", confirmButtonText: "확인")
+        }
     }
 }

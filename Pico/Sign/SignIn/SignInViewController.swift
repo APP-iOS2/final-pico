@@ -11,7 +11,6 @@ import RxSwift
 import RxCocoa
 
 final class SignInViewController: UIViewController {
-    private let authManager = SMSAuthService()
     private let keyboardManager = KeyboardService()
     private let viewModel = SignInViewModel()
     private let disposeBag = DisposeBag()
@@ -176,7 +175,7 @@ extension SignInViewController {
                     return
                 }
                 
-                viewModel.signIn(userNumber: phoneNumber) { [weak self] _, message in
+                viewModel.signIn(userNumber: phoneNumber) { [weak self] user, message in
                     guard let self = self else { return }
                     
                     guard viewModel.isRightUser else {
@@ -226,14 +225,19 @@ extension SignInViewController {
                         return
                     }
                     Loading.hideLoading()
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "카카오톡으로 공유를 하시면 인증번호를 확인할 수 있습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
+                        guard let user = user else { return }
                         
                         cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
                         RunLoop.main.add(cooldownTimer!, forMode: .common)
                         
                         configTappedAuthButtonState()
-                        authManager.sendVerificationCode(phoneNumber: phoneNumber)
+                        KakaoAuthService.shared.sendVerificationCode(phoneNumber: user.phoneNumber) { kakaoLinkType in
+                            DispatchQueue.main.async {
+                                self.openKakaoLink(kakaoLinkType: kakaoLinkType)
+                            }
+                        }
                     })
                 }
             })
@@ -257,7 +261,7 @@ extension SignInViewController {
                 view.endEditing(true)
                 configAuthText()
                 
-                guard authManager.checkRightCode(code: authText) else {
+                guard KakaoAuthService.shared.checkRandomNumber(number: authText) else {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
                     return
                 }

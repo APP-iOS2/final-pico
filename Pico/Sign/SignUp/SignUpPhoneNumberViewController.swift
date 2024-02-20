@@ -11,7 +11,6 @@ import RxSwift
 
 final class SignUpPhoneNumberViewController: UIViewController {
     private let keyboardManager = KeyboardService()
-    private let smsAuthManager: SMSAuthService = SMSAuthService()
     let viewModel: SignUpViewModel
     private var cooldownTimer: Timer?
     private var cooldownSeconds = 180
@@ -270,7 +269,7 @@ extension SignUpPhoneNumberViewController {
     }
     
     private func alertSendNumber(phoneNumber: String, isRight: Bool) {
-        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "카카오톡으로 공유를 하시면 인증번호를 확인할 수 있습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             
             cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
@@ -278,7 +277,12 @@ extension SignUpPhoneNumberViewController {
             
             updateViewState(num: phoneNumber)
             viewModel.isRightPhoneNumber = isRight
-            smsAuthManager.sendVerificationCode(phoneNumber: phoneNumber)
+            print("인증번호확인절차")
+            KakaoAuthService.shared.sendVerificationCode(phoneNumber: phoneNumber) { kakaoLinkType in
+                DispatchQueue.main.async {
+                    self.openKakaoLink(kakaoLinkType: kakaoLinkType)
+                }
+            }
         })
     }
     
@@ -286,8 +290,9 @@ extension SignUpPhoneNumberViewController {
         view.endEditing(true)
         sender.tappedAnimation()
         configAuthText()
-        guard smsAuthManager.checkRightCode(code: authText) else {
-            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
+        print("인증번호확인절차")
+        guard KakaoAuthService.shared.checkRandomNumber(number: authText) else {
+            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
             return
         }
         showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in

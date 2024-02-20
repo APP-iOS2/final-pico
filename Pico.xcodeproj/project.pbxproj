@@ -147,6 +147,10 @@
 		B14B59102AC0A666009889DA /* MypageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B590F2AC0A666009889DA /* MypageViewController.swift */; };
 		B14D2AB92AD8E2900014DE29 /* HobbyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AB72AD8E2900014DE29 /* HobbyCollectionViewCell.swift */; };
 		B14D2ABA2AD8E2900014DE29 /* MbtiCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14D2AB82AD8E2900014DE29 /* MbtiCollectionViewCell.swift */; };
+		B15197562B84D0EF0064C62D /* KakaoAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15197552B84D0EF0064C62D /* KakaoAuthService.swift */; };
+		B151975B2B84D4B70064C62D /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = B151975A2B84D4B70064C62D /* KakaoSDK */; };
+		B151975D2B84D4B70064C62D /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B151975C2B84D4B70064C62D /* KakaoSDKAuth */; };
+		B151975F2B84D4B70064C62D /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = B151975E2B84D4B70064C62D /* KakaoSDKCommon */; };
 		B15383E02AE770650037DBBA /* WorldCupResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15383DF2AE770650037DBBA /* WorldCupResultViewController.swift */; };
 		B15383E22AE770740037DBBA /* WorldCupResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15383E12AE770740037DBBA /* WorldCupResultViewModel.swift */; };
 		B15383E42AE770810037DBBA /* worldcupAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = B15383E32AE770810037DBBA /* worldcupAnimation.json */; };
@@ -375,6 +379,7 @@
 		B14B590F2AC0A666009889DA /* MypageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MypageViewController.swift; sourceTree = "<group>"; };
 		B14D2AB72AD8E2900014DE29 /* HobbyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HobbyCollectionViewCell.swift; sourceTree = "<group>"; };
 		B14D2AB82AD8E2900014DE29 /* MbtiCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MbtiCollectionViewCell.swift; sourceTree = "<group>"; };
+		B15197552B84D0EF0064C62D /* KakaoAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoAuthService.swift; sourceTree = "<group>"; };
 		B15383DF2AE770650037DBBA /* WorldCupResultViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewController.swift; sourceTree = "<group>"; };
 		B15383E12AE770740037DBBA /* WorldCupResultViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldCupResultViewModel.swift; sourceTree = "<group>"; };
 		B15383E32AE770810037DBBA /* worldcupAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = worldcupAnimation.json; sourceTree = "<group>"; };
@@ -449,6 +454,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B151975F2B84D4B70064C62D /* KakaoSDKCommon in Frameworks */,
 				B1A0C0082AE4AD4D0031AC65 /* Lottie in Frameworks */,
 				53DD41BE2ADF672B00C5FE39 /* FirebaseMessaging in Frameworks */,
 				B18C1DA62ACC95B200BBB207 /* RxRelay in Frameworks */,
@@ -462,6 +468,8 @@
 				B1E30BE02AD5E7B500F95C66 /* Kingfisher in Frameworks */,
 				53817BE12ACED57B00AEE9AE /* FirebaseDatabase in Frameworks */,
 				B18C1DAE2ACC984400BBB207 /* FirebaseFirestoreSwift in Frameworks */,
+				B151975B2B84D4B70064C62D /* KakaoSDK in Frameworks */,
+				B151975D2B84D4B70064C62D /* KakaoSDKAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -751,6 +759,7 @@
 				53DD41B72ADF65EF00C5FE39 /* NotificationService.swift */,
 				36536FE82AE00E0E00ADD420 /* CheckService.swift */,
 				369B25512ADB1FB4005C452D /* SMSAuthService.swift */,
+				B15197552B84D0EF0064C62D /* KakaoAuthService.swift */,
 				363CC4832ACF9CC500C86EDC /* LocationService.swift */,
 				B18BD0502B2BBD7300729A10 /* VisionService.swift */,
 				368D4DA42ADCD9B000322D91 /* PictureService.swift */,
@@ -1290,6 +1299,9 @@
 				B1E30BDF2AD5E7B500F95C66 /* Kingfisher */,
 				53DD41BD2ADF672B00C5FE39 /* FirebaseMessaging */,
 				B1A0C0072AE4AD4D0031AC65 /* Lottie */,
+				B151975A2B84D4B70064C62D /* KakaoSDK */,
+				B151975C2B84D4B70064C62D /* KakaoSDKAuth */,
+				B151975E2B84D4B70064C62D /* KakaoSDKCommon */,
 			);
 			productName = Pico;
 			productReference = B14B58C62AC0A230009889DA /* Pico.app */;
@@ -1371,6 +1383,8 @@
 				6ABA9E702ACFC54800DC6570 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 				B1E30BDE2AD5E7B500F95C66 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				B1A0C0062AE4AD4D0031AC65 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				B1B3C2A82B75140F000636C5 /* XCRemoteSwiftPackageReference "Swift-SMTP" */,
+				B15197592B84D4B70064C62D /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 			);
 			productRefGroup = B14B58C72AC0A230009889DA /* Products */;
 			projectDirPath = "";
@@ -1600,6 +1614,7 @@
 				3665D1912B2E3693005C8FFD /* VersionService.swift in Sources */,
 				B15383E22AE770740037DBBA /* WorldCupResultViewModel.swift in Sources */,
 				B15ABE372AC31DD200529C29 /* UIViewController+Extensions.swift in Sources */,
+				B15197562B84D0EF0064C62D /* KakaoAuthService.swift in Sources */,
 				B17D67AA2AC0B86A006F91DC /* UIFont+Extensions.swift in Sources */,
 				B14B590C2AC0A64C009889DA /* LikeViewController.swift in Sources */,
 				B14D2ABA2AD8E2900014DE29 /* MbtiCollectionViewCell.swift in Sources */,
@@ -2012,6 +2027,14 @@
 				version = 5.0.2;
 			};
 		};
+		B15197592B84D4B70064C62D /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao/kakao-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.20.0;
+			};
+		};
 		B18C1D9E2ACC956C00BBB207 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -2044,6 +2067,14 @@
 				minimumVersion = 4.3.3;
 			};
 		};
+		B1B3C2A82B75140F000636C5 /* XCRemoteSwiftPackageReference "Swift-SMTP" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/IBM-Swift/Swift-SMTP";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
 		B1E30BDE2AD5E7B500F95C66 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -2074,6 +2105,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6ABA9E702ACFC54800DC6570 /* XCRemoteSwiftPackageReference "RxDataSources" */;
 			productName = RxDataSources;
+		};
+		B151975A2B84D4B70064C62D /* KakaoSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B15197592B84D4B70064C62D /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDK;
+		};
+		B151975C2B84D4B70064C62D /* KakaoSDKAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B15197592B84D4B70064C62D /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKAuth;
+		};
+		B151975E2B84D4B70064C62D /* KakaoSDKCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B15197592B84D4B70064C62D /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKCommon;
 		};
 		B18C1DA12ACC95B200BBB207 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;

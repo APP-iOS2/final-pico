@@ -222,3 +222,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Loading.hideLoading()
     }
 }
+
+extension SceneDelegate {
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+        if let components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
+            let queryItems = components.queryItems ?? []
+            for queryItem in queryItems {
+                if queryItem.name == "key1", let value = queryItem.value {
+                    print(value)
+                } else if queryItem.name == "key2", let value = queryItem.value {
+                    print(value)
+                }
+            }
+        }
+    }
+}

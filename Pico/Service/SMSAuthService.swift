@@ -4,6 +4,8 @@
 //
 //  Created by LJh on 10/15/23.
 //
+
+/*
 import Foundation
 import CommonCrypto
 
@@ -142,3 +144,4 @@ final class SMSAuthService {
         return base64Encoded
     }
 }
+*/
