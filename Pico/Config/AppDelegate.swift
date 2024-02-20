@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseCore
 import FirebaseMessaging
+import KakaoSDKCommon
 import UserNotifications
 
 @main
@@ -33,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         FirebaseApp.configure()
+        KakaoSDK.initSDK(appKey: Bundle.main.kakaoAppKey)
+        
         Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
         UIApplication.shared.registerForRemoteNotifications()

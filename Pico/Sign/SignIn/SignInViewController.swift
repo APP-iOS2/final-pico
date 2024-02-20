@@ -225,7 +225,7 @@ extension SignInViewController {
                         return
                     }
                     Loading.hideLoading()
-                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+                    showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "카카오톡으로 공유를 하시면 인증번호를 확인할 수 있습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
                         guard let self = self else { return }
                         guard let user = user else { return }
                         
@@ -233,16 +233,10 @@ extension SignInViewController {
                         RunLoop.main.add(cooldownTimer!, forMode: .common)
                         
                         configTappedAuthButtonState()
-                        if let email = user.email {
-                            EmailAuthService.shared.sendVerificationCode(phoneNumber: user.phoneNumber, email: email) { result in
-                                if !result {
-                                    self.showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "메일 전송에 실패하셨습니다.", confirmButtonText: "확인")
-                                }
+                        KakaoAuthService.shared.sendVerificationCode(phoneNumber: user.phoneNumber) { kakaoLinkType in
+                            DispatchQueue.main.async {
+                                self.openKakaoLink(kakaoLinkType: kakaoLinkType)
                             }
-                        } else {
-                            self.showCustomAlert(alertType: .canCancel, titleText: "알림", messageText: "이메일이 등록되어있지 않습니다. 이메일 등록을 해주세요", confirmButtonText: "등록하기", comfrimAction: {
-                                print("이메일 등록하러 가기")
-                            })
                         }
                     })
                 }
@@ -267,7 +261,7 @@ extension SignInViewController {
                 view.endEditing(true)
                 configAuthText()
                 
-                guard EmailAuthService.shared.checkRandomNumber(number: authText) else {
+                guard KakaoAuthService.shared.checkRandomNumber(number: authText) else {
                     showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
                     return
                 }

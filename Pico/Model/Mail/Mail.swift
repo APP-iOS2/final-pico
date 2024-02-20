@@ -1,5 +1,5 @@
 //
-//  DirectMail.swift
+//  Mail.swift
 //  Pico
 //
 //  Created by 최하늘 on 2023/09/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DirectMail: Codable {
+struct Mail: Codable {
     let userId: String
     var sendMailInfo: [MailInfo]?
     var receiveMailInfo: [MailInfo]?

@@ -31,7 +31,6 @@ final class SignUpViewModel {
         return mbtiType
     }()
     var phoneNumber: String = ""
-    var email: String = ""
     var gender: GenderType = .etc
     var birth: String = ""
     var nickName: String = ""
@@ -42,7 +41,7 @@ final class SignUpViewModel {
     var isSubscribe: Bool = false
     var progressStatus: Float = 0.0
     
-    private lazy var newUser: User = User(id: id, mbti: mbti, phoneNumber: phoneNumber, email: email, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe, isOnline: false)
+    private lazy var newUser: User = User(id: id, mbti: mbti, phoneNumber: phoneNumber, gender: gender, birth: birth, nickName: nickName, location: location, imageURLs: [""], createdDate: createdDate, subInfo: nil, reports: nil, blocks: nil, chuCount: chuCount, isSubscribe: isSubscribe, isOnline: false)
     
     init() {
         locationSubject.subscribe { [weak self] location in

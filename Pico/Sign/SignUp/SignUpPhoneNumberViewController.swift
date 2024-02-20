@@ -269,7 +269,7 @@ extension SignUpPhoneNumberViewController {
     }
     
     private func alertSendNumber(phoneNumber: String, isRight: Bool) {
-        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "가입하신 이메일로 인증번호를 전송했습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
+        showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "카카오톡으로 공유를 하시면 인증번호를 확인할 수 있습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             
             cooldownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCooldown), userInfo: nil, repeats: true)
@@ -278,7 +278,11 @@ extension SignUpPhoneNumberViewController {
             updateViewState(num: phoneNumber)
             viewModel.isRightPhoneNumber = isRight
             print("인증번호확인절차")
-//            smsAuthManager.sendVerificationCode(phoneNumber: phoneNumber)
+            KakaoAuthService.shared.sendVerificationCode(phoneNumber: phoneNumber) { kakaoLinkType in
+                DispatchQueue.main.async {
+                    self.openKakaoLink(kakaoLinkType: kakaoLinkType)
+                }
+            }
         })
     }
     
@@ -287,10 +291,10 @@ extension SignUpPhoneNumberViewController {
         sender.tappedAnimation()
         configAuthText()
         print("인증번호확인절차")
-//        guard smsAuthManager.checkRightCode(code: authText) else {
-//            showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
-//            return
-//        }
+        guard KakaoAuthService.shared.checkRandomNumber(number: authText) else {
+            showCustomAlert(alertType: .onlyConfirm, titleText: "경고", messageText: "인증번호가 일치하지 않습니다.\n다시 확인해주세요.", confirmButtonText: "확인")
+            return
+        }
         showCustomAlert(alertType: .onlyConfirm, titleText: "알림", messageText: "인증에 성공하셨습니다.", confirmButtonText: "확인", comfrimAction: { [weak self] in
             guard let self = self else { return }
             

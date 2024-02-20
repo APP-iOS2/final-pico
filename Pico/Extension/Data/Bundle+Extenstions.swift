@@ -9,7 +9,7 @@ import Foundation
 
 enum APIKey: String {
     case FirebaseAPIKeys
-    case EmailAuthKeys
+    case AuthKeys
     
     var name: String {
         return self.rawValue
@@ -40,7 +40,7 @@ extension Bundle {
     }
     
     var testAuthNum: String {
-        guard let file = self.path(forResource: APIKey.EmailAuthKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.AuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -51,7 +51,7 @@ extension Bundle {
     }
     
     var testPhoneNumber: String {
-        guard let file = self.path(forResource: APIKey.EmailAuthKeys.name, ofType: "plist") else { return "" }
+        guard let file = self.path(forResource: APIKey.AuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
@@ -61,12 +61,12 @@ extension Bundle {
         return key
     }
     
-    var senderEmail: String {
-        guard let file = self.path(forResource: APIKey.EmailAuthKeys.name, ofType: "plist") else { return "" }
+    var kakaoAppKey: String {
+        guard let file = self.path(forResource: APIKey.AuthKeys.name, ofType: "plist") else { return "" }
         
         guard let resource = NSDictionary(contentsOfFile: file) else { return "" }
         
-        guard let key = resource["SENDER_EMAIL"] as? String else {
+        guard let key = resource["KAKAO_APP_KEY"] as? String else {
             fatalError("KEY를 찾을수없음")
         }
         return key

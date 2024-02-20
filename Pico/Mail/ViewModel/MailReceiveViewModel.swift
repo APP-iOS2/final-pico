@@ -12,7 +12,7 @@ import FirebaseFirestore
 
 final class MailReceiveViewModel {
     
-    private(set) var receiveList: [DirectMail.MailInfo] = [] {
+    private(set) var receiveList: [Mail.MailInfo] = [] {
         didSet {
             if receiveList.isEmpty {
                 isReceiveEmptyPublisher.onNext(true)
@@ -103,7 +103,7 @@ final class MailReceiveViewModel {
                 }
                 
                 if let document = document, document.exists {
-                    if let datas = try? document.data(as: DirectMail.self)
+                    if let datas = try? document.data(as: Mail.self)
                         .receiveMailInfo?.filter({ $0.mailType == .receive }) {
                         let sorted = datas.sorted {
                             return $0.sendedDate > $1.sendedDate
@@ -111,7 +111,7 @@ final class MailReceiveViewModel {
                         if startIndex > sorted.count - 1 {
                             return
                         }
-                        let currentPageDatas: [DirectMail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
+                        let currentPageDatas: [Mail.MailInfo] = Array(sorted[startIndex..<min(endIndex, sorted.count)])
                         receiveList += currentPageDatas
                         
                         if startIndex == 0 {
@@ -144,7 +144,7 @@ final class MailReceiveViewModel {
         }) else {
             return
         }
-        guard let removeData: DirectMail.MailInfo = receiveList[safe: index] else {
+        guard let removeData: Mail.MailInfo = receiveList[safe: index] else {
             print("삭제 실패: 해당 유저 정보 얻기 실패")
             return
         }
@@ -156,8 +156,8 @@ final class MailReceiveViewModel {
         ])
     }
     
-    func updateNewData(data: DirectMail.MailInfo) {
-        let updateData: DirectMail.MailInfo = DirectMail.MailInfo(id: data.id, sendedUserId: data.sendedUserId, receivedUserId: data.receivedUserId, mailType: data.mailType, message: data.message, sendedDate: data.sendedDate, isReading: true)
+    func updateNewData(data: Mail.MailInfo) {
+        let updateData: Mail.MailInfo = Mail.MailInfo(id: data.id, sendedUserId: data.sendedUserId, receivedUserId: data.receivedUserId, mailType: data.mailType, message: data.message, sendedDate: data.sendedDate, isReading: true)
         
         DispatchQueue.global().async {
             self.dbRef.collection(Collections.mail.name).document(UserDefaultsManager.shared.getUserData().userId).updateData([

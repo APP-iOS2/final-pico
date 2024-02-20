@@ -14,7 +14,7 @@ final class MailReceiveViewController: UIViewController {
     
     private let viewModel = MailReceiveViewModel()
     private let disposeBag = DisposeBag()
-    private var mailUser: DirectMail.MailInfo = DirectMail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
+    private var mailUser: Mail.MailInfo = Mail.MailInfo(sendedUserId: "", receivedUserId: "", mailType: .receive, message: "", sendedDate: 0, isReading: false)
     
     weak var mailReceiveDelegate: MailReceiveDelegate?
     weak var mailSendDelegate: MailSendDelegate?
@@ -188,7 +188,7 @@ final class MailReceiveViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     // MARK: - MailReceive + config
-    func configData(mailSender: DirectMail.MailInfo) {
+    func configData(mailSender: Mail.MailInfo) {
         mailUser = mailSender
         navItem.title = mailSender.mailType.typeString
         
