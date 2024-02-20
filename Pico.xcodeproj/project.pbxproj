@@ -1383,7 +1383,6 @@
 				6ABA9E702ACFC54800DC6570 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 				B1E30BDE2AD5E7B500F95C66 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				B1A0C0062AE4AD4D0031AC65 /* XCRemoteSwiftPackageReference "lottie-ios" */,
-				B1B3C2A82B75140F000636C5 /* XCRemoteSwiftPackageReference "Swift-SMTP" */,
 				B15197592B84D4B70064C62D /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 			);
 			productRefGroup = B14B58C72AC0A230009889DA /* Products */;
@@ -2065,14 +2064,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 4.3.3;
-			};
-		};
-		B1B3C2A82B75140F000636C5 /* XCRemoteSwiftPackageReference "Swift-SMTP" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/IBM-Swift/Swift-SMTP";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.0.0;
 			};
 		};
 		B1E30BDE2AD5E7B500F95C66 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
